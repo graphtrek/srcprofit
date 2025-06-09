@@ -1,0 +1,9 @@
+gg.jte.development-mode: true
+
+spring:
+  application:
+    name: srcprofit
+
+  threads:
+    virtual:
+      enabled: true
