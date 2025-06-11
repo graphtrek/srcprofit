@@ -1,4 +1,4 @@
-package co.grtk.srcprofit.srcprofit;
+package co.grtk.srcprofit;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;

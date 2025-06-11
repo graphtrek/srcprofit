@@ -31,16 +31,9 @@
   <link href="assets/css/style.css" rel="stylesheet">
   <script src="//unpkg.com/htmx.org@1.9.10"></script>
   <script src="//code.jquery.com/jquery-3.7.1.js"></script>
-  <!-- =======================================================
-  * Template Name: NiceAdmin
-  * Template URL: https://bootstrapmade.com/nice-admin-bootstrap-admin-html-template/
-  * Updated: Apr 20 2024 with Bootstrap v5.3.3
-  * Author: BootstrapMade.com
-  * License: https://bootstrapmade.com/license/
-  ======================================================== -->
 </head>
 
-<body>
+<body data-theme="dark">
 
   <!-- ======= Header ======= -->
   <header id="header" class="header fixed-top d-flex align-items-center">
@@ -80,23 +73,45 @@
            hx-trigger="click"
            hx-target="#main"
            hx-swap="innerHTML"
-           hx-on::after-request="console.log('test'); chart(); datatable();">
+           hx-on::afterRequest="console.log('dashboard');">
 
           <i class="bi bi-grid"></i>
           <span>Dashboard</span>
         </a>
       </li><!-- End Dashboard Nav -->
 
+      <li class="nav-item">
+        <a class="nav-link collapsed" data-bs-target="#charts-nav" data-bs-toggle="collapse" href="#" aria-expanded="false">
+          <i class="bi bi-bar-chart"></i><span>Charts</span><i class="bi bi-chevron-down ms-auto"></i>
+        </a>
+        <ul id="charts-nav" class="nav-content collapse" data-bs-parent="#sidebar-nav" style="">
+          <li>
+            <a href="charts-chartjs.html">
+              <i class="bi bi-circle"></i><span>Chart.js</span>
+            </a>
+          </li>
+          <li>
+            <a href="charts-apexcharts.html" class="active">
+              <i class="bi bi-circle"></i><span>ApexCharts</span>
+            </a>
+          </li>
+          <li>
+            <a href="charts-echarts.html">
+              <i class="bi bi-circle"></i><span>ECharts</span>
+            </a>
+          </li>
+        </ul>
+      </li>
 
       <li class="nav-item">
         <a class="nav-link collapsed" href="#"
-           hx-get="/register"
+           hx-get="/option"
            hx-trigger="click"
            hx-target="#main"
            hx-swap="innerHTML"
-           hx-on::after-request="console.log('test')">
+           hx-on::afterRequest="console.log('option')">
           <i class="bi bi-card-list"></i>
-          <span>Register</span>
+          <span>New Option</span>
         </a>
       </li><!-- End Register Page Nav -->
 
@@ -108,10 +123,9 @@
         hx-get="/dashboard"
         hx-trigger="load delay:0s"
         hx-swap="innerHTML"
-        hx-on::after-request="console.log('test'); chart(); datatable();">
+        hx-on::afterRequest="console.log('index');">
 
-
-</main><!-- End #main -->
+  </main><!-- End #main -->
 
   <!-- ======= Footer ======= -->
   <footer id="footer" class="footer">

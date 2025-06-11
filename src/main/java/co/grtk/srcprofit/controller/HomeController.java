@@ -1,4 +1,4 @@
-package co.grtk.srcprofit.srcprofit.controller;
+package co.grtk.srcprofit.controller;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -10,20 +10,21 @@ import org.springframework.web.bind.annotation.GetMapping;
 public class HomeController {
 
     private static final Logger log = LoggerFactory.getLogger(HomeController.class);
+    private static final String INDEX_PAGE_PATH = "index";
+    private static final String DASHBOARD_PAGE_PATH = "dashboard";
 
     @GetMapping("/")
+    public String home(Model model) {
+        return INDEX_PAGE_PATH;
+    }
+
+    @GetMapping("/index")
     public String index(Model model) {
-        return "index";
+        return INDEX_PAGE_PATH;
     }
 
     @GetMapping("/dashboard")
     public String dashboard(Model model) {
-        return "dashboard";
+        return DASHBOARD_PAGE_PATH;
     }
-
-    @GetMapping("/register")
-    public String register(Model model) {
-        return "register";
-    }
-
 }
