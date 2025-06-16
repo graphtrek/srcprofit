@@ -1,7 +1,8 @@
 package co.grtk.srcprofit.dto;
 
-import co.grtk.srcprofit.model.AssetClass;
-import co.grtk.srcprofit.model.OptionType;
+import co.grtk.srcprofit.entity.AssetClass;
+import co.grtk.srcprofit.entity.OptionStatus;
+import co.grtk.srcprofit.entity.OptionType;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
@@ -10,10 +11,10 @@ import java.util.Objects;
 public class OptionDto {
 
     Long id;
+    Long parentId;
     LocalDateTime startDateTime;
     LocalDate expirationDate;
-    boolean active;
-    String description;
+    String note;
     String color;
     String symbol;
     Integer quantity;
@@ -27,8 +28,8 @@ public class OptionDto {
     Integer daysBetween;
     Integer daysLeft;
     AssetClass assetClass;
-    OptionType optionType;
-
+    OptionType type;
+    OptionStatus status;
 
     public String getStartDateTimeString() {
         return Objects.isNull(startDateTime) ? "" : startDateTime.toString();
@@ -62,20 +63,12 @@ public class OptionDto {
         this.expirationDate = expirationDate;
     }
 
-    public boolean isActive() {
-        return active;
+    public String getNote() {
+        return note;
     }
 
-    public void setActive(boolean active) {
-        this.active = active;
-    }
-
-    public String getDescription() {
-        return description;
-    }
-
-    public void setDescription(String description) {
-        this.description = description;
+    public void setNote(String note) {
+        this.note = note;
     }
 
     public String getColor() {
@@ -182,12 +175,28 @@ public class OptionDto {
         this.quantity = quantity;
     }
 
-    public OptionType getOptionType() {
-        return optionType;
+    public OptionType getType() {
+        return type;
     }
 
-    public void setOptionType(OptionType optionType) {
-        this.optionType = optionType;
+    public void setType(OptionType optionType) {
+        this.type = optionType;
+    }
+
+    public OptionStatus getStatus() {
+        return status;
+    }
+
+    public void setStatus(OptionStatus optionStatus) {
+        this.status = optionStatus;
+    }
+
+    public Long getParentId() {
+        return parentId;
+    }
+
+    public void setParentId(Long parentId) {
+        this.parentId = parentId;
     }
 
     @Override
@@ -196,8 +205,7 @@ public class OptionDto {
                 "id=" + id +
                 ", startDateTime=" + startDateTime +
                 ", expirationDate=" + expirationDate +
-                ", active=" + active +
-                ", description='" + description + '\'' +
+                ", note='" + note + '\'' +
                 ", color='" + color + '\'' +
                 ", symbol='" + symbol + '\'' +
                 ", quantity=" + quantity +
@@ -211,7 +219,9 @@ public class OptionDto {
                 ", daysBetween=" + daysBetween +
                 ", daysLeft=" + daysLeft +
                 ", assetClass=" + assetClass +
-                ", optionType=" + optionType +
+                ", type=" + type +
+                ", status=" + status +
+                ", parentId=" + parentId +
                 '}';
     }
 }

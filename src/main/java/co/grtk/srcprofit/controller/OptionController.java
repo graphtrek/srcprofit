@@ -2,6 +2,7 @@ package co.grtk.srcprofit.controller;
 
 import co.grtk.srcprofit.dto.OptionDto;
 import co.grtk.srcprofit.mapper.OptionMapper;
+import co.grtk.srcprofit.service.OptionService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.http.MediaType;
@@ -21,6 +22,13 @@ public class OptionController {
     private static final String OPTION_FORM_PATH = "option-form";
     private static final String MODEL_ATTRIBUTE_DTO = "optionDto";
     private static final String MODEL_ATTRIBUTE_SUCCESS = "success";
+    private static final String MODEL_ATTRIBUTE_ERROR = "error";
+
+    private final OptionService optionService;
+
+    public OptionController(OptionService optionService) {
+        this.optionService = optionService;
+    }
 
     @GetMapping("/option")
     public String getOptionForm(Model model) {
@@ -44,12 +52,17 @@ public class OptionController {
     @PostMapping(path="/save-option", consumes = MediaType.APPLICATION_FORM_URLENCODED_VALUE)
     public String saveOption(@RequestBody MultiValueMap<String, String> formData, Model model) {
         log.info("saveOption formData {}", formData);
-
         OptionDto optionDto = OptionMapper.mapFromData(formData);
-
-        model.addAttribute(MODEL_ATTRIBUTE_DTO, optionDto);
-        model.addAttribute(MODEL_ATTRIBUTE_SUCCESS, MODEL_ATTRIBUTE_SUCCESS);
-        log.info("Saved option {}", optionDto);
+        try {
+            optionDto = optionService.saveOption(optionDto);
+            model.addAttribute(MODEL_ATTRIBUTE_DTO, optionDto);
+            model.addAttribute(MODEL_ATTRIBUTE_SUCCESS, MODEL_ATTRIBUTE_SUCCESS);
+            log.info("Saved option {}", optionDto);
+        } catch (Exception e) {
+            log.error("Error saving option", e);
+            model.addAttribute(MODEL_ATTRIBUTE_DTO, optionDto);
+            model.addAttribute(MODEL_ATTRIBUTE_ERROR, e.getMessage());
+        }
         return OPTION_FORM_PATH;
     }
 

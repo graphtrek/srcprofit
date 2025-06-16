@@ -1,4 +1,6 @@
-gg.jte.development-mode: true
+gg:
+  jte:
+    development-mode: true
 
 spring:
   application:
@@ -7,3 +9,24 @@ spring:
   threads:
     virtual:
       enabled: true
+
+  datasource:
+    url: ${SRCPROFIT_DB_URL}
+    username: ${SRCPROFIT_DB_USER}
+    password: ${SRCPROFIT_DB_PWD}
+    driver-class-name: org.postgresql.Driver
+  jpa:
+    show-sql: true
+    hibernate:
+      ddl-auto: update
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: '*'
+      cors:
+        allowed-origins: '*'
+        allowed-methods: '*'
+        allowed-headers: '*'
+

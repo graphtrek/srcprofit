@@ -33,7 +33,7 @@
   <script src="//code.jquery.com/jquery-3.7.1.js"></script>
 </head>
 
-<body data-theme="dark">
+<body>
 
   <!-- ======= Header ======= -->
   <header id="header" class="header fixed-top d-flex align-items-center">

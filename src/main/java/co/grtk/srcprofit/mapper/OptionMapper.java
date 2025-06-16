@@ -1,8 +1,9 @@
 package co.grtk.srcprofit.mapper;
 
 import co.grtk.srcprofit.dto.OptionDto;
-import co.grtk.srcprofit.model.AssetClass;
-import co.grtk.srcprofit.model.OptionType;
+import co.grtk.srcprofit.entity.AssetClass;
+import co.grtk.srcprofit.entity.OptionStatus;
+import co.grtk.srcprofit.entity.OptionType;
 import org.apache.commons.math3.distribution.NormalDistribution;
 import org.springframework.util.MultiValueMap;
 
@@ -21,25 +22,40 @@ public class OptionMapper {
     private OptionMapper() {}
 
     public static OptionDto mapFromData(MultiValueMap<String, String> formData) {
+
+        Long id = parseLong(formData.getFirst("id"), null);
+        Long parentId = parseLong(formData.getFirst("parentId"), null);
         String symbol = formData.getFirst("symbol");
         LocalDateTime startDate = toLocalDateTime(formData.getFirst("startDate"));
 
         String optionType = formData.getFirst("optionType");
-        String description = formData.getFirst("description");
+        String note = formData.getFirst("note");
         Integer quantity = parseInt(formData.getFirst("quantity"), null);
         Double fee = parseDouble(formData.getFirst("fee"), null);
         Double marketValue = parseDouble(formData.getFirst("marketValue"), null);
         Double positionValue = parseDouble(formData.getFirst("positionValue"), null);
         Double tradePrice = parseDouble(formData.getFirst("tradePrice"), null);
         LocalDate expirationDate = toLocalDate(formData.getFirst("expirationDate"));
+        String status = formData.getFirst("status");
+
 
         OptionDto optionDto = new OptionDto();
+        optionDto.setId(id);
+        optionDto.setParentId(parentId);
         optionDto.setSymbol(symbol);
         optionDto.setStartDateTime(startDate);
 
         optionDto.setAssetClass(AssetClass.OPTION);
-        optionDto.setOptionType(OptionType.fromCode(optionType));
-        optionDto.setDescription(description);
+
+        optionDto.setType(OptionType.fromCode(optionType));
+
+        Optional.ofNullable(status)
+                .ifPresentOrElse(
+                        s -> optionDto.setStatus(OptionStatus.fromCode(s)),
+                        () -> optionDto.setStatus(OptionStatus.PENDING)
+                );
+
+        optionDto.setNote(note);
         optionDto.setFee(fee);
         optionDto.setMarketValue(marketValue);
         optionDto.setPositionValue(positionValue);
@@ -55,7 +71,6 @@ public class OptionMapper {
                 dto.getStartDateTime() == null || dto.getExpirationDate() == null) {
             return;
         }
-
 
         int daysBetween =
                 (int) ChronoUnit.DAYS.between(dto.getStartDateTime(),dto.getExpirationDate()
@@ -76,19 +91,34 @@ public class OptionMapper {
         if (dto.getTradePrice() == null || dto.getMarketValue() == null || dto.getPositionValue() == null) {
             return;
         }
-
-        float roiPerDay = abs(dto.getTradePrice().floatValue()) / daysBetween;
+        
+        float roiBasePrice = dto.getTradePrice().floatValue();
+        if(dto.getFee() != null) 
+            roiBasePrice -= dto.getFee().floatValue();
+        
+        float roiPerDay = abs(roiBasePrice) / daysBetween;
         float annualizedRoi = roiPerDay * 365;
         float roiPercent = (annualizedRoi / dto.getPositionValue().floatValue()) * 100;
-
+        
         dto.setAnnualizedRoiPercent(Math.round(roiPercent));
 
-        BigDecimal tradeValue = new BigDecimal(dto.getPositionValue());
+        BigDecimal tradeValue = BigDecimal.valueOf(dto.getPositionValue());
         double marketMean =  dto.getMarketValue(); // jelenlegi vagy várt érték
         double dailyStdDev = marketMean * 0.05;  // napi szórás
 
         int probability = probabilityMarketExceedsTradeValue(tradeValue, marketMean, dailyStdDev, daysBetween);
         dto.setProbability(probability);
+    }
+
+    public static Long parseLong(String s, Long defaultValue) {
+        if (s == null || s.isBlank()) {
+            return defaultValue;
+        }
+        try {
+            return Optional.of(Long.parseLong(s)).orElse(defaultValue);
+        } catch (NumberFormatException _) {
+            return defaultValue;
+        }
     }
 
     public static Integer parseInt(String s, Integer defaultValue) {

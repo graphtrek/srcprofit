@@ -1,4 +1,4 @@
-package co.grtk.srcprofit.model;
+package co.grtk.srcprofit.entity;
 
 public enum AssetClass {
     STOCK("STK"), OPTION("OPT"),  CASH("CASH");
