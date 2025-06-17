@@ -15,7 +15,7 @@ public class OptionDto {
     LocalDateTime startDateTime;
     LocalDate expirationDate;
     String note;
-    String color;
+    String color = "black";
     String symbol;
     Integer quantity;
     Double tradePrice;
@@ -34,6 +34,11 @@ public class OptionDto {
     public String getStartDateTimeString() {
         return Objects.isNull(startDateTime) ? "" : startDateTime.toString();
     }
+
+    public String getStartDateString() {
+        return Objects.isNull(startDateTime) ? "" : startDateTime.toLocalDate().toString();
+    }
+
 
     public String getExpirationDateString() {
         return Objects.isNull(expirationDate) ? "" : expirationDate.toString();

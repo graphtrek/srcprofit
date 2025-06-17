@@ -79,6 +79,17 @@
           <span>Dashboard</span>
         </a>
       </li><!-- End Dashboard Nav -->
+      <li class="nav-item">
+        <a class="nav-link collapsed" href="#"
+           hx-get="/option"
+           hx-trigger="click"
+           hx-target="#main"
+           hx-swap="innerHTML"
+           hx-on::afterRequest="console.log('option')">
+          <i class="bi bi-card-list"></i>
+          <span>New Option</span>
+        </a>
+      </li><!-- End Register Page Nav -->
 
       <li class="nav-item">
         <a class="nav-link collapsed" data-bs-target="#charts-nav" data-bs-toggle="collapse" href="#" aria-expanded="false">
@@ -102,18 +113,6 @@
           </li>
         </ul>
       </li>
-
-      <li class="nav-item">
-        <a class="nav-link collapsed" href="#"
-           hx-get="/option"
-           hx-trigger="click"
-           hx-target="#main"
-           hx-swap="innerHTML"
-           hx-on::afterRequest="console.log('option')">
-          <i class="bi bi-card-list"></i>
-          <span>New Option</span>
-        </a>
-      </li><!-- End Register Page Nav -->
 
     </ul>
 

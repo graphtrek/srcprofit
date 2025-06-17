@@ -1,3 +1,6 @@
+@import co.grtk.srcprofit.dto.OptionDto
+@import java.util.List
+@param List<OptionDto> options
 
 <div class="pagetitle">
     <h1>Dashboard</h1>
@@ -124,7 +127,7 @@
                 </div><!-- End Customers Card -->
 
                 <!-- Reports -->
-                <div class="col-12">
+                <div id="chartCard" class="col-12">
                     <div class="card">
 
                         <div class="filter">
@@ -152,7 +155,7 @@
                     </div>
                 </div><!-- End Reports -->
 
-                <!-- Recent Sales -->
+                <!-- DataTable -->
                 <div class="col-12">
                     <div class="card recent-sales overflow-auto">
 
@@ -176,154 +179,30 @@
                                 <thead>
                                 <tr>
                                     <th scope="col">#</th>
-                                    <th scope="col">Customer</th>
-                                    <th scope="col">Product</th>
-                                    <th scope="col">Price</th>
+                                    <th scope="col">Symbol</th>
+                                    <th scope="col">TradeDate</th>
+                                    <th scope="col">Type</th>
+                                    <th scope="col">Value</th>
+                                    <th scope="col">TradePrice</th>
+                                    <th scope="col">Expiration</th>
                                     <th scope="col">Status</th>
                                 </tr>
                                 </thead>
                                 <tbody>
-                                <tr>
-                                    <th scope="row"><a href="#">#2457</a></th>
-                                    <td>Brandon Jacob</td>
-                                    <td><a href="#" class="text-primary">At praesentium minu</a></td>
-                                    <td>$64</td>
-                                    <td><span class="badge bg-success">Approved</span></td>
-                                </tr>
-                                <tr>
-                                    <th scope="row"><a href="#">#2147</a></th>
-                                    <td>Bridie Kessler</td>
-                                    <td><a href="#" class="text-primary">Blanditiis dolor omnis similique</a></td>
-                                    <td>$47</td>
-                                    <td><span class="badge bg-warning">Pending</span></td>
-                                </tr>
-                                <tr>
-                                    <th scope="row"><a href="#">#2049</a></th>
-                                    <td>Ashleigh Langosh</td>
-                                    <td><a href="#" class="text-primary">At recusandae consectetur</a></td>
-                                    <td>$147</td>
-                                    <td><span class="badge bg-success">Approved</span></td>
-                                </tr>
-                                <tr>
-                                    <th scope="row"><a href="#">#2644</a></th>
-                                    <td>Angus Grady</td>
-                                    <td><a href="#" class="text-primar">Ut voluptatem id earum et</a></td>
-                                    <td>$67</td>
-                                    <td><span class="badge bg-danger">Rejected</span></td>
-                                </tr>
-                                <tr>
-                                    <th scope="row"><a href="#">#2644</a></th>
-                                    <td>Raheem Lehner</td>
-                                    <td><a href="#" class="text-primary">Sunt similique distinctio</a></td>
-                                    <td>$165</td>
-                                    <td><span class="badge bg-success">Approved</span></td>
-                                </tr>
-                                <tr>
-                                    <th scope="row"><a href="#">#2457</a></th>
-                                    <td>Brandon Jacob</td>
-                                    <td><a href="#" class="text-primary">At praesentium minu</a></td>
-                                    <td>$64</td>
-                                    <td><span class="badge bg-success">Approved</span></td>
-                                </tr>
-                                <tr>
-                                    <th scope="row"><a href="#">#2147</a></th>
-                                    <td>Bridie Kessler</td>
-                                    <td><a href="#" class="text-primary">Blanditiis dolor omnis similique</a></td>
-                                    <td>$47</td>
-                                    <td><span class="badge bg-warning">Pending</span></td>
-                                </tr>
-                                <tr>
-                                    <th scope="row"><a href="#">#2049</a></th>
-                                    <td>Ashleigh Langosh</td>
-                                    <td><a href="#" class="text-primary">At recusandae consectetur</a></td>
-                                    <td>$147</td>
-                                    <td><span class="badge bg-success">Approved</span></td>
-                                </tr>
-                                <tr>
-                                    <th scope="row"><a href="#">#2644</a></th>
-                                    <td>Angus Grady</td>
-                                    <td><a href="#" class="text-primar">Ut voluptatem id earum et</a></td>
-                                    <td>$67</td>
-                                    <td><span class="badge bg-danger">Rejected</span></td>
-                                </tr>
-                                <tr>
-                                    <th scope="row"><a href="#">#2644</a></th>
-                                    <td>Raheem Lehner</td>
-                                    <td><a href="#" class="text-primary">Sunt similique distinctio</a></td>
-                                    <td>$165</td>
-                                    <td><span class="badge bg-success">Approved</span></td>
-                                </tr>
-                                <tr>
-                                    <th scope="row"><a href="#">#2457</a></th>
-                                    <td>Brandon Jacob</td>
-                                    <td><a href="#" class="text-primary">At praesentium minu</a></td>
-                                    <td>$64</td>
-                                    <td><span class="badge bg-success">Approved</span></td>
-                                </tr>
-                                <tr>
-                                    <th scope="row"><a href="#">#2147</a></th>
-                                    <td>Bridie Kessler</td>
-                                    <td><a href="#" class="text-primary">Blanditiis dolor omnis similique</a></td>
-                                    <td>$47</td>
-                                    <td><span class="badge bg-warning">Pending</span></td>
-                                </tr>
-                                <tr>
-                                    <th scope="row"><a href="#">#2049</a></th>
-                                    <td>Ashleigh Langosh</td>
-                                    <td><a href="#" class="text-primary">At recusandae consectetur</a></td>
-                                    <td>$147</td>
-                                    <td><span class="badge bg-success">Approved</span></td>
-                                </tr>
-                                <tr>
-                                    <th scope="row"><a href="#">#2644</a></th>
-                                    <td>Angus Grady</td>
-                                    <td><a href="#" class="text-primar">Ut voluptatem id earum et</a></td>
-                                    <td>$67</td>
-                                    <td><span class="badge bg-danger">Rejected</span></td>
-                                </tr>
-                                <tr>
-                                    <th scope="row"><a href="#">#2644</a></th>
-                                    <td>Raheem Lehner</td>
-                                    <td><a href="#" class="text-primary">Sunt similique distinctio</a></td>
-                                    <td>$165</td>
-                                    <td><span class="badge bg-success">Approved</span></td>
-                                </tr>
-                                <tr>
-                                    <th scope="row"><a href="#">#2457</a></th>
-                                    <td>Brandon Jacob</td>
-                                    <td><a href="#" class="text-primary">At praesentium minu</a></td>
-                                    <td>$64</td>
-                                    <td><span class="badge bg-success">Approved</span></td>
-                                </tr>
-                                <tr>
-                                    <th scope="row"><a href="#">#2147</a></th>
-                                    <td>Bridie Kessler</td>
-                                    <td><a href="#" class="text-primary">Blanditiis dolor omnis similique</a></td>
-                                    <td>$47</td>
-                                    <td><span class="badge bg-warning">Pending</span></td>
-                                </tr>
-                                <tr>
-                                    <th scope="row"><a href="#">#2049</a></th>
-                                    <td>Ashleigh Langosh</td>
-                                    <td><a href="#" class="text-primary">At recusandae consectetur</a></td>
-                                    <td>$147</td>
-                                    <td><span class="badge bg-success">Approved</span></td>
-                                </tr>
-                                <tr>
-                                    <th scope="row"><a href="#">#2644</a></th>
-                                    <td>Angus Grady</td>
-                                    <td><a href="#" class="text-primar">Ut voluptatem id earum et</a></td>
-                                    <td>$67</td>
-                                    <td><span class="badge bg-danger">Rejected</span></td>
-                                </tr>
-                                <tr>
-                                    <th scope="row"><a href="#">#2644</a></th>
-                                    <td>Raheem Lehner</td>
-                                    <td><a href="#" class="text-primary">Sunt similique distinctio</a></td>
-                                    <td>$165</td>
-                                    <td><span class="badge bg-success">Approved</span></td>
-                                </tr>
+                                @for(var option : options )
+                                    <tr>
 
+                                        <th style="color:${option.getColor()};">${option.getId()}</th>
+
+                                        <td class="text-uppercase">${option.getSymbol()}</td>
+                                        <td>${option.getStartDateString()}</td>
+                                        <td>${option.getType()}</td>
+                                        <td>${option.getPositionValue()}</td>
+                                        <td>${option.getTradePrice()}</td>
+                                        <td>${option.getExpirationDateString()}</td>
+                                        <td>${option.getStatus()}</td>
+                                    </tr>
+                                @endfor
                                 </tbody>
                             </table>
 
@@ -352,8 +231,9 @@
             });
 
             $('#datatable tbody').on('click', 'tr', function() {
-                console.log('clicked: ' + table.row(this).data()[0]);
-                htmx.ajax('PUT', '/update-option/1', '#main');
+                const id = table.row(this).data()[0];
+                console.log('clicked optionId: ' + id);
+                htmx.ajax('GET', '/getOption/'+id, '#main');
             });
         }
 
@@ -409,7 +289,9 @@
             }).render();
         }
 
-        chart();
+
+        $("#chartCard").hide();
+        //chart();
         datatable();
     });
 </script>

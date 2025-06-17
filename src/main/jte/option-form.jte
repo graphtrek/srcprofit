@@ -1,16 +1,18 @@
 @import co.grtk.srcprofit.entity.OptionType
 @import co.grtk.srcprofit.entity.OptionStatus
+@import co.grtk.srcprofit.dto.OptionDto
+@import java.util.List
 
 @param co.grtk.srcprofit.dto.OptionDto optionDto
 @param String success
 @param String error
+@param List<OptionDto> optionHistory
 
 <div class="pagetitle">
-    <h1>New Option</h1>
+    <h1>Option Form</h1>
     <nav>
         <ol class="breadcrumb">
             <li class="breadcrumb-item"><a href="/">Home</a></li>
-            <li class="breadcrumb-item active">New Option</li>
         </ol>
     </nav>
 </div><!-- End Page Title -->
@@ -20,7 +22,12 @@
         <div class="col-lg-12">
             <div class="card">
                 <div class="card-body">
-                    <h5 class="card-title">Option Form</h5>
+                    @if(optionDto.getId() != null)
+                    <h5 class="card-title">Update Option #${optionDto.getId()}</h5>
+                    @else
+                        <h5 class="card-title">New Option</h5>
+                    @endif
+
                     @if(success != null)
                     <div id="success" class="alert alert-success alert-dismissible fade show" role="alert">
                         <i class="bi bi-check-circle me-1"></i>
@@ -46,7 +53,7 @@
 
                         <div class="col-md-2">
                             <label for="symbol" class="form-label">Symbol *</label>
-                            <input id="symbol" name="symbol" required type="text" class="form-control" value="${optionDto.getSymbol()}">
+                            <input id="symbol" name="symbol" required type="text" class="form-control text-uppercase" value="${optionDto.getSymbol()}">
                         </div>
 
                         <div class="col-md-2">
@@ -131,8 +138,8 @@
                             </fieldset>
                         </div>
                         <div class="col-md-2">
-                            <label for="RealizedProfitOrLoss" class="form-label">Realized P&L</label>
-                            <input id="RealizedProfitOrLoss" type="number" disabled class="form-control" value="${optionDto.getRealizedProfitOrLoss()}">
+                            <label for="realizedProfitOrLoss" class="form-label">Realized P&L</label>
+                            <input id="realizedProfitOrLoss" name="realizedProfitOrLoss" type="number" class="form-control" value="${optionDto.getRealizedProfitOrLoss()}">
                         </div>
 
                         <div class="text-center">
@@ -144,8 +151,51 @@
                 </div>
             </div>
         </div>
-
     </div>
+
+    @if(optionHistory != null)
+    <div class="row">
+        <div class="col-lg-12">
+            <div class="card">
+                <div class="card-body">
+                    <table id="datatable" class="table table-borderless">
+                        <thead>
+                        <tr>
+                            <th scope="col">#</th>
+                            <th scope="col">Symbol</th>
+                            <th scope="col">TradeDate</th>
+                            <th scope="col">Type</th>
+                            <th scope="col">Value</th>
+                            <th scope="col">TradePrice</th>
+                            <th scope="col">Expiration</th>
+                            <th scope="col">Status</th>
+                        </tr>
+                        </thead>
+                        <tbody>
+                        @for(var option : optionHistory )
+                            <tr style="cursor: pointer;" hx-get="/getOption/${option.getId()}"
+                                hx-trigger="click"
+                                hx-target="#main"
+                                hx-swap="innerHTML">
+                                <th style="color:${option.getColor()};">${option.getId()}</th>
+                                <td class="text-uppercase">${option.getSymbol()}</td>
+                                <td>${option.getStartDateString()}</td>
+                                <td>${option.getType()}</td>
+                                <td>${option.getPositionValue()}</td>
+                                <td>${option.getTradePrice()}</td>
+                                <td>${option.getExpirationDateString()}</td>
+                                <td>${option.getStatus()}</td>
+                            </tr>
+                        @endfor
+                        </tbody>
+                    </table>
+
+                </div>
+            </div>
+        </div>
+    </div>
+    @endif
+
 </section>
 
 <script>

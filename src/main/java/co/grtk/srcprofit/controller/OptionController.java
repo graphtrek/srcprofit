@@ -12,8 +12,9 @@ import org.springframework.util.MultiValueMap;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
+
+import java.util.List;
 
 @Controller
 public class OptionController {
@@ -21,6 +22,7 @@ public class OptionController {
     private static final Logger log = LoggerFactory.getLogger(OptionController.class);
     private static final String OPTION_FORM_PATH = "option-form";
     private static final String MODEL_ATTRIBUTE_DTO = "optionDto";
+    private static final String MODEL_ATTRIBUTE_OPTION_HISTORY = "optionHistory";
     private static final String MODEL_ATTRIBUTE_SUCCESS = "success";
     private static final String MODEL_ATTRIBUTE_ERROR = "error";
 
@@ -63,15 +65,18 @@ public class OptionController {
             model.addAttribute(MODEL_ATTRIBUTE_DTO, optionDto);
             model.addAttribute(MODEL_ATTRIBUTE_ERROR, e.getMessage());
         }
+        List<OptionDto> optionHistory = optionService.getOptionsBySymbol(optionDto.getSymbol());
+        model.addAttribute(MODEL_ATTRIBUTE_OPTION_HISTORY, optionHistory);
         return OPTION_FORM_PATH;
     }
 
-    @PutMapping(path="/update-option/{id}")
-    public String updateOption(@PathVariable Integer id, Model model) {
+    @GetMapping(path="/getOption/{id}")
+    public String updateOption(@PathVariable Long id, Model model) {
         log.info("updateOption formUpdate {}", id);
-        OptionDto optionDto = new OptionDto();
+        OptionDto optionDto = optionService.getOptionById(id);
+        List<OptionDto> optionHistory = optionService.getOptionsBySymbol(optionDto.getSymbol());
         model.addAttribute(MODEL_ATTRIBUTE_DTO, optionDto);
-        model.addAttribute(MODEL_ATTRIBUTE_SUCCESS, MODEL_ATTRIBUTE_SUCCESS);
+        model.addAttribute(MODEL_ATTRIBUTE_OPTION_HISTORY, optionHistory);
         log.info("Updated option {}", optionDto);
         return OPTION_FORM_PATH;
     }

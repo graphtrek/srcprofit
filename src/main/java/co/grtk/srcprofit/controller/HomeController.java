@@ -1,10 +1,14 @@
 package co.grtk.srcprofit.controller;
 
+import co.grtk.srcprofit.dto.OptionDto;
+import co.grtk.srcprofit.service.OptionService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
+
+import java.util.List;
 
 @Controller
 public class HomeController {
@@ -12,6 +16,12 @@ public class HomeController {
     private static final Logger log = LoggerFactory.getLogger(HomeController.class);
     private static final String INDEX_PAGE_PATH = "index";
     private static final String DASHBOARD_PAGE_PATH = "dashboard";
+
+    private final OptionService optionService;
+
+    public HomeController(OptionService optionService) {
+        this.optionService = optionService;
+    }
 
     @GetMapping("/")
     public String home(Model model) {
@@ -25,6 +35,8 @@ public class HomeController {
 
     @GetMapping("/dashboard")
     public String dashboard(Model model) {
+        List<OptionDto> optionDtos = optionService.getOptions();
+        model.addAttribute("options", optionDtos);
         return DASHBOARD_PAGE_PATH;
     }
 }

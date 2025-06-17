@@ -37,16 +37,17 @@ public class OptionMapper {
         Double tradePrice = parseDouble(formData.getFirst("tradePrice"), null);
         LocalDate expirationDate = toLocalDate(formData.getFirst("expirationDate"));
         String status = formData.getFirst("status");
-
+        String color = formData.getFirst("color");
+        Integer realizedProfitOrLoss = parseInt(formData.getFirst("realizedProfitOrLoss"), null);
 
         OptionDto optionDto = new OptionDto();
         optionDto.setId(id);
         optionDto.setParentId(parentId);
         optionDto.setSymbol(symbol);
         optionDto.setStartDateTime(startDate);
-
+        optionDto.setColor(color);
         optionDto.setAssetClass(AssetClass.OPTION);
-
+        optionDto.setRealizedProfitOrLoss(realizedProfitOrLoss);
         optionDto.setType(OptionType.fromCode(optionType));
 
         Optional.ofNullable(status)
