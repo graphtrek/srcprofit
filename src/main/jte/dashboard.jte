@@ -190,7 +190,7 @@
                                 </thead>
                                 <tbody>
                                 @for(var option : options )
-                                    <tr>
+                                    <tr style="cursor: pointer;">
 
                                         <th style="color:${option.getColor()};">${option.getId()}</th>
 
@@ -290,9 +290,33 @@
         }
 
 
+        function watchlist() {
+            $.get("/watchlist", function (data) {
+                if (data && Array.isArray(data)) {
+                    const conidList = data.map(i => i.conid).join(",");
+                    console.log("Összegyűjtött conid lista:", conidList);
+
+                    // 2. Második GET kérés conid-okkal
+                    // $.get("/", { conids: conidList }, function (detailsData) {
+                    //     console.log("Részletek:", detailsData);
+                    //     $("#responseDetails").text(JSON.stringify(detailsData, null, 2));
+                    // }).fail(function () {
+                    //     console.error("Hiba a részletek lekérésekor.");
+                    // });
+
+                } else {
+                    console.warn("Hibás watchlist struktúra.");
+                }
+            }).fail(function () {
+                console.error("Hiba a watchlist lekérésekor.");
+            });
+        }
+
         $("#chartCard").hide();
         //chart();
         datatable();
+        watchlist();
+
     });
 </script>
 

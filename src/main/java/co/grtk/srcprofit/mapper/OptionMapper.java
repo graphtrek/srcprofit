@@ -117,7 +117,7 @@ public class OptionMapper {
         }
         try {
             return Optional.of(Long.parseLong(s)).orElse(defaultValue);
-        } catch (NumberFormatException _) {
+        } catch (NumberFormatException e) {
             return defaultValue;
         }
     }
@@ -128,7 +128,7 @@ public class OptionMapper {
         }
         try {
             return Optional.of(Integer.parseInt(s)).orElse(defaultValue);
-        } catch (NumberFormatException _) {
+        } catch (NumberFormatException e) {
             return defaultValue;
         }
     }
@@ -139,7 +139,7 @@ public class OptionMapper {
         }
         try {
             return Optional.of(Double.parseDouble(s)).orElse(defaultValue);
-        } catch (NumberFormatException _) {
+        } catch (NumberFormatException e) {
             return defaultValue;
         }
     }
@@ -170,7 +170,7 @@ public class OptionMapper {
                 .flatMap(s -> {
                     try {
                         return Optional.of(LocalDateTime.parse(s));
-                    } catch (DateTimeParseException _) {
+                    } catch (DateTimeParseException e) {
                         return Optional.empty();
                     }
                 });
@@ -183,7 +183,7 @@ public class OptionMapper {
                 .flatMap(s -> {
                     try {
                         return Optional.of(LocalDate.parse(s));
-                    } catch (DateTimeParseException _) {
+                    } catch (DateTimeParseException e) {
                         return Optional.empty();
                     }
                 });
