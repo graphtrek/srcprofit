@@ -16,6 +16,7 @@ public class HomeController {
     private static final Logger log = LoggerFactory.getLogger(HomeController.class);
     private static final String INDEX_PAGE_PATH = "index";
     private static final String DASHBOARD_PAGE_PATH = "dashboard";
+    private static final String IBKR_LOGIN_PAGE_PATH = "ibkr-login";
 
     private final OptionService optionService;
 
@@ -33,6 +34,10 @@ public class HomeController {
         return INDEX_PAGE_PATH;
     }
 
+    @GetMapping("/ibkrLogin")
+    public String ibkrLogin(Model model) {
+        return IBKR_LOGIN_PAGE_PATH;
+    }
     @GetMapping("/dashboard")
     public String dashboard(Model model) {
         List<OptionDto> optionDtos = optionService.getOptions();

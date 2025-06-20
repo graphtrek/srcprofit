@@ -89,10 +89,14 @@ public class OptionMapper {
                         .atStartOfDay());
         dto.setDaysLeft(daysLeft);
 
-        if (dto.getTradePrice() == null || dto.getMarketValue() == null || dto.getPositionValue() == null) {
+        if (dto.getPositionValue() == null) {
             return;
         }
-        
+
+        if(dto.getTradePrice() == null)
+            dto.setTradePrice(dto.getPositionValue() * 0.0014 * daysBetween);
+
+
         float roiBasePrice = dto.getTradePrice().floatValue();
         if(dto.getFee() != null) 
             roiBasePrice -= dto.getFee().floatValue();
@@ -103,6 +107,8 @@ public class OptionMapper {
         
         dto.setAnnualizedRoiPercent(Math.round(roiPercent));
 
+        if(dto.getMarketValue() == null )
+            return;
         BigDecimal tradeValue = BigDecimal.valueOf(dto.getPositionValue());
         double marketMean =  dto.getMarketValue(); // jelenlegi vagy várt érték
         double dailyStdDev = marketMean * 0.05;  // napi szórás

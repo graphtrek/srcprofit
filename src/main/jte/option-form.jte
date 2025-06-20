@@ -81,8 +81,8 @@
                             <input id="positionValue" name="positionValue" type="number" required class="form-control" value="${optionDto.getPositionValue()}">
                         </div>
                         <div class="col-md-2">
-                            <label for="tradePrice" class="form-label">Trade Price *</label>
-                            <input id="tradePrice" name="tradePrice" type="number" required class="form-control" value="${optionDto.getTradePrice()}">
+                            <label for="tradePrice" class="form-label">Trade Price</label>
+                            <input id="tradePrice" name="tradePrice" type="number" class="form-control" value="${optionDto.getTradePrice()}">
                         </div>
 
                         <div class="col-md-2">
@@ -145,6 +145,9 @@
                         <div class="text-center">
                             <button class="btn btn-primary">Submit</button>
                             <button type="reset" class="btn btn-secondary">Reset</button>
+                            <button id="chartButton" type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#ExtralargeModal">
+                                Chart
+                            </button>
                         </div>
                     </form>
 
@@ -153,11 +156,31 @@
         </div>
     </div>
 
+    <div class="modal fade" id="ExtralargeModal" tabindex="-1">
+        <div class="modal-dialog modal-xl">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">Extra Large Modal</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <img id="chartImg" style="width: 100%" src="#" />
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                </div>
+            </div>
+        </div>
+    </div><!-- End Extra Large Modal-->
+
+
     @if(optionHistory != null)
     <div class="row">
         <div class="col-lg-12">
             <div class="card">
                 <div class="card-body">
+                    <h5 class="card-title">Positions <span></span></h5>
+
                     <table id="datatable" class="table table-borderless">
                         <thead>
                         <tr>
@@ -166,31 +189,46 @@
                             <th scope="col">TradeDate</th>
                             <th scope="col">Type</th>
                             <th scope="col">Value</th>
+                            <th scope="col">Market Value</th>
                             <th scope="col">TradePrice</th>
                             <th scope="col">Expiration</th>
+                            <th scope="col">Days</th>
+                            <th scope="col">P.O.P %</th>
+                            <th scope="col">R.O.I %</th>
                             <th scope="col">Status</th>
                         </tr>
                         </thead>
                         <tbody>
                         @for(var option : optionHistory )
-                            <tr style="cursor: pointer;" hx-get="/getOption/${option.getId()}"
-                                hx-trigger="click"
-                                hx-target="#main"
-                                hx-swap="innerHTML">
+                            <tr style="cursor: pointer;">
+
                                 <th style="color:${option.getColor()};">${option.getId()}</th>
+
                                 <td class="text-uppercase">${option.getSymbol()}</td>
                                 <td>${option.getStartDateString()}</td>
                                 <td>${option.getType()}</td>
                                 <td>${option.getPositionValue()}</td>
+                                <td>${option.getMarketValue()}</td>
                                 <td>${option.getTradePrice()}</td>
                                 <td>${option.getExpirationDateString()}</td>
-                                <td>${option.getStatus()}</td>
+                                <td>${option.getDaysBetween()}</td>
+                                <td>${option.getProbability()}</td>
+                                <td>${option.getAnnualizedRoiPercent()}</td>
+                                @if(OptionStatus.PENDING.equals(option.getStatus()))
+                                    <td class="badge bg-warning">${option.getStatus()}</td>
+                                @elseif(OptionStatus.CLOSED.equals(option.getStatus()))
+                                    <td class="badge bg-success">${option.getStatus()}</td>
+                                @else
+                                    <td class="badge bg-danger">${option.getStatus()}</td>
+                                @endif
+
                             </tr>
                         @endfor
                         </tbody>
                     </table>
 
                 </div>
+
             </div>
         </div>
     </div>
@@ -202,5 +240,27 @@
     $( document ).ready(function() {
         console.log( "ready!" );
         $('#success').fadeOut(1500);
+
+        const imgSrc = "https://charts2-node.finviz.com/chart.ashx?cs=l&t=symbol&tf=d&s=linear&ct=candle_stick&tm=d&o[0][ot]=sma&o[0][op]=50&o[0][oc]=FF8F33C6&o[1][ot]=sma&o[1][op]=200&o[1][oc]=DCB3326D&o[2][ot]=sma&o[2][op]=20&o[2][oc]=DC32B363&o[3][ot]=patterns&o[3][op]=&o[3][oc]=000";
+
+        $('#symbol').on("change", function() {
+            const newSymbol = $(this).val();
+            if(newSymbol) {
+                $('#chartImg').attr('src', imgSrc.replace("symbol",newSymbol));
+                $('#chartButton').prop("disabled", false);
+            } else {
+                $("#chartButton").prop("disabled", true);
+            }
+        });
+
+
+        const symbol = $("#symbol").val();
+        if(!symbol){
+            $("#chartButton").prop("disabled", true);
+        } else {
+            $('#chartImg').attr('src', imgSrc.replace("symbol",symbol));
+            $('#chartButton').prop("disabled", false);
+        }
+
     });
 </script>

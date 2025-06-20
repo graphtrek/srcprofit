@@ -6,18 +6,19 @@ import co.grtk.srcprofit.entity.OptionType;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.time.temporal.ChronoUnit;
 import java.util.Objects;
 
 public class OptionDto {
 
     Long id;
     Long parentId;
-    LocalDateTime startDateTime;
+    LocalDateTime startDateTime = LocalDateTime.now();
     LocalDate expirationDate;
     String note;
     String color = "black";
     String symbol;
-    Integer quantity;
+    Integer quantity = 1;
     Double tradePrice;
     Double positionValue;
     Double fee;
@@ -32,7 +33,7 @@ public class OptionDto {
     OptionStatus status;
 
     public String getStartDateTimeString() {
-        return Objects.isNull(startDateTime) ? "" : startDateTime.toString();
+        return Objects.isNull(startDateTime) ? "" : startDateTime.truncatedTo(ChronoUnit.SECONDS).toString();
     }
 
     public String getStartDateString() {

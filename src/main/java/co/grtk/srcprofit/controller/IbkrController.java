@@ -1,7 +1,6 @@
 package co.grtk.srcprofit.controller;
 
 import co.grtk.srcprofit.dto.IbkrInstrumentDto;
-import co.grtk.srcprofit.dto.IbkrWatchlistDto;
 import co.grtk.srcprofit.service.IbkrService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;

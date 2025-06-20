@@ -90,6 +90,13 @@
           <span>New Option</span>
         </a>
       </li><!-- End Register Page Nav -->
+      <li class="nav-item">
+        <a class="nav-link collapsed" href="https://localhost:5055/sso/Login" target="_blank">
+          <i class="bi bi-card-list"></i>
+          <span>Ibkr Login</span>
+        </a>
+      </li><!-- End Ibkr Login Page Nav -->
+
 
       <li class="nav-item">
         <a class="nav-link collapsed" data-bs-target="#charts-nav" data-bs-toggle="collapse" href="#" aria-expanded="false">
@@ -125,6 +132,8 @@
         hx-on::afterRequest="console.log('index');">
 
   </main><!-- End #main -->
+
+
 
   <!-- ======= Footer ======= -->
   <footer id="footer" class="footer">

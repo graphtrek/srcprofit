@@ -1,4 +1,6 @@
 @import co.grtk.srcprofit.dto.OptionDto
+@import co.grtk.srcprofit.entity.OptionStatus
+
 @import java.util.List
 @param List<OptionDto> options
 
@@ -173,7 +175,7 @@
                         </div>
 
                         <div class="card-body">
-                            <h5 class="card-title">Recent Sales <span>| Today</span></h5>
+                            <h5 class="card-title">Positions <span></span></h5>
 
                             <table id="datatable" class="table table-borderless">
                                 <thead>
@@ -183,8 +185,12 @@
                                     <th scope="col">TradeDate</th>
                                     <th scope="col">Type</th>
                                     <th scope="col">Value</th>
+                                    <th scope="col">Market Value</th>
                                     <th scope="col">TradePrice</th>
                                     <th scope="col">Expiration</th>
+                                    <th scope="col">Days</th>
+                                    <th scope="col">P.O.P %</th>
+                                    <th scope="col">R.O.I %</th>
                                     <th scope="col">Status</th>
                                 </tr>
                                 </thead>
@@ -198,9 +204,20 @@
                                         <td>${option.getStartDateString()}</td>
                                         <td>${option.getType()}</td>
                                         <td>${option.getPositionValue()}</td>
+                                        <td>${option.getMarketValue()}</td>
                                         <td>${option.getTradePrice()}</td>
                                         <td>${option.getExpirationDateString()}</td>
-                                        <td>${option.getStatus()}</td>
+                                        <td>${option.getDaysBetween()}</td>
+                                        <td>${option.getProbability()}</td>
+                                        <td>${option.getAnnualizedRoiPercent()}</td>
+                                        @if(OptionStatus.PENDING.equals(option.getStatus()))
+                                        <td class="badge bg-warning">${option.getStatus()}</td>
+                                        @elseif(OptionStatus.CLOSED.equals(option.getStatus()))
+                                        <td class="badge bg-success">${option.getStatus()}</td>
+                                        @else
+                                        <td class="badge bg-danger">${option.getStatus()}</td>
+                                        @endif
+
                                     </tr>
                                 @endfor
                                 </tbody>
