@@ -2,7 +2,7 @@ package co.grtk.srcprofit.dto;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 
-public class IbkrInstrumentDto {
+public class InstrumentDto {
     @JsonProperty("ST")
     private String ST;
     @JsonProperty("C")

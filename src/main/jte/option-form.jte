@@ -52,8 +52,8 @@
                         <input hidden name="parentId" id="parentId" type="number" value="${optionDto.getParentId()}" />
 
                         <div class="col-md-2">
-                            <label for="symbol" class="form-label">Symbol *</label>
-                            <input id="symbol" name="symbol" required type="text" class="form-control text-uppercase" value="${optionDto.getSymbol()}">
+                            <label for="ticker" class="form-label">Symbol *</label>
+                            <input id="ticker" name="ticker" required type="text" class="form-control text-uppercase" value="${optionDto.getTicker()}">
                         </div>
 
                         <div class="col-md-2">
@@ -69,8 +69,8 @@
                             </select>
                         </div>
                         <div class="col-md-3">
-                            <label for="startDate" class="form-label">Trade Date *</label>
-                            <input id="startDate" name="startDate" type="datetime-local" required class="form-control" value="${optionDto.getStartDateTimeString()}">
+                            <label for="tradeDateTime" class="form-label">Trade Date *</label>
+                            <input id="tradeDateTime" name="startDate" type="datetime-local" required class="form-control" value="${optionDto.getTradeDateTimeString()}">
                         </div>
                         <div class="col-md-1">
                             <label for="fee" class="form-label">Fee</label>
@@ -82,7 +82,7 @@
                         </div>
                         <div class="col-md-2">
                             <label for="tradePrice" class="form-label">Trade Price</label>
-                            <input id="tradePrice" name="tradePrice" type="number" class="form-control" value="${optionDto.getTradePrice()}">
+                            <input id="tradePrice" name="tradePrice" type="number" class="form-control" step="0.01" value="${optionDto.getTradePrice()}">
                         </div>
 
                         <div class="col-md-2">
@@ -204,8 +204,8 @@
 
                                 <th style="color:${option.getColor()};">${option.getId()}</th>
 
-                                <td class="text-uppercase">${option.getSymbol()}</td>
-                                <td>${option.getStartDateString()}</td>
+                                <td class="text-uppercase">${option.getTicker()}</td>
+                                <td>${option.getTradeDateString()}</td>
                                 <td>${option.getType()}</td>
                                 <td>${option.getPositionValue()}</td>
                                 <td>${option.getMarketValue()}</td>
@@ -241,12 +241,12 @@
         console.log( "ready!" );
         $('#success').fadeOut(1500);
 
-        const imgSrc = "https://charts2-node.finviz.com/chart.ashx?cs=l&t=symbol&tf=d&s=linear&ct=candle_stick&tm=d&o[0][ot]=sma&o[0][op]=50&o[0][oc]=FF8F33C6&o[1][ot]=sma&o[1][op]=200&o[1][oc]=DCB3326D&o[2][ot]=sma&o[2][op]=20&o[2][oc]=DC32B363&o[3][ot]=patterns&o[3][op]=&o[3][oc]=000";
+        const imgSrc = "https://charts2-node.finviz.com/chart.ashx?cs=l&t=ticker&tf=d&s=linear&ct=candle_stick&tm=d&o[0][ot]=sma&o[0][op]=50&o[0][oc]=FF8F33C6&o[1][ot]=sma&o[1][op]=200&o[1][oc]=DCB3326D&o[2][ot]=sma&o[2][op]=20&o[2][oc]=DC32B363&o[3][ot]=patterns&o[3][op]=&o[3][oc]=000";
 
-        $('#symbol').on("change", function() {
+        $('#ticker').on("change", function() {
             const newSymbol = $(this).val();
             if(newSymbol) {
-                $('#chartImg').attr('src', imgSrc.replace("symbol",newSymbol));
+                $('#chartImg').attr('src', imgSrc.replace("ticker",newSymbol));
                 $('#chartButton').prop("disabled", false);
             } else {
                 $("#chartButton").prop("disabled", true);
@@ -254,11 +254,11 @@
         });
 
 
-        const symbol = $("#symbol").val();
-        if(!symbol){
+        const ticker = $("#ticker").val();
+        if(!ticker){
             $("#chartButton").prop("disabled", true);
         } else {
-            $('#chartImg').attr('src', imgSrc.replace("symbol",symbol));
+            $('#chartImg').attr('src', imgSrc.replace("ticker",ticker));
             $('#chartButton').prop("disabled", false);
         }
 

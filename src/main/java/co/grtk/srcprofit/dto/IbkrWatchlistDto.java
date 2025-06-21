@@ -12,7 +12,7 @@ public class IbkrWatchlistDto {
     @JsonProperty("readOnly")
     private boolean readOnly;
 
-    private List<IbkrInstrumentDto> instruments;
+    private List<InstrumentDto> instruments;
 
     public String getId() {
         return id;
@@ -46,11 +46,11 @@ public class IbkrWatchlistDto {
         this.readOnly = readOnly;
     }
 
-    public List<IbkrInstrumentDto> getInstruments() {
+    public List<InstrumentDto> getInstruments() {
         return instruments;
     }
 
-    public void setInstruments(List<IbkrInstrumentDto> instruments) {
+    public void setInstruments(List<InstrumentDto> instruments) {
         this.instruments = instruments;
     }
 }

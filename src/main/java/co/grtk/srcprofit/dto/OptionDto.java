@@ -13,11 +13,11 @@ public class OptionDto {
 
     Long id;
     Long parentId;
-    LocalDateTime startDateTime = LocalDateTime.now();
+    LocalDateTime tradeDateTime = LocalDateTime.now();
     LocalDate expirationDate;
     String note;
     String color = "black";
-    String symbol;
+    String ticker;
     Integer quantity = 1;
     Double tradePrice;
     Double positionValue;
@@ -28,16 +28,16 @@ public class OptionDto {
     Integer probability;
     Integer daysBetween;
     Integer daysLeft;
-    AssetClass assetClass;
+    AssetClass assetClass = AssetClass.OPT;
     OptionType type;
     OptionStatus status;
 
-    public String getStartDateTimeString() {
-        return Objects.isNull(startDateTime) ? "" : startDateTime.truncatedTo(ChronoUnit.SECONDS).toString();
+    public String getTradeDateTimeString() {
+        return Objects.isNull(tradeDateTime) ? "" : tradeDateTime.truncatedTo(ChronoUnit.SECONDS).toString();
     }
 
-    public String getStartDateString() {
-        return Objects.isNull(startDateTime) ? "" : startDateTime.toLocalDate().toString();
+    public String getTradeDateString() {
+        return Objects.isNull(tradeDateTime) ? "" : tradeDateTime.toLocalDate().toString();
     }
 
 
@@ -53,12 +53,12 @@ public class OptionDto {
         this.id = id;
     }
 
-    public LocalDateTime getStartDateTime() {
-        return startDateTime;
+    public LocalDateTime getTradeDateTime() {
+        return tradeDateTime;
     }
 
-    public void setStartDateTime(LocalDateTime startDateTime) {
-        this.startDateTime = startDateTime;
+    public void setTradeDateTime(LocalDateTime tradeDateTime) {
+        this.tradeDateTime = tradeDateTime;
     }
 
     public LocalDate getExpirationDate() {
@@ -85,12 +85,12 @@ public class OptionDto {
         this.color = color;
     }
 
-    public String getSymbol() {
-        return symbol;
+    public String getTicker() {
+        return ticker;
     }
 
-    public void setSymbol(String symbol) {
-        this.symbol = symbol;
+    public void setTicker(String ticker) {
+        this.ticker = ticker;
     }
 
     public Double getTradePrice() {
@@ -209,11 +209,11 @@ public class OptionDto {
     public String toString() {
         return "OptionDto{" +
                 "id=" + id +
-                ", startDateTime=" + startDateTime +
+                ", tradeDateTime=" + tradeDateTime +
                 ", expirationDate=" + expirationDate +
                 ", note='" + note + '\'' +
                 ", color='" + color + '\'' +
-                ", symbol='" + symbol + '\'' +
+                ", ticker='" + ticker + '\'' +
                 ", quantity=" + quantity +
                 ", tradePrice=" + tradePrice +
                 ", positionValue=" + positionValue +

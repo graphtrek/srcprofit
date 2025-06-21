@@ -25,10 +25,10 @@ public class OptionMapper {
 
         Long id = parseLong(formData.getFirst("id"), null);
         Long parentId = parseLong(formData.getFirst("parentId"), null);
-        String symbol = formData.getFirst("symbol");
+        String ticker = formData.getFirst("ticker");
         LocalDateTime startDate = toLocalDateTime(formData.getFirst("startDate"));
 
-        String optionType = formData.getFirst("optionType");
+        String optionType = formData.getFirst("type");
         String note = formData.getFirst("note");
         Integer quantity = parseInt(formData.getFirst("quantity"), null);
         Double fee = parseDouble(formData.getFirst("fee"), null);
@@ -43,10 +43,10 @@ public class OptionMapper {
         OptionDto optionDto = new OptionDto();
         optionDto.setId(id);
         optionDto.setParentId(parentId);
-        optionDto.setSymbol(symbol);
-        optionDto.setStartDateTime(startDate);
+        optionDto.setTicker(ticker);
+        optionDto.setTradeDateTime(startDate);
         optionDto.setColor(color);
-        optionDto.setAssetClass(AssetClass.OPTION);
+        optionDto.setAssetClass(AssetClass.OPT);
         optionDto.setRealizedProfitOrLoss(realizedProfitOrLoss);
         optionDto.setType(OptionType.fromCode(optionType));
 
@@ -69,12 +69,12 @@ public class OptionMapper {
 
     public static void calculateAndSetAnnualizedRoi(OptionDto dto) {
         if (dto == null ||
-                dto.getStartDateTime() == null || dto.getExpirationDate() == null) {
+                dto.getTradeDateTime() == null || dto.getExpirationDate() == null) {
             return;
         }
 
         int daysBetween =
-                (int) ChronoUnit.DAYS.between(dto.getStartDateTime(),dto.getExpirationDate()
+                (int) ChronoUnit.DAYS.between(dto.getTradeDateTime(),dto.getExpirationDate()
                         .plusDays(1)
                         .atStartOfDay());
         if (daysBetween <= 0) {
@@ -94,7 +94,7 @@ public class OptionMapper {
         }
 
         if(dto.getTradePrice() == null)
-            dto.setTradePrice(dto.getPositionValue() * 0.0014 * daysBetween);
+           dto.setTradePrice(Math.round(dto.getPositionValue() * 0.0014 * daysBetween * 100.0) / 100.0);
 
 
         float roiBasePrice = dto.getTradePrice().floatValue();
@@ -195,4 +195,6 @@ public class OptionMapper {
                 });
         return safeStartDate.orElse(null);
     }
+
+
 }

@@ -38,6 +38,7 @@ public class HomeController {
     public String ibkrLogin(Model model) {
         return IBKR_LOGIN_PAGE_PATH;
     }
+
     @GetMapping("/dashboard")
     public String dashboard(Model model) {
         List<OptionDto> optionDtos = optionService.getOptions();

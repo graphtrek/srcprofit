@@ -1,9 +1,9 @@
 package co.grtk.srcprofit.service;
 
-import co.grtk.srcprofit.dto.IbkrInstrumentDto;
 import co.grtk.srcprofit.dto.IbkrWatchlistDto;
-import co.grtk.srcprofit.entity.IbkrInstrumentEntity;
-import co.grtk.srcprofit.repository.IbkrInstrumentRepository;
+import co.grtk.srcprofit.dto.InstrumentDto;
+import co.grtk.srcprofit.entity.InstrumentEntity;
+import co.grtk.srcprofit.repository.InstrumentRepository;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import jakarta.transaction.Transactional;
@@ -26,16 +26,21 @@ public class IbkrService {
 
     private final RestClient ibkrRestClient;
     private final ObjectMapper objectMapper;
-    private final IbkrInstrumentRepository ibkrInstrumentRepository;
+    private final InstrumentRepository instrumentRepository;
+    private final OptionService optionService;
 
-    public IbkrService(RestClient ibkrRestClient, ObjectMapper objectMapper, IbkrInstrumentRepository ibkrInstrumentRepository) {
+    public IbkrService(RestClient ibkrRestClient,
+                       ObjectMapper objectMapper,
+                       InstrumentRepository instrumentRepository,
+                       OptionService optionService) {
         this.ibkrRestClient = ibkrRestClient;
         this.objectMapper = objectMapper;
-        this.ibkrInstrumentRepository = ibkrInstrumentRepository;
+        this.instrumentRepository = instrumentRepository;
+        this.optionService = optionService;
     }
 
     @Transactional
-    public List<IbkrInstrumentDto> refreshWatchlist() {
+    public List<InstrumentDto> refreshWatchlist() {
 
         IbkrWatchlistDto ibkrWatchlistDto =ibkrRestClient.get()
                 .uri(uriBuilder -> uriBuilder
@@ -51,17 +56,18 @@ public class IbkrService {
         log.info("refreshWatchlist /iserver/watchlist returned {}",(ibkrWatchlistDto != null) ? ibkrWatchlistDto.getName() : null);
 
         Objects.requireNonNull(ibkrWatchlistDto).getInstruments().forEach(instrument -> {
-            IbkrInstrumentEntity ibkrInstrumentEntity = objectMapper.convertValue(instrument, IbkrInstrumentEntity.class);
-            ibkrInstrumentRepository.save(ibkrInstrumentEntity);
+            InstrumentEntity instrumentEntity = objectMapper.convertValue(instrument, InstrumentEntity.class);
+            instrumentRepository.save(instrumentEntity);
         });
 
         return loadWatchList();
     }
 
-    public List<IbkrInstrumentDto> loadWatchList() {
-        List<IbkrInstrumentEntity> ibkrInstrumentEntities = ibkrInstrumentRepository.findAll(Sort.by(Sort.Direction.ASC, "ticker"));
+    public List<InstrumentDto> loadWatchList() {
+        List<InstrumentEntity> ibkrInstrumentEntities = instrumentRepository.findAll(Sort.by(Sort.Direction.ASC, "ticker"));
         return Optional.of(ibkrInstrumentEntities)
-                .map(entities -> objectMapper.convertValue(entities, new TypeReference<List<IbkrInstrumentDto>>() {}))
+                .map(entities -> objectMapper.convertValue(entities, new TypeReference<List<InstrumentDto>>() {}))
                 .orElse(Collections.emptyList());
     }
+
 }

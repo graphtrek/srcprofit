@@ -1,7 +1,7 @@
 package co.grtk.srcprofit.entity;
 
 public enum AssetClass {
-    STOCK("STK"), OPTION("OPT"),  CASH("CASH");
+    STK("STK"), OPT("OPT"),  CASH("CASH");
 
     private final String code;
 
@@ -13,6 +13,6 @@ public enum AssetClass {
         for (AssetClass s : values()) {
             if (s.code.equals(code)) return s;
         }
-        return STOCK;
+        return STK;
     }
 }

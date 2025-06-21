@@ -200,8 +200,8 @@
 
                                         <th style="color:${option.getColor()};">${option.getId()}</th>
 
-                                        <td class="text-uppercase">${option.getSymbol()}</td>
-                                        <td>${option.getStartDateString()}</td>
+                                        <td class="text-uppercase">${option.getTicker()}</td>
+                                        <td>${option.getTradeDateString()}</td>
                                         <td>${option.getType()}</td>
                                         <td>${option.getPositionValue()}</td>
                                         <td>${option.getMarketValue()}</td>

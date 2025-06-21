@@ -65,7 +65,7 @@ public class OptionController {
             model.addAttribute(MODEL_ATTRIBUTE_DTO, optionDto);
             model.addAttribute(MODEL_ATTRIBUTE_ERROR, e.getMessage());
         }
-        List<OptionDto> optionHistory = optionService.getOptionsBySymbol(optionDto.getSymbol());
+        List<OptionDto> optionHistory = optionService.getOptionsByTicker(optionDto.getTicker());
         model.addAttribute(MODEL_ATTRIBUTE_OPTION_HISTORY, optionHistory);
         return OPTION_FORM_PATH;
     }
@@ -74,7 +74,7 @@ public class OptionController {
     public String updateOption(@PathVariable Long id, Model model) {
         log.info("updateOption formUpdate {}", id);
         OptionDto optionDto = optionService.getOptionById(id);
-        List<OptionDto> optionHistory = optionService.getOptionsBySymbol(optionDto.getSymbol());
+        List<OptionDto> optionHistory = optionService.getOptionsByTicker(optionDto.getTicker());
         model.addAttribute(MODEL_ATTRIBUTE_DTO, optionDto);
         model.addAttribute(MODEL_ATTRIBUTE_OPTION_HISTORY, optionHistory);
         log.info("Updated option {}", optionDto);
