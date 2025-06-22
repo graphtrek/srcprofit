@@ -26,7 +26,7 @@
   <link href="//cdnjs.cloudflare.com/ajax/libs/remixicon/4.6.0/remixicon.min.css" rel="stylesheet" integrity="sha512-XcIsjKMcuVe0Ucj/xgIXQnytNwBttJbNjltBV18IOnru2lDPe9KRRyvCXw6Y5H415vbBLRm8+q6fmLUU7DfO6Q==" crossorigin="anonymous" referrerpolicy="no-referrer" />
 
   <link href="//cdn.datatables.net/2.3.2/css/dataTables.bootstrap5.css" rel="stylesheet">
-
+  <link href="//cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/5.3.3/css/bootstrap.min.css" rel="stylesheet">
   <!-- Template Main CSS File -->
   <link href="assets/css/style.css" rel="stylesheet">
   <script src="//unpkg.com/htmx.org@1.9.10"></script>
@@ -46,6 +46,17 @@
       <i class="bi bi-list toggle-sidebar-btn"></i>
     </div><!-- End Logo -->
 
+    <div class="search-bar">
+      <form class="search-form d-flex align-items-center"
+            hx-post="/getPositionsFromDate"
+            hx-trigger="submit"
+            hx-target="#main"
+            hx-swap="innerHTML"
+            hx-on::afterRequest="console.log('dashboard');">
+        <input type="date" name="fromDate" placeholder="Search" title="Enter search keyword">
+        <button type="submit" title="Search"><i class="bi bi-search"></i></button>
+      </form>
+    </div>
 
     <nav class="header-nav ms-auto">
       <ul class="d-flex align-items-center">
@@ -81,13 +92,24 @@
       </li><!-- End Dashboard Nav -->
       <li class="nav-item">
         <a class="nav-link collapsed" href="#"
-           hx-get="/option"
+           hx-get="/positions"
            hx-trigger="click"
            hx-target="#main"
            hx-swap="innerHTML"
-           hx-on::afterRequest="console.log('option')">
+           hx-on::afterRequest="console.log('positions')">
           <i class="bi bi-card-list"></i>
-          <span>New Option</span>
+          <span>Positions</span>
+        </a>
+      </li>
+      <li class="nav-item">
+        <a class="nav-link collapsed" href="#"
+           hx-get="/positionForm"
+           hx-trigger="click"
+           hx-target="#main"
+           hx-swap="innerHTML"
+           hx-on::afterRequest="console.log('positionForm')">
+          <i class="bi bi-card-list"></i>
+          <span>New Position</span>
         </a>
       </li><!-- End Register Page Nav -->
       <li class="nav-item">
@@ -98,6 +120,7 @@
       </li><!-- End Ibkr Login Page Nav -->
 
 
+<%--
       <li class="nav-item">
         <a class="nav-link collapsed" data-bs-target="#charts-nav" data-bs-toggle="collapse" href="#" aria-expanded="false">
           <i class="bi bi-bar-chart"></i><span>Charts</span><i class="bi bi-chevron-down ms-auto"></i>
@@ -120,6 +143,7 @@
           </li>
         </ul>
       </li>
+--%>
 
     </ul>
 

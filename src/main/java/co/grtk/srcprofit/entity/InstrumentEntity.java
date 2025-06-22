@@ -25,9 +25,9 @@ import java.util.List;
 @Table(
         name = "INSTRUMENT",
         indexes = {
-                @Index(name = "ticker_idx", columnList = "ticker"),
-                @Index(name = "conid_idx", columnList = "conid"),
-                @Index(name = "name_idx", columnList = "name")
+                @Index(name = "instr_ticker_idx", columnList = "ticker"),
+                @Index(name = "instr_conid_idx", columnList = "conid"),
+                @Index(name = "instr_name_idx", columnList = "name")
         }
 
 )

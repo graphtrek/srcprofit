@@ -1,5 +1,6 @@
 package co.grtk.srcprofit.controller;
 
+import co.grtk.srcprofit.dto.IbkrWatchlistDto;
 import co.grtk.srcprofit.dto.InstrumentDto;
 import co.grtk.srcprofit.service.IbkrService;
 import co.grtk.srcprofit.service.OptionService;
@@ -25,11 +26,8 @@ public class IbkrController {
 
     @GetMapping("/watchlist")
     public  List<InstrumentDto> watchlist() {
-        List<InstrumentDto> instrumentDtoList = ibkrService.loadWatchList();
-        if (instrumentDtoList.isEmpty()) {
-            instrumentDtoList = ibkrService.refreshWatchlist();
-        }
-        return instrumentDtoList;
+        IbkrWatchlistDto ibkrWatchlistDto  = ibkrService.getIbkrWatchlist();
+        return ibkrService.refreshWatchlist(ibkrWatchlistDto);
     }
 
     @GetMapping("/import")

@@ -39,10 +39,8 @@ public class IbkrService {
         this.optionService = optionService;
     }
 
-    @Transactional
-    public List<InstrumentDto> refreshWatchlist() {
-
-        IbkrWatchlistDto ibkrWatchlistDto =ibkrRestClient.get()
+    public IbkrWatchlistDto getIbkrWatchlist() {
+        IbkrWatchlistDto ibkrWatchlistDto = ibkrRestClient.get()
                 .uri(uriBuilder -> uriBuilder
                         .path("/iserver/watchlist")
                         .queryParam("id", 100)
@@ -51,15 +49,17 @@ public class IbkrService {
                 .retrieve()
                 .body(new ParameterizedTypeReference<IbkrWatchlistDto>() {
                 });
+        log.info("getIbkrWatchlist /iserver/watchlist returned {}",
+                (ibkrWatchlistDto != null) ? ibkrWatchlistDto.getName() : null);
+        return ibkrWatchlistDto;
+    }
 
-
-        log.info("refreshWatchlist /iserver/watchlist returned {}",(ibkrWatchlistDto != null) ? ibkrWatchlistDto.getName() : null);
-
-        Objects.requireNonNull(ibkrWatchlistDto).getInstruments().forEach(instrument -> {
-            InstrumentEntity instrumentEntity = objectMapper.convertValue(instrument, InstrumentEntity.class);
+    @Transactional
+    public List<InstrumentDto> refreshWatchlist(IbkrWatchlistDto ibkrWatchlistDto) {
+        Objects.requireNonNull(ibkrWatchlistDto).getInstruments().forEach(instrumentDto -> {
+            InstrumentEntity instrumentEntity = objectMapper.convertValue(instrumentDto, InstrumentEntity.class);
             instrumentRepository.save(instrumentEntity);
         });
-
         return loadWatchList();
     }
 

@@ -16,7 +16,7 @@ import org.hibernate.annotations.SourceType;
 import org.hibernate.annotations.UpdateTimestamp;
 
 import java.time.Instant;
-import java.time.LocalDateTime;
+import java.time.LocalDate;
 
 @MappedSuperclass
 public abstract class BaseAsset {
@@ -26,16 +26,15 @@ public abstract class BaseAsset {
     private Long id;
 
     @JsonIgnore
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "instrumentId", nullable = false)
     private InstrumentEntity instrument;
 
     @Enumerated(EnumType.STRING)
-    private AssetClass assetClass = AssetClass.OPT;
+    private AssetClass assetClass;
 
     @Column(nullable = false)
-    LocalDateTime tradeDateTime;
-
+    LocalDate tradeDate;
 
     @Column(nullable = false)
     Integer quantity;
@@ -79,12 +78,12 @@ public abstract class BaseAsset {
         this.assetClass = assetClass;
     }
 
-    public LocalDateTime getTradeDateTime() {
-        return tradeDateTime;
+    public LocalDate getTradeDate() {
+        return tradeDate;
     }
 
-    public void setTradeDateTime(LocalDateTime tradeDateTime) {
-        this.tradeDateTime = tradeDateTime;
+    public void setTradeDate(LocalDate tradeDate) {
+        this.tradeDate = tradeDate;
     }
 
     public Integer getQuantity() {

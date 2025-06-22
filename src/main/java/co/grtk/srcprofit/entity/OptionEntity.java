@@ -17,12 +17,25 @@ import java.time.LocalDate;
 @Table(
         name = "OPTION",
         indexes = {
-                @Index(name = "instrument_idx", columnList = "instrumentId"),
-                @Index(name = "status_idx", columnList = "status")
+                @Index(name = "opt_conid_idx", columnList = "conid"),
+                @Index(name = "opt_conid_status_idx", columnList = "conid, status"),
+                @Index(name = "opt_code_idx", columnList = "code"),
+                @Index(name = "opt_ticker_idx", columnList = "ticker"),
+                @Index(name = "opt_instrument_id_idx", columnList = "instrumentId"),
+                @Index(name = "opt_status_idx", columnList = "status")
         }
 )
 @DiscriminatorValue("OPT")
 public class OptionEntity extends BaseAsset{
+
+    @Column
+    private Long conid;
+
+    @Column(nullable = false)
+    private String ticker;
+
+    @Column(nullable = false)
+    private String code;
 
     @Enumerated(EnumType.STRING)
     private OptionStatus status;
@@ -37,7 +50,7 @@ public class OptionEntity extends BaseAsset{
     Double fee;
 
     @Column
-    Integer realizedProfitOrLoss;
+    Double realizedProfitOrLoss;
 
     @Column
     Integer annualizedRoiPercent;
@@ -90,11 +103,11 @@ public class OptionEntity extends BaseAsset{
         this.fee = fee;
     }
 
-    public Integer getRealizedProfitOrLoss() {
+    public Double getRealizedProfitOrLoss() {
         return realizedProfitOrLoss;
     }
 
-    public void setRealizedProfitOrLoss(Integer realizedProfitOrLoss) {
+    public void setRealizedProfitOrLoss(Double realizedProfitOrLoss) {
         this.realizedProfitOrLoss = realizedProfitOrLoss;
     }
 
@@ -146,4 +159,27 @@ public class OptionEntity extends BaseAsset{
         this.note = note;
     }
 
+    public Long getConid() {
+        return conid;
+    }
+
+    public void setConid(Long conid) {
+        this.conid = conid;
+    }
+
+    public String getTicker() {
+        return ticker;
+    }
+
+    public void setTicker(String ticker) {
+        this.ticker = ticker;
+    }
+
+    public String getCode() {
+        return code;
+    }
+
+    public void setCode(String code) {
+        this.code = code;
+    }
 }

@@ -6,14 +6,15 @@ import co.grtk.srcprofit.entity.OptionType;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
-import java.time.temporal.ChronoUnit;
 import java.util.Objects;
 
-public class OptionDto {
+public class PositionDto {
 
     Long id;
     Long parentId;
-    LocalDateTime tradeDateTime = LocalDateTime.now();
+    Long conid;
+    String code;
+    LocalDate tradeDate;
     LocalDate expirationDate;
     String note;
     String color = "black";
@@ -23,7 +24,8 @@ public class OptionDto {
     Double positionValue;
     Double fee;
     Double marketValue;
-    Integer realizedProfitOrLoss;
+    Double realizedProfitOrLoss;
+    Double unRealizedProfitOrLoss;
     Integer annualizedRoiPercent;
     Integer probability;
     Integer daysBetween;
@@ -32,14 +34,16 @@ public class OptionDto {
     OptionType type;
     OptionStatus status;
 
-    public String getTradeDateTimeString() {
-        return Objects.isNull(tradeDateTime) ? "" : tradeDateTime.truncatedTo(ChronoUnit.SECONDS).toString();
-    }
+    Double collectedPremium;
+    LocalDate positionsFromDate;
 
     public String getTradeDateString() {
-        return Objects.isNull(tradeDateTime) ? "" : tradeDateTime.toLocalDate().toString();
+        return Objects.isNull(tradeDate) ? "" : tradeDate.toString();
     }
 
+    public String getPositionsFromDateString() {
+        return Objects.isNull(positionsFromDate) ? "" : positionsFromDate.toString();
+    }
 
     public String getExpirationDateString() {
         return Objects.isNull(expirationDate) ? "" : expirationDate.toString();
@@ -53,12 +57,12 @@ public class OptionDto {
         this.id = id;
     }
 
-    public LocalDateTime getTradeDateTime() {
-        return tradeDateTime;
+    public LocalDate getTradeDate() {
+        return tradeDate;
     }
 
-    public void setTradeDateTime(LocalDateTime tradeDateTime) {
-        this.tradeDateTime = tradeDateTime;
+    public void setTradeDate(LocalDate tradeDate) {
+        this.tradeDate = tradeDate;
     }
 
     public LocalDate getExpirationDate() {
@@ -90,7 +94,7 @@ public class OptionDto {
     }
 
     public void setTicker(String ticker) {
-        this.ticker = ticker;
+        this.ticker = ticker != null ? ticker.toUpperCase() : null;
     }
 
     public Double getTradePrice() {
@@ -125,11 +129,11 @@ public class OptionDto {
         this.marketValue = marketValue;
     }
 
-    public Integer getRealizedProfitOrLoss() {
+    public Double getRealizedProfitOrLoss() {
         return realizedProfitOrLoss;
     }
 
-    public void setRealizedProfitOrLoss(Integer realizedProfitOrLoss) {
+    public void setRealizedProfitOrLoss(Double realizedProfitOrLoss) {
         this.realizedProfitOrLoss = realizedProfitOrLoss;
     }
 
@@ -205,11 +209,54 @@ public class OptionDto {
         this.parentId = parentId;
     }
 
+    public Long getConid() {
+        return conid;
+    }
+
+    public void setConid(Long conid) {
+        this.conid = conid;
+    }
+
+    public String getCode() {
+        return code;
+    }
+
+    public void setCode(String code) {
+        this.code = code;
+    }
+
+    public Double getUnRealizedProfitOrLoss() {
+        return unRealizedProfitOrLoss;
+    }
+
+    public void setUnRealizedProfitOrLoss(Double unRealizedProfitOrLoss) {
+        this.unRealizedProfitOrLoss = unRealizedProfitOrLoss;
+    }
+
+    public Double getCollectedPremium() {
+        return collectedPremium;
+    }
+
+    public void setCollectedPremium(Double collectedPremium) {
+        this.collectedPremium = collectedPremium;
+    }
+
+    public LocalDate getPositionsFromDate() {
+        return positionsFromDate;
+    }
+
+    public void setPositionsFromDate(LocalDate positionsFromDate) {
+        this.positionsFromDate = positionsFromDate;
+    }
+
     @Override
     public String toString() {
-        return "OptionDto{" +
+        return "PositionDto{" +
                 "id=" + id +
-                ", tradeDateTime=" + tradeDateTime +
+                ", parentId=" + parentId +
+                ", conid=" + conid +
+                ", code='" + code + '\'' +
+                ", tradeDate=" + tradeDate +
                 ", expirationDate=" + expirationDate +
                 ", note='" + note + '\'' +
                 ", color='" + color + '\'' +
@@ -220,6 +267,7 @@ public class OptionDto {
                 ", fee=" + fee +
                 ", marketValue=" + marketValue +
                 ", realizedProfitOrLoss=" + realizedProfitOrLoss +
+                ", unRealizedProfitOrLoss=" + unRealizedProfitOrLoss +
                 ", annualizedRoiPercent=" + annualizedRoiPercent +
                 ", probability=" + probability +
                 ", daysBetween=" + daysBetween +
@@ -227,7 +275,8 @@ public class OptionDto {
                 ", assetClass=" + assetClass +
                 ", type=" + type +
                 ", status=" + status +
-                ", parentId=" + parentId +
+                ", collectedPremium=" + collectedPremium +
+                ", positionsFromDate=" + positionsFromDate +
                 '}';
     }
 }

@@ -1,6 +1,6 @@
 package co.grtk.srcprofit.mapper;
 
-import co.grtk.srcprofit.dto.OptionDto;
+import co.grtk.srcprofit.dto.PositionDto;
 import co.grtk.srcprofit.entity.AssetClass;
 import co.grtk.srcprofit.entity.OptionStatus;
 import co.grtk.srcprofit.entity.OptionType;
@@ -10,6 +10,7 @@ import org.springframework.util.MultiValueMap;
 import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.time.format.DateTimeParseException;
 import java.time.temporal.ChronoUnit;
 import java.util.Optional;
@@ -17,16 +18,16 @@ import java.util.Optional;
 import static java.lang.Math.abs;
 
 
-public class OptionMapper {
+public class PositionMapper {
 
-    private OptionMapper() {}
+    private PositionMapper() {}
 
-    public static OptionDto mapFromData(MultiValueMap<String, String> formData) {
+    public static PositionDto mapFromData(MultiValueMap<String, String> formData) {
 
         Long id = parseLong(formData.getFirst("id"), null);
         Long parentId = parseLong(formData.getFirst("parentId"), null);
         String ticker = formData.getFirst("ticker");
-        LocalDateTime startDate = toLocalDateTime(formData.getFirst("startDate"));
+        LocalDate startDate = toLocalDate(formData.getFirst("startDate"));
 
         String optionType = formData.getFirst("type");
         String note = formData.getFirst("note");
@@ -38,43 +39,43 @@ public class OptionMapper {
         LocalDate expirationDate = toLocalDate(formData.getFirst("expirationDate"));
         String status = formData.getFirst("status");
         String color = formData.getFirst("color");
-        Integer realizedProfitOrLoss = parseInt(formData.getFirst("realizedProfitOrLoss"), null);
+        //Integer realizedProfitOrLoss = parseInt(formData.getFirst("realizedProfitOrLoss"), null);
 
-        OptionDto optionDto = new OptionDto();
-        optionDto.setId(id);
-        optionDto.setParentId(parentId);
-        optionDto.setTicker(ticker);
-        optionDto.setTradeDateTime(startDate);
-        optionDto.setColor(color);
-        optionDto.setAssetClass(AssetClass.OPT);
-        optionDto.setRealizedProfitOrLoss(realizedProfitOrLoss);
-        optionDto.setType(OptionType.fromCode(optionType));
+        PositionDto positionDto = new PositionDto();
+        positionDto.setId(id);
+        positionDto.setParentId(parentId);
+        positionDto.setTicker(ticker);
+        positionDto.setTradeDate(startDate);
+        positionDto.setColor(color);
+        positionDto.setAssetClass(AssetClass.OPT);
+        //positionDto.setRealizedProfitOrLoss(realizedProfitOrLoss);
+        positionDto.setType(OptionType.fromCode(optionType));
 
         Optional.ofNullable(status)
                 .ifPresentOrElse(
-                        s -> optionDto.setStatus(OptionStatus.fromCode(s)),
-                        () -> optionDto.setStatus(OptionStatus.PENDING)
+                        s -> positionDto.setStatus(OptionStatus.fromCode(s)),
+                        () -> positionDto.setStatus(OptionStatus.PENDING)
                 );
 
-        optionDto.setNote(note);
-        optionDto.setFee(fee);
-        optionDto.setMarketValue(marketValue);
-        optionDto.setPositionValue(positionValue);
-        optionDto.setTradePrice(tradePrice);
-        optionDto.setExpirationDate(expirationDate);
-        optionDto.setQuantity(quantity);
-        calculateAndSetAnnualizedRoi(optionDto);
-        return optionDto;
+        positionDto.setNote(note);
+        positionDto.setFee(fee);
+        positionDto.setMarketValue(marketValue);
+        positionDto.setPositionValue(positionValue);
+        positionDto.setTradePrice(tradePrice);
+        positionDto.setExpirationDate(expirationDate);
+        positionDto.setQuantity(quantity);
+        calculateAndSetAnnualizedRoi(positionDto);
+        return positionDto;
     }
 
-    public static void calculateAndSetAnnualizedRoi(OptionDto dto) {
+    public static void calculateAndSetAnnualizedRoi(PositionDto dto) {
         if (dto == null ||
-                dto.getTradeDateTime() == null || dto.getExpirationDate() == null) {
+                dto.getTradeDate() == null || dto.getExpirationDate() == null) {
             return;
         }
 
         int daysBetween =
-                (int) ChronoUnit.DAYS.between(dto.getTradeDateTime(),dto.getExpirationDate()
+                (int) ChronoUnit.DAYS.between(dto.getTradeDate(),dto.getExpirationDate()
                         .plusDays(1)
                         .atStartOfDay());
         if (daysBetween <= 0) {
@@ -194,6 +195,17 @@ public class OptionMapper {
                     }
                 });
         return safeStartDate.orElse(null);
+    }
+
+    public static String generateOptionCode(String symbol, LocalDate expiryDate, BigDecimal strikePrice, OptionType type) {
+        String formattedDate = expiryDate.format(DateTimeFormatter.ofPattern("yyMMdd"));
+        char typeChar = (type == OptionType.CALL) ? 'C' : 'P';
+
+        // OPRA: strike 10.00 → 00010000
+        int scaledStrike = strikePrice.multiply(new BigDecimal("1000")).intValue();
+        String formattedStrike = String.format("%08d", scaledStrike);
+
+        return String.format("%-6s%s%s%s", symbol, formattedDate, typeChar, formattedStrike);
     }
 
 

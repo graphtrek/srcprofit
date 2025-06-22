@@ -1,8 +1,10 @@
-@import co.grtk.srcprofit.dto.OptionDto
+@import co.grtk.srcprofit.dto.PositionDto
 @import co.grtk.srcprofit.entity.OptionStatus
 
 @import java.util.List
-@param List<OptionDto> options
+@param co.grtk.srcprofit.dto.PositionDto positionDto
+@param List<PositionDto> optionHistory
+@param List<PositionDto> openOptions
 
 <div class="pagetitle">
     <h1>Dashboard</h1>
@@ -21,112 +23,71 @@
         <div class="col-lg-12">
             <div class="row">
 
-                <!-- Sales Card -->
+                <!-- Unrealized P&L Card -->
+
                 <div class="col-xxl-4 col-md-6">
                     <div class="card info-card sales-card">
-
-                        <div class="filter">
-                            <a class="icon" href="#" data-bs-toggle="dropdown"><i class="bi bi-three-dots"></i></a>
-                            <ul class="dropdown-menu dropdown-menu-end dropdown-menu-arrow">
-                                <li class="dropdown-header text-start">
-                                    <h6>Filter</h6>
-                                </li>
-
-                                <li><a class="dropdown-item" href="#">Today</a></li>
-                                <li><a class="dropdown-item" href="#">This Month</a></li>
-                                <li><a class="dropdown-item" href="#">This Year</a></li>
-                            </ul>
-                        </div>
-
                         <div class="card-body">
-                            <h5 class="card-title">Sales <span>| Today</span></h5>
+                            <h5 class="card-title">Unrealized Profit Or Loss</h5>
 
                             <div class="d-flex align-items-center">
                                 <div class="card-icon rounded-circle d-flex align-items-center justify-content-center">
                                     <i class="bi bi-cart"></i>
                                 </div>
                                 <div class="ps-3">
-                                    <h6>145</h6>
-                                    <span class="text-success small pt-1 fw-bold">12%</span> <span class="text-muted small pt-2 ps-1">increase</span>
-
-                                </div>
+                                    <h6 class="currency-usd">${positionDto.getUnRealizedProfitOrLoss()}</h6>
+                                 </div>
                             </div>
                         </div>
 
                     </div>
-                </div><!-- End Sales Card -->
+                </div>
 
-                <!-- Revenue Card -->
+                <!-- End Unrealized P&L -->
+
+                <!-- Realized P&L Card -->
+
                 <div class="col-xxl-4 col-md-6">
                     <div class="card info-card revenue-card">
-
-                        <div class="filter">
-                            <a class="icon" href="#" data-bs-toggle="dropdown"><i class="bi bi-three-dots"></i></a>
-                            <ul class="dropdown-menu dropdown-menu-end dropdown-menu-arrow">
-                                <li class="dropdown-header text-start">
-                                    <h6>Filter</h6>
-                                </li>
-
-                                <li><a class="dropdown-item" href="#">Today</a></li>
-                                <li><a class="dropdown-item" href="#">This Month</a></li>
-                                <li><a class="dropdown-item" href="#">This Year</a></li>
-                            </ul>
-                        </div>
-
-                        <div class="card-body">
-                            <h5 class="card-title">Revenue <span>| This Month</span></h5>
+                      <div class="card-body">
+                            <h5 class="card-title">Collected Premium</h5>
 
                             <div class="d-flex align-items-center">
                                 <div class="card-icon rounded-circle d-flex align-items-center justify-content-center">
                                     <i class="bi bi-currency-dollar"></i>
                                 </div>
                                 <div class="ps-3">
-                                    <h6>$3,264</h6>
-                                    <span class="text-success small pt-1 fw-bold">8%</span> <span class="text-muted small pt-2 ps-1">increase</span>
-
+                                    <h6 class="currency-usd">${positionDto.getCollectedPremium()}</h6>
                                 </div>
                             </div>
                         </div>
 
                     </div>
-                </div><!-- End Revenue Card -->
+                </div>
+                <!-- End Realized P&L Card -->
 
-                <!-- Customers Card -->
+                <!-- Positions Value Card -->
+
                 <div class="col-xxl-4 col-xl-12">
 
                     <div class="card info-card customers-card">
-
-                        <div class="filter">
-                            <a class="icon" href="#" data-bs-toggle="dropdown"><i class="bi bi-three-dots"></i></a>
-                            <ul class="dropdown-menu dropdown-menu-end dropdown-menu-arrow">
-                                <li class="dropdown-header text-start">
-                                    <h6>Filter</h6>
-                                </li>
-
-                                <li><a class="dropdown-item" href="#">Today</a></li>
-                                <li><a class="dropdown-item" href="#">This Month</a></li>
-                                <li><a class="dropdown-item" href="#">This Year</a></li>
-                            </ul>
-                        </div>
-
                         <div class="card-body">
-                            <h5 class="card-title">Customers <span>| This Year</span></h5>
+                            <h5 class="card-title">Positions Value</h5>
 
                             <div class="d-flex align-items-center">
                                 <div class="card-icon rounded-circle d-flex align-items-center justify-content-center">
                                     <i class="bi bi-people"></i>
                                 </div>
                                 <div class="ps-3">
-                                    <h6>1244</h6>
-                                    <span class="text-danger small pt-1 fw-bold">12%</span> <span class="text-muted small pt-2 ps-1">decrease</span>
-
+                                    <h6 class="currency-usd">${positionDto.getPositionValue()}</h6>
                                 </div>
                             </div>
 
                         </div>
                     </div>
 
-                </div><!-- End Customers Card -->
+                </div>
+                <!-- End Positions Value Card -->
 
                 <!-- Reports -->
                 <div id="chartCard" class="col-12">
@@ -155,78 +116,8 @@
                         </div>
 
                     </div>
-                </div><!-- End Reports -->
-
-                <!-- DataTable -->
-                <div class="col-12">
-                    <div class="card recent-sales overflow-auto">
-
-                        <div class="filter">
-                            <a class="icon" href="#" data-bs-toggle="dropdown"><i class="bi bi-three-dots"></i></a>
-                            <ul class="dropdown-menu dropdown-menu-end dropdown-menu-arrow">
-                                <li class="dropdown-header text-start">
-                                    <h6>Filter</h6>
-                                </li>
-
-                                <li><a class="dropdown-item" href="#">Today</a></li>
-                                <li><a class="dropdown-item" href="#">This Month</a></li>
-                                <li><a class="dropdown-item" href="#">This Year</a></li>
-                            </ul>
-                        </div>
-
-                        <div class="card-body">
-                            <h5 class="card-title">Positions <span></span></h5>
-
-                            <table id="datatable" class="table table-borderless">
-                                <thead>
-                                <tr>
-                                    <th scope="col">#</th>
-                                    <th scope="col">Symbol</th>
-                                    <th scope="col">TradeDate</th>
-                                    <th scope="col">Type</th>
-                                    <th scope="col">Value</th>
-                                    <th scope="col">Market Value</th>
-                                    <th scope="col">TradePrice</th>
-                                    <th scope="col">Expiration</th>
-                                    <th scope="col">Days</th>
-                                    <th scope="col">P.O.P %</th>
-                                    <th scope="col">R.O.I %</th>
-                                    <th scope="col">Status</th>
-                                </tr>
-                                </thead>
-                                <tbody>
-                                @for(var option : options )
-                                    <tr style="cursor: pointer;">
-
-                                        <th style="color:${option.getColor()};">${option.getId()}</th>
-
-                                        <td class="text-uppercase">${option.getTicker()}</td>
-                                        <td>${option.getTradeDateString()}</td>
-                                        <td>${option.getType()}</td>
-                                        <td>${option.getPositionValue()}</td>
-                                        <td>${option.getMarketValue()}</td>
-                                        <td>${option.getTradePrice()}</td>
-                                        <td>${option.getExpirationDateString()}</td>
-                                        <td>${option.getDaysBetween()}</td>
-                                        <td>${option.getProbability()}</td>
-                                        <td>${option.getAnnualizedRoiPercent()}</td>
-                                        @if(OptionStatus.PENDING.equals(option.getStatus()))
-                                        <td class="badge bg-warning">${option.getStatus()}</td>
-                                        @elseif(OptionStatus.CLOSED.equals(option.getStatus()))
-                                        <td class="badge bg-success">${option.getStatus()}</td>
-                                        @else
-                                        <td class="badge bg-danger">${option.getStatus()}</td>
-                                        @endif
-
-                                    </tr>
-                                @endfor
-                                </tbody>
-                            </table>
-
-                        </div>
-
-                    </div>
-                </div><!-- End Recent Sales -->
+                </div>
+                <!-- End Reports -->
 
 
 
@@ -240,19 +131,8 @@
 <script>
     $( document ).ready(function() {
         console.log( "ready!" );
-        function datatable() {
-            console.log('datatable init');
 
-            const table = new DataTable('#datatable', {
-                perPageSelect: [5, 10, 15, ["All", -1]]
-            });
 
-            $('#datatable tbody').on('click', 'tr', function() {
-                const id = table.row(this).data()[0];
-                console.log('clicked optionId: ' + id);
-                htmx.ajax('GET', '/getOption/'+id, '#main');
-            });
-        }
 
         function chart() {
 
@@ -307,32 +187,9 @@
         }
 
 
-        function watchlist() {
-            $.get("/watchlist", function (data) {
-                if (data && Array.isArray(data)) {
-                    const conidList = data.map(i => i.conid).join(",");
-                    console.log("Összegyűjtött conid lista:", conidList);
 
-                    // 2. Második GET kérés conid-okkal
-                    // $.get("/", { conids: conidList }, function (detailsData) {
-                    //     console.log("Részletek:", detailsData);
-                    //     $("#responseDetails").text(JSON.stringify(detailsData, null, 2));
-                    // }).fail(function () {
-                    //     console.error("Hiba a részletek lekérésekor.");
-                    // });
-
-                } else {
-                    console.warn("Hibás watchlist struktúra.");
-                }
-            }).fail(function () {
-                console.error("Hiba a watchlist lekérésekor.");
-            });
-        }
-
-        $("#chartCard").hide();
-        //chart();
-        datatable();
-        watchlist();
+        $("#chartCard").show();
+        chart();
 
     });
 </script>
