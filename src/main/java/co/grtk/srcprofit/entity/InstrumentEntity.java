@@ -1,10 +1,12 @@
 package co.grtk.srcprofit.entity;
 
 import com.fasterxml.jackson.annotation.JsonIdentityInfo;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.ObjectIdGenerators;
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
+import jakarta.persistence.FetchType;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
@@ -40,28 +42,33 @@ public class InstrumentEntity {
     private Long conid;
 
     @Column
-    private String ST;
-
-    @Column
-    private String C;
-
-    @Column(unique = true)
     private String name;
-
-    @Column(unique = true)
-    private String fullName;
 
     @Column(nullable = false, unique = true)
     private String ticker;
 
-    @OneToMany(mappedBy = "instrument", cascade = CascadeType.ALL)
+    @JsonIgnore
+    @OneToMany(mappedBy = "instrument", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     private List<OptionEntity> options;
+
+    @Column
+    private Double price;
+
+    @Column
+    private Long updated;
+
+    @Column
+    private Double change;
+
+    @Column
+    private Double changePercent;
 
     @CreationTimestamp(source = SourceType.DB)
     private Instant createdAt;
 
     @UpdateTimestamp(source = SourceType.DB)
     private Instant updatedAt;
+
 
     public Long getId() {
         return id;
@@ -79,22 +86,6 @@ public class InstrumentEntity {
         this.conid = conid;
     }
 
-    public String getST() {
-        return ST;
-    }
-
-    public void setST(String ST) {
-        this.ST = ST;
-    }
-
-    public String getC() {
-        return C;
-    }
-
-    public void setC(String c) {
-        C = c;
-    }
-
     public String getName() {
         return name;
     }
@@ -103,13 +94,6 @@ public class InstrumentEntity {
         this.name = name;
     }
 
-    public String getFullName() {
-        return fullName;
-    }
-
-    public void setFullName(String fullName) {
-        this.fullName = fullName;
-    }
 
     public String getTicker() {
         return ticker;
@@ -139,5 +123,58 @@ public class InstrumentEntity {
 
     public void setUpdatedAt(Instant updatedAt) {
         this.updatedAt = updatedAt;
+    }
+
+    public Double getPrice() {
+        return price;
+    }
+
+    public Double getOptionPrice() {
+        return Math.round(price * 100 * 100.0) / 100.0;
+    }
+
+    public void setPrice(Double price) {
+        this.price = price;
+    }
+
+    public Long getUpdated() {
+        return updated;
+    }
+
+    public void setUpdated(Long updated) {
+        this.updated = updated;
+    }
+
+    public Double getChange() {
+        return change;
+    }
+
+    public void setChange(Double change) {
+        this.change = change;
+    }
+
+    public Double getChangePercent() {
+        return changePercent;
+    }
+
+    public void setChangePercent(Double changePercent) {
+        this.changePercent = changePercent;
+    }
+
+    @Override
+    public String toString() {
+        return "InstrumentEntity{" +
+                "id=" + id +
+                ", conid=" + conid +
+                ", name='" + name + '\'' +
+                ", ticker='" + ticker + '\'' +
+                ", options=" + options +
+                ", price=" + price +
+                ", updated=" + updated +
+                ", change=" + change +
+                ", changePercent=" + changePercent +
+                ", createdAt=" + createdAt +
+                ", updatedAt=" + updatedAt +
+                '}';
     }
 }

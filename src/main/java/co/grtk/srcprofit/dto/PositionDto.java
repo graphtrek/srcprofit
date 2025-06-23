@@ -5,7 +5,6 @@ import co.grtk.srcprofit.entity.OptionStatus;
 import co.grtk.srcprofit.entity.OptionType;
 
 import java.time.LocalDate;
-import java.time.LocalDateTime;
 import java.util.Objects;
 
 public class PositionDto {
@@ -15,17 +14,13 @@ public class PositionDto {
     Long conid;
     String code;
     LocalDate tradeDate;
-    LocalDate expirationDate;
+
     String note;
     String color = "black";
-    String ticker;
+
     Integer quantity = 1;
-    Double tradePrice;
-    Double positionValue;
     Double fee;
-    Double marketValue;
-    Double realizedProfitOrLoss;
-    Double unRealizedProfitOrLoss;
+
     Integer annualizedRoiPercent;
     Integer probability;
     Integer daysBetween;
@@ -34,8 +29,18 @@ public class PositionDto {
     OptionType type;
     OptionStatus status;
 
+    String ticker;
+    Double tradePrice;
+    Double realizedProfitOrLoss;
+    Double unRealizedProfitOrLoss;
+    Double positionValue;
+    Double coveredPositionValue;
     Double collectedPremium;
     LocalDate positionsFromDate;
+    LocalDate expirationDate;
+    Double marketValue;
+    Double marketVsPositionsPercentage;
+
 
     public String getTradeDateString() {
         return Objects.isNull(tradeDate) ? "" : tradeDate.toString();
@@ -249,6 +254,22 @@ public class PositionDto {
         this.positionsFromDate = positionsFromDate;
     }
 
+    public Double getCoveredPositionValue() {
+        return coveredPositionValue;
+    }
+
+    public void setCoveredPositionValue(Double coveredPositionValue) {
+        this.coveredPositionValue = coveredPositionValue;
+    }
+
+    public Double getMarketVsPositionsPercentage() {
+        return marketVsPositionsPercentage;
+    }
+
+    public void setMarketVsPositionsPercentage(Double marketVsPositionsPercentage) {
+        this.marketVsPositionsPercentage = marketVsPositionsPercentage;
+    }
+
     @Override
     public String toString() {
         return "PositionDto{" +
@@ -257,17 +278,10 @@ public class PositionDto {
                 ", conid=" + conid +
                 ", code='" + code + '\'' +
                 ", tradeDate=" + tradeDate +
-                ", expirationDate=" + expirationDate +
                 ", note='" + note + '\'' +
                 ", color='" + color + '\'' +
-                ", ticker='" + ticker + '\'' +
                 ", quantity=" + quantity +
-                ", tradePrice=" + tradePrice +
-                ", positionValue=" + positionValue +
                 ", fee=" + fee +
-                ", marketValue=" + marketValue +
-                ", realizedProfitOrLoss=" + realizedProfitOrLoss +
-                ", unRealizedProfitOrLoss=" + unRealizedProfitOrLoss +
                 ", annualizedRoiPercent=" + annualizedRoiPercent +
                 ", probability=" + probability +
                 ", daysBetween=" + daysBetween +
@@ -275,8 +289,17 @@ public class PositionDto {
                 ", assetClass=" + assetClass +
                 ", type=" + type +
                 ", status=" + status +
+                ", ticker='" + ticker + '\'' +
+                ", tradePrice=" + tradePrice +
+                ", realizedProfitOrLoss=" + realizedProfitOrLoss +
+                ", unRealizedProfitOrLoss=" + unRealizedProfitOrLoss +
+                ", positionValue=" + positionValue +
+                ", coveredPositionValue=" + coveredPositionValue +
                 ", collectedPremium=" + collectedPremium +
                 ", positionsFromDate=" + positionsFromDate +
+                ", expirationDate=" + expirationDate +
+                ", marketValue=" + marketValue +
+                ", marketVsPositionsPercentage=" + marketVsPositionsPercentage +
                 '}';
     }
 }

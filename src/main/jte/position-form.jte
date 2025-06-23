@@ -10,11 +10,11 @@
 @param List<PositionDto> openOptions
 
 <div class="pagetitle">
-    <h1>Position Form</h1>
+    <h1>Position Calculator</h1>
     <nav>
         <ol class="breadcrumb">
             <li class="breadcrumb-item"><a href="/">Home</a></li>
-            <li class="breadcrumb-item active">Position From</li>
+            <li class="breadcrumb-item active">Position Calculator</li>
         </ol>
     </nav>
 </div><!-- End Page Title -->
@@ -25,9 +25,9 @@
             <div class="card">
                 <div class="card-body">
                     @if(positionDto.getId() != null)
-                    <h5 class="card-title">Update Position #${positionDto.getId()}</h5>
+                    <h5 class="card-title">Position Calculator #${positionDto.getId()}</h5>
                     @else
-                        <h5 class="card-title">New Position</h5>
+                        <h5 class="card-title">Position Calculator</h5>
                     @endif
 
                     @if(success != null)
@@ -75,9 +75,13 @@
                             <input id="tradePrice" name="tradePrice" type="number" class="form-control" step="0.01" value="${positionDto.getTradePrice()}">
                         </div>
 
-                        <div class="col-md-10">
+                        <div class="col-md-8">
                             <label for="note" class="form-label">Note</label>
                             <input id="note" name="note" type="text" class="form-control" value="${positionDto.getNote()}">
+                        </div>
+                        <div class="col-md-2">
+                            <label for="coveredPositionValue" class="form-label">Cash Covered</label>
+                            <input id="coveredPositionValue" name="coveredPositionValue" type="number" class="form-control" value="${positionDto.getCoveredPositionValue()}">
                         </div>
                         <div class="col-md-2">
                             <label for="marketValue" class="form-label">Market Value *</label>
@@ -106,18 +110,18 @@
                         </div>
                         <div class="col-md-2">
                             <label for="realizedProfitOrLoss" class="form-label">UnRealized P&L</label>
-                            <input id="unRealizedProfitOrLoss" name="unRealizedProfitOrLoss" type="number" class="form-control" step="0.01" value="${positionDto.getUnRealizedProfitOrLoss()}">
+                            <input id="unRealizedProfitOrLoss" name="unRealizedProfitOrLoss" type="number" disabled class="form-control" step="0.01" value="${positionDto.getUnRealizedProfitOrLoss()}">
                         </div>
                         <div class="col-md-2">
                             <label for="realizedProfitOrLoss" class="form-label">Realized P&L</label>
-                            <input id="realizedProfitOrLoss" name="realizedProfitOrLoss" type="number" class="form-control" step="0.01" value="${positionDto.getRealizedProfitOrLoss()}">
+                            <input id="realizedProfitOrLoss" name="realizedProfitOrLoss" type="number" disabled class="form-control" step="0.01" value="${positionDto.getRealizedProfitOrLoss()}">
                         </div>
 
                         <div class="text-center">
-                            <button class="btn btn-primary">Submit</button>
-                            <button type="reset" class="btn btn-secondary">Reset</button>
+                            <button class="btn btn-primary">Calculate</button>
+                            <a id="tradingViewButton" href="https://www.tradingview.com/chart/?symbol=VIX" class="btn btn-info" role="button" target="_blank">TradingView</a>
                             <button id="chartButton" type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#ExtralargeModal">
-                                Chart
+                                Snapshot Chart
                             </button>
                         </div>
                     </form>
@@ -158,10 +162,11 @@
                                 <th scope="col">Symbol</th>
                                 <th scope="col">TradeDate</th>
                                 <th scope="col">Expiration</th>
-                                <th scope="col">Days left</th>
+                                <th scope="col">DaysLeft</th>
                                 <th scope="col">Value</th>
+                                <th scope="col">MrktValue</th>
                                 <th scope="col">Type</th>
-                                <th scope="col">TradePrice</th>
+                                <th scope="col">Price</th>
                                 <th scope="col">Days</th>
                                 <th scope="col">Status</th>
                             </tr>
@@ -176,6 +181,7 @@
                                     <td>${option.getExpirationDateString()}</td>
                                     <td>${option.getDaysLeft()}</td>
                                     <td>${option.getPositionValue()}</td>
+                                    <td>${option.getMarketValue()}</td>
                                     <td>${option.getType()}</td>
                                     <td>${option.getTradePrice()}</td>
                                     <td>${option.getDaysBetween()}</td>
@@ -213,10 +219,11 @@
                             <th scope="col">Symbol</th>
                             <th scope="col">TradeDate</th>
                             <th scope="col">Expiration</th>
-                            <th scope="col">Days left</th>
+                            <th scope="col">DaysLeft</th>
                             <th scope="col">Value</th>
+                            <th scope="col">MrktValue</th>
                             <th scope="col">Type</th>
-                            <th scope="col">TradePrice</th>
+                            <th scope="col">Price</th>
                             <th scope="col">Days</th>
                             <th scope="col">Status</th>
                         </tr>
@@ -231,6 +238,7 @@
                                 <td>${option.getExpirationDateString()}</td>
                                 <td>${option.getDaysLeft()}</td>
                                 <td>${option.getPositionValue()}</td>
+                                <td>${option.getMarketValue()}</td>
                                 <td>${option.getType()}</td>
                                 <td>${option.getTradePrice()}</td>
                                 <td>${option.getDaysBetween()}</td>
@@ -261,7 +269,7 @@
         $('#success').fadeOut(1500);
 
         const imgSrc = "https://charts2-node.finviz.com/chart.ashx?cs=l&t=ticker&tf=d&s=linear&ct=candle_stick&tm=d&o[0][ot]=sma&o[0][op]=50&o[0][oc]=FF8F33C6&o[1][ot]=sma&o[1][op]=200&o[1][oc]=DCB3326D&o[2][ot]=sma&o[2][op]=20&o[2][oc]=DC32B363&o[3][ot]=patterns&o[3][op]=&o[3][oc]=000";
-
+        const tradingView = "https://www.tradingview.com/chart/?symbol=";
         $('#ticker').on("change", function() {
             const ticker = $(this).val();
             if(ticker) {
@@ -280,6 +288,7 @@
         } else {
             $('#chartImg').attr('src', imgSrc.replace("ticker",ticker));
             $('#chartButton').prop("disabled", false);
+            $('#tradingViewButton').attr('href', tradingView+ticker);
         }
 
     });

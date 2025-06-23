@@ -21,7 +21,9 @@ public class IbRestClientConfig {
     @Bean(name = "ibkrRestClient")
     public RestClient ibkrRestClient() {
         disableSSLCertificateValidation();
-        return RestClient.builder().requestFactory(new SimpleClientHttpRequestFactory()).baseUrl("https://localhost:5055/v1/api").build();
+        return RestClient.builder().requestFactory(
+                new SimpleClientHttpRequestFactory())
+                .baseUrl("https://localhost:5055/").build();
     }
 
     /**

@@ -153,7 +153,7 @@ public class PositionMapper {
 
 
     public static int probabilityMarketExceedsTradeValue(BigDecimal tradeValue, double marketMean, double dailyStdDev, int days) {
-        if (tradeValue == null || tradeValue.compareTo(BigDecimal.ZERO) <= 0 || days <= 0) {
+        if (tradeValue == null || tradeValue.compareTo(BigDecimal.ZERO) <= 0 || days <= 0 || marketMean <= 0 || dailyStdDev <= 0) {
             return 0;
         }
 

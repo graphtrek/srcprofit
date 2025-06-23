@@ -26,7 +26,7 @@ import java.time.LocalDate;
         }
 )
 @DiscriminatorValue("OPT")
-public class OptionEntity extends BaseAsset{
+public class OptionEntity extends BaseAsset {
 
     @Column
     private Long conid;

@@ -1,33 +1,28 @@
 package co.grtk.srcprofit.dto;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
 
-public class InstrumentDto {
-
-    private Long id;
-
+public class MarketDataDto {
+    @JsonProperty("conid")
     private Long conid;
 
-    private String name;
-
-    private String assetClass;
-
+    @JsonProperty("55")
     private String ticker;
 
-    private Double price;
+    @JsonProperty("31")
+    private String priceStr;
 
+    @JsonProperty("_updated")
     private Long updated;
 
+    @JsonProperty("82")
     private Double change;
 
+    @JsonProperty("83")
     private Double changePercent;
 
-    public Long getId() {
-        return id;
-    }
-
-    public void setId(Long id) {
-        this.id = id;
-    }
+    @JsonProperty("7051")
+    private String companyName;
 
     public Long getConid() {
         return conid;
@@ -35,23 +30,6 @@ public class InstrumentDto {
 
     public void setConid(Long conid) {
         this.conid = conid;
-    }
-
-    public String getName() {
-        return name;
-    }
-
-    public void setName(String name) {
-        this.name = name;
-    }
-
-
-    public String getAssetClass() {
-        return assetClass;
-    }
-
-    public void setAssetClass(String assetClass) {
-        this.assetClass = assetClass;
     }
 
     public String getTicker() {
@@ -62,12 +40,12 @@ public class InstrumentDto {
         this.ticker = ticker;
     }
 
-    public Double getPrice() {
-        return price == null ? 0 : price;
+    public String getPriceStr() {
+        return priceStr;
     }
 
-    public void setPrice(Double price) {
-        this.price = price;
+    public void setPriceStr(String priceStr) {
+        this.priceStr = priceStr;
     }
 
     public Long getUpdated() {
@@ -94,18 +72,21 @@ public class InstrumentDto {
         this.changePercent = changePercent;
     }
 
+    public String getCompanyName() {
+        return companyName;
+    }
+
+    public void setCompanyName(String companyName) {
+        this.companyName = companyName;
+    }
+
     @Override
     public String toString() {
-        return "InstrumentDto{" +
-                "id=" + id +
-                ", conid=" + conid +
-                ", name='" + name + '\'' +
-                ", assetClass='" + assetClass + '\'' +
+        return "MarketDataDto{" +
+                "conid=" + conid +
                 ", ticker='" + ticker + '\'' +
-                ", price=" + price +
+                ", priceStr='" + priceStr + '\'' +
                 ", updated=" + updated +
-                ", change=" + change +
-                ", changePercent=" + changePercent +
                 '}';
     }
 }

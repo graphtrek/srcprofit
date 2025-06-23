@@ -6,7 +6,7 @@
   <meta charset="utf-8">
   <meta content="width=device-width, initial-scale=1.0" name="viewport">
 
-  <title>Dashboard - NiceAdmin Bootstrap Template</title>
+  <title>SrcProfit</title>
   <meta content="" name="description">
   <meta content="" name="keywords">
 
@@ -41,7 +41,7 @@
     <div class="d-flex align-items-center justify-content-between">
       <a href="/" class="logo d-flex align-items-center">
         <img src="assets/img/logo.png" alt="">
-        <span class="d-none d-lg-block">NiceAdmin</span>
+        <span class="d-none d-lg-block">SrcProfit</span>
       </a>
       <i class="bi bi-list toggle-sidebar-btn"></i>
     </div><!-- End Logo -->
@@ -80,18 +80,21 @@
 
       <li class="nav-item">
         <a class="nav-link " href="#"
+           hx-push-url="true"
+           hx-indicator="#spinner"
            hx-get="/dashboard"
            hx-trigger="click"
            hx-target="#main"
            hx-swap="innerHTML"
            hx-on::afterRequest="console.log('dashboard');">
-
           <i class="bi bi-grid"></i>
           <span>Dashboard</span>
         </a>
       </li><!-- End Dashboard Nav -->
       <li class="nav-item">
         <a class="nav-link collapsed" href="#"
+           hx-push-url="true"
+           hx-indicator="#spinner"
            hx-get="/positions"
            hx-trigger="click"
            hx-target="#main"
@@ -100,25 +103,79 @@
           <i class="bi bi-card-list"></i>
           <span>Positions</span>
         </a>
-      </li>
+      </li><!-- End Positions -->
       <li class="nav-item">
         <a class="nav-link collapsed" href="#"
+           hx-push-url="true"
+           hx-indicator="#spinner"
            hx-get="/positionForm"
            hx-trigger="click"
            hx-target="#main"
            hx-swap="innerHTML"
            hx-on::afterRequest="console.log('positionForm')">
           <i class="bi bi-card-list"></i>
-          <span>New Position</span>
+          <span>Position Calculator</span>
         </a>
-      </li><!-- End Register Page Nav -->
+      </li><!-- End PositionForm -->
+      <li class="nav-item">
+        <a class="nav-link collapsed" href="#"
+           hx-push-url="true"
+           hx-indicator="#spinner"
+           hx-get="/instruments"
+           hx-trigger="click"
+           hx-target="#main"
+           hx-swap="innerHTML"
+           hx-on::afterRequest="console.log('Instruments')">
+          <i class="bi bi-card-list"></i>
+          <span>Instruments</span>
+        </a>
+      </li><!-- End Instruments -->
+      <li class="nav-item">
+        <a class="nav-link collapsed" href="#"
+           hx-push-url="true"
+           hx-indicator="#spinner"
+           hx-get="/marketData"
+           hx-trigger="click"
+           hx-target="#main"
+           hx-swap="innerHTML"
+           hx-on::afterRequest="console.log('Refresh Market data')">
+          <i class="bi bi-card-list"></i>
+          <span>Refresh Market Data</span>
+        </a>
+      </li><!-- End Watchlist -->
+      <li class="nav-item">
+        <a class="nav-link collapsed" href="#"
+           hx-push-url="true"
+           hx-indicator="#spinner"
+           hx-get="/watchlist"
+           hx-trigger="click"
+           hx-target="#main"
+           hx-swap="innerHTML"
+           hx-on::afterRequest="console.log('Reload Watchlist')">
+          <i class="bi bi-card-list"></i>
+          <span>Reload Watchlist</span>
+        </a>
+      </li><!-- End Watchlist -->
       <li class="nav-item">
         <a class="nav-link collapsed" href="https://localhost:5055/sso/Login" target="_blank">
           <i class="bi bi-card-list"></i>
           <span>Ibkr Login</span>
         </a>
       </li><!-- End Ibkr Login Page Nav -->
-
+      <li class="nav-item htmx-indicator" id="spinner">
+        <div class="spinner-border" role="status">
+          <span class="visually-hidden">Loading...</span>
+        </div>
+        <div class="spinner-border text-secondary" role="status">
+          <span class="visually-hidden">Loading...</span>
+        </div>
+        <div class="spinner-border text-success" role="status">
+          <span class="visually-hidden">Loading...</span>
+        </div>
+        <div class="spinner-border text-danger" role="status">
+          <span class="visually-hidden">Loading...</span>
+        </div>
+      </li><!-- End Hidden Spinner Page Nav -->
 
 <%--
       <li class="nav-item">
@@ -150,6 +207,7 @@
   </aside><!-- End Sidebar-->
 
   <main id="main" class="main"
+        hx-push-url="true"
         hx-get="/dashboard"
         hx-trigger="load delay:0s"
         hx-swap="innerHTML"

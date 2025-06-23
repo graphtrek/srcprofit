@@ -1,7 +1,9 @@
 package co.grtk.srcprofit.controller;
 
+import co.grtk.srcprofit.dto.InstrumentDto;
 import co.grtk.srcprofit.dto.PositionDto;
 import co.grtk.srcprofit.mapper.PositionMapper;
+import co.grtk.srcprofit.service.InstrumentService;
 import co.grtk.srcprofit.service.OptionService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -16,6 +18,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 
 import java.time.LocalDate;
 import java.util.List;
+import java.util.Optional;
 
 @Controller
 public class PositionController {
@@ -29,9 +32,11 @@ public class PositionController {
     private static final String POSITIONS_PAGE_PATH = "positions";
 
     private final OptionService optionService;
+    private final InstrumentService instrumentService;
 
-    public PositionController(OptionService optionService) {
+    public PositionController(OptionService optionService, InstrumentService instrumentService) {
         this.optionService = optionService;
+        this.instrumentService = instrumentService;
     }
 
     @GetMapping("/positionForm")
@@ -78,9 +83,9 @@ public class PositionController {
 
     private void fillPositionsPage(PositionDto positionDto, Model model) {
         List<PositionDto> openOptions = optionService.getAllOpenOptions(positionDto.getPositionsFromDate());
-        model.addAttribute("openOptions", openOptions);
+        model.addAttribute(MODEL_ATTRIBUTE_OPTION_OPEN, openOptions);
         List<PositionDto> optionHistory = optionService.getAllClosedOptions(positionDto.getPositionsFromDate());
-        model.addAttribute("optionHistory", optionHistory);
+        model.addAttribute(MODEL_ATTRIBUTE_OPTION_HISTORY, optionHistory);
         optionService.calculatePosition(positionDto,openOptions,optionHistory);
         model.addAttribute(MODEL_ATTRIBUTE_DTO, positionDto);
     }
@@ -91,7 +96,11 @@ public class PositionController {
 
         List<PositionDto> openOptions = optionService.getOpenOptionsByTicker(positionDto.getTicker());
         model.addAttribute(MODEL_ATTRIBUTE_OPTION_OPEN, openOptions);
-
+        if(openOptions.isEmpty() && positionDto.getTicker() != null && positionDto.getMarketValue() == null) {
+            InstrumentDto instrumentDto = instrumentService.loadInstrumentByTicker(positionDto.getTicker());
+            Optional.ofNullable(instrumentDto).ifPresent(instrumentDto1 ->
+                    positionDto.setMarketValue(instrumentDto1.getPrice() != null ? instrumentDto1.getPrice() * 100 : 0));
+        }
         optionService.calculatePosition(positionDto,openOptions,optionHistory);
         model.addAttribute(MODEL_ATTRIBUTE_DTO, positionDto);
     }

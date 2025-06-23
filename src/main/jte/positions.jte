@@ -28,14 +28,21 @@
                 <div class="col-xxl-4 col-md-6">
                     <div class="card info-card sales-card">
                         <div class="card-body">
-                            <h5 class="card-title">Unrealized Profit Or Loss</h5>
+                            <h5 class="card-title">Market Value</h5>
 
                             <div class="d-flex align-items-center">
                                 <div class="card-icon rounded-circle d-flex align-items-center justify-content-center">
                                     <i class="bi bi-cart"></i>
                                 </div>
                                 <div class="ps-3">
-                                    <h6 class="currency-usd">${positionDto.getUnRealizedProfitOrLoss()}</h6>
+                                    <h6 class="currency-usd">${positionDto.getMarketValue()}</h6>
+                                    @if(positionDto.getMarketVsPositionsPercentage() > 0)
+                                    <span class="text-success small pt-1 fw-bold">${positionDto.getMarketVsPositionsPercentage()} %</span>
+                                    <span class="text-muted small pt-2 ps-1">Increase</span>
+                                    @else
+                                        <span class="text-success small pt-1 fw-bold">${positionDto.getMarketVsPositionsPercentage()} %</span>
+                                        <span class="text-muted small pt-2 ps-1">Decrease</span>
+                                    @endif
                                  </div>
                             </div>
                         </div>
@@ -58,6 +65,8 @@
                                 </div>
                                 <div class="ps-3">
                                     <h6 class="currency-usd">${positionDto.getCollectedPremium()}</h6>
+                                    <span class="text-danger small pt-1 fw-bold currency-usd">${positionDto.getUnRealizedProfitOrLoss()}</span>
+                                    <span class="text-muted small pt-2 ps-1">Open</span>
                                 </div>
                             </div>
                         </div>
@@ -80,6 +89,8 @@
                                 </div>
                                 <div class="ps-3">
                                     <h6 class="currency-usd">${positionDto.getPositionValue()}</h6>
+                                    <span class="text-success small pt-1 fw-bold currency-usd">${positionDto.getCoveredPositionValue()}</span>
+                                    <span class="text-muted small pt-2 ps-1">Cash Covered</span>
                                 </div>
                             </div>
 
@@ -147,10 +158,11 @@
                                     <th scope="col">Symbol</th>
                                     <th scope="col">TradeDate</th>
                                     <th scope="col">Expiration</th>
-                                    <th scope="col">Days left</th>
+                                    <th scope="col">DaysLeft</th>
                                     <th scope="col">Value</th>
+                                    <th scope="col">MrktValue</th>
                                     <th scope="col">Type</th>
-                                    <th scope="col">TradePrice</th>
+                                    <th scope="col">Price</th>
                                     <th scope="col">Days</th>
                                     <th scope="col">Status</th>
                                 </tr>
@@ -158,13 +170,18 @@
                                 <tbody>
                                 @for(var option : openOptions )
                                     <tr style="cursor: pointer;">
-                                        <th style="color:${option.getColor()};">${option.getId()}</th>
-                                        <th style="color:${option.getColor()};text-wrap: nowrap;">${option.getCode()}</th>
+                                        @if(option.getMarketValue() < option.getPositionValue())
+                                            <th style="background-color:rgb(220 53 69)">${option.getId()}</th>
+                                        @else
+                                            <th>${option.getId()}</th>
+                                        @endif
+                                        <th style="text-wrap: nowrap;">${option.getCode()}</th>
                                         <td class="text-uppercase">${option.getTicker()}</td>
                                         <td>${option.getTradeDateString()}</td>
                                         <td>${option.getExpirationDateString()}</td>
                                         <td>${option.getDaysLeft()}</td>
                                         <td>${option.getPositionValue()}</td>
+                                        <td>${option.getMarketValue()}</td>
                                         <td>${option.getType()}</td>
                                         <td>${option.getTradePrice()}</td>
                                         <td>${option.getDaysBetween()}</td>
@@ -214,10 +231,11 @@
                                     <th scope="col">Symbol</th>
                                     <th scope="col">TradeDate</th>
                                     <th scope="col">Expiration</th>
-                                    <th scope="col">Days left</th>
+                                    <th scope="col">DaysLeft</th>
                                     <th scope="col">Value</th>
+                                    <th scope="col">MrktValue</th>
                                     <th scope="col">Type</th>
-                                    <th scope="col">TradePrice</th>
+                                    <th scope="col">Price</th>
                                     <th scope="col">Days</th>
                                     <th scope="col">Status</th>
                                 </tr>
@@ -232,6 +250,7 @@
                                         <td>${option.getExpirationDateString()}</td>
                                         <td>${option.getDaysLeft()}</td>
                                         <td>${option.getPositionValue()}</td>
+                                        <td>${option.getMarketValue()}</td>
                                         <td>${option.getType()}</td>
                                         <td>${option.getTradePrice()}</td>
                                         <td>${option.getDaysBetween()}</td>
