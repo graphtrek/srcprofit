@@ -15,17 +15,33 @@ import java.security.NoSuchAlgorithmException;
 import java.security.cert.X509Certificate;
 
 @Configuration
-public class IbRestClientConfig {
-    Environment environment;
+public class RestClientConfig {
+    private final Environment environment;
+
+    public RestClientConfig(Environment environment) {
+        this.environment = environment;
+    }
 
     @Bean(name = "ibkrRestClient")
     public RestClient ibkrRestClient() {
         disableSSLCertificateValidation();
         return RestClient.builder().requestFactory(
                 new SimpleClientHttpRequestFactory())
-                .baseUrl("https://localhost:5055/").build();
+                .baseUrl(environment.getRequiredProperty("IBKR_DATA_URL")).build();
     }
 
+
+
+    @Bean(name = "alpacaRestClient")
+    public RestClient alpacaRestClient() {
+        disableSSLCertificateValidation();
+        return RestClient.builder().requestFactory(
+                        new SimpleClientHttpRequestFactory())
+                .defaultHeader("APCA-DATA-URL", environment.getRequiredProperty("ALPACA_DATA_URL"))
+                .defaultHeader("APCA-API-KEY-ID", environment.getRequiredProperty("ALPACA_API_KEY"))
+                .defaultHeader("APCA-API-SECRET-KEY", environment.getRequiredProperty("ALPACA_API_SECRET_KEY"))
+                .baseUrl("https://data.alpaca.markets").build();
+    }
     /**
      * Should strictly be used only in the local environment.
      */

@@ -1,7 +1,9 @@
 package co.grtk.srcprofit.service;
 
+import co.grtk.srcprofit.dto.AlpacaQuoteDto;
+import co.grtk.srcprofit.dto.AlpacaQuotesDto;
+import co.grtk.srcprofit.dto.IbkrMarketDataDto;
 import co.grtk.srcprofit.dto.InstrumentDto;
-import co.grtk.srcprofit.dto.MarketDataDto;
 import co.grtk.srcprofit.entity.InstrumentEntity;
 import co.grtk.srcprofit.mapper.PositionMapper;
 import co.grtk.srcprofit.repository.InstrumentRepository;
@@ -12,7 +14,9 @@ import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 @Service
 public class InstrumentService {
@@ -55,24 +59,56 @@ public class InstrumentService {
     }
 
     @Transactional
-    public void saveMarketData(List<MarketDataDto> marketDataDtoList) {
+    public void saveIbkrMarketData(List<IbkrMarketDataDto> ibkrMarketDataDtoList) {
         List<InstrumentEntity> ibkrInstrumentEntities = instrumentRepository.findAllInstrument();
         for ( InstrumentEntity instrumentEntity : ibkrInstrumentEntities) {
-            Optional<MarketDataDto> result = marketDataDtoList.stream()
+            Optional<IbkrMarketDataDto> result = ibkrMarketDataDtoList.stream()
                     .filter(dto -> dto.getConid().equals(instrumentEntity.getConid()))
                     .findFirst();
             if (result.isPresent()) {
-                MarketDataDto marketDataDto = result.get();
-                instrumentEntity.setPrice(PositionMapper.parseDouble(marketDataDto.getPriceStr(), instrumentEntity.getPrice()));
-                instrumentEntity.setUpdated(marketDataDto.getUpdated());
-                instrumentEntity.setName(marketDataDto.getCompanyName());
-                if(marketDataDto.getChange()!=null)
-                    instrumentEntity.setChange(marketDataDto.getChange());
-                if(marketDataDto.getChangePercent()!=null)
-                    instrumentEntity.setChangePercent(marketDataDto.getChangePercent());
+                IbkrMarketDataDto ibkrMarketDataDto = result.get();
+                instrumentEntity.setPrice(PositionMapper.parseDouble(ibkrMarketDataDto.getPriceStr(), instrumentEntity.getPrice()));
+                instrumentEntity.setUpdated(ibkrMarketDataDto.getUpdated());
+                instrumentEntity.setName(ibkrMarketDataDto.getCompanyName());
+                if(ibkrMarketDataDto.getChange()!=null)
+                    instrumentEntity.setChange(ibkrMarketDataDto.getChange());
+                if(ibkrMarketDataDto.getChangePercent()!=null)
+                    instrumentEntity.setChangePercent(ibkrMarketDataDto.getChangePercent());
                 instrumentRepository.save(instrumentEntity);
             }
         }
+    }
+
+    @Transactional
+    public void saveAlpacaQuotes(AlpacaQuotesDto alpacaQuotesDto) {
+        List<InstrumentEntity> ibkrInstrumentEntities = instrumentRepository.findAllInstrument();
+        for ( Map.Entry<String,AlpacaQuoteDto>  alpacaQuoteDtoEntry: alpacaQuotesDto.getQuotes().entrySet()) {
+            Optional<InstrumentEntity> result = ibkrInstrumentEntities.stream()
+                    .filter(instrumentEntity -> alpacaQuoteDtoEntry.getKey().equals(instrumentEntity.getTicker()))
+                    .findFirst();
+            InstrumentEntity instrumentEntity;
+            if(result.isPresent()) {
+                instrumentEntity = result.get();
+                instrumentEntity.setPrice(alpacaQuoteDtoEntry.getValue().getMidPrice());
+            } else {
+                instrumentEntity = new InstrumentEntity();
+                instrumentEntity.setTicker(alpacaQuoteDtoEntry.getKey());
+            }
+            instrumentEntity.setPrice(alpacaQuoteDtoEntry.getValue().getMidPrice());
+            instrumentRepository.save(instrumentEntity);
+        }
+    }
+
+    public String buildTickerCsv(List<InstrumentDto> instruments) {
+        return instruments.stream()
+                .map(dto -> String.valueOf(dto.getTicker()))
+                .collect(Collectors.joining(","));
+    }
+
+    public String buildConidCsv(List<InstrumentDto> instruments) {
+        return instruments.stream()
+                .map(dto -> String.valueOf(dto.getConid()))
+                .collect(Collectors.joining(","));
     }
 
 }

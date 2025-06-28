@@ -25,7 +25,7 @@
             <div class="card">
                 <div class="card-body">
                     @if(positionDto.getId() != null)
-                    <h5 class="card-title">Position Calculator #${positionDto.getId()}</h5>
+                    <h5 class="card-title">Position Calculator</h5>
                     @else
                         <h5 class="card-title">Position Calculator</h5>
                     @endif
@@ -57,12 +57,23 @@
                             <label for="ticker" class="form-label">Ticker *</label>
                             <input id="ticker" name="ticker" required type="text" class="form-control text-uppercase" value="${positionDto.getTicker()}">
                         </div>
-
-                        <div class="col-md-3">
+                        <div class="col-md-2">
+                            <label for="type" class="form-label">Type *</label>
+                            <select id="type" name="type" required class="form-select">
+                                @for(var type : OptionType.values())
+                                    @if(type.equals(positionDto.getType()))
+                                        <option selected="selected">${type.getCode()}</option>
+                                    @else
+                                        <option>${type.getCode()}</option>
+                                    @endif
+                                @endfor
+                            </select>
+                        </div>
+                        <div class="col-md-2">
                             <label for="tradeDate" class="form-label">Trade Date *</label>
                             <input id="tradeDate" name="startDate" type="date" required class="form-control" value="${positionDto.getTradeDateString()}">
                         </div>
-                        <div class="col-md-3">
+                        <div class="col-md-2">
                             <label for="expirationDate" class="form-label">Expiration Date *</label>
                             <input id="expirationDate" name="expirationDate" type="date" required class="form-control" value="${positionDto.getExpirationDateString()}">
                         </div>
@@ -71,7 +82,7 @@
                             <input id="positionValue" name="positionValue" type="number" required class="form-control" step="0.01" value="${positionDto.getPositionValue()}">
                         </div>
                         <div class="col-md-2">
-                            <label for="tradePrice" class="form-label">Trade Price</label>
+                            <label for="tradePrice" class="form-label">Trade Price *</label>
                             <input id="tradePrice" name="tradePrice" type="number" class="form-control" step="0.01" value="${positionDto.getTradePrice()}">
                         </div>
 
@@ -92,11 +103,11 @@
                             <label for="daysBetween" class="form-label">Days Between</label>
                             <input id="daysBetween" type="number" disabled class="form-control" value="${positionDto.getDaysBetween()}">
                         </div>
-                        <div class="col-md-1">
+                        <div class="col-md-2">
                             <label for="roi" class="form-label">R.O.I %</label>
                             <input id="roi" type="number" disabled class="form-control" value="${positionDto.getAnnualizedRoiPercent()}">
                         </div>
-                        <div class="col-md-1">
+                        <div class="col-md-2">
                             <label for="probability" class="form-label">P.O.P %</label>
                             <input id="probability" type="number" disabled class="form-control" value="${positionDto.getProbability()}">
                         </div>
@@ -106,14 +117,7 @@
                                 <input  id="daysLeft" type="number" disabled class="form-control" value="${positionDto.getDaysLeft()}" >
                             </fieldset>
                         </div>
-                        <div class="col-md-2">
-                            <label for="unRealizedProfitOrLoss" class="form-label">UnRealized P&L</label>
-                            <input id="unRealizedProfitOrLoss" name="unRealizedProfitOrLoss" type="number" disabled class="form-control" step="0.01" value="${positionDto.getUnRealizedProfitOrLoss()}">
-                        </div>
-                        <div class="col-md-2">
-                            <label for="realizedProfitOrLoss" class="form-label">Realized P&L</label>
-                            <input id="realizedProfitOrLoss" name="realizedProfitOrLoss" type="number" disabled class="form-control" step="0.01" value="${positionDto.getRealizedProfitOrLoss()}">
-                        </div>
+
                         <div class="col-md-2">
                             <label for="breakEven" class="form-label">Break Even</label>
                             <input id="breakEven" name="breakEven" type="number" disabled class="form-control" step="0.01" value="${positionDto.getBreakEven()}">
@@ -149,120 +153,6 @@
             </div>
         </div>
     </div><!-- End Extra Large Modal-->
-    @if(openOptions != null)
-        <div class="row">
-            <div class="col-lg-12">
-                <div class="card">
-                    <div class="card-body">
-                        <h5 class="card-title">Open Positions <span></span></h5>
-
-                        <table id="datatable" class="table table-borderless">
-                            <thead class="text-center">
-                            <tr style="cursor: pointer;">
-                                <th scope="col">#</th>
-                                <th scope="col">Code</th>
-                                <th scope="col">Symbol</th>
-                                <th scope="col">TradeDate</th>
-                                <th scope="col">Expiration</th>
-                                <th scope="col">DaysLeft</th>
-                                <th scope="col">Value</th>
-                                <th scope="col">MrktValue</th>
-                                <th scope="col">Type</th>
-                                <th scope="col">Price</th>
-                                <th scope="col">Days</th>
-                                <th scope="col">Status</th>
-                            </tr>
-                            </thead>
-                            <tbody class="text-end">
-                            @for(var option : openOptions )
-                                <tr style="cursor: pointer;">
-                                    <th style="color:${option.getColor()};">${option.getId()}</th>
-                                    <th style="color:${option.getColor()};text-wrap: nowrap;">${option.getCode()}</th>
-                                    <td class="text-uppercase">${option.getTicker()}</td>
-                                    <td>${option.getTradeDateString()}</td>
-                                    <td>${option.getExpirationDateString()}</td>
-                                    <td>${option.getDaysLeft()}</td>
-                                    <td>${option.getPositionValue()}</td>
-                                    <td>${option.getMarketValue()}</td>
-                                    <td>${option.getType()}</td>
-                                    <td>${option.getTradePrice()}</td>
-                                    <td>${option.getDaysBetween()}</td>
-                                    @if(OptionStatus.PENDING.equals(option.getStatus()))
-                                        <td class="badge bg-warning">${option.getStatus()}</td>
-                                    @elseif(OptionStatus.CLOSED.equals(option.getStatus()))
-                                        <td class="badge bg-success">${option.getStatus()}</td>
-                                    @else
-                                        <td class="badge bg-danger">${option.getStatus()}</td>
-                                    @endif
-                                </tr>
-                            @endfor
-                            </tbody>
-                        </table>
-
-                    </div>
-
-                </div>
-            </div>
-        </div>
-    @endif
-
-    @if(optionHistory != null)
-    <div class="row">
-        <div class="col-lg-12">
-            <div class="card">
-                <div class="card-body">
-                    <h5 class="card-title">Position History <span></span></h5>
-
-                    <table id="datatable" class="table table-borderless">
-                        <thead class="text-center">
-                        <tr style="cursor: pointer;">
-                            <th scope="col">#</th>
-                            <th scope="col">Code</th>
-                            <th scope="col">Symbol</th>
-                            <th scope="col">TradeDate</th>
-                            <th scope="col">Expiration</th>
-                            <th scope="col">DaysLeft</th>
-                            <th scope="col">Value</th>
-                            <th scope="col">MrktValue</th>
-                            <th scope="col">Type</th>
-                            <th scope="col">Price</th>
-                            <th scope="col">Days</th>
-                            <th scope="col">Status</th>
-                        </tr>
-                        </thead>
-                        <tbody class="text-end">
-                        @for(var option : optionHistory )
-                            <tr style="cursor: pointer;">
-                                <th style="color:${option.getColor()};">${option.getId()}</th>
-                                <th style="color:${option.getColor()};text-wrap: nowrap;">${option.getCode()}</th>
-                                <td class="text-uppercase">${option.getTicker()}</td>
-                                <td>${option.getTradeDateString()}</td>
-                                <td>${option.getExpirationDateString()}</td>
-                                <td>${option.getDaysLeft()}</td>
-                                <td>${option.getPositionValue()}</td>
-                                <td>${option.getMarketValue()}</td>
-                                <td>${option.getType()}</td>
-                                <td>${option.getTradePrice()}</td>
-                                <td>${option.getDaysBetween()}</td>
-                                @if(OptionStatus.PENDING.equals(option.getStatus()))
-                                    <td class="badge bg-warning">${option.getStatus()}</td>
-                                @elseif(OptionStatus.CLOSED.equals(option.getStatus()))
-                                    <td class="badge bg-success">${option.getStatus()}</td>
-                                @else
-                                    <td class="badge bg-danger">${option.getStatus()}</td>
-                                @endif
-                            </tr>
-                        @endfor
-                        </tbody>
-                    </table>
-
-                </div>
-
-            </div>
-        </div>
-    </div>
-    @endif
-
 </section>
 
 <script>

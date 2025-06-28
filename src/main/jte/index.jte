@@ -108,11 +108,11 @@
         <a class="nav-link collapsed" href="#"
            hx-push-url="true"
            hx-indicator="#spinner"
-           hx-get="/positionForm"
+           hx-get="/calculatePosition"
            hx-trigger="click"
            hx-target="#main"
            hx-swap="innerHTML"
-           hx-on::afterRequest="console.log('positionForm')">
+           hx-on::afterRequest="console.log('calculatePosition')">
           <i class="bi bi-card-list"></i>
           <span>Position Calculator</span>
         </a>

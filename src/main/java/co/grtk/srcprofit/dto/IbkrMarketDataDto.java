@@ -2,7 +2,7 @@ package co.grtk.srcprofit.dto;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 
-public class MarketDataDto {
+public class IbkrMarketDataDto {
     @JsonProperty("conid")
     private Long conid;
 
@@ -82,7 +82,7 @@ public class MarketDataDto {
 
     @Override
     public String toString() {
-        return "MarketDataDto{" +
+        return "IbkrMarketDataDto{" +
                 "conid=" + conid +
                 ", ticker='" + ticker + '\'' +
                 ", priceStr='" + priceStr + '\'' +

@@ -1,6 +1,13 @@
 gg:
   jte:
     development-mode: true
+ibkr:
+  data-url: ${IBKR_DATA_URL}
+
+alpaca:
+  data-url: ${ALPACA_DATA_URL}
+  api-key: ${ALPACA_API_KEY}
+  secret-key: ${ALPACA_API_SECRET_KEY}
 
 spring:
   application:

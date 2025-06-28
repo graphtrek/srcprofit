@@ -130,6 +130,9 @@ public class InstrumentEntity {
     }
 
     public Double getOptionPrice() {
+        if(price == null) {
+            return 0.0;
+        }
         return Math.round(price * 100 * 100.0) / 100.0;
     }
 

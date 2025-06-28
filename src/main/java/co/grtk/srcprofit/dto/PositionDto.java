@@ -40,6 +40,7 @@ public class PositionDto {
     LocalDate expirationDate;
     Double marketValue;
     Double marketVsPositionsPercentage;
+    Double breakEven;
 
 
     public String getTradeDateString() {
@@ -270,6 +271,14 @@ public class PositionDto {
         this.marketVsPositionsPercentage = marketVsPositionsPercentage;
     }
 
+    public Double getBreakEven() {
+        return breakEven;
+    }
+
+    public void setBreakEven(Double breakEven) {
+        this.breakEven = breakEven;
+    }
+
     @Override
     public String toString() {
         return "PositionDto{" +
@@ -300,6 +309,7 @@ public class PositionDto {
                 ", expirationDate=" + expirationDate +
                 ", marketValue=" + marketValue +
                 ", marketVsPositionsPercentage=" + marketVsPositionsPercentage +
+                ", breakEven=" + breakEven +
                 '}';
     }
 }

@@ -28,6 +28,7 @@ public class PositionMapper {
         Long parentId = parseLong(formData.getFirst("parentId"), null);
         String ticker = formData.getFirst("ticker");
         LocalDate startDate = toLocalDate(formData.getFirst("startDate"));
+        LocalDate expirationDate = toLocalDate(formData.getFirst("expirationDate"));
 
         String optionType = formData.getFirst("type");
         String note = formData.getFirst("note");
@@ -36,19 +37,21 @@ public class PositionMapper {
         Double marketValue = parseDouble(formData.getFirst("marketValue"), null);
         Double positionValue = parseDouble(formData.getFirst("positionValue"), null);
         Double tradePrice = parseDouble(formData.getFirst("tradePrice"), null);
-        LocalDate expirationDate = toLocalDate(formData.getFirst("expirationDate"));
+
+        Double coveredPositionValue = parseDouble(formData.getFirst("coveredPositionValue"), null);
         String status = formData.getFirst("status");
         String color = formData.getFirst("color");
-        //Integer realizedProfitOrLoss = parseInt(formData.getFirst("realizedProfitOrLoss"), null);
 
         PositionDto positionDto = new PositionDto();
         positionDto.setId(id);
         positionDto.setParentId(parentId);
         positionDto.setTicker(ticker);
+        if(startDate == null)
+            startDate = LocalDate.now();
         positionDto.setTradeDate(startDate);
         positionDto.setColor(color);
         positionDto.setAssetClass(AssetClass.OPT);
-        //positionDto.setRealizedProfitOrLoss(realizedProfitOrLoss);
+        positionDto.setCoveredPositionValue(coveredPositionValue);
         positionDto.setType(OptionType.fromCode(optionType));
 
         Optional.ofNullable(status)
@@ -94,9 +97,19 @@ public class PositionMapper {
             return;
         }
 
-        if(dto.getTradePrice() == null)
-           dto.setTradePrice(Math.round(dto.getPositionValue() * 0.0014 * daysBetween * 100.0) / 100.0);
+        double positionValue = dto.getPositionValue();
 
+        if(dto.getTradePrice() == null)
+           dto.setTradePrice(Math.round(positionValue * 0.0014 * daysBetween * 100.0) / 100.0);
+
+        double tradePrice = dto.getTradePrice();
+        OptionType type = dto.getType();
+
+        if (tradePrice > 0 && type == OptionType.PUT) {
+            dto.setBreakEven(round2Digits(positionValue - tradePrice));
+        } else if (tradePrice > 0 && type == OptionType.CALL) {
+            dto.setBreakEven(round2Digits(positionValue + tradePrice));
+        }
 
         float roiBasePrice = dto.getTradePrice().floatValue();
         if(dto.getFee() != null) 
@@ -104,13 +117,13 @@ public class PositionMapper {
         
         float roiPerDay = abs(roiBasePrice) / daysBetween;
         float annualizedRoi = roiPerDay * 365;
-        float roiPercent = (annualizedRoi / dto.getPositionValue().floatValue()) * 100;
+        double roiPercent = (annualizedRoi / positionValue) * 100;
         
-        dto.setAnnualizedRoiPercent(Math.round(roiPercent));
+        dto.setAnnualizedRoiPercent((int)Math.round(roiPercent));
 
         if(dto.getMarketValue() == null )
             return;
-        BigDecimal tradeValue = BigDecimal.valueOf(dto.getPositionValue());
+        BigDecimal tradeValue = BigDecimal.valueOf(positionValue);
         double marketMean =  dto.getMarketValue(); // jelenlegi vagy várt érték
         double dailyStdDev = marketMean * 0.05;  // napi szórás
 
@@ -206,6 +219,10 @@ public class PositionMapper {
         String formattedStrike = String.format("%08d", scaledStrike);
 
         return String.format("%-6s%s%s%s", symbol, formattedDate, typeChar, formattedStrike);
+    }
+
+    public static double round2Digits(double value) {
+        return Math.round(value * 100.0) / 100.0;
     }
 
 

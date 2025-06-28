@@ -1,8 +1,10 @@
 package co.grtk.srcprofit.controller;
 
+import co.grtk.srcprofit.dto.AlpacaQuoteDto;
 import co.grtk.srcprofit.dto.InstrumentDto;
 import co.grtk.srcprofit.dto.PositionDto;
 import co.grtk.srcprofit.mapper.PositionMapper;
+import co.grtk.srcprofit.service.AlpacaService;
 import co.grtk.srcprofit.service.InstrumentService;
 import co.grtk.srcprofit.service.OptionService;
 import org.slf4j.Logger;
@@ -20,11 +22,14 @@ import java.time.LocalDate;
 import java.util.List;
 import java.util.Optional;
 
+import static co.grtk.srcprofit.mapper.PositionMapper.round2Digits;
+
 @Controller
 public class PositionController {
 
     private static final Logger log = LoggerFactory.getLogger(PositionController.class);
     private static final String POSITION_FORM_PATH = "position-form";
+    private static final String POSITION_CALCULATOR_PATH = "position-calculator";
     private static final String MODEL_ATTRIBUTE_DTO = "positionDto";
     private static final String MODEL_ATTRIBUTE_OPTION_OPEN = "openOptions";
     private static final String MODEL_ATTRIBUTE_OPTION_HISTORY = "optionHistory";
@@ -33,16 +38,20 @@ public class PositionController {
 
     private final OptionService optionService;
     private final InstrumentService instrumentService;
+    private final AlpacaService alpacaService;
 
-    public PositionController(OptionService optionService, InstrumentService instrumentService) {
+    public PositionController(OptionService optionService, InstrumentService instrumentService, AlpacaService alpacaService) {
         this.optionService = optionService;
         this.instrumentService = instrumentService;
+        this.alpacaService = alpacaService;
     }
 
-    @GetMapping("/positionForm")
-    public String getOptionForm(Model model) {
-        model.addAttribute(MODEL_ATTRIBUTE_DTO, new PositionDto());
+    @GetMapping("/calculatePosition")
+    public String getPositionForm(Model model) {
         model.addAttribute(MODEL_ATTRIBUTE_SUCCESS, null);
+        PositionDto positionDto = new PositionDto();
+        positionDto.setTradeDate(LocalDate.now());
+        model.addAttribute(MODEL_ATTRIBUTE_DTO, positionDto);
         return POSITION_FORM_PATH;
     }
 
@@ -50,10 +59,10 @@ public class PositionController {
     public String calculatePosition(@RequestBody MultiValueMap<String, String> formData, Model model) {
         log.info("calculatePosition formData {}", formData);
         PositionDto positionDto = PositionMapper.mapFromData(formData);
+        getMarketValue(positionDto);
         fillPositionForm(positionDto, model);
         return POSITION_FORM_PATH;
     }
-
 
     @GetMapping("/positions")
     public String positions(Model model) {
@@ -77,6 +86,7 @@ public class PositionController {
         log.info("getPosition ticker {}", ticker);
         PositionDto positionDto = new PositionDto();
         positionDto.setTicker(ticker);
+        getMarketValue(positionDto);
         fillPositionForm(positionDto, model);
         return POSITION_FORM_PATH;
     }
@@ -103,5 +113,16 @@ public class PositionController {
         }
         optionService.calculatePosition(positionDto,openOptions,optionHistory);
         model.addAttribute(MODEL_ATTRIBUTE_DTO, positionDto);
+    }
+
+    private void getMarketValue(PositionDto positionDto) {
+        Optional.ofNullable(alpacaService.getMarketData(positionDto.getTicker()))
+                .map(data -> {
+                    instrumentService.saveAlpacaQuotes(data);
+                    return data.getQuotes();
+                })
+                .map(quotes -> quotes.get(positionDto.getTicker()))
+                .map(AlpacaQuoteDto::getAskPrice)
+                .ifPresent(price ->positionDto.setMarketValue(round2Digits(price * 100)));
     }
 }

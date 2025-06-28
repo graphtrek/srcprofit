@@ -28,6 +28,7 @@ import java.util.Objects;
 import java.util.Optional;
 
 import static co.grtk.srcprofit.mapper.PositionMapper.calculateAndSetAnnualizedRoi;
+import static co.grtk.srcprofit.mapper.PositionMapper.round2Digits;
 import static org.apache.commons.csv.CSVParser.parse;
 
 @Service
@@ -111,18 +112,18 @@ public class OptionService {
         Double collectedPremium = 0.0;
         Double marketValue = 0.0;
         Double coveredPositionValue = 0.0;
-        for (PositionDto dto : closedPositions) {
-            collectedPremium += dto.getTradePrice();
-            if(OptionType.PUT.equals(dto.getType()))
-                realizedProfitOrLoss += dto.getTradePrice();
-        }
-        positionDto.setRealizedProfitOrLoss(Math.round(realizedProfitOrLoss * 100.0) / 100.0);
-
         Double unRealizedProfitOrLoss = 0.0;
         LocalDate startDate = LocalDate.now();
         LocalDate endDate = LocalDate.now();
-
         Double positionValue = 0.0;
+        Double breakEven = 0.0;
+
+        for (PositionDto dto : closedPositions) {
+            collectedPremium += dto.getTradePrice();
+            realizedProfitOrLoss += dto.getTradePrice();
+        }
+        positionDto.setRealizedProfitOrLoss(round2Digits(realizedProfitOrLoss));
+
         for (PositionDto dto : openPositions) {
             if(dto.getTradeDate().isBefore(startDate)) {
                 startDate = dto.getTradeDate();
@@ -132,39 +133,42 @@ public class OptionService {
             }
 
             collectedPremium += dto.getTradePrice();
+            unRealizedProfitOrLoss += dto.getTradePrice();
 
             if(OptionType.PUT.equals(dto.getType())) {
-                unRealizedProfitOrLoss += dto.getTradePrice();
                 if (dto.getTradePrice() >= 0) { //PUT SELL
-                    positionValue += dto.getPositionValue();
-                    coveredPositionValue += dto.getPositionValue();
                     marketValue += dto.getMarketValue();
-                } else {
-                    coveredPositionValue -= dto.getPositionValue();
+                    positionValue += dto.getPositionValue();
+
+                } else { // PUT BUY
+                    coveredPositionValue += dto.getPositionValue();
+
                 }
-                log.info("ticker: {}, positionValue: {} coveredPoitionValue: {}",
-                        dto.getTicker(), positionValue, coveredPositionValue);
             } else {
-                //unRealizedProfitOrLoss += dto.getTradePrice();
                 if (dto.getTradePrice() >= 0) {// CALL SELL
-                    //positionValue += dto.getPositionValue();
-                    //coveredPositionValue += dto.getPositionValue();
-                    //marketValue += dto.getMarketValue();
+                    positionValue += dto.getPositionValue();
+                    marketValue += dto.getMarketValue();
+                    coveredPositionValue += dto.getTradePrice();
                 }
+
             }
-
-
+            positionDto.setType(dto.getType());
             calculateAndSetAnnualizedRoi(dto);
+            if(dto.getBreakEven() != null)
+                breakEven += dto.getBreakEven();
+            else
+                breakEven -= dto.getTradePrice();
         }
 
-        if(positionDto.getUnRealizedProfitOrLoss() == null)
-            positionDto.setUnRealizedProfitOrLoss(Math.round(unRealizedProfitOrLoss * 100.0) / 100.0);
 
         if(positionDto.getTradePrice() == null)
-            positionDto.setTradePrice(Math.round(unRealizedProfitOrLoss * 100.0) / 100.0);
+            positionDto.setTradePrice(round2Digits(unRealizedProfitOrLoss));
+
+        if(positionDto.getUnRealizedProfitOrLoss() == null)
+            positionDto.setUnRealizedProfitOrLoss(round2Digits(unRealizedProfitOrLoss));
 
         if(positionDto.getPositionValue() == null)
-            positionDto.setPositionValue(Math.round(positionValue * 100.0) / 100.0);
+            positionDto.setPositionValue(round2Digits(positionValue));
 
         if(coveredPositionValue == 0)
             coveredPositionValue = positionDto.getPositionValue();
@@ -178,11 +182,17 @@ public class OptionService {
         if(positionDto.getMarketValue() == null)
             positionDto.setMarketValue(marketValue);
 
-        positionDto.setCollectedPremium(Math.round(collectedPremium * 100.0) / 100.0);
-        positionDto.setCoveredPositionValue(Math.round(coveredPositionValue * 100.0) / 100.0);
+        positionDto.setCollectedPremium(round2Digits(collectedPremium));
+        positionDto.setCoveredPositionValue(round2Digits(coveredPositionValue));
         double marketVsPositionsPercentage = ((marketValue / positionValue) * 100) - 100;
-        positionDto.setMarketVsPositionsPercentage(Math.round(marketVsPositionsPercentage * 100.0) / 100.0);
+        positionDto.setMarketVsPositionsPercentage(round2Digits(marketVsPositionsPercentage));
+
+
+        log.info("positionDto: {}", positionDto);
         calculateAndSetAnnualizedRoi(positionDto);
+        //if(breakEven > 0)
+        //    breakEven = breakEven / openPositions.size();
+        positionDto.setBreakEven(round2Digits(breakEven));
     }
 
     @Transactional

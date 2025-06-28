@@ -1,8 +1,8 @@
 package co.grtk.srcprofit.controller;
 
+import co.grtk.srcprofit.dto.IbkrMarketDataDto;
 import co.grtk.srcprofit.dto.IbkrWatchlistDto;
 import co.grtk.srcprofit.dto.InstrumentDto;
-import co.grtk.srcprofit.dto.MarketDataDto;
 import co.grtk.srcprofit.service.IbkrService;
 import co.grtk.srcprofit.service.InstrumentService;
 import org.springframework.stereotype.Controller;
@@ -33,9 +33,9 @@ public class InstrumentController {
     public String watchlist(Model model) {
         IbkrWatchlistDto ibkrWatchlistDto  = ibkrService.getIbkrWatchlist();
         instrumentService.refreshWatchlist(ibkrWatchlistDto.getInstruments());
-        String conidCSV = ibkrService.buildConidList(ibkrWatchlistDto.getInstruments());
-        List<MarketDataDto> marketDataDtos = ibkrService.getMarketDataSnapshots(conidCSV);
-        instrumentService.saveMarketData(marketDataDtos);
+        String conidCSV = instrumentService.buildConidCsv(ibkrWatchlistDto.getInstruments());
+        List<IbkrMarketDataDto> ibkrMarketDataDtos = ibkrService.getMarketDataSnapshots(conidCSV);
+        instrumentService.saveIbkrMarketData(ibkrMarketDataDtos);
         List<InstrumentDto> instruments = instrumentService.loadAllInstruments();
         model.addAttribute("instruments", instruments);
         return INSTRUMENTS_PAGE_PATH;
@@ -44,11 +44,12 @@ public class InstrumentController {
     @GetMapping("/marketData")
     public String marketData(Model model) {
         List<InstrumentDto> instruments = instrumentService.loadAllInstruments();
-        String conidCSV = ibkrService.buildConidList(instruments);
-        List<MarketDataDto> marketDataDtos = ibkrService.getMarketDataSnapshots(conidCSV);
-        instrumentService.saveMarketData(marketDataDtos);
+        String conidCSV = instrumentService.buildConidCsv(instruments);
+        List<IbkrMarketDataDto> ibkrMarketDataDtos = ibkrService.getMarketDataSnapshots(conidCSV);
+        instrumentService.saveIbkrMarketData(ibkrMarketDataDtos);
         instruments = instrumentService.loadAllInstruments();
         model.addAttribute("instruments", instruments);
         return INSTRUMENTS_PAGE_PATH;
     }
+
 }

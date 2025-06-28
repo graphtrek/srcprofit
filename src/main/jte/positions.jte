@@ -90,7 +90,7 @@
                                 <div class="ps-3">
                                     <h6 class="currency-usd">${positionDto.getPositionValue()}</h6>
                                     <span class="text-success small pt-1 fw-bold currency-usd">${positionDto.getCoveredPositionValue()}</span>
-                                    <span class="text-muted small pt-2 ps-1">Cash Covered</span>
+                                    <span class="text-muted small pt-2 ps-1">Covered</span>
                                 </div>
                             </div>
 
