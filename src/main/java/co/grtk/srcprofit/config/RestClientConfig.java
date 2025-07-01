@@ -3,6 +3,7 @@ package co.grtk.srcprofit.config;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.core.env.Environment;
+import org.springframework.http.MediaType;
 import org.springframework.http.client.SimpleClientHttpRequestFactory;
 import org.springframework.web.client.RestClient;
 
@@ -25,18 +26,23 @@ public class RestClientConfig {
     @Bean(name = "ibkrRestClient")
     public RestClient ibkrRestClient() {
         disableSSLCertificateValidation();
-        return RestClient.builder().requestFactory(
-                new SimpleClientHttpRequestFactory())
+        return RestClient.builder()
+                .requestFactory(new SimpleClientHttpRequestFactory())
                 .baseUrl(environment.getRequiredProperty("IBKR_DATA_URL")).build();
     }
 
-
+    @Bean(name = "ibkrFlexRestClient")
+    public RestClient ibkrFlexRestClient() {
+        return RestClient.builder()
+                .defaultHeader("Accept", MediaType.APPLICATION_XML_VALUE)
+                .requestFactory(new SimpleClientHttpRequestFactory())
+                .baseUrl(environment.getRequiredProperty("IBKR_FLEX_URL")).build();
+    }
 
     @Bean(name = "alpacaRestClient")
     public RestClient alpacaRestClient() {
-        disableSSLCertificateValidation();
-        return RestClient.builder().requestFactory(
-                        new SimpleClientHttpRequestFactory())
+        return RestClient.builder()
+                .requestFactory(new SimpleClientHttpRequestFactory())
                 .defaultHeader("APCA-DATA-URL", environment.getRequiredProperty("ALPACA_DATA_URL"))
                 .defaultHeader("APCA-API-KEY-ID", environment.getRequiredProperty("ALPACA_API_KEY"))
                 .defaultHeader("APCA-API-SECRET-KEY", environment.getRequiredProperty("ALPACA_API_SECRET_KEY"))

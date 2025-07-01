@@ -31,7 +31,7 @@ public class InstrumentController {
 
     @GetMapping("/watchlist")
     public String watchlist(Model model) {
-        IbkrWatchlistDto ibkrWatchlistDto  = ibkrService.getIbkrWatchlist();
+        IbkrWatchlistDto ibkrWatchlistDto  = ibkrService.getWatchlist();
         instrumentService.refreshWatchlist(ibkrWatchlistDto.getInstruments());
         String conidCSV = instrumentService.buildConidCsv(ibkrWatchlistDto.getInstruments());
         List<IbkrMarketDataDto> ibkrMarketDataDtos = ibkrService.getMarketDataSnapshots(conidCSV);

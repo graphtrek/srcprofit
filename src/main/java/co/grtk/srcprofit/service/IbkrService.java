@@ -1,10 +1,12 @@
 package co.grtk.srcprofit.service;
 
+import co.grtk.srcprofit.dto.FlexStatementResponse;
 import co.grtk.srcprofit.dto.IbkrMarketDataDto;
 import co.grtk.srcprofit.dto.IbkrWatchlistDto;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.core.ParameterizedTypeReference;
+import org.springframework.core.env.Environment;
 import org.springframework.http.MediaType;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestClient;
@@ -16,12 +18,16 @@ public class IbkrService {
     private static final Logger log = LoggerFactory.getLogger(IbkrService.class);
 
     private final RestClient ibkrRestClient;
+    private final RestClient ibkrFlexRestClient;
+    private final Environment environment;
 
-    public IbkrService(RestClient ibkrRestClient) {
+    public IbkrService(RestClient ibkrRestClient, RestClient ibkrFlexRestClient, Environment environment) {
         this.ibkrRestClient = ibkrRestClient;
+        this.ibkrFlexRestClient = ibkrFlexRestClient;
+        this.environment = environment;
     }
 
-    public IbkrWatchlistDto getIbkrWatchlist() {
+    public IbkrWatchlistDto getWatchlist() {
         IbkrWatchlistDto ibkrWatchlistDto = ibkrRestClient.get()
                 .uri(uriBuilder -> uriBuilder
                         .path("/v1/api/iserver/watchlist")
@@ -47,6 +53,30 @@ public class IbkrService {
                 .body(new ParameterizedTypeReference<List<IbkrMarketDataDto>>() {});
         log.info("getMarketDataSnapshots /v1/api/iserver/marketdata/snapshot returned {}", ibkrMarketDataDtoList);
         return ibkrMarketDataDtoList;
+    }
+
+    public FlexStatementResponse getFlexStatement() {
+        return ibkrFlexRestClient.get()
+                .uri(uriBuilder -> uriBuilder
+                        .path("/SendRequest")
+                        .queryParam("t", environment.getRequiredProperty("IBKR_FLEX_API_TOKEN"))
+                        .queryParam("q",  environment.getRequiredProperty("IBKR_FLEX_STATEMENT_ID"))
+                        .queryParam("v",  "3")
+                        .build())
+                .retrieve()
+                .body(FlexStatementResponse.class);
+    }
+
+    public String getFlexQuery(String referenceCode) {
+        return ibkrFlexRestClient.get()
+                .uri(uriBuilder -> uriBuilder
+                        .path("/GetStatement")
+                        .queryParam("t", environment.getRequiredProperty("IBKR_FLEX_API_TOKEN"))
+                        .queryParam("q",  referenceCode)
+                        .queryParam("v",  "3")
+                        .build())
+                .retrieve()
+                .body(String.class);
     }
 
 }
