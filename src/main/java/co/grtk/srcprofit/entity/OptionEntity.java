@@ -28,48 +28,34 @@ import java.time.LocalDate;
 @DiscriminatorValue("OPT")
 public class OptionEntity extends BaseAsset {
 
-    @Column
-    private Long conid;
-
-    @Column(nullable = false)
-    private String ticker;
-
-    @Column(nullable = false)
-    private String code;
-
-    @Enumerated(EnumType.STRING)
-    private OptionStatus status;
-
-    @Enumerated(EnumType.STRING)
-    private OptionType type;
-
     @Column(nullable = false)
     LocalDate expirationDate;
-
     @Column
     Double fee;
-
     @Column
     Double realizedProfitOrLoss;
-
     @Column
     Integer annualizedRoiPercent;
-
     @Column
     Integer probability;
-
     @Column
     Integer daysBetween;
-
     @Column
     Integer daysLeft;
-
     @Column
     String color;
-
     @Column
     String note;
-
+    @Column
+    private Long conid;
+    @Column(nullable = false)
+    private String ticker;
+    @Column(nullable = false)
+    private String code;
+    @Enumerated(EnumType.STRING)
+    private OptionStatus status;
+    @Enumerated(EnumType.STRING)
+    private OptionType type;
 
     public OptionStatus getStatus() {
         return status;

@@ -1,7 +1,7 @@
 package co.grtk.srcprofit.service;
 
-import co.grtk.srcprofit.dto.AlpacaQuoteDto;
-import co.grtk.srcprofit.dto.AlpacaQuotesDto;
+import co.grtk.srcprofit.dto.AlpacaMarketDataDto;
+import co.grtk.srcprofit.dto.AlpacaSingleAssetDto;
 import co.grtk.srcprofit.dto.IbkrMarketDataDto;
 import co.grtk.srcprofit.dto.InstrumentDto;
 import co.grtk.srcprofit.entity.InstrumentEntity;
@@ -29,6 +29,19 @@ public class InstrumentService {
         this.objectMapper = objectMapper;
     }
 
+    private static InstrumentEntity getInstrumentEntity(Map.Entry<String, AlpacaSingleAssetDto> alpacaMarketDataDtoEntry, Optional<InstrumentEntity> result) {
+        InstrumentEntity instrumentEntity;
+        if (result.isPresent()) {
+            instrumentEntity = result.get();
+            instrumentEntity.setPrice(alpacaMarketDataDtoEntry.getValue().getLatestTrade().getPrice());
+        } else {
+            instrumentEntity = new InstrumentEntity();
+            instrumentEntity.setTicker(alpacaMarketDataDtoEntry.getKey());
+        }
+        instrumentEntity.setPrice(alpacaMarketDataDtoEntry.getValue().getLatestTrade().getPrice());
+        return instrumentEntity;
+    }
+
     public List<InstrumentDto> loadAllInstruments() {
         List<InstrumentEntity> ibkrInstrumentEntities = instrumentRepository.findAllInstrument();
         return ibkrInstrumentEntities.stream()
@@ -43,7 +56,7 @@ public class InstrumentService {
     @Transactional
     public void refreshWatchlist(List<InstrumentDto> instruments) {
         for (InstrumentDto instrumentDto : instruments) {
-            if(instrumentDto.getTicker()==null || instrumentDto.getConid() == null) {
+            if (instrumentDto.getTicker() == null || instrumentDto.getConid() == null) {
                 log.warn("Null instrument in watchlist returned {}", instrumentDto);
                 continue;
             }
@@ -61,7 +74,7 @@ public class InstrumentService {
     @Transactional
     public void saveIbkrMarketData(List<IbkrMarketDataDto> ibkrMarketDataDtoList) {
         List<InstrumentEntity> ibkrInstrumentEntities = instrumentRepository.findAllInstrument();
-        for ( InstrumentEntity instrumentEntity : ibkrInstrumentEntities) {
+        for (InstrumentEntity instrumentEntity : ibkrInstrumentEntities) {
             Optional<IbkrMarketDataDto> result = ibkrMarketDataDtoList.stream()
                     .filter(dto -> dto.getConid().equals(instrumentEntity.getConid()))
                     .findFirst();
@@ -70,9 +83,9 @@ public class InstrumentService {
                 instrumentEntity.setPrice(PositionMapper.parseDouble(ibkrMarketDataDto.getPriceStr(), instrumentEntity.getPrice()));
                 instrumentEntity.setUpdated(ibkrMarketDataDto.getUpdated());
                 instrumentEntity.setName(ibkrMarketDataDto.getCompanyName());
-                if(ibkrMarketDataDto.getChange()!=null)
+                if (ibkrMarketDataDto.getChange() != null)
                     instrumentEntity.setChange(ibkrMarketDataDto.getChange());
-                if(ibkrMarketDataDto.getChangePercent()!=null)
+                if (ibkrMarketDataDto.getChangePercent() != null)
                     instrumentEntity.setChangePercent(ibkrMarketDataDto.getChangePercent());
                 instrumentRepository.save(instrumentEntity);
             }
@@ -80,21 +93,28 @@ public class InstrumentService {
     }
 
     @Transactional
-    public void saveAlpacaQuotes(AlpacaQuotesDto alpacaQuotesDto) {
-        List<InstrumentEntity> ibkrInstrumentEntities = instrumentRepository.findAllInstrument();
-        for ( Map.Entry<String,AlpacaQuoteDto>  alpacaQuoteDtoEntry: alpacaQuotesDto.getQuotes().entrySet()) {
-            Optional<InstrumentEntity> result = ibkrInstrumentEntities.stream()
-                    .filter(instrumentEntity -> alpacaQuoteDtoEntry.getKey().equals(instrumentEntity.getTicker()))
+    public void saveAlpacaMarketData(AlpacaMarketDataDto alpacaMarketDataDto) {
+        List<InstrumentEntity> instrumentEntities = instrumentRepository.findAllInstrument();
+        for (InstrumentEntity instrumentEntity : instrumentEntities) {
+            Optional<Map.Entry<String, AlpacaSingleAssetDto>> result = alpacaMarketDataDto.getQuotes().entrySet().stream()
+                    .filter(dto -> dto.getKey().equals(instrumentEntity.getTicker()))
                     .findFirst();
-            InstrumentEntity instrumentEntity;
-            if(result.isPresent()) {
-                instrumentEntity = result.get();
-                instrumentEntity.setPrice(alpacaQuoteDtoEntry.getValue().getMidPrice());
-            } else {
-                instrumentEntity = new InstrumentEntity();
-                instrumentEntity.setTicker(alpacaQuoteDtoEntry.getKey());
+            if (result.isPresent()) {
+                Map.Entry<String, AlpacaSingleAssetDto> alpacaSingleAssetDtoEntry = result.get();
+                instrumentEntity.setPrice(alpacaSingleAssetDtoEntry.getValue().getLatestTrade().getPrice());
+                instrumentRepository.save(instrumentEntity);
             }
-            instrumentEntity.setPrice(alpacaQuoteDtoEntry.getValue().getMidPrice());
+        }
+    }
+
+    @Transactional
+    public void saveAlpacaQuotes(AlpacaMarketDataDto alpacaMarketDataDto) {
+        List<InstrumentEntity> ibkrInstrumentEntities = instrumentRepository.findAllInstrument();
+        for (Map.Entry<String, AlpacaSingleAssetDto> alpacaMarketDataDtoEntry : alpacaMarketDataDto.getQuotes().entrySet()) {
+            Optional<InstrumentEntity> result = ibkrInstrumentEntities.stream()
+                    .filter(instrumentEntity -> alpacaMarketDataDtoEntry.getKey().equals(instrumentEntity.getTicker()))
+                    .findFirst();
+            InstrumentEntity instrumentEntity = getInstrumentEntity(alpacaMarketDataDtoEntry, result);
             instrumentRepository.save(instrumentEntity);
         }
     }

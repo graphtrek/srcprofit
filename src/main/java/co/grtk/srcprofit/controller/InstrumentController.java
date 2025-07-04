@@ -1,10 +1,8 @@
 package co.grtk.srcprofit.controller;
 
-import co.grtk.srcprofit.dto.IbkrMarketDataDto;
-import co.grtk.srcprofit.dto.IbkrWatchlistDto;
 import co.grtk.srcprofit.dto.InstrumentDto;
-import co.grtk.srcprofit.service.IbkrService;
 import co.grtk.srcprofit.service.InstrumentService;
+import co.grtk.srcprofit.service.MarketDataService;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -13,43 +11,44 @@ import java.util.List;
 
 @Controller
 public class InstrumentController {
+    public static final String MODEL_ATTRIBUTE_INSTRUMENTS = "instruments";
     private static final String INSTRUMENTS_PAGE_PATH = "instruments";
     private final InstrumentService instrumentService;
-    private final IbkrService ibkrService;
+    private final MarketDataService marketDataService;
 
-    public InstrumentController(InstrumentService instrumentService, IbkrService ibkrService) {
+    public InstrumentController(InstrumentService instrumentService, MarketDataService marketDataService) {
         this.instrumentService = instrumentService;
-        this.ibkrService = ibkrService;
+        this.marketDataService = marketDataService;
     }
 
     @GetMapping("/instruments")
     public String ibkrLogin(Model model) {
         List<InstrumentDto> instruments = instrumentService.loadAllInstruments();
-        model.addAttribute("instruments", instruments);
+        model.addAttribute(MODEL_ATTRIBUTE_INSTRUMENTS, instruments);
         return INSTRUMENTS_PAGE_PATH;
     }
 
-    @GetMapping("/watchlist")
-    public String watchlist(Model model) {
-        IbkrWatchlistDto ibkrWatchlistDto  = ibkrService.getWatchlist();
-        instrumentService.refreshWatchlist(ibkrWatchlistDto.getInstruments());
-        String conidCSV = instrumentService.buildConidCsv(ibkrWatchlistDto.getInstruments());
-        List<IbkrMarketDataDto> ibkrMarketDataDtos = ibkrService.getMarketDataSnapshots(conidCSV);
-        instrumentService.saveIbkrMarketData(ibkrMarketDataDtos);
+    @GetMapping("/ibkrWatchlist")
+    public String ibkrWatchlist(Model model) {
+        marketDataService.refreshIbkrMarketData();
         List<InstrumentDto> instruments = instrumentService.loadAllInstruments();
-        model.addAttribute("instruments", instruments);
+        model.addAttribute(MODEL_ATTRIBUTE_INSTRUMENTS, instruments);
         return INSTRUMENTS_PAGE_PATH;
     }
 
-    @GetMapping("/marketData")
-    public String marketData(Model model) {
+    @GetMapping("/ibkrMarketData")
+    public String ibkrMarketData(Model model) {
+        marketDataService.refreshIbkrMarketData();
         List<InstrumentDto> instruments = instrumentService.loadAllInstruments();
-        String conidCSV = instrumentService.buildConidCsv(instruments);
-        List<IbkrMarketDataDto> ibkrMarketDataDtos = ibkrService.getMarketDataSnapshots(conidCSV);
-        instrumentService.saveIbkrMarketData(ibkrMarketDataDtos);
-        instruments = instrumentService.loadAllInstruments();
-        model.addAttribute("instruments", instruments);
+        model.addAttribute(MODEL_ATTRIBUTE_INSTRUMENTS, instruments);
         return INSTRUMENTS_PAGE_PATH;
     }
 
+    @GetMapping("/alpacaMarketData")
+    public String alpacaMarketData(Model model) {
+        marketDataService.refreshAlpacaMarketData();
+        List<InstrumentDto> instruments = instrumentService.loadAllInstruments();
+        model.addAttribute(MODEL_ATTRIBUTE_INSTRUMENTS, instruments);
+        return INSTRUMENTS_PAGE_PATH;
+    }
 }

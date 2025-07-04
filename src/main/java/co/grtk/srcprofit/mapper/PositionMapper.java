@@ -20,7 +20,8 @@ import static java.lang.Math.abs;
 
 public class PositionMapper {
 
-    private PositionMapper() {}
+    private PositionMapper() {
+    }
 
     public static PositionDto mapFromData(MultiValueMap<String, String> formData) {
 
@@ -46,7 +47,7 @@ public class PositionMapper {
         positionDto.setId(id);
         positionDto.setParentId(parentId);
         positionDto.setTicker(ticker);
-        if(startDate == null)
+        if (startDate == null)
             startDate = LocalDate.now();
         positionDto.setTradeDate(startDate);
         positionDto.setColor(color);
@@ -78,7 +79,7 @@ public class PositionMapper {
         }
 
         int daysBetween =
-                (int) ChronoUnit.DAYS.between(dto.getTradeDate(),dto.getExpirationDate()
+                (int) ChronoUnit.DAYS.between(dto.getTradeDate(), dto.getExpirationDate()
                         .plusDays(1)
                         .atStartOfDay());
         if (daysBetween <= 0) {
@@ -88,7 +89,7 @@ public class PositionMapper {
 
         dto.setDaysBetween(daysBetween);
         int daysLeft =
-                (int) ChronoUnit.DAYS.between(LocalDateTime.now(),dto.getExpirationDate()
+                (int) ChronoUnit.DAYS.between(LocalDateTime.now(), dto.getExpirationDate()
                         .plusDays(1)
                         .atStartOfDay());
         dto.setDaysLeft(daysLeft);
@@ -99,8 +100,8 @@ public class PositionMapper {
 
         double positionValue = dto.getPositionValue();
 
-        if(dto.getTradePrice() == null)
-           dto.setTradePrice(Math.round(positionValue * 0.0014 * daysBetween * 100.0) / 100.0);
+        if (dto.getTradePrice() == null)
+            dto.setTradePrice(Math.round(positionValue * 0.0014 * daysBetween * 100.0) / 100.0);
 
         double tradePrice = dto.getTradePrice();
         OptionType type = dto.getType();
@@ -112,19 +113,19 @@ public class PositionMapper {
         }
 
         float roiBasePrice = dto.getTradePrice().floatValue();
-        if(dto.getFee() != null) 
+        if (dto.getFee() != null)
             roiBasePrice -= dto.getFee().floatValue();
-        
+
         float roiPerDay = abs(roiBasePrice) / daysBetween;
         float annualizedRoi = roiPerDay * 365;
         double roiPercent = (annualizedRoi / positionValue) * 100;
-        
-        dto.setAnnualizedRoiPercent((int)Math.round(roiPercent));
 
-        if(dto.getMarketValue() == null )
+        dto.setAnnualizedRoiPercent((int) Math.round(roiPercent));
+
+        if (dto.getMarketValue() == null)
             return;
         BigDecimal tradeValue = BigDecimal.valueOf(positionValue);
-        double marketMean =  dto.getMarketValue(); // jelenlegi vagy várt érték
+        double marketMean = dto.getMarketValue(); // jelenlegi vagy várt érték
         double dailyStdDev = marketMean * 0.05;  // napi szórás
 
         int probability = probabilityMarketExceedsTradeValue(tradeValue, marketMean, dailyStdDev, daysBetween);
@@ -178,7 +179,7 @@ public class PositionMapper {
         NormalDistribution distribution = new NormalDistribution(marketMean, timeAdjustedStdDev);
 
         // P(marketValue > tradeValue) = 1 - CDF(tradeValue)
-        double probability =  1.0 - distribution.cumulativeProbability(trade);
+        double probability = 1.0 - distribution.cumulativeProbability(trade);
 
         // 0–1 közötti valószínűség → opcionálisan szorozhatod 100-zal ha százalék kell
         return (int) (probability * 100);

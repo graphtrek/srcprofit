@@ -44,51 +44,13 @@ public class OptionService {
         this.instrumentRepository = instrumentRepository;
     }
 
-
-    public PositionDto getOptionById(Long id) {
-        log.info("getOptionById {}", id);
-        OptionEntity optionEntity = optionRepository.findById(id).orElse(null);
-        PositionDto positionDto = objectMapper.convertValue(optionEntity, PositionDto.class);
-        positionDto.setTicker(optionEntity.getInstrument().getTicker());
-        return positionDto;
-    }
-
-    public List<PositionDto> getAllOpenOptions(LocalDate startDate) {
-        List<OptionEntity> optionEntities;
-        if(Objects.isNull(startDate))
-            optionEntities = optionRepository.findAllOpen();
-        else
-            optionEntities = optionRepository.findAllOpenFromTradeDate(startDate);
-
-        return getOpenPositionDtos(optionEntities, objectMapper);
-    }
-
-    public List<PositionDto> getAllClosedOptions(LocalDate startDate) {
-        List<OptionEntity> optionEntities;
-        if(Objects.isNull(startDate))
-            optionEntities = optionRepository.findAllClosed();
-        else
-            optionEntities = optionRepository.findAllClosedFromTradeDate(startDate);
-        return getClosedPositionDtos(optionEntities, objectMapper);
-    }
-
-    public List<PositionDto> getOpenOptionsByTicker(String ticker) {
-        List<OptionEntity> optionEntities = optionRepository.findAllOpenByTicker(ticker);
-        return getOpenPositionDtos(optionEntities, objectMapper);
-    }
-
-    public List<PositionDto> getClosedOptionsByTicker(String ticker) {
-        List<OptionEntity> optionEntities = optionRepository.findAllClosedByTicker(ticker);
-        return getClosedPositionDtos(optionEntities, objectMapper);
-    }
-
     private static List<PositionDto> getOpenPositionDtos(List<OptionEntity> optionEntities, ObjectMapper objectMapper) {
         return optionEntities.stream()
                 .map(entity -> {
                     InstrumentEntity instrumentEntity = entity.getInstrument();
                     PositionDto positionDto = objectMapper.convertValue(entity, PositionDto.class);
                     positionDto.setTicker(instrumentEntity.getTicker());
-                    if(OptionStatus.OPEN.equals(entity.getStatus())) {
+                    if (OptionStatus.OPEN.equals(entity.getStatus())) {
                         positionDto.setMarketValue(instrumentEntity.getOptionPrice());
                     }
                     return positionDto;
@@ -106,7 +68,44 @@ public class OptionService {
                 }).toList();
     }
 
-    public void calculatePosition(PositionDto positionDto,List<PositionDto> openPositions , List<PositionDto> closedPositions) {
+    public PositionDto getOptionById(Long id) {
+        log.info("getOptionById {}", id);
+        OptionEntity optionEntity = optionRepository.findById(id).orElse(null);
+        PositionDto positionDto = objectMapper.convertValue(optionEntity, PositionDto.class);
+        positionDto.setTicker(optionEntity.getInstrument().getTicker());
+        return positionDto;
+    }
+
+    public List<PositionDto> getAllOpenOptions(LocalDate startDate) {
+        List<OptionEntity> optionEntities;
+        if (Objects.isNull(startDate))
+            optionEntities = optionRepository.findAllOpen();
+        else
+            optionEntities = optionRepository.findAllOpenFromTradeDate(startDate);
+
+        return getOpenPositionDtos(optionEntities, objectMapper);
+    }
+
+    public List<PositionDto> getAllClosedOptions(LocalDate startDate) {
+        List<OptionEntity> optionEntities;
+        if (Objects.isNull(startDate))
+            optionEntities = optionRepository.findAllClosed();
+        else
+            optionEntities = optionRepository.findAllClosedFromTradeDate(startDate);
+        return getClosedPositionDtos(optionEntities, objectMapper);
+    }
+
+    public List<PositionDto> getOpenOptionsByTicker(String ticker) {
+        List<OptionEntity> optionEntities = optionRepository.findAllOpenByTicker(ticker);
+        return getOpenPositionDtos(optionEntities, objectMapper);
+    }
+
+    public List<PositionDto> getClosedOptionsByTicker(String ticker) {
+        List<OptionEntity> optionEntities = optionRepository.findAllClosedByTicker(ticker);
+        return getClosedPositionDtos(optionEntities, objectMapper);
+    }
+
+    public void calculatePosition(PositionDto positionDto, List<PositionDto> openPositions, List<PositionDto> closedPositions) {
 
         Double realizedProfitOrLoss = 0.0;
         Double collectedPremium = 0.0;
@@ -125,17 +124,17 @@ public class OptionService {
         positionDto.setRealizedProfitOrLoss(round2Digits(realizedProfitOrLoss));
 
         for (PositionDto dto : openPositions) {
-            if(dto.getTradeDate().isBefore(startDate)) {
+            if (dto.getTradeDate().isBefore(startDate)) {
                 startDate = dto.getTradeDate();
             }
-            if(dto.getExpirationDate().isAfter(endDate)) {
+            if (dto.getExpirationDate().isAfter(endDate)) {
                 endDate = dto.getExpirationDate();
             }
 
             collectedPremium += dto.getTradePrice();
             unRealizedProfitOrLoss += dto.getTradePrice();
 
-            if(OptionType.PUT.equals(dto.getType())) {
+            if (OptionType.PUT.equals(dto.getType())) {
                 if (dto.getTradePrice() >= 0) { //PUT SELL
                     marketValue += dto.getMarketValue();
                     positionValue += dto.getPositionValue();
@@ -154,32 +153,31 @@ public class OptionService {
             }
             positionDto.setType(dto.getType());
             calculateAndSetAnnualizedRoi(dto);
-            if(dto.getBreakEven() != null)
+            if (dto.getBreakEven() != null)
                 breakEven += dto.getBreakEven();
             else
                 breakEven -= dto.getTradePrice();
         }
 
-
-        if(positionDto.getTradePrice() == null)
+        if (positionDto.getTradePrice() == null)
             positionDto.setTradePrice(round2Digits(unRealizedProfitOrLoss));
 
-        if(positionDto.getUnRealizedProfitOrLoss() == null)
+        if (positionDto.getUnRealizedProfitOrLoss() == null)
             positionDto.setUnRealizedProfitOrLoss(round2Digits(unRealizedProfitOrLoss));
 
-        if(positionDto.getPositionValue() == null)
+        if (positionDto.getPositionValue() == null)
             positionDto.setPositionValue(round2Digits(positionValue));
 
-        if(coveredPositionValue == 0)
+        if (coveredPositionValue == 0)
             coveredPositionValue = positionDto.getPositionValue();
 
-        if(positionDto.getExpirationDate() == null)
+        if (positionDto.getExpirationDate() == null)
             positionDto.setExpirationDate(endDate);
 
-        if(positionDto.getTradeDate() == null)
+        if (positionDto.getTradeDate() == null)
             positionDto.setTradeDate(startDate);
 
-        if(positionDto.getMarketValue() == null)
+        if (positionDto.getMarketValue() == null)
             positionDto.setMarketValue(marketValue);
 
         positionDto.setCollectedPremium(round2Digits(collectedPremium));
@@ -211,7 +209,7 @@ public class OptionService {
         optionEntity.setAssetClass(AssetClass.OPT);
 
         InstrumentEntity instrumentEntity = instrumentRepository.findByTicker(positionDto.getTicker());
-        if(instrumentEntity == null) {
+        if (instrumentEntity == null) {
             instrumentEntity = new InstrumentEntity();
             instrumentEntity.setTicker(positionDto.getTicker());
             instrumentRepository.save(instrumentEntity);
@@ -226,8 +224,9 @@ public class OptionService {
     }
 
     @Transactional
-    public void csvToOptions(Path path) {
-        try( CSVParser csvRecords = parse(path, StandardCharsets.UTF_8,
+    public int csvToOptions(Path path) {
+        int rowCount = 0;
+        try (CSVParser csvRecords = parse(path, StandardCharsets.UTF_8,
                 CSVFormat.Builder.create()
                         .setHeader()                   // első sor fejléc
                         .setSkipHeaderRecord(true)    // ne olvassa be újra a fejlécet
@@ -249,19 +248,19 @@ public class OptionService {
                 String code = csvRecord.get("Symbol");
                 String fifoPnlRealized = csvRecord.get("FifoPnlRealized");
 
-                if(AssetClass.OPT.getCode().equals(assetClass) &&
+                if (AssetClass.OPT.getCode().equals(assetClass) &&
                         Objects.nonNull(ticker) &&
                         Objects.nonNull(putCall) &&
                         Objects.nonNull(status)) {
 
                     OptionStatus optionStatus = OptionStatus.PENDING;
-                    if("C".equals(status))
+                    if ("C".equals(status))
                         optionStatus = OptionStatus.CLOSED;
                     else
-                       optionStatus = OptionStatus.OPEN;
+                        optionStatus = OptionStatus.OPEN;
 
                     OptionEntity optionEntity = optionRepository.findByConidAndStatus(conid, optionStatus);
-                    if(optionEntity != null)
+                    if (optionEntity != null)
                         continue;
 
                     optionEntity = new OptionEntity();
@@ -269,7 +268,7 @@ public class OptionService {
                     optionEntity.setStatus(optionStatus);
                     optionEntity.setAssetClass(AssetClass.OPT);
 
-                    if("C".equals(putCall))
+                    if ("C".equals(putCall))
                         optionEntity.setType(OptionType.CALL);
                     else
                         optionEntity.setType(OptionType.PUT);
@@ -280,7 +279,7 @@ public class OptionService {
                     optionEntity.setQuantity(Integer.parseInt(quantity));
 
                     InstrumentEntity instrumentEntity = instrumentRepository.findByTicker(ticker);
-                    if(instrumentEntity == null || instrumentEntity.getId() == null) {
+                    if (instrumentEntity == null || instrumentEntity.getId() == null) {
                         instrumentEntity = new InstrumentEntity();
                         instrumentEntity.setTicker(ticker);
                         instrumentEntity.setConid(Long.parseLong(underlyingConid));
@@ -298,26 +297,27 @@ public class OptionService {
                     optionEntity.setTradePrice(tradePrice);
                     optionEntity.setInstrument(instrumentEntity);
 
-                    double marketValue = Math.round(((Double.parseDouble(strike) * 100) + tradePrice)  * 100.0) / 100.0;
+                    double marketValue = Math.round(((Double.parseDouble(strike) * 100) + tradePrice) * 100.0) / 100.0;
                     optionEntity.setMarketValue(marketValue);
 
                     int daysBetween =
-                            (int) ChronoUnit.DAYS.between(optionEntity.getTradeDate(),optionEntity.getExpirationDate()
+                            (int) ChronoUnit.DAYS.between(optionEntity.getTradeDate(), optionEntity.getExpirationDate()
                                     .plusDays(1)
                                     .atStartOfDay());
                     optionEntity.setDaysBetween(daysBetween);
 
                     int daysLeft =
-                            (int) ChronoUnit.DAYS.between(LocalDateTime.now(),optionEntity.getExpirationDate()
+                            (int) ChronoUnit.DAYS.between(LocalDateTime.now(), optionEntity.getExpirationDate()
                                     .plusDays(1)
                                     .atStartOfDay());
                     optionEntity.setDaysLeft(daysLeft);
 
                     optionRepository.save(optionEntity);
                     log.info(csvRecord.toString());
+                    rowCount++;
                 }
             }
-
+            return rowCount;
         } catch (IOException e) {
             throw new RuntimeException("fail to parse CSV file: " + e.getMessage());
         }

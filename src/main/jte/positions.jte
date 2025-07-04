@@ -296,9 +296,9 @@
 
         function datatable() {
             console.log('datatable init');
-
             const tableOpen = new DataTable('#datatableOpenPositions', {
                 perPageSelect: [5, 10, 15, ["All", -1]],
+                columnDefs: [{target: 1, visible: false, searchable: false}], // code hidden
                 order: [[4, 'asc'],[1, 'asc']] // daysLeft, code
             });
 
@@ -310,6 +310,7 @@
 
             const tableClosed = new DataTable('#datatableClosedPositions', {
                 perPageSelect: [5, 10, 15, ["All", -1]],
+                columnDefs: [{target: 1, visible: false, searchable: false}], // code hidden
                 order: [[1, 'asc'],[3, 'desc']] // code, TradeDate
             });
 

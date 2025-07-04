@@ -122,6 +122,7 @@
                         <div class="text-center">
                             <button class="btn btn-primary">Calculate</button>
                             <a id="tradingViewButton" href="https://www.tradingview.com/chart/?symbol=VIX" class="btn btn-info" role="button" target="_blank">TradingView</a>
+                            <a id="perplexityButton" href="https://www.perplexity.ai/finance/" class="btn btn-secondary" role="button" target="_blank">Perplexity</a>
                             <button id="chartButton" type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#ExtralargeModal">
                                 Snapshot Chart
                             </button>
@@ -160,7 +161,7 @@
                             <thead class="text-center">
                             <tr style="cursor: pointer;">
                                 <th scope="col">#</th>
-                                <th scope="col">Code</th>
+<%--                                <th scope="col">Code</th>--%>
                                 <th scope="col">Symbol</th>
                                 <th scope="col">TradeDate</th>
                                 <th scope="col">Expiration</th>
@@ -177,7 +178,7 @@
                             @for(var option : openOptions )
                                 <tr style="cursor: pointer;">
                                     <th style="color:${option.getColor()};">${option.getId()}</th>
-                                    <th style="color:${option.getColor()};text-wrap: nowrap;">${option.getCode()}</th>
+<%--                                    <th style="color:${option.getColor()};text-wrap: nowrap;">${option.getCode()}</th>--%>
                                     <td class="text-uppercase">${option.getTicker()}</td>
                                     <td>${option.getTradeDateString()}</td>
                                     <td>${option.getExpirationDateString()}</td>
@@ -217,7 +218,7 @@
                         <thead class="text-center">
                         <tr style="cursor: pointer;">
                             <th scope="col">#</th>
-                            <th scope="col">Code</th>
+<%--                            <th scope="col">Code</th>--%>
                             <th scope="col">Symbol</th>
                             <th scope="col">TradeDate</th>
                             <th scope="col">Expiration</th>
@@ -234,7 +235,7 @@
                         @for(var option : optionHistory )
                             <tr style="cursor: pointer;">
                                 <th style="color:${option.getColor()};">${option.getId()}</th>
-                                <th style="color:${option.getColor()};text-wrap: nowrap;">${option.getCode()}</th>
+<%--                                <th style="color:${option.getColor()};text-wrap: nowrap;">${option.getCode()}</th>--%>
                                 <td class="text-uppercase">${option.getTicker()}</td>
                                 <td>${option.getTradeDateString()}</td>
                                 <td>${option.getExpirationDateString()}</td>
@@ -272,6 +273,7 @@
 
         const imgSrc = "https://charts2-node.finviz.com/chart.ashx?cs=l&t=ticker&tf=d&s=linear&ct=candle_stick&tm=d&o[0][ot]=sma&o[0][op]=50&o[0][oc]=FF8F33C6&o[1][ot]=sma&o[1][op]=200&o[1][oc]=DCB3326D&o[2][ot]=sma&o[2][op]=20&o[2][oc]=DC32B363&o[3][ot]=patterns&o[3][op]=&o[3][oc]=000";
         const tradingView = "https://www.tradingview.com/chart/?symbol=";
+        const perplexity = "https://www.perplexity.ai/finance/";
         $('#ticker').on("change", function() {
             const ticker = $(this).val();
             if(ticker) {
@@ -291,6 +293,7 @@
             $('#chartImg').attr('src', imgSrc.replace("ticker",ticker));
             $('#chartButton').prop("disabled", false);
             $('#tradingViewButton').attr('href', tradingView+ticker);
+            $('#perplexityButton').attr('href', perplexity+ticker);
         }
 
     });

@@ -35,7 +35,8 @@ public class IbkrService {
                         .build())
                 .accept(MediaType.APPLICATION_JSON)
                 .retrieve()
-                .body(new ParameterizedTypeReference<IbkrWatchlistDto>() {});
+                .body(new ParameterizedTypeReference<IbkrWatchlistDto>() {
+                });
         log.info("getIbkrWatchlist /v1/api/iserver/watchlist returned {}",
                 (ibkrWatchlistDto != null) ? ibkrWatchlistDto.getName() : null);
         return ibkrWatchlistDto;
@@ -50,7 +51,8 @@ public class IbkrService {
                         .build())
                 .accept(MediaType.APPLICATION_JSON)
                 .retrieve()
-                .body(new ParameterizedTypeReference<List<IbkrMarketDataDto>>() {});
+                .body(new ParameterizedTypeReference<List<IbkrMarketDataDto>>() {
+                });
         log.info("getMarketDataSnapshots /v1/api/iserver/marketdata/snapshot returned {}", ibkrMarketDataDtoList);
         return ibkrMarketDataDtoList;
     }
@@ -60,8 +62,8 @@ public class IbkrService {
                 .uri(uriBuilder -> uriBuilder
                         .path("/SendRequest")
                         .queryParam("t", environment.getRequiredProperty("IBKR_FLEX_API_TOKEN"))
-                        .queryParam("q",  environment.getRequiredProperty("IBKR_FLEX_STATEMENT_ID"))
-                        .queryParam("v",  "3")
+                        .queryParam("q", environment.getRequiredProperty("IBKR_FLEX_STATEMENT_ID"))
+                        .queryParam("v", "3")
                         .build())
                 .retrieve()
                 .body(FlexStatementResponse.class);
@@ -72,8 +74,8 @@ public class IbkrService {
                 .uri(uriBuilder -> uriBuilder
                         .path("/GetStatement")
                         .queryParam("t", environment.getRequiredProperty("IBKR_FLEX_API_TOKEN"))
-                        .queryParam("q",  referenceCode)
-                        .queryParam("v",  "3")
+                        .queryParam("q", referenceCode)
+                        .queryParam("v", "3")
                         .build())
                 .retrieve()
                 .body(String.class);

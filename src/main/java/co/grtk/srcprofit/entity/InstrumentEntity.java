@@ -107,7 +107,8 @@ public class InstrumentEntity {
         return options;
     }
 
-    public void setOptions(List<OptionEntity> options) {}
+    public void setOptions(List<OptionEntity> options) {
+    }
 
     public Instant getCreatedAt() {
         return createdAt;
@@ -129,15 +130,15 @@ public class InstrumentEntity {
         return price;
     }
 
+    public void setPrice(Double price) {
+        this.price = price;
+    }
+
     public Double getOptionPrice() {
-        if(price == null) {
+        if (price == null) {
             return 0.0;
         }
         return Math.round(price * 100 * 100.0) / 100.0;
-    }
-
-    public void setPrice(Double price) {
-        this.price = price;
     }
 
     public Long getUpdated() {

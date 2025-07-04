@@ -13,7 +13,7 @@ public interface InstrumentRepository extends JpaRepository<InstrumentEntity, Lo
     @Query("SELECT i " +
             "FROM InstrumentEntity i " +
             "ORDER BY i.ticker ASC")
-    public List<InstrumentEntity> findAllInstrument();
+    List<InstrumentEntity> findAllInstrument();
 
-    public InstrumentEntity findByTicker(String ticker);
+    InstrumentEntity findByTicker(String ticker);
 }

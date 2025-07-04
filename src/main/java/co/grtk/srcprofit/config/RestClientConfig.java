@@ -48,6 +48,7 @@ public class RestClientConfig {
                 .defaultHeader("APCA-API-SECRET-KEY", environment.getRequiredProperty("ALPACA_API_SECRET_KEY"))
                 .baseUrl("https://data.alpaca.markets").build();
     }
+
     /**
      * Should strictly be used only in the local environment.
      */

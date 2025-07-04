@@ -21,33 +21,25 @@ import java.time.LocalDate;
 @MappedSuperclass
 public abstract class BaseAsset {
 
+    @Column(nullable = false)
+    LocalDate tradeDate;
+    @Column(nullable = false)
+    Integer quantity;
+    @Column(nullable = false)
+    Double positionValue;
+    @Column(nullable = false)
+    Double tradePrice;
+    @Column(nullable = false)
+    Double marketValue;
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-
     @JsonIgnore
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "instrumentId", nullable = false)
     private InstrumentEntity instrument;
-
     @Enumerated(EnumType.STRING)
     private AssetClass assetClass;
-
-    @Column(nullable = false)
-    LocalDate tradeDate;
-
-    @Column(nullable = false)
-    Integer quantity;
-
-    @Column(nullable = false)
-    Double positionValue;
-
-    @Column(nullable = false)
-    Double tradePrice;
-
-    @Column(nullable = false)
-    Double marketValue;
-
     @CreationTimestamp(source = SourceType.DB)
     private Instant createdAt;
 

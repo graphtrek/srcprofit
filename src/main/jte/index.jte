@@ -130,38 +130,75 @@
           <span>Instruments</span>
         </a>
       </li><!-- End Instruments -->
+
       <li class="nav-item">
-        <a class="nav-link collapsed" href="#"
-           hx-push-url="true"
-           hx-indicator="#spinner"
-           hx-get="/marketData"
-           hx-trigger="click"
-           hx-target="#main"
-           hx-swap="innerHTML"
-           hx-on::afterRequest="console.log('Refresh Market data')">
-          <i class="bi bi-card-list"></i>
-          <span>Refresh Market Data</span>
+        <a class="nav-link collapsed" data-bs-target="#admin-nav" data-bs-toggle="collapse" href="#" aria-expanded="false">
+          <i class="bi bi-bar-chart"></i><span>Admin</span><i class="bi bi-chevron-down ms-auto"></i>
         </a>
-      </li><!-- End Watchlist -->
-      <li class="nav-item">
-        <a class="nav-link collapsed" href="#"
-           hx-push-url="true"
-           hx-indicator="#spinner"
-           hx-get="/watchlist"
-           hx-trigger="click"
-           hx-target="#main"
-           hx-swap="innerHTML"
-           hx-on::afterRequest="console.log('Reload Watchlist')">
-          <i class="bi bi-card-list"></i>
-          <span>Reload Watchlist</span>
-        </a>
-      </li><!-- End Watchlist -->
-      <li class="nav-item">
-        <a class="nav-link collapsed" href="https://localhost:5055/sso/Login" target="_blank">
-          <i class="bi bi-card-list"></i>
-          <span>Ibkr Login</span>
-        </a>
-      </li><!-- End Ibkr Login Page Nav -->
+        <ul id="admin-nav" class="nav-content collapse" data-bs-parent="#sidebar-nav" style="">
+          <li class="nav-item">
+            <a class="nav-link collapsed" href="#"
+               hx-push-url="true"
+               hx-indicator="#spinner"
+               hx-get="/alpacaMarketData"
+               hx-trigger="click"
+               hx-target="#main"
+               hx-swap="innerHTML"
+               hx-on::afterRequest="console.log('Alpaca Market data')">
+              <i class="bi bi-card-list"></i>
+              <span>Alpaca Market Data</span>
+            </a>
+          </li><!-- End Alpaca Market Data -->
+          <li class="nav-item">
+            <a class="nav-link collapsed" href="#"
+               hx-push-url="true"
+               hx-indicator="#spinner"
+               hx-get="/ibkrMarketData"
+               hx-trigger="click"
+               hx-target="#main"
+               hx-swap="innerHTML"
+               hx-on::afterRequest="console.log('Ibkr Market data')">
+              <i class="bi bi-card-list"></i>
+              <span>Ibkr Market Data</span>
+            </a>
+          </li><!-- End Ibkr Market Data -->
+          <li class="nav-item">
+            <a class="nav-link collapsed" href="#"
+               hx-push-url="true"
+               hx-indicator="#spinner"
+               hx-get="/ibkrWatchlist"
+               hx-trigger="click"
+               hx-target="#main"
+               hx-swap="innerHTML"
+               hx-on::afterRequest="console.log('Ibkr Watchlist')">
+              <i class="bi bi-card-list"></i>
+              <span>Ibkr Watchlist</span>
+            </a>
+          </li><!-- End Ibkr Watchlist -->
+          <li class="nav-item">
+            <a class="nav-link collapsed" href="#"
+               hx-push-url="true"
+               hx-indicator="#spinner"
+               hx-get="/ibkrFlexImport"
+               hx-trigger="click"
+               hx-target="#imported"
+               hx-swap="innerHTML"
+               hx-on::afterRequest="console.log('Ibkr Flex Import')">
+              <i class="bi bi-card-list"></i>
+              <span>Ibkr Flex Import</span>
+              &nbsp;
+              <span id="imported"></span>
+            </a>
+          </li><!-- End Ibkr Flex Import -->
+          <li class="nav-item">
+            <a class="nav-link collapsed" href="https://localhost:5055/sso/Login" target="_blank">
+              <i class="bi bi-card-list"></i>
+              <span>Ibkr Login</span>
+            </a>
+          </li><!-- End Ibkr Login Page Nav -->
+        </ul>
+      </li>
+
       <li class="nav-item htmx-indicator" id="spinner">
         <div class="spinner-border" role="status">
           <span class="visually-hidden">Loading...</span>
@@ -176,31 +213,6 @@
           <span class="visually-hidden">Loading...</span>
         </div>
       </li><!-- End Hidden Spinner Page Nav -->
-
-<%--
-      <li class="nav-item">
-        <a class="nav-link collapsed" data-bs-target="#charts-nav" data-bs-toggle="collapse" href="#" aria-expanded="false">
-          <i class="bi bi-bar-chart"></i><span>Charts</span><i class="bi bi-chevron-down ms-auto"></i>
-        </a>
-        <ul id="charts-nav" class="nav-content collapse" data-bs-parent="#sidebar-nav" style="">
-          <li>
-            <a href="charts-chartjs.html">
-              <i class="bi bi-circle"></i><span>Chart.js</span>
-            </a>
-          </li>
-          <li>
-            <a href="charts-apexcharts.html" class="active">
-              <i class="bi bi-circle"></i><span>ApexCharts</span>
-            </a>
-          </li>
-          <li>
-            <a href="charts-echarts.html">
-              <i class="bi bi-circle"></i><span>ECharts</span>
-            </a>
-          </li>
-        </ul>
-      </li>
---%>
 
     </ul>
 
