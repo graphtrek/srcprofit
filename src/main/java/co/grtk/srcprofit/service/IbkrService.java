@@ -2,6 +2,7 @@ package co.grtk.srcprofit.service;
 
 import co.grtk.srcprofit.dto.FlexStatementResponse;
 import co.grtk.srcprofit.dto.IbkrMarketDataDto;
+import co.grtk.srcprofit.dto.IbkrTradeExecutionDto;
 import co.grtk.srcprofit.dto.IbkrWatchlistDto;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -79,6 +80,21 @@ public class IbkrService {
                         .build())
                 .retrieve()
                 .body(String.class);
+    }
+
+    public List<IbkrTradeExecutionDto> getLatestTrades() {
+        List<IbkrTradeExecutionDto> ibkrTradeExecutionDtoList = ibkrRestClient.get()
+                .uri(uriBuilder -> uriBuilder
+                        .path("/v1/api/iserver/account/trades")
+                        .queryParam("days", 7)
+                        .queryParam("accountId", environment.getRequiredProperty("IBKR_ACCOUNT_ID"))
+                        .build())
+                .accept(MediaType.APPLICATION_JSON)
+                .retrieve()
+                .body(new ParameterizedTypeReference<List<IbkrTradeExecutionDto>>() {
+                });
+        log.info("getLatestTrades /v1/api/iserver/account/trades returned {}", ibkrTradeExecutionDtoList);
+        return ibkrTradeExecutionDtoList;
     }
 
 }

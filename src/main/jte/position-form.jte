@@ -57,39 +57,34 @@
                             <label for="ticker" class="form-label">Ticker *</label>
                             <input id="ticker" name="ticker" required type="text" class="form-control text-uppercase" value="${positionDto.getTicker()}">
                         </div>
-
-                        <div class="col-md-3">
+                        <div class="col-md-2">
                             <label for="tradeDate" class="form-label">Trade Date *</label>
                             <input id="tradeDate" name="startDate" type="date" required class="form-control" value="${positionDto.getTradeDateString()}">
                         </div>
-                        <div class="col-md-3">
+                        <div class="col-md-2">
                             <label for="expirationDate" class="form-label">Expiration Date *</label>
                             <input id="expirationDate" name="expirationDate" type="date" required class="form-control" value="${positionDto.getExpirationDateString()}">
+                        </div>
+                        <div class="col-md-2">
+                            <label for="tradePrice" class="form-label">Trade Price</label>
+                            <input id="tradePrice" name="tradePrice" type="number" class="form-control" step="0.01" value="${positionDto.getTradePrice()}">
                         </div>
                         <div class="col-md-2">
                             <label for="positionValue" class="form-label">Position Value *</label>
                             <input id="positionValue" name="positionValue" type="number" required class="form-control" step="0.01" value="${positionDto.getPositionValue()}">
                         </div>
                         <div class="col-md-2">
-                            <label for="tradePrice" class="form-label">Trade Price</label>
-                            <input id="tradePrice" name="tradePrice" type="number" class="form-control" step="0.01" value="${positionDto.getTradePrice()}">
-                        </div>
-
-                        <div class="col-md-8">
-                            <label for="note" class="form-label">Note</label>
-                            <input id="note" name="note" type="text" class="form-control" value="${positionDto.getNote()}">
-                        </div>
-                        <div class="col-md-2">
-                            <label for="coveredPositionValue" class="form-label">Covered</label>
-                            <input id="coveredPositionValue" name="coveredPositionValue" type="number" class="form-control" value="${positionDto.getCoveredPositionValue()}">
-                        </div>
-                        <div class="col-md-2">
                             <label for="marketValue" class="form-label">Market Value *</label>
                             <input id="marketValue" name="marketValue" type="number" required class="form-control" value="${positionDto.getMarketValue()}">
                         </div>
 
-                        <div class="col-md-2">
-                            <label for="daysBetween" class="form-label">Days Between</label>
+
+                        <div class="col-md-1">
+                            <label for="daysLeft" class="form-label">Days Left</label>
+                            <input  id="daysLeft" type="number" disabled class="form-control" value="${positionDto.getDaysLeft()}" >
+                        </div>
+                        <div class="col-md-1">
+                            <label for="daysBetween" class="form-label">Days diff</label>
                             <input id="daysBetween" type="number" disabled class="form-control" value="${positionDto.getDaysBetween()}">
                         </div>
                         <div class="col-md-1">
@@ -100,12 +95,7 @@
                             <label for="probability" class="form-label">P.O.P %</label>
                             <input id="probability" type="number" disabled class="form-control" value="${positionDto.getProbability()}">
                         </div>
-                        <div class="col-md-2">
-                            <fieldset class="row md-2">
-                                <label for="daysLeft" class="form-label">Days Left</label>
-                                <input  id="daysLeft" type="number" disabled class="form-control" value="${positionDto.getDaysLeft()}" >
-                            </fieldset>
-                        </div>
+
                         <div class="col-md-2">
                             <label for="unRealizedProfitOrLoss" class="form-label">UnRealized P&L</label>
                             <input id="unRealizedProfitOrLoss" name="unRealizedProfitOrLoss" type="number" disabled class="form-control" step="0.01" value="${positionDto.getUnRealizedProfitOrLoss()}">
@@ -117,6 +107,10 @@
                         <div class="col-md-2">
                             <label for="breakEven" class="form-label">Break Even</label>
                             <input id="breakEven" name="breakEven" type="number" disabled class="form-control" step="0.01" value="${positionDto.getBreakEven()}">
+                        </div>
+                        <div class="col-md-2">
+                            <label for="coveredPositionValue" class="form-label">Covered</label>
+                            <input id="coveredPositionValue" name="coveredPositionValue" type="number" class="form-control" value="${positionDto.getCoveredPositionValue()}">
                         </div>
 
                         <div class="text-center">
