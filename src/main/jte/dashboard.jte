@@ -1,10 +1,11 @@
 @import co.grtk.srcprofit.dto.PositionDto
-@import co.grtk.srcprofit.entity.OptionStatus
 
 @import java.util.List
 @param co.grtk.srcprofit.dto.PositionDto positionDto
 @param List<PositionDto> optionHistory
 @param List<PositionDto> openOptions
+@param String datesCsv
+@param String valuesCsv
 
 <div class="pagetitle">
     <h1>Dashboard</h1>
@@ -24,6 +25,7 @@
             <div class="row">
 
                 <!-- Unrealized P&L Card -->
+<%--
 
                 <div class="col-xxl-4 col-md-6">
                     <div class="card info-card sales-card">
@@ -43,10 +45,11 @@
                     </div>
                 </div>
 
+--%>
                 <!-- End Unrealized P&L -->
 
                 <!-- Realized P&L Card -->
-
+<%--
                 <div class="col-xxl-4 col-md-6">
                     <div class="card info-card revenue-card">
                       <div class="card-body">
@@ -64,9 +67,11 @@
 
                     </div>
                 </div>
-                <!-- End Realized P&L Card -->
+
+ --%>               <!-- End Realized P&L Card -->
 
                 <!-- Positions Value Card -->
+<%--
 
                 <div class="col-xxl-4 col-xl-12">
 
@@ -87,6 +92,8 @@
                     </div>
 
                 </div>
+
+--%>
                 <!-- End Positions Value Card -->
 
                 <!-- Reports -->
@@ -107,7 +114,7 @@
                         </div>
 
                         <div class="card-body">
-                            <h5 class="card-title">Reports <span>/Today</span></h5>
+                            <h5 class="card-title">Collected Premium <span></span></h5>
 
                             <!-- Line Chart -->
                             <div id="reportsChart"></div>
@@ -133,20 +140,29 @@
         console.log( "ready!" );
 
 
+        const dailyPremium = [$unsafe{valuesCsv}];
+        const dates = [$unsafe{datesCsv}];
+
 
         function chart() {
 
             new ApexCharts(document.querySelector("#reportsChart"), {
-                series: [{
+                series: [
+/*
+                    {
                     name: 'Sales',
                     data: [31, 40, 28, 51, 42, 82, 56],
-                }, {
-                    name: 'Revenue',
-                    data: [11, 32, 45, 32, 34, 52, 41]
-                }, {
-                    name: 'Customers',
-                    data: [15, 11, 32, 18, 9, 24, 11]
-                }],
+                    },
+                    {
+                        name: 'Revenue',
+                        data: [11, 32, 45, 32, 34, 52, 41]
+                    },
+*/
+                    {
+                        name: 'Daily Premium',
+                        data: dailyPremium
+                    }
+                ],
                 chart: {
                     height: 350,
                     type: 'area',
@@ -157,7 +173,7 @@
                 markers: {
                     size: 4
                 },
-                colors: ['#4154f1', '#2eca6a', '#ff771d'],
+                colors: [ '#2eca6a','#ff771d','#4154f1'],
                 fill: {
                     type: "gradient",
                     gradient: {
@@ -175,12 +191,13 @@
                     width: 2
                 },
                 xaxis: {
-                    type: 'datetime',
-                    categories: ["2018-09-19T00:00:00.000Z", "2018-09-19T01:30:00.000Z", "2018-09-19T02:30:00.000Z", "2018-09-19T03:30:00.000Z", "2018-09-19T04:30:00.000Z", "2018-09-19T05:30:00.000Z", "2018-09-19T06:30:00.000Z"]
+                    labels: {format: 'yy-MM-dd'},
+                    type: 'date',
+                    categories: dates
                 },
                 tooltip: {
                     x: {
-                        format: 'dd/MM/yy HH:mm'
+                        format: 'yy-MM-dd'
                     },
                 }
             }).render();

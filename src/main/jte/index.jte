@@ -191,6 +191,12 @@
             </a>
           </li><!-- End Ibkr Flex Import -->
           <li class="nav-item">
+            <a class="nav-link collapsed" href="/ibkrLatestTrades" target="_blank">
+              <i class="bi bi-card-list"></i>
+              <span>Ibkr Latest Trades</span>
+            </a>
+          </li><!-- End Ibkr LatestTrades -->
+          <li class="nav-item">
             <a class="nav-link collapsed" href="https://localhost:5055/sso/Login" target="_blank">
               <i class="bi bi-card-list"></i>
               <span>Ibkr Login</span>

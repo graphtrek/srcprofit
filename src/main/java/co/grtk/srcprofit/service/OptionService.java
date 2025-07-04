@@ -18,14 +18,18 @@ import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 
 import java.io.IOException;
+import java.math.BigDecimal;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Path;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.temporal.ChronoUnit;
+import java.util.LinkedHashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Objects;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 import static co.grtk.srcprofit.mapper.PositionMapper.calculateAndSetAnnualizedRoi;
 import static co.grtk.srcprofit.mapper.PositionMapper.round2Digits;
@@ -103,6 +107,34 @@ public class OptionService {
     public List<PositionDto> getClosedOptionsByTicker(String ticker) {
         List<OptionEntity> optionEntities = optionRepository.findAllClosedByTicker(ticker);
         return getClosedPositionDtos(optionEntities, objectMapper);
+    }
+
+    public Map<LocalDate, BigDecimal> getDailyPremium() {
+        Map<LocalDate, BigDecimal> dailyPremium = optionRepository.findAll().stream()
+                .collect(Collectors.groupingBy(
+                        OptionEntity::getTradeDate,
+                        Collectors.reducing(
+                                BigDecimal.ZERO,
+                                option -> BigDecimal.valueOf(option.getTradePrice()),
+                                BigDecimal::add
+                        )
+                ));
+        List<LocalDate> sortedDates = dailyPremium.keySet().stream()
+                .sorted()
+                .toList();
+
+        Map<LocalDate, BigDecimal> cumulativePremiumPerDay = new LinkedHashMap<>();
+        BigDecimal runningTotal = BigDecimal.ZERO;
+        int counter = 0;
+        for (LocalDate date : sortedDates) {
+            runningTotal = runningTotal.add(dailyPremium.getOrDefault(date, BigDecimal.ZERO));
+            if (counter == 0) // data fix
+                runningTotal = runningTotal.add(BigDecimal.valueOf(799));
+            cumulativePremiumPerDay.put(date, runningTotal);
+            counter++;
+        }
+        log.info("cumulativePremiumPerDay {}", cumulativePremiumPerDay);
+        return cumulativePremiumPerDay;
     }
 
     public void calculatePosition(PositionDto positionDto, List<PositionDto> openPositions, List<PositionDto> closedPositions) {
