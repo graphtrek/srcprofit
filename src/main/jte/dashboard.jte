@@ -5,7 +5,7 @@
 @param List<PositionDto> optionHistory
 @param List<PositionDto> openOptions
 @param String datesCsv
-@param String valuesCsv
+@param String premiumsCsv
 
 <div class="pagetitle">
     <h1>Dashboard</h1>
@@ -140,7 +140,7 @@
         console.log( "ready!" );
 
 
-        const dailyPremium = [$unsafe{valuesCsv}];
+        const dailyPremium = [$unsafe{premiumsCsv}];
         const dates = [$unsafe{datesCsv}];
 
 

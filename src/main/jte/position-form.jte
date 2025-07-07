@@ -162,26 +162,34 @@
                                 <th scope="col">DaysLeft</th>
                                 <th scope="col">Value</th>
                                 <th scope="col">MrktValue</th>
-                                <th scope="col">Type</th>
                                 <th scope="col">Price</th>
                                 <th scope="col">Days</th>
+                                <th scope="col">Type</th>
                                 <th scope="col">Status</th>
                             </tr>
                             </thead>
                             <tbody class="text-end">
                             @for(var option : openOptions )
                                 <tr style="cursor: pointer;">
-                                    <th style="color:${option.getColor()};">${option.getId()}</th>
+                                    <td style="color:${option.getColor()};">${option.getId()}</td>
 <%--                                    <th style="color:${option.getColor()};text-wrap: nowrap;">${option.getCode()}</th>--%>
                                     <td class="text-uppercase">${option.getTicker()}</td>
                                     <td>${option.getTradeDateString()}</td>
                                     <td>${option.getExpirationDateString()}</td>
                                     <td>${option.getDaysLeft()}</td>
-                                    <td>${option.getPositionValue()}</td>
-                                    <td>${option.getMarketValue()}</td>
-                                    <td>${option.getType()}</td>
-                                    <td>${option.getTradePrice()}</td>
+
+                                    @if(option.getTradePrice() > 0)
+                                        <td><b>${option.getPositionValue()}</b></td>
+                                        <td><b>${option.getMarketValue()}</b></td>
+                                        <td><b>${option.getTradePrice()}</b></td>
+                                    @else
+                                        <td>${option.getPositionValue()}</td>
+                                        <td>${option.getMarketValue()}</td>
+                                        <td>${option.getTradePrice()}</td>
+                                    @endif
+
                                     <td>${option.getDaysBetween()}</td>
+                                    <td>${option.getType()}</td>
                                     @if(OptionStatus.PENDING.equals(option.getStatus()))
                                         <td class="badge bg-warning">${option.getStatus()}</td>
                                     @elseif(OptionStatus.CLOSED.equals(option.getStatus()))
@@ -219,26 +227,34 @@
                             <th scope="col">DaysLeft</th>
                             <th scope="col">Value</th>
                             <th scope="col">MrktValue</th>
-                            <th scope="col">Type</th>
                             <th scope="col">Price</th>
                             <th scope="col">Days</th>
+                            <th scope="col">Type</th>
                             <th scope="col">Status</th>
                         </tr>
                         </thead>
                         <tbody class="text-end">
                         @for(var option : optionHistory )
                             <tr style="cursor: pointer;">
-                                <th style="color:${option.getColor()};">${option.getId()}</th>
+                                <td style="color:${option.getColor()};">${option.getId()}</td>
 <%--                                <th style="color:${option.getColor()};text-wrap: nowrap;">${option.getCode()}</th>--%>
                                 <td class="text-uppercase">${option.getTicker()}</td>
                                 <td>${option.getTradeDateString()}</td>
                                 <td>${option.getExpirationDateString()}</td>
                                 <td>${option.getDaysLeft()}</td>
-                                <td>${option.getPositionValue()}</td>
-                                <td>${option.getMarketValue()}</td>
-                                <td>${option.getType()}</td>
-                                <td>${option.getTradePrice()}</td>
+
+                                @if(option.getTradePrice() > 0)
+                                    <td><b>${option.getPositionValue()}</b></td>
+                                    <td><b>${option.getMarketValue()}</b></td>
+                                    <td><b>${option.getTradePrice()}</b></td>
+                                @else
+                                    <td>${option.getPositionValue()}</td>
+                                    <td>${option.getMarketValue()}</td>
+                                    <td>${option.getTradePrice()}</td>
+                                @endif
+
                                 <td>${option.getDaysBetween()}</td>
+                                <td>${option.getType()}</td>
                                 @if(OptionStatus.PENDING.equals(option.getStatus()))
                                     <td class="badge bg-warning">${option.getStatus()}</td>
                                 @elseif(OptionStatus.CLOSED.equals(option.getStatus()))

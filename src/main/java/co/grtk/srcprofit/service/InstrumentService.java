@@ -1,11 +1,12 @@
 package co.grtk.srcprofit.service;
 
+import co.grtk.srcprofit.dto.AlpacaBarDto;
 import co.grtk.srcprofit.dto.AlpacaMarketDataDto;
 import co.grtk.srcprofit.dto.AlpacaSingleAssetDto;
+import co.grtk.srcprofit.dto.AlpacaTradeDto;
 import co.grtk.srcprofit.dto.IbkrMarketDataDto;
 import co.grtk.srcprofit.dto.InstrumentDto;
 import co.grtk.srcprofit.entity.InstrumentEntity;
-import co.grtk.srcprofit.mapper.PositionMapper;
 import co.grtk.srcprofit.repository.InstrumentRepository;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import jakarta.transaction.Transactional;
@@ -13,10 +14,16 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDateTime;
+import java.time.ZoneId;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import java.util.stream.Collectors;
+
+import static co.grtk.srcprofit.mapper.MapperUtils.parseDouble;
+import static co.grtk.srcprofit.mapper.MapperUtils.round2Digits;
+import static co.grtk.srcprofit.mapper.MapperUtils.toLocalDateTime;
 
 @Service
 public class InstrumentService {
@@ -80,13 +87,15 @@ public class InstrumentService {
                     .findFirst();
             if (result.isPresent()) {
                 IbkrMarketDataDto ibkrMarketDataDto = result.get();
-                instrumentEntity.setPrice(PositionMapper.parseDouble(ibkrMarketDataDto.getPriceStr(), instrumentEntity.getPrice()));
-                instrumentEntity.setUpdated(ibkrMarketDataDto.getUpdated());
                 instrumentEntity.setName(ibkrMarketDataDto.getCompanyName());
-                if (ibkrMarketDataDto.getChange() != null)
-                    instrumentEntity.setChange(ibkrMarketDataDto.getChange());
-                if (ibkrMarketDataDto.getChangePercent() != null)
-                    instrumentEntity.setChangePercent(ibkrMarketDataDto.getChangePercent());
+                if (instrumentEntity.getUpdated() == null || instrumentEntity.getUpdated().isBefore(toLocalDateTime(ibkrMarketDataDto.getUpdated()))) {
+                    instrumentEntity.setPrice(parseDouble(ibkrMarketDataDto.getPriceStr(), instrumentEntity.getPrice()));
+                    instrumentEntity.setUpdated(toLocalDateTime(ibkrMarketDataDto.getUpdated()));
+                    if (ibkrMarketDataDto.getChange() != null)
+                        instrumentEntity.setChange(ibkrMarketDataDto.getChange());
+                    if (ibkrMarketDataDto.getChangePercent() != null)
+                        instrumentEntity.setChangePercent(ibkrMarketDataDto.getChangePercent());
+                }
                 instrumentRepository.save(instrumentEntity);
             }
         }
@@ -101,8 +110,20 @@ public class InstrumentService {
                     .findFirst();
             if (result.isPresent()) {
                 Map.Entry<String, AlpacaSingleAssetDto> alpacaSingleAssetDtoEntry = result.get();
-                instrumentEntity.setPrice(alpacaSingleAssetDtoEntry.getValue().getLatestTrade().getPrice());
-                instrumentRepository.save(instrumentEntity);
+                AlpacaTradeDto alpacaTradeDto = alpacaSingleAssetDtoEntry.getValue().getLatestTrade();
+                LocalDateTime updated = alpacaTradeDto.getTimestamp().atZoneSameInstant(ZoneId.systemDefault()).toLocalDateTime();
+
+                if (instrumentEntity.getUpdated() == null ||
+                        instrumentEntity.getUpdated().isBefore(updated)) {
+                    AlpacaBarDto alpacaDailyBarDto = alpacaSingleAssetDtoEntry.getValue().getDailyBar();
+                    instrumentEntity.setUpdated(updated);
+                    instrumentEntity.setPrice(alpacaTradeDto.getPrice());
+                    double change = alpacaTradeDto.getPrice() - alpacaDailyBarDto.getOpen();
+                    double changePercent = (change / alpacaDailyBarDto.getOpen()) * 100;
+                    instrumentEntity.setChange(round2Digits(change));
+                    instrumentEntity.setChangePercent(round2Digits(changePercent));
+                    instrumentRepository.save(instrumentEntity);
+                }
             }
         }
     }

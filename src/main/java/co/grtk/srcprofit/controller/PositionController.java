@@ -21,7 +21,8 @@ import java.time.LocalDate;
 import java.util.List;
 import java.util.Optional;
 
-import static co.grtk.srcprofit.mapper.PositionMapper.round2Digits;
+import static co.grtk.srcprofit.mapper.MapperUtils.round2Digits;
+import static co.grtk.srcprofit.mapper.MapperUtils.toLocalDate;
 
 @Controller
 public class PositionController {
@@ -72,7 +73,7 @@ public class PositionController {
     @PostMapping(value = "/getPositionsFromDate", consumes = MediaType.APPLICATION_FORM_URLENCODED_VALUE)
     public String getPositionsFromDate(@RequestBody MultiValueMap<String, String> formData, Model model) {
         log.info("getPositionsFromDate formData {}", formData);
-        LocalDate fromDate = PositionMapper.toLocalDate(formData.getFirst("fromDate"));
+        LocalDate fromDate = toLocalDate(formData.getFirst("fromDate"));
         PositionDto positionDto = new PositionDto();
         positionDto.setPositionsFromDate(fromDate);
         fillPositionsPage(positionDto, model);

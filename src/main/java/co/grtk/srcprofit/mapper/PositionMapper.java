@@ -11,10 +11,14 @@ import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
-import java.time.format.DateTimeParseException;
 import java.time.temporal.ChronoUnit;
 import java.util.Optional;
 
+import static co.grtk.srcprofit.mapper.MapperUtils.parseDouble;
+import static co.grtk.srcprofit.mapper.MapperUtils.parseInt;
+import static co.grtk.srcprofit.mapper.MapperUtils.parseLong;
+import static co.grtk.srcprofit.mapper.MapperUtils.round2Digits;
+import static co.grtk.srcprofit.mapper.MapperUtils.toLocalDate;
 import static java.lang.Math.abs;
 
 
@@ -132,39 +136,6 @@ public class PositionMapper {
         dto.setProbability(probability);
     }
 
-    public static Long parseLong(String s, Long defaultValue) {
-        if (s == null || s.isBlank()) {
-            return defaultValue;
-        }
-        try {
-            return Optional.of(Long.parseLong(s)).orElse(defaultValue);
-        } catch (NumberFormatException e) {
-            return defaultValue;
-        }
-    }
-
-    public static Integer parseInt(String s, Integer defaultValue) {
-        if (s == null || s.isBlank()) {
-            return defaultValue;
-        }
-        try {
-            return Optional.of(Integer.parseInt(s)).orElse(defaultValue);
-        } catch (NumberFormatException e) {
-            return defaultValue;
-        }
-    }
-
-    public static Double parseDouble(String s, Double defaultValue) {
-        if (s == null || s.isBlank()) {
-            return defaultValue;
-        }
-        try {
-            return Optional.of(Double.parseDouble(s)).orElse(defaultValue);
-        } catch (NumberFormatException e) {
-            return defaultValue;
-        }
-    }
-
 
     public static int probabilityMarketExceedsTradeValue(BigDecimal tradeValue, double marketMean, double dailyStdDev, int days) {
         if (tradeValue == null || tradeValue.compareTo(BigDecimal.ZERO) <= 0 || days <= 0 || marketMean <= 0 || dailyStdDev <= 0) {
@@ -185,31 +156,6 @@ public class PositionMapper {
         return (int) (probability * 100);
     }
 
-    public static LocalDateTime toLocalDateTime(String dateTime) {
-        Optional<LocalDateTime> safeStartDate = Optional.ofNullable(dateTime)
-                .filter(s -> !s.isBlank())
-                .flatMap(s -> {
-                    try {
-                        return Optional.of(LocalDateTime.parse(s));
-                    } catch (DateTimeParseException e) {
-                        return Optional.empty();
-                    }
-                });
-        return safeStartDate.orElse(null);
-    }
-
-    public static LocalDate toLocalDate(String date) {
-        Optional<LocalDate> safeStartDate = Optional.ofNullable(date)
-                .filter(s -> !s.isBlank())
-                .flatMap(s -> {
-                    try {
-                        return Optional.of(LocalDate.parse(s));
-                    } catch (DateTimeParseException e) {
-                        return Optional.empty();
-                    }
-                });
-        return safeStartDate.orElse(null);
-    }
 
     public static String generateOptionCode(String symbol, LocalDate expiryDate, BigDecimal strikePrice, OptionType type) {
         String formattedDate = expiryDate.format(DateTimeFormatter.ofPattern("yyMMdd"));
@@ -221,10 +167,5 @@ public class PositionMapper {
 
         return String.format("%-6s%s%s%s", symbol, formattedDate, typeChar, formattedStrike);
     }
-
-    public static double round2Digits(double value) {
-        return Math.round(value * 100.0) / 100.0;
-    }
-
 
 }

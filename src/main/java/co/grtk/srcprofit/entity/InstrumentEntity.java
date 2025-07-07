@@ -18,6 +18,7 @@ import org.hibernate.annotations.SourceType;
 import org.hibernate.annotations.UpdateTimestamp;
 
 import java.time.Instant;
+import java.time.LocalDateTime;
 import java.util.List;
 
 @Entity
@@ -55,7 +56,7 @@ public class InstrumentEntity {
     private Double price;
 
     @Column
-    private Long updated;
+    private LocalDateTime updated;
 
     @Column
     private Double change;
@@ -141,11 +142,11 @@ public class InstrumentEntity {
         return Math.round(price * 100 * 100.0) / 100.0;
     }
 
-    public Long getUpdated() {
+    public LocalDateTime getUpdated() {
         return updated;
     }
 
-    public void setUpdated(Long updated) {
+    public void setUpdated(LocalDateTime updated) {
         this.updated = updated;
     }
 

@@ -5,7 +5,7 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import java.time.OffsetDateTime;
 import java.util.List;
 
-import static co.grtk.srcprofit.mapper.PositionMapper.round2Digits;
+import static co.grtk.srcprofit.mapper.MapperUtils.round2Digits;
 
 public class AlpacaQuoteDto {
     @JsonProperty("ap")

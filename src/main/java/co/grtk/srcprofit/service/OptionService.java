@@ -31,8 +31,9 @@ import java.util.Objects;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
+import static co.grtk.srcprofit.mapper.MapperUtils.round2Digits;
 import static co.grtk.srcprofit.mapper.PositionMapper.calculateAndSetAnnualizedRoi;
-import static co.grtk.srcprofit.mapper.PositionMapper.round2Digits;
+import static java.lang.Math.abs;
 import static org.apache.commons.csv.CSVParser.parse;
 
 @Service
@@ -110,7 +111,8 @@ public class OptionService {
     }
 
     public Map<LocalDate, BigDecimal> getDailyPremium() {
-        Map<LocalDate, BigDecimal> dailyPremium = optionRepository.findAll().stream()
+        List<OptionEntity> options =  optionRepository.findAll();
+        Map<LocalDate, BigDecimal> dailyPremium = options.stream()
                 .collect(Collectors.groupingBy(
                         OptionEntity::getTradeDate,
                         Collectors.reducing(
@@ -119,6 +121,7 @@ public class OptionService {
                                 BigDecimal::add
                         )
                 ));
+
         List<LocalDate> sortedDates = dailyPremium.keySet().stream()
                 .sorted()
                 .toList();
@@ -129,7 +132,7 @@ public class OptionService {
         for (LocalDate date : sortedDates) {
             runningTotal = runningTotal.add(dailyPremium.getOrDefault(date, BigDecimal.ZERO));
             if (counter == 0) // data fix
-                runningTotal = runningTotal.add(BigDecimal.valueOf(799));
+                runningTotal = runningTotal.add(BigDecimal.valueOf(130));
             cumulativePremiumPerDay.put(date, runningTotal);
             counter++;
         }
@@ -148,6 +151,7 @@ public class OptionService {
         LocalDate endDate = LocalDate.now();
         Double positionValue = 0.0;
         Double breakEven = 0.0;
+        int quantity = 0;
 
         for (PositionDto dto : closedPositions) {
             collectedPremium += dto.getTradePrice();
@@ -170,21 +174,22 @@ public class OptionService {
                 if (dto.getTradePrice() >= 0) { //PUT SELL
                     marketValue += dto.getMarketValue();
                     positionValue += dto.getPositionValue();
-
                 } else { // PUT BUY
-                    coveredPositionValue += dto.getPositionValue();
-
+                    long count = openPositions.stream().filter(p -> p.getTicker().equals(dto.getTicker())).filter(p -> p.getTradePrice() >0).count();
+                    if(count > 0)
+                        coveredPositionValue += dto.getPositionValue();
                 }
             } else {
                 if (dto.getTradePrice() >= 0) {// CALL SELL
-                    positionValue += dto.getPositionValue();
-                    marketValue += dto.getMarketValue();
-                    coveredPositionValue += dto.getTradePrice();
+                    //positionValue += dto.getPositionValue();
+                    //marketValue += dto.getMarketValue();
+                    //coveredPositionValue += dto.getTradePrice();
                 }
-
             }
+
             positionDto.setType(dto.getType());
             calculateAndSetAnnualizedRoi(dto);
+            quantity += abs(dto.getQuantity());
             if (dto.getBreakEven() != null)
                 breakEven += dto.getBreakEven();
             else
@@ -220,8 +225,8 @@ public class OptionService {
 
         log.info("positionDto: {}", positionDto);
         calculateAndSetAnnualizedRoi(positionDto);
-        //if(breakEven > 0)
-        //    breakEven = breakEven / openPositions.size();
+        if(breakEven > 0 && quantity > 0)
+            breakEven = breakEven / (quantity * 100);
         positionDto.setBreakEven(round2Digits(breakEven));
     }
 

@@ -1,8 +1,10 @@
 package co.grtk.srcprofit.controller;
 
 import co.grtk.srcprofit.dto.InstrumentDto;
+import co.grtk.srcprofit.dto.PositionDto;
 import co.grtk.srcprofit.service.InstrumentService;
 import co.grtk.srcprofit.service.MarketDataService;
+import co.grtk.srcprofit.service.OptionService;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -15,15 +17,31 @@ public class InstrumentController {
     private static final String INSTRUMENTS_PAGE_PATH = "instruments";
     private final InstrumentService instrumentService;
     private final MarketDataService marketDataService;
+    private final OptionService optionService;
 
-    public InstrumentController(InstrumentService instrumentService, MarketDataService marketDataService) {
+    public InstrumentController(InstrumentService instrumentService, MarketDataService marketDataService, OptionService optionService) {
         this.instrumentService = instrumentService;
         this.marketDataService = marketDataService;
+        this.optionService = optionService;
     }
 
     @GetMapping("/instruments")
-    public String ibkrLogin(Model model) {
+    public String getInstruments(Model model) {
         List<InstrumentDto> instruments = instrumentService.loadAllInstruments();
+        List<PositionDto> optionHistory = optionService.getAllClosedOptions(null);
+        List<PositionDto> openOptions = optionService.getAllOpenOptions(null);
+        for (InstrumentDto instrument : instruments) {
+            PositionDto positionDto = new PositionDto();
+            positionDto.setTicker(instrument.getTicker());
+            List<PositionDto> instrumentOpenPositions =
+                    openOptions.stream().filter(p -> p.getTicker().equals(instrument.getTicker())).toList();
+            List<PositionDto> instrumentClosedPositions =
+                    optionHistory.stream().filter(p -> p.getTicker().equals(instrument.getTicker())).toList();
+            optionService.calculatePosition(positionDto, instrumentOpenPositions, instrumentClosedPositions);
+            instrument.setUnRealizedProfitOrLoss(positionDto.getUnRealizedProfitOrLoss());
+            instrument.setRealizedProfitOrLoss(positionDto.getRealizedProfitOrLoss());
+            instrument.setCollectedPremium(positionDto.getCollectedPremium());
+        }
         model.addAttribute(MODEL_ATTRIBUTE_INSTRUMENTS, instruments);
         return INSTRUMENTS_PAGE_PATH;
     }

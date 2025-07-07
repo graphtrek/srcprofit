@@ -5,7 +5,8 @@ import co.grtk.srcprofit.entity.OptionStatus;
 import co.grtk.srcprofit.entity.OptionType;
 
 import java.time.LocalDate;
-import java.util.Objects;
+
+import static co.grtk.srcprofit.mapper.MapperUtils.getLocalDateAsString;
 
 public class PositionDto {
 
@@ -44,15 +45,15 @@ public class PositionDto {
 
 
     public String getTradeDateString() {
-        return Objects.isNull(tradeDate) ? "" : tradeDate.toString();
+        return getLocalDateAsString(tradeDate);
     }
 
     public String getPositionsFromDateString() {
-        return Objects.isNull(positionsFromDate) ? "" : positionsFromDate.toString();
+        return getLocalDateAsString(positionsFromDate);
     }
 
     public String getExpirationDateString() {
-        return Objects.isNull(expirationDate) ? "" : expirationDate.toString();
+        return getLocalDateAsString(expirationDate);
     }
 
     public Long getId() {

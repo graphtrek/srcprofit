@@ -45,42 +45,38 @@
                                 <thead>
                                 <tr>
                                     <th scope="col">#</th>
-                                    <th scope="col">Conid</th>
                                     <th scope="col">Ticker</th>
-                                    <th scope="col">Name</th>
+                                    <th scope="col">Updated</th>
                                     <th scope="col">Price $</th>
                                     <th scope="col">Change $</th>
                                     <th scope="col">Percent %</th>
+                                    <th scope="col">Premium</th>
+                                    <th scope="col">Realized P&L</th>
+                                    <th scope="col">UnRealized P&L</th>
                                 </tr>
                                 </thead>
                                 <tbody>
                                 @for(var instrument : instruments )
                                     <tr style="cursor: pointer;">
-                                        <th>${instrument.getId()}</th>
-                                        <th>${instrument.getConid()}</th>
-                                        <td class="text-uppercase">${instrument.getTicker()}</td>
-                                        <td>${instrument.getName()}</td>
+                                        <td>${instrument.getId()}</td>
+
                                         @if(instrument.getChange()  != null && instrument.getChange() < 0)
-                                            <td style="background-color: orangered; color: white;">
-                                                ${instrument.getPrice()}
+                                            <td class="text-uppercase" style="background-color: orangered; color: white;">
+                                                ${instrument.getTicker()}
                                             </td>
-                                            <td style="background-color: orangered; color: white;">
-                                                ${instrument.getChange()}
+                                        @else
+                                            <td class="text-uppercase" style="background-color: green; color: white;">
+                                                ${instrument.getTicker()}
                                             </td>
-                                            <td style="background-color: orangered; color: white;">
-                                                ${instrument.getChangePercent()} %
-                                            </td>
-                                            @else
-                                        <td style="background-color: green; color: white;">
-                                            ${instrument.getPrice()}
-                                        </td>
-                                        <td style="background-color: green; color: white;">
-                                            ${instrument.getChange()}
-                                        </td>
-                                        <td style="background-color: green; color: white;">
-                                           ${instrument.getChangePercent()} %
-                                        </td>
                                         @endif
+
+                                        <td>${instrument.getUpdatedTimeStr()}</td>
+                                        <td>${instrument.getPrice()}</td>
+                                        <td>${instrument.getChange()}</td>
+                                        <td>${instrument.getChangePercent()}</td>
+                                        <td>${instrument.getCollectedPremium()}</td>
+                                        <td>${instrument.getRealizedProfitOrLoss()}</td>
+                                        <td>${instrument.getUnRealizedProfitOrLoss()}</td>
                                     </tr>
                                 @endfor
                                 </tbody>
@@ -119,15 +115,20 @@
             const tableOpen = new DataTable('#datatableInstruments', {
                 perPageSelect: [5, 10, 15, ["All", -1]],
                 pageLength: -1,
-                order: [[2, 'asc']] // ticker
+                order: [[1, 'asc']] // ticker
             });
 
             $('#datatableInstruments tbody').on('click', 'tr', function() {
-                const ticker = tableOpen.row(this).data()[2];
+                const ticker = tableOpen.row(this).data()[1]; // ticker
                 console.log('clicked ticker: ' + ticker);
                 htmx.ajax('GET', '/getPosition/'+ticker, '#main');
             });
 
+            $('#datatableInstruments tbody').on( 'mouseenter', 'tr', function (e) {
+                $(e.target).closest('tbody').children('tr').children('td').removeClass( 'highlight_row' );
+                $(e.target).closest('tr').children('td:gt(1)').addClass( 'highlight_row' );
+                //$( table.column( colIdx ).nodes() ).addClass( 'highlight' );
+            });
         }
 
         datatable();

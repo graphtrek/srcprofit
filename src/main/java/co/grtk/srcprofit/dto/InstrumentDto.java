@@ -1,6 +1,10 @@
 package co.grtk.srcprofit.dto;
 
 
+import java.time.LocalDateTime;
+
+import static co.grtk.srcprofit.mapper.MapperUtils.getLocalDateTimeAsString;
+
 public class InstrumentDto {
 
     private Long id;
@@ -15,11 +19,15 @@ public class InstrumentDto {
 
     private Double price;
 
-    private Long updated;
+    private LocalDateTime updated;
 
     private Double change;
 
     private Double changePercent;
+
+    Double realizedProfitOrLoss;
+    Double unRealizedProfitOrLoss;
+    Double collectedPremium;
 
     public Long getId() {
         return id;
@@ -45,7 +53,6 @@ public class InstrumentDto {
         this.name = name;
     }
 
-
     public String getAssetClass() {
         return assetClass;
     }
@@ -70,11 +77,11 @@ public class InstrumentDto {
         this.price = price;
     }
 
-    public Long getUpdated() {
+    public LocalDateTime getUpdated() {
         return updated;
     }
 
-    public void setUpdated(Long updated) {
+    public void setUpdated(LocalDateTime updated) {
         this.updated = updated;
     }
 
@@ -92,6 +99,34 @@ public class InstrumentDto {
 
     public void setChangePercent(Double changePercent) {
         this.changePercent = changePercent;
+    }
+
+    public String getUpdatedTimeStr() {
+        return getLocalDateTimeAsString(updated);
+    }
+
+    public Double getRealizedProfitOrLoss() {
+        return realizedProfitOrLoss;
+    }
+
+    public void setRealizedProfitOrLoss(Double realizedProfitOrLoss) {
+        this.realizedProfitOrLoss = realizedProfitOrLoss;
+    }
+
+    public Double getUnRealizedProfitOrLoss() {
+        return unRealizedProfitOrLoss;
+    }
+
+    public void setUnRealizedProfitOrLoss(Double unRealizedProfitOrLoss) {
+        this.unRealizedProfitOrLoss = unRealizedProfitOrLoss;
+    }
+
+    public Double getCollectedPremium() {
+        return collectedPremium;
+    }
+
+    public void setCollectedPremium(Double collectedPremium) {
+        this.collectedPremium = collectedPremium;
     }
 
     @Override

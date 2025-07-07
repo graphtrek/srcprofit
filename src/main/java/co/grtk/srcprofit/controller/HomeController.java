@@ -22,7 +22,7 @@ public class HomeController {
     private static final String IBKR_LOGIN_PAGE_PATH = "ibkr-login";
     private static final String MODEL_ATTRIBUTE_DTO = "positionDto";
     private static final String MODEL_ATTRIBUTE_DAILY_PREMIUM_DATES = "datesCsv";
-    private static final String MODEL_ATTRIBUTE_DAILY_PREMIUM_VALUES = "valuesCsv";
+    private static final String MODEL_ATTRIBUTE_DAILY_PREMIUM_VALUES = "premiumsCsv";
 
     private final OptionService optionService;
 
@@ -56,12 +56,12 @@ public class HomeController {
         log.info("datesCsv {}", datesCsv);
         model.addAttribute(MODEL_ATTRIBUTE_DAILY_PREMIUM_DATES, datesCsv);
 
-        String valuesCsv = dailyPremium.entrySet().stream()
+        String premiumsCsv = dailyPremium.entrySet().stream()
                 .sorted(Map.Entry.comparingByKey())
                 .map(entry -> entry.getValue().toString())
                 .collect(Collectors.joining(","));
-        log.info("valuesCsv {}", valuesCsv);
-        model.addAttribute(MODEL_ATTRIBUTE_DAILY_PREMIUM_VALUES, valuesCsv);
+        log.info("premiumsCsv {}", premiumsCsv);
+        model.addAttribute(MODEL_ATTRIBUTE_DAILY_PREMIUM_VALUES, premiumsCsv);
 
         PositionDto positionDto = new PositionDto();
         model.addAttribute(MODEL_ATTRIBUTE_DTO, positionDto);
