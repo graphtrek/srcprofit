@@ -28,12 +28,13 @@ import static co.grtk.srcprofit.mapper.MapperUtils.toLocalDate;
 public class PositionController {
 
     private static final Logger log = LoggerFactory.getLogger(PositionController.class);
-    private static final String POSITION_FORM_PATH = "position-form";
+    private static final String POSITION_FORM_PATH = "position-form_jte";
+    private static final String POSITIONS_PAGE_PATH = "positions_jte";
     private static final String MODEL_ATTRIBUTE_DTO = "positionDto";
     private static final String MODEL_ATTRIBUTE_OPTION_OPEN = "openOptions";
     private static final String MODEL_ATTRIBUTE_OPTION_HISTORY = "optionHistory";
     private static final String MODEL_ATTRIBUTE_SUCCESS = "success";
-    private static final String POSITIONS_PAGE_PATH = "positions";
+
 
     private final OptionService optionService;
     private final InstrumentService instrumentService;

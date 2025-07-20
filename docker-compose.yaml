@@ -1,0 +1,52 @@
+version: '3.8'
+
+services:
+  app:
+    build: .
+    container_name: srcprofit_app
+    environment:
+      - ALPACA_DATA_URL=${ALPACA_DATA_URL}
+      - ALPACA_API_KEY=${ALPACA_API_KEY}
+      - ALPACA_API_SECRET_KEY=${ALPACA_API_SECRET_KEY}
+      - IBKR_DATA_URL=${IBKR_DATA_URL}
+      - IBKR_FLEX_URL=${IBKR_FLEX_URL}
+      - IBKR_FLEX_API_TOKEN=${IBKR_FLEX_API_TOKEN}
+      - IBKR_FLEX_STATEMENT_ID=${IBKR_FLEX_STATEMENT_ID}
+      - IBKR_ACCOUNT_ID=${IBKR_ACCOUNT_ID}
+      - SRCPROFIT_DB_URL=${SRCPROFIT_DB_URL}
+      - SRCPROFIT_DB_USER=${SRCPROFIT_DB_USER}
+      - SRCPROFIT_DB_PWD=${SRCPROFIT_DB_PWD}
+      # Add other Spring Boot environment settings as needed
+    ports:
+      - "8080:8080"
+    depends_on:
+      - db
+
+  db:
+    image: postgres:15
+    container_name: srcprofit_db
+    restart: always
+    environment:
+      POSTGRES_DB: srcprofit
+      POSTGRES_USER: ${SRCPROFIT_DB_USER}
+      POSTGRES_PASSWORD: ${SRCPROFIT_DB_PWD}
+    ports:
+      - "5432:5432"
+    volumes:
+      - local_pgdata:/var/lib/postgresql/data
+
+  pgadmin:
+    image: dpage/pgadmin4
+    container_name: pgadmin4_container
+    restart: always
+    ports:
+      - "8888:80"
+    environment:
+      PGADMIN_DEFAULT_EMAIL: ${PGADMIN_DEFAULT_EMAIL}
+      PGADMIN_DEFAULT_PASSWORD: ${PGADMIN_DEFAULT_PASSWORD}
+    volumes:
+      - pgadmin-data:/var/lib/pgadmin
+
+volumes:
+  local_pgdata:
+  pgadmin-data:

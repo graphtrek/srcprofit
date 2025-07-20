@@ -52,7 +52,7 @@
             hx-trigger="submit"
             hx-target="#main"
             hx-swap="innerHTML"
-            hx-on::afterRequest="console.log('dashboard');">
+            hx-on::afterRequest="console.log('POST /getPositionsFromDate');">
         <input type="date" name="fromDate" placeholder="Search" title="Enter search keyword">
         <button type="submit" title="Search"><i class="bi bi-search"></i></button>
       </form>
@@ -86,7 +86,7 @@
            hx-trigger="click"
            hx-target="#main"
            hx-swap="innerHTML"
-           hx-on::afterRequest="console.log('dashboard');">
+           hx-on::afterRequest="console.log('GET /dashboard');">
           <i class="bi bi-grid"></i>
           <span>Dashboard</span>
         </a>
@@ -99,7 +99,7 @@
            hx-trigger="click"
            hx-target="#main"
            hx-swap="innerHTML"
-           hx-on::afterRequest="console.log('positions')">
+           hx-on::afterRequest="console.log('GET /positions')">
           <i class="bi bi-card-list"></i>
           <span>Positions</span>
         </a>
@@ -112,7 +112,7 @@
            hx-trigger="click"
            hx-target="#main"
            hx-swap="innerHTML"
-           hx-on::afterRequest="console.log('calculatePosition')">
+           hx-on::afterRequest="console.log('GET /calculatePosition')">
           <i class="bi bi-card-list"></i>
           <span>Position Calculator</span>
         </a>
@@ -125,7 +125,7 @@
            hx-trigger="click"
            hx-target="#main"
            hx-swap="innerHTML"
-           hx-on::afterRequest="console.log('Instruments')">
+           hx-on::afterRequest="console.log('GET /instruments')">
           <i class="bi bi-card-list"></i>
           <span>Instruments</span>
         </a>
@@ -144,7 +144,7 @@
                hx-trigger="click"
                hx-target="#main"
                hx-swap="innerHTML"
-               hx-on::afterRequest="console.log('Alpaca Market data')">
+               hx-on::afterRequest="console.log('GET /alpacaMarketData')">
               <i class="bi bi-card-list"></i>
               <span>Alpaca Market Data</span>
             </a>
@@ -157,7 +157,7 @@
                hx-trigger="click"
                hx-target="#main"
                hx-swap="innerHTML"
-               hx-on::afterRequest="console.log('Ibkr Market data')">
+               hx-on::afterRequest="console.log('GET /ibkrMarketData')">
               <i class="bi bi-card-list"></i>
               <span>Ibkr Market Data</span>
             </a>
@@ -170,7 +170,7 @@
                hx-trigger="click"
                hx-target="#main"
                hx-swap="innerHTML"
-               hx-on::afterRequest="console.log('Ibkr Watchlist')">
+               hx-on::afterRequest="console.log('GET /ibkrWatchlist')">
               <i class="bi bi-card-list"></i>
               <span>Ibkr Watchlist</span>
             </a>
@@ -229,7 +229,7 @@
         hx-get="/dashboard"
         hx-trigger="load delay:0s"
         hx-swap="innerHTML"
-        hx-on::afterRequest="console.log('index');">
+        hx-on::afterRequest="console.log('GET /dashboard');">
 
   </main><!-- End #main -->
 

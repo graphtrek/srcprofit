@@ -288,6 +288,7 @@
             const ticker = $(this).val();
             if(ticker) {
                 $('#chartImg').attr('src', imgSrc.replace("ticker",ticker));
+                console.log('GET  /getPosition/' + ticker);
                 htmx.ajax('GET', '/getPosition/'+ticker, '#main');
                 $('#chartButton').prop("disabled", false);
             } else {

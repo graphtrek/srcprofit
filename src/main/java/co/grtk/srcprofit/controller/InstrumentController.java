@@ -14,7 +14,7 @@ import java.util.List;
 @Controller
 public class InstrumentController {
     public static final String MODEL_ATTRIBUTE_INSTRUMENTS = "instruments";
-    private static final String INSTRUMENTS_PAGE_PATH = "instruments";
+    private static final String INSTRUMENTS_PAGE_PATH = "instruments_jte";
     private final InstrumentService instrumentService;
     private final MarketDataService marketDataService;
     private final OptionService optionService;

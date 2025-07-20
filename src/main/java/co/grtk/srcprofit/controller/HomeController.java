@@ -17,8 +17,8 @@ import java.util.stream.Collectors;
 public class HomeController {
 
     private static final Logger log = LoggerFactory.getLogger(HomeController.class);
-    private static final String INDEX_PAGE_PATH = "index";
-    private static final String DASHBOARD_PAGE_PATH = "dashboard";
+    private static final String INDEX_PAGE_PATH = "index_jte";
+    private static final String DASHBOARD_PAGE_PATH = "dashboard_jte";
     private static final String IBKR_LOGIN_PAGE_PATH = "ibkr-login";
     private static final String MODEL_ATTRIBUTE_DTO = "positionDto";
     private static final String MODEL_ATTRIBUTE_DAILY_PREMIUM_DATES = "datesCsv";

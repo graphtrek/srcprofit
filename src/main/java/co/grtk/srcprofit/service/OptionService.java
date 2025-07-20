@@ -84,7 +84,7 @@ public class OptionService {
     public List<PositionDto> getAllOpenOptions(LocalDate startDate) {
         List<OptionEntity> optionEntities;
         if (Objects.isNull(startDate))
-            optionEntities = optionRepository.findAllOpen();
+            optionEntities = optionRepository.findAllOpen(LocalDate.now());
         else
             optionEntities = optionRepository.findAllOpenFromTradeDate(startDate);
 
@@ -175,7 +175,12 @@ public class OptionService {
                     marketValue += dto.getMarketValue();
                     positionValue += dto.getPositionValue();
                 } else { // PUT BUY
-                    long count = openPositions.stream().filter(p -> p.getTicker().equals(dto.getTicker())).filter(p -> p.getTradePrice() >0).count();
+                    long count = openPositions.stream()
+                            .filter(p -> p.getTicker().equals(dto.getTicker()))
+                            .filter(p -> OptionType.PUT.equals(dto.getType()))
+                            .filter(p -> p.getTradePrice() < 0)
+                            .filter(p -> LocalDate.now().isBefore(p.getExpirationDate()) || LocalDate.now().isEqual(p.getExpirationDate()) )
+                            .count();
                     if(count > 0)
                         coveredPositionValue += dto.getPositionValue();
                 }
@@ -205,9 +210,6 @@ public class OptionService {
         if (positionDto.getPositionValue() == null)
             positionDto.setPositionValue(round2Digits(positionValue));
 
-        if (coveredPositionValue == 0)
-            coveredPositionValue = positionDto.getPositionValue();
-
         if (positionDto.getExpirationDate() == null)
             positionDto.setExpirationDate(endDate);
 
@@ -218,6 +220,7 @@ public class OptionService {
             positionDto.setMarketValue(marketValue);
 
         positionDto.setCollectedPremium(round2Digits(collectedPremium));
+
         positionDto.setCoveredPositionValue(round2Digits(coveredPositionValue));
         double marketVsPositionsPercentage = ((marketValue / positionValue) * 100) - 100;
         positionDto.setMarketVsPositionsPercentage(round2Digits(marketVsPositionsPercentage));

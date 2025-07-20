@@ -1,6 +1,8 @@
 gg:
   jte:
-    development-mode: true
+    development-mode: false
+    usePrecompiledTemplates: true
+
 ibkr:
   data-url: ${IBKR_DATA_URL}
 
