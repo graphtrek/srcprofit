@@ -5,6 +5,7 @@ import co.grtk.srcprofit.dto.PositionDto;
 import co.grtk.srcprofit.service.InstrumentService;
 import co.grtk.srcprofit.service.MarketDataService;
 import co.grtk.srcprofit.service.OptionService;
+import com.fasterxml.jackson.core.JsonProcessingException;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -29,7 +30,7 @@ public class InstrumentController {
     public String getInstruments(Model model) {
         List<InstrumentDto> instruments = instrumentService.loadAllInstruments();
         List<PositionDto> optionHistory = optionService.getAllClosedOptions(null);
-        List<PositionDto> openOptions = optionService.getAllOpenOptions(null);
+        List<PositionDto> openOptions = optionService.getAllOpenPositions(null);
         for (InstrumentDto instrument : instruments) {
             PositionDto positionDto = new PositionDto();
             positionDto.setTicker(instrument.getTicker());
@@ -63,7 +64,7 @@ public class InstrumentController {
     }
 
     @GetMapping("/alpacaMarketData")
-    public String alpacaMarketData(Model model) {
+    public String alpacaMarketData(Model model) throws JsonProcessingException {
         marketDataService.refreshAlpacaMarketData();
         List<InstrumentDto> instruments = instrumentService.loadAllInstruments();
         model.addAttribute(MODEL_ATTRIBUTE_INSTRUMENTS, instruments);

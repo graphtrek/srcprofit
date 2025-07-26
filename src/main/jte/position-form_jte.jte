@@ -105,12 +105,16 @@
                             <input id="realizedProfitOrLoss" name="realizedProfitOrLoss" type="number" disabled class="form-control" step="0.01" value="${positionDto.getRealizedProfitOrLoss()}">
                         </div>
                         <div class="col-md-2">
-                            <label for="breakEven" class="form-label">Break Even</label>
-                            <input id="breakEven" name="breakEven" type="number" disabled class="form-control" step="0.01" value="${positionDto.getBreakEven()}">
+                            <label for="breakEven" class="form-label">Market Price</label>
+                            <input id="breakEven" name="breakEven" type="number" disabled class="form-control" step="0.01" value="${positionDto.getMarketPrice()}">
                         </div>
-                        <div class="col-md-2">
-                            <label for="coveredPositionValue" class="form-label">Covered</label>
-                            <input id="coveredPositionValue" name="coveredPositionValue" type="number" class="form-control" value="${positionDto.getCoveredPositionValue()}">
+                        <div class="col-md-1">
+                            <label for="coveredPositionValue" class="form-label">P&L</label>
+                            <input id="coveredPositionValue" name="coveredPositionValue" type="number" disabled class="form-control" value="${positionDto.getCoveredPositionValue()}">
+                        </div>
+                        <div class="col-md-1">
+                            <label for="coveredPositionValue" class="form-label">Earning</label>
+                            <input id="coveredPositionValue" name="coveredPositionValue" type="number" disabled class="form-control" value="${positionDto.getEarningDay()}">
                         </div>
 
                         <div class="text-center">
@@ -160,9 +164,11 @@
                                 <th scope="col">TradeDate</th>
                                 <th scope="col">Expiration</th>
                                 <th scope="col">DaysLeft</th>
+                                <th scope="col">Qty</th>
                                 <th scope="col">Value</th>
                                 <th scope="col">MrktValue</th>
                                 <th scope="col">Price</th>
+                                <th scope="col">MrktPrice</th>
                                 <th scope="col">Days</th>
                                 <th scope="col">Type</th>
                                 <th scope="col">Status</th>
@@ -177,15 +183,18 @@
                                     <td>${option.getTradeDateString()}</td>
                                     <td>${option.getExpirationDateString()}</td>
                                     <td>${option.getDaysLeft()}</td>
+                                    <td>${option.getQuantity()}</td>
 
                                     @if(option.getTradePrice() > 0)
-                                        <td><b>${option.getPositionValue()}</b></td>
-                                        <td><b>${option.getMarketValue()}</b></td>
-                                        <td><b>${option.getTradePrice()}</b></td>
+                                        <td><b class="currency-usd">${option.getPositionValue()}</b></td>
+                                        <td><b class="currency-usd">${option.getMarketValue()}</b></td>
+                                        <td><b class="currency-usd">${option.getTradePrice()}</b></td>
+                                        <td><b class="currency-usd">${option.getMarketPrice()}</b></td>
                                     @else
-                                        <td>${option.getPositionValue()}</td>
-                                        <td>${option.getMarketValue()}</td>
-                                        <td>${option.getTradePrice()}</td>
+                                        <td class="currency-usd">${option.getPositionValue()}</td>
+                                        <td class="currency-usd">${option.getMarketValue()}</td>
+                                        <td class="currency-usd">${option.getTradePrice()}</td>
+                                        <td class="currency-usd">${option.getMarketPrice()}</td>
                                     @endif
 
                                     <td>${option.getDaysBetween()}</td>
@@ -225,6 +234,7 @@
                             <th scope="col">TradeDate</th>
                             <th scope="col">Expiration</th>
                             <th scope="col">DaysLeft</th>
+                            <th scope="col">Qty</th>
                             <th scope="col">Value</th>
                             <th scope="col">MrktValue</th>
                             <th scope="col">Price</th>
@@ -242,15 +252,16 @@
                                 <td>${option.getTradeDateString()}</td>
                                 <td>${option.getExpirationDateString()}</td>
                                 <td>${option.getDaysLeft()}</td>
+                                <td>${option.getQuantity()}</td>
 
                                 @if(option.getTradePrice() > 0)
-                                    <td><b>${option.getPositionValue()}</b></td>
-                                    <td><b>${option.getMarketValue()}</b></td>
-                                    <td><b>${option.getTradePrice()}</b></td>
+                                    <td><b class="currency-usd">${option.getPositionValue()}</b></td>
+                                    <td><b class="currency-usd">${option.getMarketValue()}</b></td>
+                                    <td><b class="currency-usd">${option.getTradePrice()}</b></td>
                                 @else
-                                    <td>${option.getPositionValue()}</td>
-                                    <td>${option.getMarketValue()}</td>
-                                    <td>${option.getTradePrice()}</td>
+                                    <td class="currency-usd">${option.getPositionValue()}</td>
+                                    <td class="currency-usd">${option.getMarketValue()}</td>
+                                    <td class="currency-usd">${option.getTradePrice()}</td>
                                 @endif
 
                                 <td>${option.getDaysBetween()}</td>
@@ -307,5 +318,6 @@
             $('#perplexityButton').attr('href', perplexity+ticker);
         }
 
+        totalSeconds = 0;
     });
 </script>

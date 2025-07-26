@@ -1,0 +1,42 @@
+gg:
+  jte:
+    development-mode: true
+    usePrecompiledTemplates: false
+
+ibkr:
+  data-url: ${IBKR_DATA_URL}
+
+alpaca:
+  data-url: ${ALPACA_DATA_URL}
+  api-key: ${ALPACA_API_KEY}
+  secret-key: ${ALPACA_API_SECRET_KEY}
+
+spring:
+  application:
+    name: srcprofit
+  lifecycle:
+    timeout-per-shutdown-phase: 30s
+  threads:
+    virtual:
+      enabled: true
+  datasource:
+    url: ${SRCPROFIT_DB_URL}
+    username: ${SRCPROFIT_DB_USER}
+    password: ${SRCPROFIT_DB_PWD}
+    driver-class-name: org.postgresql.Driver
+  jpa:
+    show-sql: false
+    hibernate:
+      ddl-auto: update
+    open-in-view: false
+    # Because of warning.
+management:
+  endpoints:
+    web:
+      exposure:
+        include: '*'
+      cors:
+        allowed-origins: '*'
+        allowed-methods: '*'
+        allowed-headers: '*'
+

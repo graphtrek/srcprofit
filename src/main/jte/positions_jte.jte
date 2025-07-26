@@ -5,6 +5,7 @@
 @param co.grtk.srcprofit.dto.PositionDto positionDto
 @param List<PositionDto> optionHistory
 @param List<PositionDto> openOptions
+@param List<PositionDto> weeklyOpenPositions
 
 <div class="pagetitle">
     <h1>Positions</h1>
@@ -23,12 +24,12 @@
         <div class="col-lg-12">
             <div class="row">
 
-                <!-- Unrealized P&L Card -->
+                <!-- Buy Obligation Market Value Card -->
 
                 <div class="col-xxl-4 col-md-6">
                     <div class="card info-card sales-card">
                         <div class="card-body">
-                            <h5 class="card-title">Market Value</h5>
+                            <h5 class="card-title">Buy Obligation Market Value</h5>
 
                             <div class="d-flex align-items-center">
                                 <div class="card-icon rounded-circle d-flex align-items-center justify-content-center">
@@ -37,11 +38,13 @@
                                 <div class="ps-3">
                                     <h6 class="currency-usd">${positionDto.getMarketValue()}</h6>
                                     @if(positionDto.getMarketVsPositionsPercentage() > 0)
-                                    <span class="text-success small pt-1 fw-bold">${positionDto.getMarketVsPositionsPercentage()} %</span>
-                                    <span class="text-muted small pt-2 ps-1">Increase</span>
+                                        <span class="text-success small pt-1 fw-bold">+ ${positionDto.getMarketVsPositionsPercentage()} %</span> /
+                                        <span class="text-success small pt-1 fw-bold currency-usd">${positionDto.getMarketValue() - positionDto.getPositionValue()}</span>
+                                        <span class="text-muted small pt-2 ps-1">Covered</span>
                                     @else
-                                        <span class="text-success small pt-1 fw-bold">${positionDto.getMarketVsPositionsPercentage()} %</span>
-                                        <span class="text-muted small pt-2 ps-1">Decrease</span>
+                                        <span class="text-danger small pt-1 fw-bold">${positionDto.getMarketVsPositionsPercentage()} %</span> /
+                                        <span class="text-danger small pt-1 fw-bold currency-usd">${positionDto.getPositionValue() - positionDto.getMarketValue()}</span>
+                                        <span class="text-muted small pt-2 ps-1">Covered</span>
                                     @endif
                                  </div>
                             </div>
@@ -50,38 +53,15 @@
                     </div>
                 </div>
 
-                <!-- End Unrealized P&L -->
+                <!-- EndBuy Obligation Market Value -->
 
-                <!-- Realized P&L Card -->
-
-                <div class="col-xxl-4 col-md-6">
-                    <div class="card info-card revenue-card">
-                      <div class="card-body">
-                            <h5 class="card-title">Collected Premium</h5>
-
-                            <div class="d-flex align-items-center">
-                                <div class="card-icon rounded-circle d-flex align-items-center justify-content-center">
-                                    <i class="bi bi-currency-dollar"></i>
-                                </div>
-                                <div class="ps-3">
-                                    <h6 class="currency-usd">${positionDto.getCollectedPremium()}</h6>
-                                    <span class="text-danger small pt-1 fw-bold currency-usd">${positionDto.getUnRealizedProfitOrLoss()}</span>
-                                    <span class="text-muted small pt-2 ps-1">Open</span>
-                                </div>
-                            </div>
-                        </div>
-
-                    </div>
-                </div>
-                <!-- End Realized P&L Card -->
-
-                <!-- Positions Value Card -->
+                <!-- Buy Obligation Card -->
 
                 <div class="col-xxl-4 col-xl-12">
 
                     <div class="card info-card customers-card">
                         <div class="card-body">
-                            <h5 class="card-title">Positions Value</h5>
+                            <h5 class="card-title">Buy Obligation</h5>
 
                             <div class="d-flex align-items-center">
                                 <div class="card-icon rounded-circle d-flex align-items-center justify-content-center">
@@ -89,8 +69,10 @@
                                 </div>
                                 <div class="ps-3">
                                     <h6 class="currency-usd">${positionDto.getPositionValue()}</h6>
-                                    <span class="text-success small pt-1 fw-bold currency-usd">${positionDto.getCoveredPositionValue()}</span>
-                                    <span class="text-muted small pt-2 ps-1">Covered</span>
+                                    <span class="text-success small pt-1 fw-bold currency-usd">${positionDto.getCash()}</span>
+                                    <span class="text-muted small pt-2 ps-1">Cash</span>
+                                    <span class="text-success small pt-1 fw-bold currency-usd">${positionDto.getStock()}</span>
+                                    <span class="text-muted small pt-2 ps-1">Stock</span>
                                 </div>
                             </div>
 
@@ -98,7 +80,83 @@
                     </div>
 
                 </div>
-                <!-- End Positions Value Card -->
+                <!-- End Buy Obligation Card -->
+
+                <!-- Collected Premium Card -->
+
+                <div class="col-xxl-4 col-md-6">
+                    <div class="card info-card revenue-card">
+                        <div class="card-body">
+                            <h5 class="card-title">Premium</h5>
+
+                            <div class="d-flex align-items-center">
+                                <div class="card-icon rounded-circle d-flex align-items-center justify-content-center">
+                                    <i class="bi bi-currency-dollar"></i>
+                                </div>
+                                <div class="ps-3">
+                                    <h6 class="currency-usd">${positionDto.getCollectedPremium()}</h6>
+                                    <span class="text-muted small pt-2 ps-1">PUT</span>
+                                    <span class="text-danger small pt-1 fw-bold currency-usd">${positionDto.getPut()}</span>
+                                    <span class="text-muted small pt-2 ps-1">/</span>
+                                    <span class="text-danger small pt-1 fw-bold currency-usd">${positionDto.getPutMarketPrice()}</span>
+                                    <span class="text-muted small pt-2 ps-1">/</span>
+                                    @if(positionDto.getPutMarketPrice() > positionDto.getPut())
+                                        <span class="text-danger small pt-1 fw-bold currency-usd">- ${positionDto.getPutMarketPrice()}</span>
+                                    @else
+                                        <span class="text-success small pt-1 fw-bold currency-usd">${positionDto.getCoveredPositionValue()}</span>
+                                    @endif
+                                </div>
+                            </div>
+                        </div>
+
+                    </div>
+                </div>
+                <!-- End Collected Premium Card -->
+
+                <!-- DataTable Weekly Buy Obligations -->
+                <div class="col-12">
+                    <div class="card recent-sales overflow-auto">
+
+
+                        <div class="card-body">
+                            <h5 class="card-title">Weekly Buy Obligations <span></span></h5>
+
+                            <table id="datatableWeeklyOpenPositions" class="table table-striped">
+                                <thead>
+                                <tr>
+                                    <th scope="col">Expiration</th>
+                                    <th scope="col">DaysLeft</th>
+                                    <th scope="col">Value</th>
+                                    <th scope="col">MrktValue</th>
+                                    <th scope="col">Price</th>
+                                    <th scope="col">MrktPrice</th>
+                                    <th scope="col">R.O.I</th>
+                                    <th scope="col">P.O.P</th>
+                                    <th scope="col">P&L</th>
+                                </tr>
+                                </thead>
+                                <tbody>
+                                @for(var option : weeklyOpenPositions )
+                                    <tr style="cursor: pointer;">
+                                        <td>${option.getExpirationDateString()}</td>
+                                        <td>${option.getDaysLeft()}</td>
+                                        <td class="currency-usd">${option.getPositionValue()}</td>
+                                        <td class="currency-usd">${option.getMarketValue()}</td>
+                                        <td class="currency-usd">${option.getTradePrice()}</td>
+                                        <td class="currency-usd">${option.getMarketPrice()}</td>
+                                        <td>${option.getAnnualizedRoiPercent()}</td>
+                                        <td>${option.getProbability()}</td>
+                                        <td class="currency-usd">${option.getCoveredPositionValue()}</td>
+                                    </tr>
+                                @endfor
+                                </tbody>
+                            </table>
+
+                        </div>
+
+                    </div>
+                </div>
+                <!-- End DataTable weekly Open Positions -->
 
 
                 <!-- DataTable Open Positions-->
@@ -112,9 +170,10 @@
                                     <h6>Filter</h6>
                                 </li>
 
-                                <li><a class="dropdown-item" href="#">Today</a></li>
+                                <li><a class="dropdown-item" href="#">This Week</a></li>
                                 <li><a class="dropdown-item" href="#">This Month</a></li>
                                 <li><a class="dropdown-item" href="#">This Year</a></li>
+                                <li><a class="dropdown-item" href="#">All</a></li>
                             </ul>
                         </div>
 
@@ -129,13 +188,15 @@
                                     <th scope="col">Symbol</th>
                                     <th scope="col">TradeDate</th>
                                     <th scope="col">Expiration</th>
-                                    <th scope="col">DaysLeft</th>
+                                    <th scope="col">D.Left</th>
+                                    <th scope="col">Qty</th>
                                     <th scope="col">Value</th>
                                     <th scope="col">MrktValue</th>
                                     <th scope="col">Price</th>
-                                    <th scope="col">Days</th>
+                                    <th scope="col">MrktPrice</th>
+                                    <th scope="col">P&L</th>
+                                    <th scope="col">Earning</th>
                                     <th scope="col">Type</th>
-                                    <th scope="col">Status</th>
                                 </tr>
                                 </thead>
                                 <tbody>
@@ -147,30 +208,27 @@
                                             <td>${option.getId()}</td>
                                         @endif
                                         <td style="text-wrap: nowrap;">${option.getCode()}</td>
-                                        <td class="text-uppercase">${option.getTicker()}</td>
+                                        @if(option.getQuantity() < 0)
+                                            <td class="text-uppercase" style="font-weight: bold;">${option.getTicker()}</td>
+                                        @else
+                                            <td class="text-uppercase">${option.getTicker()}</td>
+                                        @endif
                                         <td>${option.getTradeDateString()}</td>
                                         <td>${option.getExpirationDateString()}</td>
                                         <td>${option.getDaysLeft()}</td>
-
-                                        @if(option.getTradePrice() > 0)
-                                            <td><b>${option.getPositionValue()}</b></td>
-                                            <td><b>${option.getMarketValue()}</b></td>
-                                            <td><b>${option.getTradePrice()}</b></td>
+                                        @if(option.getQuantity() < 0)
+                                            <td style="font-weight: bold;">${option.getQuantity()}</td>
                                         @else
-                                            <td>${option.getPositionValue()}</td>
-                                            <td>${option.getMarketValue()}</td>
-                                            <td>${option.getTradePrice()}</td>
+                                            <td>${option.getQuantity()}</td>
                                         @endif
 
-                                        <td>${option.getDaysBetween()}</td>
+                                        <td class="currency-usd">${option.getPositionValue()}</td>
+                                        <td class="currency-usd">${option.getMarketValue()}</td>
+                                        <td class="currency-usd">${option.getTradePrice()}</td>
+                                        <td class="currency-usd">${option.getMarketPrice()}</td>
+                                        <td class="currency-usd">${option.getUnRealizedProfitOrLoss()}</td>
+                                        <td>${option.getEarningDay()}</td>
                                         <td>${option.getType()}</td>
-                                        @if(OptionStatus.PENDING.equals(option.getStatus()))
-                                            <td class="badge bg-warning">${option.getStatus()}</td>
-                                        @elseif(OptionStatus.CLOSED.equals(option.getStatus()))
-                                            <td class="badge bg-success">${option.getStatus()}</td>
-                                        @else
-                                            <td class="badge bg-danger">${option.getStatus()}</td>
-                                        @endif
                                     </tr>
                                 @endfor
                                 </tbody>
@@ -193,9 +251,10 @@
                                     <h6>Filter</h6>
                                 </li>
 
-                                <li><a class="dropdown-item" href="#">Today</a></li>
+                                <li><a class="dropdown-item" href="#">This Week</a></li>
                                 <li><a class="dropdown-item" href="#">This Month</a></li>
                                 <li><a class="dropdown-item" href="#">This Year</a></li>
+                                <li><a class="dropdown-item" href="#">All</a></li>
                             </ul>
                         </div>
 
@@ -211,10 +270,11 @@
                                     <th scope="col">TradeDate</th>
                                     <th scope="col">Expiration</th>
                                     <th scope="col">DaysLeft</th>
+                                    <th scope="col">Qty</th>
                                     <th scope="col">Value</th>
                                     <th scope="col">MrktValue</th>
                                     <th scope="col">Price</th>
-                                    <th scope="col">Days</th>
+                                    <th scope="col">Earning</th>
                                     <th scope="col">Type</th>
                                     <th scope="col">Status</th>
                                 </tr>
@@ -228,18 +288,12 @@
                                         <td>${option.getTradeDateString()}</td>
                                         <td>${option.getExpirationDateString()}</td>
                                         <td>${option.getDaysLeft()}</td>
+                                        <td>${option.getQuantity()}</td>
+                                        <td class="currency-usd">${option.getPositionValue()}</td>
+                                        <td class="currency-usd">${option.getMarketValue()}</td>
+                                        <td class="currency-usd">${option.getTradePrice()}</td>
 
-                                        @if(option.getTradePrice() > 0)
-                                            <td><b>${option.getPositionValue()}</b></td>
-                                            <td><b>${option.getMarketValue()}</b></td>
-                                            <td><b>${option.getTradePrice()}</b></td>
-                                        @else
-                                            <td>${option.getPositionValue()}</td>
-                                            <td>${option.getMarketValue()}</td>
-                                            <td>${option.getTradePrice()}</td>
-                                        @endif
-
-                                        <td>${option.getDaysBetween()}</td>
+                                        <td>${option.getEarningDay()}</td>
                                         <td>${option.getType()}</td>
                                         @if(OptionStatus.PENDING.equals(option.getStatus()))
                                             <td class="badge bg-warning">${option.getStatus()}</td>
@@ -284,6 +338,7 @@
         function datatable() {
             console.log('datatable init');
             const tableOpen = new DataTable('#datatableOpenPositions', {
+                pageLength: 10,
                 perPageSelect: [5, 10, 15, ["All", -1]],
                 columnDefs: [{target: 1, visible: false, searchable: false}], // code hidden
                 order: [[4, 'asc'],[1, 'asc']] // daysLeft, code
@@ -295,7 +350,22 @@
                 htmx.ajax('GET', '/getPosition/' + ticker, '#main');
             });
 
+            tableOpen.rows().eq(0).each( function ( index ) {
+                var row = tableOpen.row( index );
+
+                const rowData = row.data();
+                for (let i = 0; i < rowData.length; i++ ) {
+                    if(i===8) {
+                        let cell = rowData[i];
+                        console.log(cell);
+                    }
+                }
+
+                // ... do something with data(), or row.node(), etc
+            } );
+
             const tableClosed = new DataTable('#datatableClosedPositions', {
+                pageLength: 10,
                 perPageSelect: [5, 10, 15, ["All", -1]],
                 columnDefs: [{target: 1, visible: false, searchable: false}], // code hidden
                 order: [[1, 'asc'],[3, 'desc']] // code, TradeDate
@@ -308,5 +378,6 @@
             });
         }
         datatable();
+        totalSeconds = 0;
     });
 </script>

@@ -3,7 +3,6 @@ package co.grtk.srcprofit.dto;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
 import java.time.OffsetDateTime;
-import java.util.List;
 
 import static co.grtk.srcprofit.mapper.MapperUtils.round2Digits;
 
@@ -26,8 +25,8 @@ public class AlpacaQuoteDto {
     @JsonProperty("bx")
     private String bidExchange;
 
-    @JsonProperty("c")
-    private List<String> conditions;
+//    @JsonProperty("c")
+    private String conditions;
 
     @JsonProperty("t")
     private OffsetDateTime timestamp;
@@ -83,11 +82,11 @@ public class AlpacaQuoteDto {
         this.bidExchange = bidExchange;
     }
 
-    public List<String> getConditions() {
+    public String getConditions() {
         return conditions;
     }
 
-    public void setConditions(List<String> conditions) {
+    public void setConditions(String conditions) {
         this.conditions = conditions;
     }
 
@@ -108,7 +107,10 @@ public class AlpacaQuoteDto {
     }
 
     public double getMidPrice() {
-        return round2Digits(((bidPrice * bidSize) + (askPrice * askSize)) / (askSize + bidSize));
+        if(bidPrice == 0 || askPrice == 0)
+            return 0;
+        else
+            return round2Digits((((bidPrice * bidSize) + (askPrice * askSize)) / (askSize + bidSize)) * 100 );
     }
 
     @Override

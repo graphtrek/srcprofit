@@ -55,6 +55,11 @@ public class InstrumentService {
                 .map(entity -> objectMapper.convertValue(entity, InstrumentDto.class)).toList();
     }
 
+    public List<InstrumentDto> findByTickers(List<String> symbols) {
+        List<InstrumentEntity> ibkrInstrumentEntities = instrumentRepository.findByTickers(symbols);
+        return ibkrInstrumentEntities.stream()
+                .map(entity -> objectMapper.convertValue(entity, InstrumentDto.class)).toList();
+    }
     public InstrumentDto loadInstrumentByTicker(String ticker) {
         InstrumentEntity instrumentEntity = instrumentRepository.findByTicker(ticker);
         return objectMapper.convertValue(instrumentEntity, InstrumentDto.class);
@@ -115,11 +120,11 @@ public class InstrumentService {
 
                 if (instrumentEntity.getUpdated() == null ||
                         instrumentEntity.getUpdated().isBefore(updated)) {
-                    AlpacaBarDto alpacaDailyBarDto = alpacaSingleAssetDtoEntry.getValue().getDailyBar();
+                    AlpacaBarDto alpacaPrevDailyBarDto = alpacaSingleAssetDtoEntry.getValue().getPrevDailyBar();
                     instrumentEntity.setUpdated(updated);
                     instrumentEntity.setPrice(alpacaTradeDto.getPrice());
-                    double change = alpacaTradeDto.getPrice() - alpacaDailyBarDto.getOpen();
-                    double changePercent = (change / alpacaDailyBarDto.getOpen()) * 100;
+                    double change = alpacaTradeDto.getPrice() - alpacaPrevDailyBarDto.getClose();
+                    double changePercent = (change / alpacaPrevDailyBarDto.getOpen()) * 100;
                     instrumentEntity.setChange(round2Digits(change));
                     instrumentEntity.setChangePercent(round2Digits(changePercent));
                     instrumentRepository.save(instrumentEntity);

@@ -37,7 +37,7 @@ public class PositionMapper {
 
         String optionType = formData.getFirst("type");
         String note = formData.getFirst("note");
-        Integer quantity = parseInt(formData.getFirst("quantity"), null);
+        Integer quantity = parseInt(formData.getFirst("quantity"), 1);
         Double fee = parseDouble(formData.getFirst("fee"), null);
         Double marketValue = parseDouble(formData.getFirst("marketValue"), null);
         Double positionValue = parseDouble(formData.getFirst("positionValue"), null);
@@ -107,7 +107,7 @@ public class PositionMapper {
         if (dto.getTradePrice() == null)
             dto.setTradePrice(Math.round(positionValue * 0.0014 * daysBetween * 100.0) / 100.0);
 
-        double tradePrice = dto.getTradePrice();
+        double tradePrice = dto.getTradePrice() + dto.getRealizedProfitOrLoss();
         OptionType type = dto.getType();
 
         if (tradePrice > 0 && type == OptionType.PUT) {
@@ -116,7 +116,7 @@ public class PositionMapper {
             dto.setBreakEven(round2Digits(positionValue + tradePrice));
         }
 
-        float roiBasePrice = dto.getTradePrice().floatValue();
+        float roiBasePrice = (float) tradePrice;
         if (dto.getFee() != null)
             roiBasePrice -= dto.getFee().floatValue();
 

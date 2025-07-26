@@ -14,6 +14,7 @@ import javax.net.ssl.X509TrustManager;
 import java.security.KeyManagementException;
 import java.security.NoSuchAlgorithmException;
 import java.security.cert.X509Certificate;
+import java.util.Map;
 
 @Configuration
 public class RestClientConfig {
@@ -49,6 +50,13 @@ public class RestClientConfig {
                 .baseUrl("https://data.alpaca.markets").build();
     }
 
+    @Bean(name = "alphaVintageRestClient")
+    public RestClient alphaVintageRestClient() {
+        return RestClient.builder()
+                .requestFactory(new SimpleClientHttpRequestFactory())
+                .defaultUriVariables(Map.of("apiKey", environment.getRequiredProperty("ALPHA_VINTAGE_API_KEY")))
+                .baseUrl("https://www.alphavantage.co").build();
+    }
     /**
      * Should strictly be used only in the local environment.
      */

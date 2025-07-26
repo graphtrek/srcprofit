@@ -3,11 +3,13 @@ package co.grtk.srcprofit.controller;
 import co.grtk.srcprofit.dto.FlexStatementResponse;
 import co.grtk.srcprofit.dto.IbkrTradeExecutionDto;
 import co.grtk.srcprofit.service.IbkrService;
+import co.grtk.srcprofit.service.NetAssetValueService;
 import co.grtk.srcprofit.service.OptionService;
 import com.ctc.wstx.io.CharsetNames;
 import org.apache.commons.io.FileUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.core.env.Environment;
 import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -22,16 +24,20 @@ public class IbkrRestController {
 
     private final IbkrService ibkrService;
     private final OptionService optionService;
+    private final Environment environment;
+    private final NetAssetValueService netAssetValueService;
     private final String userHome = System.getProperty("user.home");
+    private String netAssetValueReferenceCode = null;
+    private String tradesReferenceCode = null;
 
-    public IbkrRestController(IbkrService ibkrService, OptionService optionService) {
+    public IbkrRestController(IbkrService ibkrService,
+                              OptionService optionService,
+                              Environment environment,
+                              NetAssetValueService netAssetValueService) {
         this.ibkrService = ibkrService;
         this.optionService = optionService;
-    }
-
-    @GetMapping("/ibkrFlexStatement")
-    public FlexStatementResponse getFlexStatement() {
-        return ibkrService.getFlexStatement();
+        this.environment = environment;
+        this.netAssetValueService = netAssetValueService;
     }
 
     @GetMapping("/ibkrFlexQuery/{referenceCode}")
@@ -41,15 +47,59 @@ public class IbkrRestController {
         return flexQuery;
     }
 
-    @GetMapping(value = "/ibkrFlexImport", produces = MediaType.APPLICATION_XML_VALUE)
-    public int ibkrFlexImport() throws Exception {
-        FlexStatementResponse flexStatementResponse = ibkrService.getFlexStatement();
-        Thread.sleep(2000);
-        String flexQuery = ibkrService.getFlexQuery(flexStatementResponse.getReferenceCode());
-        File file = new File(userHome + "/FLEX_QUERY_" + flexStatementResponse.getReferenceCode() + ".csv");
-        FileUtils.write(file, flexQuery, CharsetNames.CS_UTF8);
-        log.info("ibkrFlexImport file {} written", file.getAbsolutePath());
-        return optionService.csvToOptions(file.toPath());
+    @GetMapping(value = "/ibkrFlexTradesImport", produces = MediaType.APPLICATION_XML_VALUE)
+    public String ibkrFlexTradesImport() {
+        long start = System.currentTimeMillis();
+        try {
+            if( tradesReferenceCode == null) {
+                final String IBKR_FLEX_TRADES_ID = environment.getRequiredProperty("IBKR_FLEX_TRADES_ID");
+                FlexStatementResponse flexStatementResponse = ibkrService.getFlexStatement(IBKR_FLEX_TRADES_ID);
+                tradesReferenceCode = flexStatementResponse.getReferenceCode();
+            }
+
+            log.info("ibkrFlexTradesImport tradesReferenceCode {}", tradesReferenceCode);
+
+            String flexTradesQuery = ibkrService.getFlexQuery(tradesReferenceCode);
+            File file = new File(userHome + "/FLEX_TRADES_" + tradesReferenceCode + ".csv");
+            FileUtils.write(file, flexTradesQuery, CharsetNames.CS_UTF8);
+            int csvRecords = optionService.saveCSV(file.toPath());
+            int dataFixRecords = optionService.dataFix();
+            tradesReferenceCode = null;
+
+            long elapsed = System.currentTimeMillis() - start;
+            log.info("ibkrFlexTradesImport file {} written elapsed:{}", file.getAbsolutePath(), elapsed);
+            return csvRecords + "/" + dataFixRecords;
+        } catch (Exception e) {
+            log.error("ibkrFlexTradesImport exception {}", e.getMessage());
+            return "WAITING_FOR " + tradesReferenceCode;
+        }
+    }
+
+    @GetMapping(value = "/ibkrFlexNetAssetValueImport", produces = MediaType.APPLICATION_XML_VALUE)
+    public String ibkrFlexNetAssetValueImport() {
+        long start = System.currentTimeMillis();
+        try {
+            if( netAssetValueReferenceCode == null) {
+                final String IBKR_FLEX_NET_ASSET_VALUE_ID = environment.getRequiredProperty("IBKR_FLEX_NET_ASSET_VALUE_ID");
+                FlexStatementResponse flexStatementResponse = ibkrService.getFlexStatement(IBKR_FLEX_NET_ASSET_VALUE_ID);
+                netAssetValueReferenceCode = flexStatementResponse.getReferenceCode();
+            }
+
+            log.info("ibkrFlexNetAssetValueImport netAssetValueReferenceCode {}", netAssetValueReferenceCode);
+
+            String flexTradesQuery = ibkrService.getFlexQuery(netAssetValueReferenceCode);
+            File file = new File(userHome + "/FLEX_NET_ASSET_VALUE_" + netAssetValueReferenceCode + ".csv");
+            FileUtils.write(file, flexTradesQuery, CharsetNames.CS_UTF8);
+            int records = netAssetValueService.saveCSV(file.toPath());
+            netAssetValueReferenceCode = null;
+
+            long elapsed = System.currentTimeMillis() - start;
+            log.info("ibkrFlexNetAssetValueImport file {} written elapsed:{}", file.getAbsolutePath(), elapsed);
+            return String.valueOf(records);
+        } catch (Exception e) {
+            log.error("ibkrFlexNetAssetValueImport exception {}", e.getMessage());
+            return "WAITING_FOR " + netAssetValueReferenceCode;
+        }
     }
 
     @GetMapping(value = "/ibkrLatestTrades", produces = MediaType.APPLICATION_JSON_VALUE)

@@ -29,7 +29,7 @@
   <link href="//cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/5.3.3/css/bootstrap.min.css" rel="stylesheet">
   <!-- Template Main CSS File -->
   <link href="assets/css/style.css" rel="stylesheet">
-  <script src="//unpkg.com/htmx.org@1.9.10"></script>
+  <script src="//unpkg.com/htmx.org@2.0.7"></script>
   <script src="//code.jquery.com/jquery-3.7.1.js"></script>
 </head>
 
@@ -41,7 +41,10 @@
     <div class="d-flex align-items-center justify-content-between">
       <a href="/" class="logo d-flex align-items-center">
         <img src="assets/img/logo.png" alt="">
-        <span class="d-none d-lg-block">SrcProfit</span>
+        <span class="d-none d-lg-block">
+            SrcProfit
+            <label id="minutes">00</label>:<label id="seconds">00</label>
+        </span>
       </a>
       <i class="bi bi-list toggle-sidebar-btn"></i>
     </div><!-- End Logo -->
@@ -78,134 +81,193 @@
 
     <ul class="sidebar-nav" id="sidebar-nav">
 
-      <li class="nav-item">
-        <a class="nav-link " href="#"
-           hx-push-url="true"
-           hx-indicator="#spinner"
-           hx-get="/dashboard"
-           hx-trigger="click"
-           hx-target="#main"
-           hx-swap="innerHTML"
-           hx-on::afterRequest="console.log('GET /dashboard');">
-          <i class="bi bi-grid"></i>
-          <span>Dashboard</span>
-        </a>
-      </li><!-- End Dashboard Nav -->
-      <li class="nav-item">
-        <a class="nav-link collapsed" href="#"
-           hx-push-url="true"
-           hx-indicator="#spinner"
-           hx-get="/positions"
-           hx-trigger="click"
-           hx-target="#main"
-           hx-swap="innerHTML"
-           hx-on::afterRequest="console.log('GET /positions')">
-          <i class="bi bi-card-list"></i>
-          <span>Positions</span>
-        </a>
-      </li><!-- End Positions -->
-      <li class="nav-item">
-        <a class="nav-link collapsed" href="#"
-           hx-push-url="true"
-           hx-indicator="#spinner"
-           hx-get="/calculatePosition"
-           hx-trigger="click"
-           hx-target="#main"
-           hx-swap="innerHTML"
-           hx-on::afterRequest="console.log('GET /calculatePosition')">
-          <i class="bi bi-card-list"></i>
-          <span>Position Calculator</span>
-        </a>
-      </li><!-- End PositionForm -->
-      <li class="nav-item">
-        <a class="nav-link collapsed" href="#"
-           hx-push-url="true"
-           hx-indicator="#spinner"
-           hx-get="/instruments"
-           hx-trigger="click"
-           hx-target="#main"
-           hx-swap="innerHTML"
-           hx-on::afterRequest="console.log('GET /instruments')">
-          <i class="bi bi-card-list"></i>
-          <span>Instruments</span>
-        </a>
-      </li><!-- End Instruments -->
+        <li class="nav-item">
+            <a class="nav-link " href="#"
+               hx-indicator="#spinner"
+               hx-get="/dashboard/all"
+               hx-trigger="click"
+               hx-target="#main"
+               hx-swap="innerHTML"
+               hx-on::afterRequest="console.log('GET /dashboard');">
+              <i class="bi bi-grid"></i>
+              <span>Dashboard</span>
+            </a>
+        </li><!-- End Dashboard Nav -->
+        <li class="nav-item">
+            <a class="nav-link collapsed" href="#"
+               hx-indicator="#spinner"
+               hx-get="/positions"
+               hx-trigger="click"
+               hx-target="#main"
+               hx-swap="innerHTML"
+               hx-on::afterRequest="console.log('GET /positions')">
+              <i class="bi bi-card-list"></i>
+              <span>Positions</span>
+            </a>
+        </li><!-- End Positions -->
+        <li class="nav-item">
+            <a class="nav-link collapsed" href="#"
+               hx-indicator="#spinner"
+               hx-get="/calculatePosition"
+               hx-trigger="click"
+               hx-target="#main"
+               hx-swap="innerHTML"
+               hx-on::afterRequest="console.log('GET /calculatePosition');">
+              <i class="bi bi-card-list"></i>
+              <span>Position Calculator</span>
+            </a>
+        </li><!-- End PositionForm -->
+        <li class="nav-item">
+            <a class="nav-link collapsed" href="#"
+               hx-indicator="#spinner"
+               hx-get="/instruments"
+               hx-trigger="click"
+               hx-target="#main"
+               hx-swap="innerHTML"
+               hx-on::afterRequest="console.log('GET /instruments')">
+              <i class="bi bi-card-list"></i>
+              <span>Instruments</span>
+            </a>
+        </li><!-- End Instruments -->
+        <li class="nav-item">
+            <a class="nav-link collapsed" href="#"
+               hx-indicator="#spinner"
+               hx-get="/netAssetValues"
+               hx-trigger="click"
+               hx-target="#main"
+               hx-swap="innerHTML"
+               hx-on::afterRequest="console.log('GET /netAssetValues')">
+              <i class="bi bi-card-list"></i>
+              <span>Net Asset Value</span>
+            </a>
+        </li><!-- End Net Asset Values -->
+        <li class="nav-item">
+            <a class="nav-link collapsed" href="#"
+               hx-indicator="#spinner"
+               hx-get="/earnings"
+               hx-trigger="click"
+               hx-target="#main"
+               hx-swap="innerHTML"
+               hx-on::afterRequest="console.log('GET /earnings')">
+                <i class="bi bi-card-list"></i>
+                <span>Earnings</span>
+            </a>
+        </li><!-- End Earnings -->
 
-      <li class="nav-item">
-        <a class="nav-link collapsed" data-bs-target="#admin-nav" data-bs-toggle="collapse" href="#" aria-expanded="false">
-          <i class="bi bi-bar-chart"></i><span>Admin</span><i class="bi bi-chevron-down ms-auto"></i>
-        </a>
-        <ul id="admin-nav" class="nav-content collapse" data-bs-parent="#sidebar-nav" style="">
-          <li class="nav-item">
-            <a class="nav-link collapsed" href="#"
-               hx-push-url="true"
-               hx-indicator="#spinner"
-               hx-get="/alpacaMarketData"
-               hx-trigger="click"
-               hx-target="#main"
-               hx-swap="innerHTML"
-               hx-on::afterRequest="console.log('GET /alpacaMarketData')">
-              <i class="bi bi-card-list"></i>
-              <span>Alpaca Market Data</span>
+        <li class="nav-item">
+            <a class="nav-link collapsed" data-bs-target="#admin-data" data-bs-toggle="collapse" href="#" aria-expanded="false">
+              <i class="bi bi-bar-chart"></i><span>Admin Data</span><i class="bi bi-chevron-down ms-auto"></i>
             </a>
-          </li><!-- End Alpaca Market Data -->
-          <li class="nav-item">
-            <a class="nav-link collapsed" href="#"
-               hx-push-url="true"
-               hx-indicator="#spinner"
-               hx-get="/ibkrMarketData"
-               hx-trigger="click"
-               hx-target="#main"
-               hx-swap="innerHTML"
-               hx-on::afterRequest="console.log('GET /ibkrMarketData')">
-              <i class="bi bi-card-list"></i>
-              <span>Ibkr Market Data</span>
-            </a>
-          </li><!-- End Ibkr Market Data -->
-          <li class="nav-item">
-            <a class="nav-link collapsed" href="#"
-               hx-push-url="true"
-               hx-indicator="#spinner"
-               hx-get="/ibkrWatchlist"
-               hx-trigger="click"
-               hx-target="#main"
-               hx-swap="innerHTML"
-               hx-on::afterRequest="console.log('GET /ibkrWatchlist')">
-              <i class="bi bi-card-list"></i>
-              <span>Ibkr Watchlist</span>
-            </a>
-          </li><!-- End Ibkr Watchlist -->
-          <li class="nav-item">
-            <a class="nav-link collapsed" href="#"
-               hx-push-url="true"
-               hx-indicator="#spinner"
-               hx-get="/ibkrFlexImport"
-               hx-trigger="click"
-               hx-target="#imported"
-               hx-swap="innerHTML"
-               hx-on::afterRequest="console.log('Ibkr Flex Import')">
-              <i class="bi bi-card-list"></i>
-              <span>Ibkr Flex Import</span>
-              &nbsp;
-              <span id="imported"></span>
-            </a>
-          </li><!-- End Ibkr Flex Import -->
-          <li class="nav-item">
-            <a class="nav-link collapsed" href="/ibkrLatestTrades" target="_blank">
-              <i class="bi bi-card-list"></i>
-              <span>Ibkr Latest Trades</span>
-            </a>
-          </li><!-- End Ibkr LatestTrades -->
-          <li class="nav-item">
-            <a class="nav-link collapsed" href="https://localhost:5055/sso/Login" target="_blank">
-              <i class="bi bi-card-list"></i>
-              <span>Ibkr Login</span>
-            </a>
-          </li><!-- End Ibkr Login Page Nav -->
-        </ul>
-      </li>
+            <ul id="admin-data" class="nav-content collapse" data-bs-parent="#sidebar-nav" style="">
+                <li class="nav-item">
+                <a class="nav-link collapsed" href="#"
+                   hx-indicator="#spinner"
+                   hx-get="/earningsCalendar"
+                   hx-trigger="click"
+                   hx-target="#earningsCalendarImport"
+                   hx-swap="innerHTML"
+                   hx-on::afterRequest="console.log('GET /earningsCalendar')">
+                    <i class="bi bi-card-list"></i>
+                    <span>Earnings Calendar</span>
+                    &nbsp;
+                    <span id="earningsCalendarImport"></span>
+                </a>
+            </li><!-- End Alpha Vintage Earnings Calendar -->
+                <li class="nav-item">
+                    <a class="nav-link collapsed" href="#"
+                       hx-indicator="#spinner"
+                       hx-get="/ibkrFlexTradesImport"
+                       hx-trigger="click"
+                       hx-target="#ibkrFlexTradesImport"
+                       hx-swap="innerHTML"
+                       hx-on::afterRequest="console.log('GET /ibkrFlexTradesImport')">
+                        <i class="bi bi-card-list"></i>
+                        <span>Ibkr Flex Trades</span>
+                        &nbsp;
+                        <span id="ibkrFlexTradesImport"></span>
+                    </a>
+                </li><!-- End Ibkr Flex Trades Import -->
+                <li class="nav-item">
+                <a class="nav-link collapsed" href="#"
+                   hx-indicator="#spinner"
+                   hx-get="/ibkrFlexNetAssetValueImport"
+                   hx-trigger="click"
+                   hx-target="#ibkrFlexNetAssetValueImport"
+                   hx-swap="innerHTML"
+                   hx-on::afterRequest="console.log('GET /ibkrFlexNetAssetValueImport')">
+                  <i class="bi bi-card-list"></i>
+                  <span>Ibkr Flex Net Asset</span>
+                  &nbsp;
+                  <span id="ibkrFlexNetAssetValueImport"></span>
+                </a>
+              </li><!-- End Ibkr Flex Net Asset Value Import -->
+            </ul>
+        </li><!-- End Admin -->
 
-      <li class="nav-item htmx-indicator" id="spinner">
+
+        <li class="nav-item">
+            <a class="nav-link collapsed" data-bs-target="#admin-nav" data-bs-toggle="collapse" href="#" aria-expanded="false">
+                <i class="bi bi-bar-chart"></i><span>Admin</span><i class="bi bi-chevron-down ms-auto"></i>
+            </a>
+            <ul id="admin-nav" class="nav-content collapse" data-bs-parent="#sidebar-nav" style="">
+                <li class="nav-item">
+                    <a class="nav-link collapsed" href="#"
+                       hx-indicator="#spinner"
+                       hx-get="/alpacaMarketData"
+                       hx-trigger="click"
+                       hx-target="#main"
+                       hx-swap="innerHTML"
+                       hx-on::afterRequest="console.log('GET /alpacaMarketData')">
+                        <i class="bi bi-card-list"></i>
+                        <span>Alpaca Market Data</span>
+                    </a>
+                </li><!-- End Alpaca Market Data -->
+                <li class="nav-item">
+                    <a class="nav-link collapsed" href="#"
+                       hx-indicator="#spinner"
+                       hx-get="/ibkrMarketData"
+                       hx-trigger="click"
+                       hx-target="#main"
+                       hx-swap="innerHTML"
+                       hx-on::afterRequest="console.log('GET /ibkrMarketData')">
+                        <i class="bi bi-card-list"></i>
+                        <span>Ibkr Market Data</span>
+                    </a>
+                </li><!-- End Ibkr Market Data -->
+                <li class="nav-item">
+                    <a class="nav-link collapsed" href="#"
+                       hx-indicator="#spinner"
+                       hx-get="/ibkrWatchlist"
+                       hx-trigger="click"
+                       hx-target="#main"
+                       hx-swap="innerHTML"
+                       hx-on::afterRequest="console.log('GET /ibkrWatchlist')">
+                        <i class="bi bi-card-list"></i>
+                        <span>Ibkr Watchlist</span>
+                    </a>
+                </li><!-- End Ibkr Watchlist -->
+                <li class="nav-item">
+                    <a class="nav-link collapsed" href="/alpacaOptionsQuotes" target="_blank">
+                        <i class="bi bi-card-list"></i>
+                        <span>Alpaca Options Quotes</span>
+                    </a>
+                </li><!-- End Alpaca Options Quotes -->
+                <li class="nav-item">
+                    <a class="nav-link collapsed" href="/ibkrLatestTrades" target="_blank">
+                        <i class="bi bi-card-list"></i>
+                        <span>Ibkr Latest Trades</span>
+                    </a>
+                </li><!-- End Ibkr LatestTrades -->
+                <li class="nav-item">
+                    <a class="nav-link collapsed" href="https://localhost:5055/sso/Login" target="_blank">
+                        <i class="bi bi-card-list"></i>
+                        <span>Ibkr Login</span>
+                    </a>
+                </li><!-- End Ibkr Login Page Nav -->
+            </ul>
+        </li><!-- End Admin -->
+
+        <li class="nav-item htmx-indicator" id="spinner">
         <div class="spinner-border" role="status">
           <span class="visually-hidden">Loading...</span>
         </div>
@@ -225,11 +287,10 @@
   </aside><!-- End Sidebar-->
 
   <main id="main" class="main"
-        hx-push-url="true"
-        hx-get="/dashboard"
+        hx-get="/dashboard/all"
         hx-trigger="load delay:0s"
         hx-swap="innerHTML"
-        hx-on::afterRequest="console.log('GET /dashboard');">
+        hx-on::afterRequest="console.log('GET /dashboard/all');">
 
   </main><!-- End #main -->
 
@@ -259,7 +320,12 @@
 
   <!-- Template Main JS File -->
   <script src="assets/js/main.js"></script>
-
+  <script>
+      $( document ).ready(function() {
+          console.log( "ready!" );
+          totalSeconds = 0;
+      });
+  </script>
 </body>
 
 </html>

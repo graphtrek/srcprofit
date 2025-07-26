@@ -3,6 +3,7 @@ package co.grtk.srcprofit.repository;
 import co.grtk.srcprofit.entity.InstrumentEntity;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
@@ -15,5 +16,9 @@ public interface InstrumentRepository extends JpaRepository<InstrumentEntity, Lo
             "ORDER BY i.ticker ASC")
     List<InstrumentEntity> findAllInstrument();
 
-    InstrumentEntity findByTicker(String ticker);
+    @Query("SELECT i FROM InstrumentEntity i WHERE i.ticker IN (:symbols)")
+    List<InstrumentEntity> findByTickers(@Param("symbols") List<String> symbols);
+
+
+    InstrumentEntity findByTicker(@Param("ticker") String ticker);
 }

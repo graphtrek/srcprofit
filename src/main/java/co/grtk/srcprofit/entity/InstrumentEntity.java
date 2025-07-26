@@ -18,6 +18,7 @@ import org.hibernate.annotations.SourceType;
 import org.hibernate.annotations.UpdateTimestamp;
 
 import java.time.Instant;
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.List;
 
@@ -70,6 +71,7 @@ public class InstrumentEntity {
     @UpdateTimestamp(source = SourceType.DB)
     private Instant updatedAt;
 
+    private LocalDate earningDate;
 
     public Long getId() {
         return id;
@@ -164,6 +166,14 @@ public class InstrumentEntity {
 
     public void setChangePercent(Double changePercent) {
         this.changePercent = changePercent;
+    }
+
+    public LocalDate getEarningDate() {
+        return earningDate;
+    }
+
+    public void setEarningDate(LocalDate earningsDate) {
+        this.earningDate = earningsDate;
     }
 
     @Override

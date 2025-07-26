@@ -1,8 +1,11 @@
 package co.grtk.srcprofit.dto;
 
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.time.temporal.ChronoUnit;
 
+import static co.grtk.srcprofit.mapper.MapperUtils.getLocalDateAsString;
 import static co.grtk.srcprofit.mapper.MapperUtils.getLocalDateTimeAsString;
 
 public class InstrumentDto {
@@ -25,9 +28,10 @@ public class InstrumentDto {
 
     private Double changePercent;
 
-    Double realizedProfitOrLoss;
-    Double unRealizedProfitOrLoss;
-    Double collectedPremium;
+    private Double realizedProfitOrLoss;
+    private Double unRealizedProfitOrLoss;
+    private Double collectedPremium;
+    private LocalDate earningDate;
 
     public Long getId() {
         return id;
@@ -129,6 +133,21 @@ public class InstrumentDto {
         this.collectedPremium = collectedPremium;
     }
 
+    public LocalDate getEarningDate() {
+        return earningDate;
+    }
+
+    public String getEarningDateStr() {
+        return getLocalDateAsString(earningDate);
+    }
+
+    public void setEarningDate(LocalDate earningDate) {
+        this.earningDate = earningDate;
+    }
+
+    public Integer getEarningDay() {
+        return earningDate == null ? 999 : (int) ChronoUnit.DAYS.between(LocalDate.now(), earningDate.atStartOfDay());
+    }
     @Override
     public String toString() {
         return "InstrumentDto{" +

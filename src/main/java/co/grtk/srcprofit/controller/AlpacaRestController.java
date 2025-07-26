@@ -3,9 +3,11 @@ package co.grtk.srcprofit.controller;
 import co.grtk.srcprofit.dto.AlpacaMarketDataDto;
 import co.grtk.srcprofit.dto.AlpacaQuotesDto;
 import co.grtk.srcprofit.dto.InstrumentDto;
+import co.grtk.srcprofit.dto.PositionDto;
 import co.grtk.srcprofit.service.AlpacaService;
 import co.grtk.srcprofit.service.InstrumentService;
 import co.grtk.srcprofit.service.OptionService;
+import com.fasterxml.jackson.core.JsonProcessingException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.http.MediaType;
@@ -13,6 +15,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 @RestController
 public class AlpacaRestController {
@@ -28,10 +31,17 @@ public class AlpacaRestController {
         this.instrumentService = instrumentService;
     }
 
-    @GetMapping(value = "/alpacaQuotes", produces = MediaType.APPLICATION_JSON_VALUE)
-    public AlpacaQuotesDto getQuotes() {
+    @GetMapping(value = "/alpacaStocksQuotes", produces = MediaType.APPLICATION_JSON_VALUE)
+    public AlpacaQuotesDto getStocksQuotes() {
         List<InstrumentDto> instruments = instrumentService.loadAllInstruments();
-        return alpacaService.getLatestQuotes(instrumentService.buildTickerCsv(instruments));
+        return alpacaService.getStocksLatestQuotes(instrumentService.buildTickerCsv(instruments));
+    }
+
+    @GetMapping(value = "/alpacaOptionsQuotes", produces = MediaType.APPLICATION_JSON_VALUE)
+    public AlpacaQuotesDto getOptionsQuotes() throws JsonProcessingException {
+        List<PositionDto>  openOptions = optionService.getAllOpenPositions(null);
+        String symbols = openOptions.stream().map(dto -> dto.getCode().replaceAll("\\s","")).collect(Collectors.joining(","));
+        return alpacaService.getOptionsLatestQuotes(symbols);
     }
 
     @GetMapping(value = "/alpacaMarketData", produces = MediaType.APPLICATION_JSON_VALUE)
@@ -39,5 +49,6 @@ public class AlpacaRestController {
         List<InstrumentDto> instruments = instrumentService.loadAllInstruments();
         return alpacaService.getMarketDataSnapshot(instrumentService.buildTickerCsv(instruments));
     }
+
 
 }

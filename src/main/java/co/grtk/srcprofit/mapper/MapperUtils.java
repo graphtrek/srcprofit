@@ -1,18 +1,21 @@
 package co.grtk.srcprofit.mapper;
 
+import java.math.BigDecimal;
 import java.time.Instant;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.time.format.DateTimeParseException;
+import java.util.Map;
 import java.util.Objects;
 import java.util.Optional;
 import java.util.TimeZone;
+import java.util.stream.Collectors;
 
 public class MapperUtils {
 
-    public static DateTimeFormatter timeFormatter = DateTimeFormatter.ofPattern("HH:mm:ss");
-    public static DateTimeFormatter dateFormatter = DateTimeFormatter.ofPattern("E, MMM dd yyyy HH:mm:ss");
+    static final DateTimeFormatter timeFormatter = DateTimeFormatter.ofPattern("HH:mm:ss");
+    static final DateTimeFormatter dateFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
 
     private MapperUtils() {
     }
@@ -23,7 +26,7 @@ public class MapperUtils {
         }
         try {
             return Optional.of(Long.parseLong(s)).orElse(defaultValue);
-        } catch (NumberFormatException e) {
+        } catch (NumberFormatException _) {
             return defaultValue;
         }
     }
@@ -33,8 +36,8 @@ public class MapperUtils {
             return defaultValue;
         }
         try {
-            return Optional.of(Integer.parseInt(s)).orElse(defaultValue);
-        } catch (NumberFormatException e) {
+            return Optional.of((int)Double.parseDouble(s)).orElse(defaultValue);
+        } catch (NumberFormatException _) {
             return defaultValue;
         }
     }
@@ -45,7 +48,7 @@ public class MapperUtils {
         }
         try {
             return Optional.of(Double.parseDouble(s)).orElse(defaultValue);
-        } catch (NumberFormatException e) {
+        } catch (NumberFormatException _) {
             return defaultValue;
         }
     }
@@ -56,7 +59,7 @@ public class MapperUtils {
                 .flatMap(s -> {
                     try {
                         return Optional.of(LocalDateTime.parse(s));
-                    } catch (DateTimeParseException e) {
+                    } catch (DateTimeParseException _) {
                         return Optional.empty();
                     }
                 });
@@ -69,7 +72,7 @@ public class MapperUtils {
                 .flatMap(s -> {
                     try {
                         return Optional.of(LocalDate.parse(s));
-                    } catch (DateTimeParseException e) {
+                    } catch (DateTimeParseException _) {
                         return Optional.empty();
                     }
                 });
@@ -95,5 +98,19 @@ public class MapperUtils {
 
     public static String getLocalDateTimeAsString(LocalDateTime date) {
         return Objects.isNull(date) ? "" : date.format(dateFormatter);
+    }
+
+    public static String getDatesCsv(Map<LocalDate, BigDecimal> map) {
+        return map.keySet().stream()
+                .sorted()
+                .map(date -> "\"" + date.toString() + "\"")
+                .reduce("", (a, b) -> a + "," + b);
+    }
+
+    public static String getValuesCsv(Map<LocalDate, BigDecimal> map) {
+       return  map.entrySet().stream()
+                .sorted(Map.Entry.comparingByKey())
+                .map(entry -> entry.getValue().toString())
+               .collect(Collectors.joining(","));
     }
 }

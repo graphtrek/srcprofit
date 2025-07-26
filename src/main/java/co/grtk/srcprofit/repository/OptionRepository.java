@@ -31,6 +31,14 @@ public interface OptionRepository extends JpaRepository<OptionEntity, Long> {
 
     @Query("SELECT o1 " +
             "FROM OptionEntity o1 " +
+            "LEFT JOIN OptionEntity o2 " +
+            "ON o1.conid = o2.conid  " +
+            "WHERE o1.status = 'CLOSED' AND o2.conid is NULL " +
+            "ORDER BY o1.tradeDate DESC")
+    List<OptionEntity> findAllClosedOnly();
+
+    @Query("SELECT o1 " +
+            "FROM OptionEntity o1 " +
             "JOIN FETCH o1.instrument i " +
             "LEFT JOIN OptionEntity o2 " +
             "ON o1.conid = o2.conid AND o2.status = 'CLOSED' " +
@@ -101,8 +109,17 @@ public interface OptionRepository extends JpaRepository<OptionEntity, Long> {
 
     @Query("SELECT o " +
             "FROM OptionEntity o " +
-            "WHERE o.conid = :conid AND o.status = :status")
-    OptionEntity findByConidAndStatus(@Param("conid") Long conid, @Param("status") OptionStatus status);
+            "WHERE o.conid = :conid AND o.status = :status AND o.tradePrice = :tradePrice")
+    OptionEntity findByConidAndStatusAndTradePrice(@Param("conid") Long conid, @Param("status") OptionStatus status, @Param("tradePrice") Double tradePrice);
 
     List<OptionEntity> findByInstrumentTicker(String ticker, Sort sort);
+
+    @Query("SELECT o " +
+            "FROM OptionEntity o " +
+            "JOIN FETCH o.instrument " +
+            "WHERE o.tradeDate BETWEEN :startDate AND :endDate " +
+            "ORDER BY o.tradeDate DESC, o.ticker ASC, o.status ASC")
+    List<OptionEntity> findOptionsBetweenDates(
+            @Param("startDate") LocalDate startDate,
+            @Param("endDate") LocalDate endDate);
 }

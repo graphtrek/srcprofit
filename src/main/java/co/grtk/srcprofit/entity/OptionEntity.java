@@ -19,6 +19,7 @@ import java.time.LocalDate;
         indexes = {
                 @Index(name = "opt_conid_idx", columnList = "conid"),
                 @Index(name = "opt_conid_status_idx", columnList = "conid, status"),
+                @Index(name = "opt_conid_status_price_idx", columnList = "conid, status, tradePrice"),
                 @Index(name = "opt_code_idx", columnList = "code"),
                 @Index(name = "opt_ticker_idx", columnList = "ticker"),
                 @Index(name = "opt_instrument_id_idx", columnList = "instrumentId"),
@@ -29,23 +30,25 @@ import java.time.LocalDate;
 public class OptionEntity extends BaseAsset {
 
     @Column(nullable = false)
-    LocalDate expirationDate;
+    private String account;
+    @Column(nullable = false)
+    private LocalDate expirationDate;
     @Column
-    Double fee;
+    private Double fee;
     @Column
-    Double realizedProfitOrLoss;
+    private Double realizedProfitOrLoss;
     @Column
-    Integer annualizedRoiPercent;
+    private Integer annualizedRoiPercent;
     @Column
-    Integer probability;
+    private Integer probability;
     @Column
-    Integer daysBetween;
+    private Integer daysBetween;
     @Column
-    Integer daysLeft;
+    private Integer daysLeft;
     @Column
-    String color;
+    private String color;
     @Column
-    String note;
+    private String note;
     @Column
     private Long conid;
     @Column(nullable = false)
@@ -56,6 +59,16 @@ public class OptionEntity extends BaseAsset {
     private OptionStatus status;
     @Enumerated(EnumType.STRING)
     private OptionType type;
+    @Column
+    private Double marketPrice;
+
+    public String getAccount() {
+        return account;
+    }
+
+    public void setAccount(String account) {
+        this.account = account;
+    }
 
     public OptionStatus getStatus() {
         return status;
@@ -168,4 +181,13 @@ public class OptionEntity extends BaseAsset {
     public void setCode(String code) {
         this.code = code;
     }
+
+    public Double getMarketPrice() {
+        return marketPrice;
+    }
+
+    public void setMarketPrice(Double marketPrice) {
+        this.marketPrice = marketPrice;
+    }
+
 }

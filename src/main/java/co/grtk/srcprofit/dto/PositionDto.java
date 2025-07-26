@@ -5,6 +5,7 @@ import co.grtk.srcprofit.entity.OptionStatus;
 import co.grtk.srcprofit.entity.OptionType;
 
 import java.time.LocalDate;
+import java.time.temporal.ChronoUnit;
 
 import static co.grtk.srcprofit.mapper.MapperUtils.getLocalDateAsString;
 
@@ -19,7 +20,7 @@ public class PositionDto {
     String note;
     String color = "black";
 
-    Integer quantity = 1;
+    int quantity = 1;
     Double fee;
 
     Integer annualizedRoiPercent;
@@ -42,7 +43,14 @@ public class PositionDto {
     Double marketValue;
     Double marketVsPositionsPercentage;
     Double breakEven;
-
+    Double cash;
+    Double put;
+    Double call;
+    Double stock;
+    Double marketPrice;
+    Double putMarketPrice;
+    Double callMarketPrice;
+    LocalDate earningDate;
 
     public String getTradeDateString() {
         return getLocalDateAsString(tradeDate);
@@ -137,7 +145,7 @@ public class PositionDto {
     }
 
     public Double getRealizedProfitOrLoss() {
-        return realizedProfitOrLoss;
+        return realizedProfitOrLoss == null ? 0 : realizedProfitOrLoss;
     }
 
     public void setRealizedProfitOrLoss(Double realizedProfitOrLoss) {
@@ -184,11 +192,11 @@ public class PositionDto {
         this.daysLeft = daysLeft;
     }
 
-    public Integer getQuantity() {
+    public int getQuantity() {
         return quantity;
     }
 
-    public void setQuantity(Integer quantity) {
+    public void setQuantity(int quantity) {
         this.quantity = quantity;
     }
 
@@ -278,6 +286,74 @@ public class PositionDto {
 
     public void setBreakEven(Double breakEven) {
         this.breakEven = breakEven;
+    }
+
+    public Double getCash() {
+        return cash;
+    }
+
+    public void setCash(Double cash) {
+        this.cash = cash;
+    }
+
+    public Double getPut() {
+        return put;
+    }
+
+    public void setPut(Double put) {
+        this.put = put;
+    }
+
+    public Double getCall() {
+        return call;
+    }
+
+    public void setCall(Double call) {
+        this.call = call;
+    }
+
+    public Double getMarketPrice() {
+        return marketPrice == null ? 0 : marketPrice;
+    }
+
+    public void setMarketPrice(Double marketPrice) {
+        this.marketPrice = marketPrice;
+    }
+
+    public Double getStock() {
+        return stock;
+    }
+
+    public void setStock(Double stock) {
+        this.stock = stock;
+    }
+
+    public Double getPutMarketPrice() {
+        return putMarketPrice;
+    }
+
+    public void setPutMarketPrice(Double putMarketPrice) {
+        this.putMarketPrice = putMarketPrice;
+    }
+
+    public Double getCallMarketPrice() {
+        return callMarketPrice;
+    }
+
+    public void setCallMarketPrice(Double callMarketPrice) {
+        this.callMarketPrice = callMarketPrice;
+    }
+
+    public LocalDate getEarningDate() {
+        return earningDate;
+    }
+
+    public void setEarningDate(LocalDate earningDate) {
+        this.earningDate = earningDate;
+    }
+
+    public Integer getEarningDay() {
+        return earningDate == null ? 999 : (int) ChronoUnit.DAYS.between(LocalDate.now(), earningDate.atStartOfDay());
     }
 
     @Override

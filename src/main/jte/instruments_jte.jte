@@ -47,17 +47,19 @@
                                     <th scope="col">#</th>
                                     <th scope="col">Ticker</th>
                                     <th scope="col">Updated</th>
-                                    <th scope="col">Price $</th>
-                                    <th scope="col">Change $</th>
-                                    <th scope="col">Percent %</th>
+                                    <th scope="col">Price$</th>
+                                    <th scope="col">Change$</th>
+                                    <th scope="col">Percent</th>
                                     <th scope="col">Premium</th>
-                                    <th scope="col">Realized P&L</th>
-                                    <th scope="col">UnRealized P&L</th>
+                                    <th scope="col">RealP&L</th>
+                                    <th scope="col">UnRealP&L</th>
+                                    <th scope="col">Earning</th>
+                                    <th scope="col">EarningDay</th>
                                 </tr>
                                 </thead>
                                 <tbody>
                                 @for(var instrument : instruments )
-                                    <tr style="cursor: pointer;">
+                                    <tr style="cursor: pointer;" href="http://myspace.com">
                                         <td>${instrument.getId()}</td>
 
                                         @if(instrument.getChange()  != null && instrument.getChange() < 0)
@@ -77,6 +79,8 @@
                                         <td>${instrument.getCollectedPremium()}</td>
                                         <td>${instrument.getRealizedProfitOrLoss()}</td>
                                         <td>${instrument.getUnRealizedProfitOrLoss()}</td>
+                                        <td>${instrument.getEarningDateStr()}</td>
+                                        <td>${instrument.getEarningDay()}</td>
                                     </tr>
                                 @endfor
                                 </tbody>
@@ -132,6 +136,7 @@
         }
 
         datatable();
+        totalSeconds = 0;
     });
 </script>
 

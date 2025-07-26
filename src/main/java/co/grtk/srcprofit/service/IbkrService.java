@@ -58,12 +58,12 @@ public class IbkrService {
         return ibkrMarketDataDtoList;
     }
 
-    public FlexStatementResponse getFlexStatement() {
+    public FlexStatementResponse getFlexStatement(String IBKR_FLEX_QUERY_ID) {
         return ibkrFlexRestClient.get()
                 .uri(uriBuilder -> uriBuilder
                         .path("/SendRequest")
                         .queryParam("t", environment.getRequiredProperty("IBKR_FLEX_API_TOKEN"))
-                        .queryParam("q", environment.getRequiredProperty("IBKR_FLEX_STATEMENT_ID"))
+                        .queryParam("q", IBKR_FLEX_QUERY_ID)
                         .queryParam("v", "3")
                         .build())
                 .retrieve()

@@ -1228,3 +1228,11 @@ h6 {
   background-color: #2196f3a6 !important;
   color: #000!important;
 }
+.zoom:hover {
+    z-index: 1000;
+    position: fixed;
+    width: 70%;
+    margin: 5% auto; /* Only centers horizontally not vertically! */
+    left: 0;
+    right: 0;
+}
