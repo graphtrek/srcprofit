@@ -14,13 +14,34 @@ services:
       - IBKR_FLEX_API_TOKEN=${IBKR_FLEX_API_TOKEN}
       - IBKR_FLEX_TRADES_ID=${IBKR_FLEX_TRADES_ID}
       - IBKR_FLEX_NET_ASSET_VALUE_ID=${IBKR_FLEX_NET_ASSET_VALUE_ID}
-      - IBKR_ACCOUNT_ID=${IBKR_ACCOUNT_ID}
       - SRCPROFIT_DB_URL=${SRCPROFIT_DB_URL}
       - SRCPROFIT_DB_USER=${SRCPROFIT_DB_USER}
       - SRCPROFIT_DB_PWD=${SRCPROFIT_DB_PWD}
       # Add other Spring Boot environment settings as needed
     ports:
       - "8080:8080"
+    depends_on:
+      - db
+
+  app1:
+    build: .
+    container_name: srcprofit_krisztian
+    environment:
+      - ALPACA_DATA_URL=${ALPACA_DATA_URL}
+      - ALPACA_API_KEY=${ALPACA_API_KEY}
+      - ALPACA_API_SECRET_KEY=${ALPACA_API_SECRET_KEY}
+      - ALPHA_VINTAGE_API_KEY=${ALPHA_VINTAGE_API_KEY}
+      - IBKR_DATA_URL=${IBKR_DATA_URL}
+      - IBKR_FLEX_URL=${IBKR_FLEX_URL}
+      - IBKR_FLEX_API_TOKEN=${IBKR_FLEX_API_TOKEN1}
+      - IBKR_FLEX_TRADES_ID=${IBKR_FLEX_TRADES_ID1}
+      - IBKR_FLEX_NET_ASSET_VALUE_ID=${IBKR_FLEX_NET_ASSET_VALUE_ID1}
+      - SRCPROFIT_DB_URL=${SRCPROFIT_DB_URL1}
+      - SRCPROFIT_DB_USER=${SRCPROFIT_DB_USER}
+      - SRCPROFIT_DB_PWD=${SRCPROFIT_DB_PWD}
+      # Add other Spring Boot environment settings as needed
+    ports:
+      - "8081:8080"
     depends_on:
       - db
 

@@ -2,6 +2,7 @@ package co.grtk.srcprofit.service;
 
 import co.grtk.srcprofit.dto.ChartDataDto;
 import co.grtk.srcprofit.dto.NetAssetValueDto;
+import co.grtk.srcprofit.dto.PositionDto;
 import co.grtk.srcprofit.entity.NetAssetValueEntity;
 import co.grtk.srcprofit.mapper.Interval;
 import co.grtk.srcprofit.repository.NetAssetValueRepository;
@@ -17,6 +18,7 @@ import java.math.BigDecimal;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Path;
 import java.time.LocalDate;
+import java.util.Comparator;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
@@ -43,11 +45,13 @@ public class NetAssetValueService {
     }
 
     public List<NetAssetValueDto> loadAllNetAssetValues() {
-        return netAssetValueRepository
+        List<NetAssetValueDto> navList = new java.util.ArrayList<>(netAssetValueRepository
                 .findAll()
                 .stream()
                 .map(nav -> objectMapper.convertValue(nav, NetAssetValueDto.class))
-                .toList();
+                .toList());
+        navList.sort(Comparator.comparing(NetAssetValueDto::getReportDate));
+        return navList;
     }
 
     public void getDailyNav(ChartDataDto chartDataDto) {

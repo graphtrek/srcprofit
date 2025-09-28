@@ -3,6 +3,8 @@ package co.grtk.srcprofit.controller;
 import co.grtk.srcprofit.dto.NetAssetValueDto;
 import co.grtk.srcprofit.service.NetAssetValueService;
 import co.grtk.srcprofit.service.OptionService;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -16,6 +18,7 @@ import static co.grtk.srcprofit.mapper.MapperUtils.round2Digits;
 
 @Controller
 public class NetAssetValueController {
+    private static final Logger log = LoggerFactory.getLogger(NetAssetValueController.class);
     private final NetAssetValueService netAssetValueService;
     private final OptionService optionService;
     private final String NET_ASSET_VALUE_PAGE_PATH = "net_asset_values_jte";
@@ -36,10 +39,13 @@ public class NetAssetValueController {
             BigDecimal premium = dailyPremiums.get(netAssetValue.getReportDate());
             counter++;
             cash += netAssetValue.getCash();
-            netAssetValue.setAverageCash(round2Digits(cash / counter));
+            double averageCash = round2Digits(cash / counter);
+            log.info("counter: {} cash: {}, averageCash: {}", counter, cash, averageCash);
+            netAssetValue.setAverageCash(averageCash);
             if (premium != null) {
-                netAssetValue.setDailyPremium(round2Digits(premium.doubleValue()));
-                netAssetValue.setRoi(round2Digits((premium.doubleValue() / netAssetValue.getAverageCash()) * 100));
+                double premiumValue = round2Digits(premium.doubleValue());
+                netAssetValue.setDailyPremium(premiumValue);
+                netAssetValue.setRoi(round2Digits((premiumValue / averageCash) * 100));
             }
         }
         model.addAttribute(MODEL_ATTRIBUTE_NET_ASSET_VALUES, netAssetValues);
