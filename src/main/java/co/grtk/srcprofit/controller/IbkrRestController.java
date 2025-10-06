@@ -28,7 +28,9 @@ public class IbkrRestController {
     private final NetAssetValueService netAssetValueService;
     private final String userHome = System.getProperty("user.home");
     private String netAssetValueReferenceCode = null;
+    private int netAssetValueReferenceCodeCounter = 0;
     private String tradesReferenceCode = null;
+    private int tradesReferenceCodeCounter = 0;
 
     public IbkrRestController(IbkrService ibkrService,
                               OptionService optionService,
@@ -51,10 +53,11 @@ public class IbkrRestController {
     public String ibkrFlexTradesImport() {
         long start = System.currentTimeMillis();
         try {
-            if( tradesReferenceCode == null) {
+            if( tradesReferenceCode == null || tradesReferenceCodeCounter >= 5) {
                 final String IBKR_FLEX_TRADES_ID = environment.getRequiredProperty("IBKR_FLEX_TRADES_ID");
                 FlexStatementResponse flexStatementResponse = ibkrService.getFlexStatement(IBKR_FLEX_TRADES_ID);
                 tradesReferenceCode = flexStatementResponse.getReferenceCode();
+                tradesReferenceCodeCounter++;
             }
 
             log.info("ibkrFlexTradesImport tradesReferenceCode {}", tradesReferenceCode);
@@ -65,10 +68,10 @@ public class IbkrRestController {
             int csvRecords = optionService.saveCSV(file.toPath());
             int dataFixRecords = optionService.dataFix();
             tradesReferenceCode = null;
-
+            tradesReferenceCodeCounter = 0;
             long elapsed = System.currentTimeMillis() - start;
             log.info("ibkrFlexTradesImport file {} written elapsed:{}", file.getAbsolutePath(), elapsed);
-            return csvRecords + "/" + dataFixRecords;
+            return csvRecords + "/" + dataFixRecords + "/" + tradesReferenceCodeCounter;
         } catch (Exception e) {
             log.error("ibkrFlexTradesImport exception {}", e.getMessage());
             return "WAITING_FOR " + tradesReferenceCode;
@@ -79,10 +82,11 @@ public class IbkrRestController {
     public String ibkrFlexNetAssetValueImport() {
         long start = System.currentTimeMillis();
         try {
-            if( netAssetValueReferenceCode == null) {
+            if( netAssetValueReferenceCode == null || netAssetValueReferenceCodeCounter >= 5) {
                 final String IBKR_FLEX_NET_ASSET_VALUE_ID = environment.getRequiredProperty("IBKR_FLEX_NET_ASSET_VALUE_ID");
                 FlexStatementResponse flexStatementResponse = ibkrService.getFlexStatement(IBKR_FLEX_NET_ASSET_VALUE_ID);
                 netAssetValueReferenceCode = flexStatementResponse.getReferenceCode();
+                netAssetValueReferenceCodeCounter++;
             }
 
             log.info("ibkrFlexNetAssetValueImport netAssetValueReferenceCode {}", netAssetValueReferenceCode);
@@ -92,10 +96,11 @@ public class IbkrRestController {
             FileUtils.write(file, flexTradesQuery, CharsetNames.CS_UTF8);
             int records = netAssetValueService.saveCSV(file.toPath());
             netAssetValueReferenceCode = null;
+            netAssetValueReferenceCodeCounter = 0;
 
             long elapsed = System.currentTimeMillis() - start;
             log.info("ibkrFlexNetAssetValueImport file {} written elapsed:{}", file.getAbsolutePath(), elapsed);
-            return String.valueOf(records);
+            return String.valueOf(records) + "/" + netAssetValueReferenceCodeCounter;
         } catch (Exception e) {
             log.error("ibkrFlexNetAssetValueImport exception {}", e.getMessage());
             return "WAITING_FOR " + netAssetValueReferenceCode;
