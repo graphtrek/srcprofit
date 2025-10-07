@@ -53,11 +53,10 @@ public class IbkrRestController {
     public String ibkrFlexTradesImport() {
         long start = System.currentTimeMillis();
         try {
-            if( tradesReferenceCode == null || tradesReferenceCodeCounter >= 5) {
+            if( tradesReferenceCode == null) {
                 final String IBKR_FLEX_TRADES_ID = environment.getRequiredProperty("IBKR_FLEX_TRADES_ID");
                 FlexStatementResponse flexStatementResponse = ibkrService.getFlexStatement(IBKR_FLEX_TRADES_ID);
                 tradesReferenceCode = flexStatementResponse.getReferenceCode();
-                tradesReferenceCodeCounter++;
             }
 
             log.info("ibkrFlexTradesImport tradesReferenceCode {}", tradesReferenceCode);
@@ -73,8 +72,14 @@ public class IbkrRestController {
             log.info("ibkrFlexTradesImport file {} written elapsed:{}", file.getAbsolutePath(), elapsed);
             return csvRecords + "/" + dataFixRecords + "/" + tradesReferenceCodeCounter;
         } catch (Exception e) {
-            log.error("ibkrFlexTradesImport exception {}", e.getMessage());
-            return "WAITING_FOR " + tradesReferenceCode;
+            if( tradesReferenceCodeCounter >= 5) {
+                tradesReferenceCode = null;
+                tradesReferenceCodeCounter = 0;
+            } else {
+                tradesReferenceCodeCounter++;
+            }
+            log.error("ibkrFlexTradesImport tried:{} exception {}", tradesReferenceCodeCounter, e.getMessage());
+            return "WAITING_FOR " + tradesReferenceCode+ "/" + tradesReferenceCodeCounter;
         }
     }
 
@@ -82,7 +87,7 @@ public class IbkrRestController {
     public String ibkrFlexNetAssetValueImport() {
         long start = System.currentTimeMillis();
         try {
-            if( netAssetValueReferenceCode == null || netAssetValueReferenceCodeCounter >= 5) {
+            if( netAssetValueReferenceCode == null) {
                 final String IBKR_FLEX_NET_ASSET_VALUE_ID = environment.getRequiredProperty("IBKR_FLEX_NET_ASSET_VALUE_ID");
                 FlexStatementResponse flexStatementResponse = ibkrService.getFlexStatement(IBKR_FLEX_NET_ASSET_VALUE_ID);
                 netAssetValueReferenceCode = flexStatementResponse.getReferenceCode();
@@ -102,8 +107,14 @@ public class IbkrRestController {
             log.info("ibkrFlexNetAssetValueImport file {} written elapsed:{}", file.getAbsolutePath(), elapsed);
             return String.valueOf(records) + "/" + netAssetValueReferenceCodeCounter;
         } catch (Exception e) {
+            if ( netAssetValueReferenceCodeCounter >= 5) {
+                netAssetValueReferenceCode = null;
+                netAssetValueReferenceCodeCounter = 0;
+            } else {
+                netAssetValueReferenceCodeCounter++;
+            }
             log.error("ibkrFlexNetAssetValueImport exception {}", e.getMessage());
-            return "WAITING_FOR " + netAssetValueReferenceCode;
+            return "WAITING_FOR " + netAssetValueReferenceCode + "/" + netAssetValueReferenceCodeCounter;
         }
     }
 
