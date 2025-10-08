@@ -2,7 +2,7 @@ version: '3.8'
 
 services:
   app:
-    image: ghcr.io/${GITHUB_REPOSITORY}:latest
+    image: ghcr.io/graphtrek/srcprofit:latest
     container_name: srcprofit_imre
     environment:
       - ALPACA_DATA_URL=${ALPACA_DATA_URL}
@@ -24,7 +24,7 @@ services:
       - db
 
   app1:
-    image: ghcr.io/${GITHUB_REPOSITORY}:latest
+    image: ghcr.io/graphtrek/srcprofit:latest
     container_name: srcprofit_krisztian
     environment:
       - ALPACA_DATA_URL=${ALPACA_DATA_URL}
