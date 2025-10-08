@@ -40,7 +40,7 @@ jobs:
           tags: ghcr.io/${{ github.repository }}:latest
 
       - name: Upload artifact
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v4
         with:
           name: srcprofit
           path: target/srcprofit-0.0.1-SNAPSHOT.jar
