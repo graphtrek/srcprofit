@@ -3,6 +3,7 @@ version: '3.8'
 services:
   app:
     image: ghcr.io/graphtrek/srcprofit:latest
+    platform: linux/amd64
     container_name: srcprofit_imre
     environment:
       - ALPACA_DATA_URL=${ALPACA_DATA_URL}
@@ -25,6 +26,7 @@ services:
 
   app1:
     image: ghcr.io/graphtrek/srcprofit:latest
+    platform: linux/amd64
     container_name: srcprofit_krisztian
     environment:
       - ALPACA_DATA_URL=${ALPACA_DATA_URL}
@@ -45,8 +47,26 @@ services:
     depends_on:
       - db
 
+  app2:
+    image: ghcr.io/graphtrek/stableips:latest
+    platform: linux/amd64
+    container_name: stableips
+    environment:
+      - SRCPROFIT_DB_URL=${STABLEIPS_DB_URL}
+      - SRCPROFIT_DB_USER=${STABLEIPS_DB_USER}
+      - SRCPROFIT_DB_PWD=${STABLEIPS_DB_PWD}
+      - INFURA_PROJECT_ID=${INFURA_PROJECT_ID}
+      - FUNDED_SEPOLIA_WALLET_PRIVATE_KEY=${FUNDED_SEPOLIA_WALLET_PRIVATE_KEY}
+      # Add other Spring Boot environment settings as needed
+    ports:
+      - "8082:8080"
+    depends_on:
+      - db
+
+
   db:
     image: postgres:15
+    platform: linux/amd64
     container_name: srcprofit_db
     restart: always
     environment:
@@ -59,7 +79,8 @@ services:
       - local_pgdata:/var/lib/postgresql/data
 
   pgadmin:
-    image: dpage/pgadmin4
+    image: dpage/pgadmin4:latest
+    platform: linux/amd64
     container_name: pgadmin4_container
     restart: always
     ports:
