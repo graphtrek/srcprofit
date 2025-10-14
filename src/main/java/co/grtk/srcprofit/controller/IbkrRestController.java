@@ -27,9 +27,9 @@ public class IbkrRestController {
     private final Environment environment;
     private final NetAssetValueService netAssetValueService;
     private final String userHome = System.getProperty("user.home");
-    private String netAssetValueReferenceCode = null;
+    private FlexStatementResponse flexNetAssetValueResponse = null;
     private int netAssetValueReferenceCodeCounter = 0;
-    private String tradesReferenceCode = null;
+    private FlexStatementResponse flexTradesResponse = null;
     private int tradesReferenceCodeCounter = 0;
 
     public IbkrRestController(IbkrService ibkrService,
@@ -42,44 +42,38 @@ public class IbkrRestController {
         this.netAssetValueService = netAssetValueService;
     }
 
-    @GetMapping("/ibkrFlexQuery/{referenceCode}")
-    public String getFlexQuery(@PathVariable String referenceCode) {
-        String flexQuery = ibkrService.getFlexQuery(referenceCode);
-        log.info("getFlexQuery referenceCode {} returned {}", referenceCode, flexQuery);
-        return flexQuery;
-    }
 
     @GetMapping(value = "/ibkrFlexTradesImport", produces = MediaType.APPLICATION_XML_VALUE)
     public String ibkrFlexTradesImport() {
         long start = System.currentTimeMillis();
         try {
-            if( tradesReferenceCode == null) {
+            if(flexTradesResponse == null) {
                 final String IBKR_FLEX_TRADES_ID = environment.getRequiredProperty("IBKR_FLEX_TRADES_ID");
-                FlexStatementResponse flexStatementResponse = ibkrService.getFlexStatement(IBKR_FLEX_TRADES_ID);
-                tradesReferenceCode = flexStatementResponse.getReferenceCode();
+                flexTradesResponse = ibkrService.getFlexWebServiceSendRequest(IBKR_FLEX_TRADES_ID);
+                tradesReferenceCodeCounter++;
             }
 
-            log.info("ibkrFlexTradesImport tradesReferenceCode {}", tradesReferenceCode);
-
-            String flexTradesQuery = ibkrService.getFlexQuery(tradesReferenceCode);
-            File file = new File(userHome + "/FLEX_TRADES_" + tradesReferenceCode + ".csv");
+            log.info("ibkrFlexTradesImport flexTradesResponse {}", flexTradesResponse);
+            Thread.sleep(15000);
+            String flexTradesQuery = ibkrService.getFlexWebServiceGetStatement(flexTradesResponse.getUrl(), flexTradesResponse.getReferenceCode());
+            File file = new File(userHome + "/FLEX_TRADES_" + flexTradesResponse.getReferenceCode() + ".csv");
             FileUtils.write(file, flexTradesQuery, CharsetNames.CS_UTF8);
             int csvRecords = optionService.saveCSV(file.toPath());
             int dataFixRecords = optionService.dataFix();
-            tradesReferenceCode = null;
+            flexTradesResponse = null;
             tradesReferenceCodeCounter = 0;
             long elapsed = System.currentTimeMillis() - start;
             log.info("ibkrFlexTradesImport file {} written elapsed:{}", file.getAbsolutePath(), elapsed);
             return csvRecords + "/" + dataFixRecords + "/" + tradesReferenceCodeCounter;
         } catch (Exception e) {
             if( tradesReferenceCodeCounter >= 5) {
-                tradesReferenceCode = null;
+                flexTradesResponse = null;
                 tradesReferenceCodeCounter = 0;
             } else {
                 tradesReferenceCodeCounter++;
             }
             log.error("ibkrFlexTradesImport tried:{} exception {}", tradesReferenceCodeCounter, e.getMessage());
-            return "WAITING_FOR " + tradesReferenceCode+ "/" + tradesReferenceCodeCounter;
+            return "WAITING_FOR REPORT /" + tradesReferenceCodeCounter;
         }
     }
 
@@ -87,20 +81,19 @@ public class IbkrRestController {
     public String ibkrFlexNetAssetValueImport() {
         long start = System.currentTimeMillis();
         try {
-            if( netAssetValueReferenceCode == null) {
+            if( flexNetAssetValueResponse == null) {
                 final String IBKR_FLEX_NET_ASSET_VALUE_ID = environment.getRequiredProperty("IBKR_FLEX_NET_ASSET_VALUE_ID");
-                FlexStatementResponse flexStatementResponse = ibkrService.getFlexStatement(IBKR_FLEX_NET_ASSET_VALUE_ID);
-                netAssetValueReferenceCode = flexStatementResponse.getReferenceCode();
+                flexNetAssetValueResponse = ibkrService.getFlexWebServiceSendRequest(IBKR_FLEX_NET_ASSET_VALUE_ID);
                 netAssetValueReferenceCodeCounter++;
             }
 
-            log.info("ibkrFlexNetAssetValueImport netAssetValueReferenceCode {}", netAssetValueReferenceCode);
-
-            String flexTradesQuery = ibkrService.getFlexQuery(netAssetValueReferenceCode);
-            File file = new File(userHome + "/FLEX_NET_ASSET_VALUE_" + netAssetValueReferenceCode + ".csv");
+            log.info("ibkrFlexNetAssetValueImport flexNetAssetValueResponse {}", flexNetAssetValueResponse);
+            Thread.sleep(15000);
+            String flexTradesQuery = ibkrService.getFlexWebServiceGetStatement(flexNetAssetValueResponse.getUrl(), flexNetAssetValueResponse.getReferenceCode());
+            File file = new File(userHome + "/FLEX_NET_ASSET_VALUE_" + flexNetAssetValueResponse.getReferenceCode() + ".csv");
             FileUtils.write(file, flexTradesQuery, CharsetNames.CS_UTF8);
             int records = netAssetValueService.saveCSV(file.toPath());
-            netAssetValueReferenceCode = null;
+            flexNetAssetValueResponse = null;
             netAssetValueReferenceCodeCounter = 0;
 
             long elapsed = System.currentTimeMillis() - start;
@@ -108,13 +101,13 @@ public class IbkrRestController {
             return String.valueOf(records) + "/" + netAssetValueReferenceCodeCounter;
         } catch (Exception e) {
             if ( netAssetValueReferenceCodeCounter >= 5) {
-                netAssetValueReferenceCode = null;
+                flexNetAssetValueResponse = null;
                 netAssetValueReferenceCodeCounter = 0;
             } else {
                 netAssetValueReferenceCodeCounter++;
             }
             log.error("ibkrFlexNetAssetValueImport exception {}", e.getMessage());
-            return "WAITING_FOR " + netAssetValueReferenceCode + "/" + netAssetValueReferenceCodeCounter;
+            return "WAITING_FOR REPORT /" + netAssetValueReferenceCodeCounter;
         }
     }
 

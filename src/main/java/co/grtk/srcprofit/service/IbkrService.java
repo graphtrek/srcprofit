@@ -58,26 +58,24 @@ public class IbkrService {
         return ibkrMarketDataDtoList;
     }
 
-    public FlexStatementResponse getFlexStatement(String IBKR_FLEX_QUERY_ID) {
-        return ibkrFlexRestClient.get()
-                .uri(uriBuilder -> uriBuilder
-                        .path("/SendRequest")
-                        .queryParam("t", environment.getRequiredProperty("IBKR_FLEX_API_TOKEN"))
-                        .queryParam("q", IBKR_FLEX_QUERY_ID)
-                        .queryParam("v", "3")
-                        .build())
+    public FlexStatementResponse getFlexWebServiceSendRequest(String IBKR_FLEX_QUERY_ID) {
+        String uri = environment.getRequiredProperty("IBKR_FLEX_URL") +
+                "/FlexWebService/SendRequest?t=" +
+                environment.getRequiredProperty("IBKR_FLEX_API_TOKEN") +
+                "&q=" + IBKR_FLEX_QUERY_ID + "&v=3";
+        log.info("getFlexStatement uri:{}", uri);
+        return ibkrFlexRestClient.get().uri(uri)
                 .retrieve()
                 .body(FlexStatementResponse.class);
     }
 
-    public String getFlexQuery(String referenceCode) {
-        return ibkrFlexRestClient.get()
-                .uri(uriBuilder -> uriBuilder
-                        .path("/GetStatement")
-                        .queryParam("t", environment.getRequiredProperty("IBKR_FLEX_API_TOKEN"))
-                        .queryParam("q", referenceCode)
-                        .queryParam("v", "3")
-                        .build())
+    public String getFlexWebServiceGetStatement(String url, String referenceCode) {
+        String uri = url +
+                "?t=" +
+                environment.getRequiredProperty("IBKR_FLEX_API_TOKEN") +
+                "&q=" + referenceCode + "&v=3";
+        log.info("getFlexQuery uri:{}", uri);
+        return ibkrFlexRestClient.get().uri(uri)
                 .retrieve()
                 .body(String.class);
     }
@@ -96,5 +94,7 @@ public class IbkrService {
         log.info("getLatestTrades /v1/api/iserver/account/trades returned {}", ibkrTradeExecutionDtoList);
         return ibkrTradeExecutionDtoList;
     }
+
+    // https://ndcdyn.interactivebrokers.com/AccountManagement/OtherReports?action=FETCH_REPORT&date=0&format=16&fromDate=0&language=en&reportType=VALUE_AT_RISK&toDate=0
 
 }

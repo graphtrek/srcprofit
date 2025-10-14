@@ -37,7 +37,7 @@ public class RestClientConfig {
         return RestClient.builder()
                 .defaultHeader("Accept", MediaType.APPLICATION_XML_VALUE)
                 .requestFactory(new SimpleClientHttpRequestFactory())
-                .baseUrl(environment.getRequiredProperty("IBKR_FLEX_URL")).build();
+                .build();
     }
 
     @Bean(name = "alpacaRestClient")
