@@ -43,7 +43,7 @@ services:
       - SRCPROFIT_DB_PWD=${SRCPROFIT_DB_PWD}
       # Add other Spring Boot environment settings as needed
     ports:
-      - "8081:8080"
+      - "8082:8080"
     depends_on:
       - db
 
@@ -66,7 +66,7 @@ services:
       - SRCPROFIT_DB_PWD=${SRCPROFIT_DB_PWD}
       # Add other Spring Boot environment settings as needed
     ports:
-      - "8081:8080"
+      - "8083:8080"
     depends_on:
       - db
 
@@ -93,12 +93,12 @@ services:
     container_name: srcprofit_db
     restart: always
     environment:
-      POSTGRES_DB: srcprofit
       POSTGRES_USER: ${SRCPROFIT_DB_USER}
       POSTGRES_PASSWORD: ${SRCPROFIT_DB_PWD}
     ports:
       - "5432:5432"
     volumes:
+      - ./init:/docker-entrypoint-initdb.d
       - local_pgdata:/var/lib/postgresql/data
 
   pgadmin:
