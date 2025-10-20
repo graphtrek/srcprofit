@@ -48,6 +48,29 @@ services:
       - db
 
   app2:
+    image: ghcr.io/graphtrek/srcprofit:latest
+    platform: linux/amd64
+    container_name: srcprofit_graphtrek
+    environment:
+      - ALPACA_DATA_URL=${ALPACA_DATA_URL}
+      - ALPACA_API_KEY=${ALPACA_API_KEY}
+      - ALPACA_API_SECRET_KEY=${ALPACA_API_SECRET_KEY}
+      - ALPHA_VINTAGE_API_KEY=${ALPHA_VINTAGE_API_KEY}
+      - IBKR_DATA_URL=${IBKR_DATA_URL}
+      - IBKR_FLEX_URL=${IBKR_FLEX_URL}
+      - IBKR_FLEX_API_TOKEN=${IBKR_FLEX_API_TOKEN2}
+      - IBKR_FLEX_TRADES_ID=${IBKR_FLEX_TRADES_ID2}
+      - IBKR_FLEX_NET_ASSET_VALUE_ID=${IBKR_FLEX_NET_ASSET_VALUE_ID2}
+      - SRCPROFIT_DB_URL=${SRCPROFIT_DB_URL2}
+      - SRCPROFIT_DB_USER=${SRCPROFIT_DB_USER}
+      - SRCPROFIT_DB_PWD=${SRCPROFIT_DB_PWD}
+      # Add other Spring Boot environment settings as needed
+    ports:
+      - "8081:8080"
+    depends_on:
+      - db
+
+  app3:
     image: ghcr.io/graphtrek/stableips:latest
     platform: linux/amd64
     container_name: stableips
@@ -59,7 +82,7 @@ services:
       - FUNDED_SEPOLIA_WALLET_PRIVATE_KEY=${FUNDED_SEPOLIA_WALLET_PRIVATE_KEY}
       # Add other Spring Boot environment settings as needed
     ports:
-      - "8082:8080"
+      - "8090:8080"
     depends_on:
       - db
 

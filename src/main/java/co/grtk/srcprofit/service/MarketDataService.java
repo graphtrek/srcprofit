@@ -7,6 +7,8 @@ import co.grtk.srcprofit.dto.IbkrMarketDataDto;
 import co.grtk.srcprofit.dto.InstrumentDto;
 import co.grtk.srcprofit.entity.OptionEntity;
 import com.fasterxml.jackson.core.JsonProcessingException;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 
@@ -19,6 +21,7 @@ public class MarketDataService {
     private final InstrumentService instrumentService;
     private final IbkrService ibkrService;
     private final OptionService optionService;
+    Logger log = LoggerFactory.getLogger(MarketDataService.class);
 
     public MarketDataService(InstrumentService instrumentService, AlpacaService alpacaService, IbkrService ibkrService, OptionService optionService) {
         this.instrumentService = instrumentService;
@@ -35,16 +38,21 @@ public class MarketDataService {
         instrumentService.saveAlpacaMarketData(alpacaMarketDataDto);
 
         List<OptionEntity>  openOptions = optionService.getAllOpenOptions(null);
-        String symbols = openOptions.stream().map(dto -> dto.getCode().replaceAll("\\s","")).collect(Collectors.joining(","));
-        AlpacaQuotesDto alpacaQuotesDto = alpacaService.getOptionsLatestQuotes(symbols);
-        for (OptionEntity option : openOptions) {
-            String key = option.getCode().replaceAll("\\s", "");
-            AlpacaQuoteDto alpacaQuoteDto = alpacaQuotesDto.getQuotes().get(key);
-            if (alpacaQuoteDto != null) {
-                option.setMarketPrice(alpacaQuoteDto.getMidPrice());
-                optionService.saveOption(option);
+        String optionSymbols = openOptions.stream().map(dto -> dto.getCode().replaceAll("\\s","")).collect(Collectors.joining(","));
+        if(!optionSymbols.isEmpty()) {
+            AlpacaQuotesDto alpacaQuotesDto = alpacaService.getOptionsLatestQuotes(optionSymbols);
+            for (OptionEntity option : openOptions) {
+                String key = option.getCode().replaceAll("\\s", "");
+                AlpacaQuoteDto alpacaQuoteDto = alpacaQuotesDto.getQuotes().get(key);
+                if (alpacaQuoteDto != null) {
+                    option.setMarketPrice(alpacaQuoteDto.getMidPrice());
+                    optionService.saveOption(option);
+                }
             }
+        } else {
+            log.info("No open options found");
         }
+
     }
 
     public void refreshIbkrMarketData() {
