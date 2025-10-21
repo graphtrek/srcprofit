@@ -1,176 +1,228 @@
-# CLAUDE.md
+# Claude Agent Pointer - SrcProfit
 
-This file provides guidance to Claude Code (claude.ai/code) when working with code in this repository.
+> **START HERE**: Entry point for Claude Code sessions
 
-## Project Overview
+---
 
-SrcProfit is a Spring Boot 3.5.6 application for tracking and analyzing trading positions, particularly focused on options trading. It integrates with multiple financial data providers (Alpaca, Interactive Brokers/IBKR, Alpha Vintage) to fetch market data, track net asset values, and calculate trading metrics like daily premium and annualized ROI.
+## 🚀 Quick Start Commands
 
-## Technology Stack
+- `/start-session` - Daily work (7k tokens)
+- `/full-context` - Major decisions (35k tokens)
+- `/end-session` - Save session state
+- `/ship` - Deploy to production
 
+---
+
+## 📍 Context Architecture
+
+**Layered Context System** (96% token reduction):
+- **Tier 1**: `CLAUDE.md` (this file) - Entry point (2k tokens)
+- **Tier 2**: `docs/claude-active-context.md` - Daily context (5k tokens)
+- **Tier 3**: `docs/claude-context.md` - Reference docs (20k tokens)
+- **Tier 4**: Specific docs - On-demand deep dives
+
+**How it works**: See `docs/context-architecture.md`
+
+---
+
+## 📚 Memory Locations
+
+- **Primary branch**: `claude` (all workflow development)
+- **Main branch**: `master` (production releases)
+- **Context file**: `docs/claude-context.md`
+- **Active context**: `docs/claude-active-context.md`
+- **Knowledge base**: `docs/knowledge-base-index.md`
+- **Session summaries**: `docs/sessions/SESSION_XX_COMPLETE.md`
+
+---
+
+## 🎯 Quality Protocols
+
+**MANDATORY reading before any session handoff**:
+- `docs/workflow/session-state-transfer-protocol.md` - Zero-degradation handoffs
+- `docs/planning/definition-of-done.md` - Completion criteria
+
+**These protocols prevent**:
+- False "done" claims (saves 30min+ per session)
+- API guessing failures (RTFM enforcement)
+- Vague handoffs (next session starts immediately)
+- Context waste (strategic planning)
+
+---
+
+## 🏗️ Project Overview
+
+**SrcProfit** is a Spring Boot 3.5.6 application for tracking options trading positions.
+
+### Tech Stack
 - **Java 24** with Spring Boot 3.5.6
-- **Database**: PostgreSQL 15 (via JPA/Hibernate)
-- **Templating**: JTE (Java Template Engine) for server-side rendering
-- **Build Tool**: Maven (use `./mvnw` wrapper)
-- **Containerization**: Docker with multi-stage builds
-- **Virtual Threads**: Enabled for improved concurrency
+- **Database**: PostgreSQL 15 (JPA/Hibernate)
+- **Templating**: JTE (Java Template Engine)
+- **Build**: Maven (`./mvnw`)
+- **Container**: Docker with multi-stage builds
 
-## Development Commands
+### Key Features
+- Options position tracking (PUT/CALL)
+- Multi-source market data (Alpaca, IBKR, Alpha Vintage)
+- Financial calculations (ROI using Black-Scholes, P&L analysis)
+- Portfolio analytics (Net Asset Value tracking)
+- Web UI (JTE + HTMX)
 
-### Local Development
+---
 
+## 🔧 Development Workflow
+
+### Daily Commands
 ```bash
-# Build the project
+# Build
 ./mvnw clean install
 
-# Run the application (requires environment variables)
+# Test
+./mvnw test
+
+# Run
 ./mvnw spring-boot:run
 
-# Run with development profile
-./mvnw spring-boot:run -Dspring-boot.run.profiles=dev
-
-# Skip tests during build
-./mvnw clean install -DskipTests
+# Docker (all services)
+docker-compose --env-file docker-compose.env up
 ```
 
-### Docker & Database
-
+### Git Workflow
 ```bash
-# Start PostgreSQL and pgAdmin only (uses docker-compose.env)
-docker-compose --env-file docker-compose.env up db pgadmin
+# Work on claude branch
+git checkout claude
 
-# View logs
-docker-compose logs -f db
-
-# Stop all services
-docker-compose down
-
-# Remove volumes and restart (if you need fresh databases)
-docker-compose down -v
-docker-compose --env-file docker-compose.env up db pgadmin
+# After PR merge
+git pull origin master
+git push origin claude
 ```
 
-**Database Setup**:
-- The `init/init-db.sh` script automatically creates 5 databases on first startup:
-  - `srcprofit`, `srcprofit1`, `srcprofit2`, `moneypenny`, `stableips`
-- All databases are owned by the `srcprofit` user (password: `srcprofit`)
-- PostgreSQL runs with default `postgres` superuser, but applications connect as `srcprofit` user
-- Database initialization only runs on first container startup (when volume is empty)
+---
 
-### CI/CD
+## 📊 Quality Gates (4-Tier)
 
-GitHub Actions workflow (`.github/workflows/ci.yml`) automatically:
-- Builds with Maven on push to master/develop
-- Creates Docker image and pushes to GitHub Container Registry (ghcr.io)
-- Uploads JAR artifact
+**Progressive validation** (fast iteration > perfect code during development):
 
-## Architecture
+- **TIER 0** (`/commit-wip`) - Emergency checkpoint (skips all hooks)
+- **TIER 1** (`/commit`) - Fast TDD (tests only, <30s)
+- **TIER 2** (`/commit-review`) - Review ready (format + tests + coverage, 2-3min)
+- **TIER 3** (`/ship`) - Production (full CI + PR + merge, 5-10min)
 
-### Package Structure
+---
+
+## 🚨 Critical Lessons
+
+### Always
+- Push immediately after commit (team visibility)
+- Run tests at every gate
+- Validate financial calculations against broker data
+- Use `Decimal` for monetary values (never `double`)
+- Review BEFORE PR (not in PR comments)
+
+### Never
+- Skip Definition of Done criteria
+- Guess API behavior (RTFM - Read The Manual first)
+- Claim "done" with failing tests
+- Commit directly to master
+- Use optimistic completion percentages
+
+---
+
+## 💡 Trading Domain
+
+**SrcProfit follows TastyTrade methodology** for options trading:
+- **Strategies**: Premium selling, defined risk
+- **P&L**: FIFO cost basis, real-time calculations
+- **Risk**: Position sizing, portfolio heat
+- **Ground Truth**: Validate against IBKR/Alpaca APIs
+
+**Reference**: `docs/trading/` for methodology docs
+
+---
+
+## 📁 Project Structure
 
 ```
-co.grtk.srcprofit/
-├── config/         - RestClient and ObjectMapper configuration
-├── controller/     - REST and MVC controllers for different data sources
-├── dto/            - Data Transfer Objects for API responses
-├── entity/         - JPA entities with Hibernate mappings
-├── mapper/         - Conversion logic between entities and DTOs
-├── repository/     - Spring Data JPA repositories
-└── service/        - Business logic for data retrieval and processing
+srcprofit/
+├── CLAUDE.md                           # This file
+├── docs/
+│   ├── claude-context.md               # Full context
+│   ├── claude-active-context.md        # Session state
+│   ├── knowledge-base-index.md         # Resource catalog
+│   ├── sessions/                       # Session history
+│   ├── issues/                         # Issue tracking
+│   ├── workflow/                       # Process docs
+│   ├── trading/                        # Trading methodology
+│   └── architecture/                   # ADRs
+├── .claude/
+│   ├── commands/                       # Slash commands
+│   └── agents/                         # Specialized agents
+└── src/main/java/co/grtk/srcprofit/
+    ├── entity/                         # JPA entities
+    ├── repository/                     # Data access
+    ├── service/                        # Business logic
+    ├── controller/                     # REST/MVC endpoints
+    └── config/                         # Spring config
 ```
 
-### Key Components
+---
 
-**Entity Hierarchy**:
-- `BaseAsset` is a `@MappedSuperclass` containing common fields (tradeDate, quantity, positionValue, etc.)
-- `OptionEntity` extends `BaseAsset` and adds option-specific fields (expirationDate, strike, status, type)
-- Uses Single Table Inheritance pattern with discriminator
+## 🎓 Learning Resources
 
-**REST Clients**: Each external service has dedicated configuration:
-- `AlpacaService`: Fetches stock/option quotes and market data snapshots
-- `IbkrService`: Integrates with Interactive Brokers API and Flex Web Service for trades and reports
-- `AlphaVintageService`: Additional market data provider
+### Internal
+- **Testing Strategy**: `docs/workflow/testing-strategy.md`
+- **Quality Gates**: `docs/workflow/quality-gates.md`
+- **Documentation Standards**: `docs/workflow/documentation-standards.md`
+- **TastyTrade Methodology**: `docs/trading/tastytrade-*.md`
 
-**Data Flow**:
-1. Controllers expose REST endpoints and web pages
-2. Services call external APIs via configured RestClients
-3. Data is mapped to DTOs or persisted as entities
-4. JTE templates render data for web UI
+### External
+- Spring Boot 3.5.6 docs
+- JPA/Hibernate documentation
+- IBKR API docs
+- Alpaca API docs
 
-### Template Engine (JTE)
+---
 
-- Templates located in `src/main/jte/`
-- Pre-compiled templates enabled in production (`gg.jte.use-precompiled-templates=true`)
-- JTE Maven plugin generates templates during build phase
+## 🔄 Session Workflow
 
-### Database Configuration
-
-Hibernate settings optimized for batch operations:
-- Batch size: 200
-- Fetch size: 50
-- Order inserts/updates enabled
-- DDL auto-update enabled (use with caution in production)
-- Connection pool: HikariCP with 20 max connections, 5 minimum idle
-
-## Environment Variables
-
-Required environment variables (reference `application.yaml`):
-
-```bash
-# Alpaca
-ALPACA_DATA_URL=
-ALPACA_API_KEY=
-ALPACA_API_SECRET_KEY=
-
-# Interactive Brokers
-IBKR_DATA_URL=
-IBKR_FLEX_URL=
-IBKR_FLEX_API_TOKEN=
-IBKR_FLEX_TRADES_ID=
-IBKR_FLEX_NET_ASSET_VALUE_ID=
-IBKR_ACCOUNT_ID=
-
-# Alpha Vintage
-ALPHA_VINTAGE_API_KEY=
-
-# Database - Multiple databases for different instances
-SRCPROFIT_DB_URL=jdbc:postgresql://db:5432/srcprofit
-SRCPROFIT_DB_URL1=jdbc:postgresql://db:5432/srcprofit1
-SRCPROFIT_DB_URL2=jdbc:postgresql://db:5432/srcprofit2
-SRCPROFIT_DB_USER=srcprofit
-SRCPROFIT_DB_PWD=srcprofit
-
-# StableIPS Database
-STABLEIPS_DB_URL=jdbc:postgresql://db:5432/stableips
-STABLEIPS_DB_USER=srcprofit
-STABLEIPS_DB_PWD=srcprofit
-
-# MoneyPenny Database
-MONEYPENNY_DB_URL=jdbc:postgresql://db:5432/moneypenny
-MONEYPENNY_DB_USER=srcprofit
-MONEYPENNY_DB_PWD=srcprofit
-
-# pgAdmin (for docker-compose)
-PGADMIN_DEFAULT_EMAIL=
-PGADMIN_DEFAULT_PASSWORD=
+### Start Session
+```
+/start-session
+→ Loads CLAUDE.md + claude-active-context.md + last session
+→ ~7k tokens (96% reduction vs loading everything)
+→ Ready to work immediately
 ```
 
-Store these in `docker-compose.env` for local development.
+### During Session
+- Use TodoWrite tool for complex tasks
+- Reference files by line number (file.java:42)
+- Load specific docs only when needed
 
-## Spring Boot Actuator
+### End Session
+```
+/end-session
+→ Creates SESSION_XX_COMPLETE.md
+→ Updates claude-active-context.md
+→ Updates session-index.md
+→ Commits docs/
+→ Ready for next session
+```
 
-Management endpoints exposed at `/actuator`:
-- `/health` - Liveness and readiness probes
-- `/info` - Application info
-- `/prometheus` - Metrics in Prometheus format
-- `/shutdown` - Graceful shutdown (requires POST)
+---
 
-Health checks configured with separate liveness (ping only) and readiness (all checks) groups.
+## 📈 Success Metrics
 
-## Important Notes
+After migration from contrarian project (180+ sessions), we have:
+- ✅ Zero-degradation session handoffs
+- ✅ 96% token reduction (7k vs 50k daily)
+- ✅ Honest completion tracking
+- ✅ Ground Truth TDD methodology
+- ✅ 4-tier quality gates
+- ✅ Issue tracking system
+- ✅ Trading domain expertise
 
-- The application uses virtual threads (Java 24 feature) - ensure compatibility when working with thread-based operations
-- JPA `open-in-view` is disabled - ensure all lazy relationships are fetched within transaction boundaries
-- Database schema updates automatically via `hibernate.ddl-auto: update` - be cautious with schema changes in production
-- The Dockerfile uses multi-stage builds: JDK 24 for build, JRE 24 Alpine for runtime
-- Application runs as non-root user (`appuser`) in container for security
+---
+
+**Version**: 1.0 (Session 1 - Workflow Migration)
+**Source**: Contrarian Trading Portfolio System (180+ sessions, proven)
+**Last Updated**: 2025-10-21
