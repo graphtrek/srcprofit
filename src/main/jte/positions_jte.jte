@@ -82,19 +82,19 @@
                 </div>
                 <!-- End Buy Obligation Card -->
 
-                <!-- Collected Premium Card -->
+                <!-- PUT Premium Card -->
 
                 <div class="col-xxl-4 col-md-6">
                     <div class="card info-card revenue-card">
                         <div class="card-body">
-                            <h5 class="card-title">Premium</h5>
+                            <h5 class="card-title">PUT Premium</h5>
 
                             <div class="d-flex align-items-center">
                                 <div class="card-icon rounded-circle d-flex align-items-center justify-content-center">
                                     <i class="bi bi-currency-dollar"></i>
                                 </div>
                                 <div class="ps-3">
-                                    <h6 class="currency-usd">${positionDto.getCollectedPremium()}</h6>
+                                    <h6 class="currency-usd">${positionDto.getPut()}</h6>
                                     <span class="text-muted small pt-2 ps-1">PUT</span>
                                     <span class="text-danger small pt-1 fw-bold currency-usd">${positionDto.getPut()}</span>
                                     <span class="text-muted small pt-2 ps-1">/</span>
@@ -111,7 +111,89 @@
 
                     </div>
                 </div>
-                <!-- End Collected Premium Card -->
+                <!-- End PUT Premium Card -->
+
+                <!-- Sell Obligation Market Value Card (CALL) -->
+                <div class="col-xxl-4 col-md-6">
+                    <div class="card info-card sales-card">
+                        <div class="card-body">
+                            <h5 class="card-title">Sell Obligation Market Value</h5>
+
+                            <div class="d-flex align-items-center">
+                                <div class="card-icon rounded-circle d-flex align-items-center justify-content-center">
+                                    <i class="bi bi-box-arrow-up"></i>
+                                </div>
+                                <div class="ps-3">
+                                    <h6 class="currency-usd">${positionDto.getCallObligationMarketValue()}</h6>
+                                    @if(positionDto.getCallMarketVsObligationsPercentage() > 0)
+                                        <span class="text-success small pt-1 fw-bold">+ ${positionDto.getCallMarketVsObligationsPercentage()} %</span> /
+                                        <span class="text-success small pt-1 fw-bold currency-usd">${positionDto.getCallObligationMarketValue() - positionDto.getCallObligationValue()}</span>
+                                        <span class="text-muted small pt-2 ps-1">Covered</span>
+                                    @else
+                                        <span class="text-danger small pt-1 fw-bold">${positionDto.getCallMarketVsObligationsPercentage()} %</span> /
+                                        <span class="text-danger small pt-1 fw-bold currency-usd">${positionDto.getCallObligationValue() - positionDto.getCallObligationMarketValue()}</span>
+                                        <span class="text-muted small pt-2 ps-1">Covered</span>
+                                    @endif
+                                </div>
+                            </div>
+                        </div>
+
+                    </div>
+                </div>
+                <!-- End Sell Obligation Market Value Card -->
+
+                <!-- Sell Obligation Card (CALL) -->
+                <div class="col-xxl-4 col-xl-12">
+                    <div class="card info-card customers-card">
+                        <div class="card-body">
+                            <h5 class="card-title">Sell Obligation</h5>
+
+                            <div class="d-flex align-items-center">
+                                <div class="card-icon rounded-circle d-flex align-items-center justify-content-center">
+                                    <i class="bi bi-people"></i>
+                                </div>
+                                <div class="ps-3">
+                                    <h6 class="currency-usd">${positionDto.getCallObligationValue()}</h6>
+                                    @if(positionDto.getStock() != null && positionDto.getCallObligationValue() != null && positionDto.getStock() >= positionDto.getCallObligationValue())
+                                        <span class="text-success small pt-1 fw-bold">Covered</span>
+                                    @else
+                                        <span class="text-danger small pt-1 fw-bold">Not Covered</span>
+                                    @endif
+                                    <span class="text-muted small pt-2 ps-1">/</span>
+                                    <span class="text-success small pt-1 fw-bold currency-usd">${positionDto.getStock()}</span>
+                                    <span class="text-muted small pt-2 ps-1">Stock</span>
+                                </div>
+                            </div>
+
+                        </div>
+                    </div>
+
+                </div>
+                <!-- End Sell Obligation Card -->
+
+                <!-- CALL Premium Card -->
+                <div class="col-xxl-4 col-md-6">
+                    <div class="card info-card revenue-card">
+                        <div class="card-body">
+                            <h5 class="card-title">CALL Premium</h5>
+
+                            <div class="d-flex align-items-center">
+                                <div class="card-icon rounded-circle d-flex align-items-center justify-content-center">
+                                    <i class="bi bi-currency-dollar"></i>
+                                </div>
+                                <div class="ps-3">
+                                    <h6 class="currency-usd">${positionDto.getCall()}</h6>
+                                    <span class="text-muted small pt-2 ps-1">CALL</span>
+                                    <span class="text-success small pt-1 fw-bold currency-usd">${positionDto.getCall()}</span>
+                                    <span class="text-muted small pt-2 ps-1">/</span>
+                                    <span class="text-success small pt-1 fw-bold currency-usd">${positionDto.getCallMarketPrice()}</span>
+                                </div>
+                            </div>
+                        </div>
+
+                    </div>
+                </div>
+                <!-- End CALL Premium Card -->
 
                 <!-- DataTable Weekly Buy Obligations -->
                 <div class="col-12">

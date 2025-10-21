@@ -50,6 +50,9 @@ public class PositionDto {
     Double marketPrice;
     Double putMarketPrice;
     Double callMarketPrice;
+    Double callObligationValue;
+    Double callObligationMarketValue;
+    Double callMarketVsObligationsPercentage;
     LocalDate earningDate;
 
     public String getTradeDateString() {
@@ -342,6 +345,30 @@ public class PositionDto {
 
     public void setCallMarketPrice(Double callMarketPrice) {
         this.callMarketPrice = callMarketPrice;
+    }
+
+    public Double getCallObligationValue() {
+        return callObligationValue;
+    }
+
+    public void setCallObligationValue(Double callObligationValue) {
+        this.callObligationValue = callObligationValue;
+    }
+
+    public Double getCallObligationMarketValue() {
+        return callObligationMarketValue;
+    }
+
+    public void setCallObligationMarketValue(Double callObligationMarketValue) {
+        this.callObligationMarketValue = callObligationMarketValue;
+    }
+
+    public Double getCallMarketVsObligationsPercentage() {
+        return callMarketVsObligationsPercentage;
+    }
+
+    public void setCallMarketVsObligationsPercentage(Double callMarketVsObligationsPercentage) {
+        this.callMarketVsObligationsPercentage = callMarketVsObligationsPercentage;
     }
 
     public LocalDate getEarningDate() {

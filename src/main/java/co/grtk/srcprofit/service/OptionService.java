@@ -200,6 +200,8 @@ public class OptionService {
         double positionValue = 0.0;
         double marketPrice = 0.0;
         double putMarketPrice = 0.0;
+        double callObligationValue = 0.0;
+        double callObligationMarketValue = 0.0;
 
         for (PositionDto dto : closedPositions) {
             int qty = abs(dto.getQuantity());
@@ -236,6 +238,10 @@ public class OptionService {
                 }
             } else {
                 call += dto.getTradePrice() * qty;
+                if (dto.getTradePrice() >= 0) { //CALL SELL
+                    callObligationMarketValue += dto.getMarketValue() * qty;
+                    callObligationValue += dto.getPositionValue() * qty;
+                }
             }
 
             positionDto.setType(dto.getType());
@@ -273,10 +279,20 @@ public class OptionService {
         calculateAndSetAnnualizedRoi(positionDto);
         positionDto.setMarketPrice(round2Digits(marketPrice));
         positionDto.setPutMarketPrice(round2Digits(putMarketPrice));
+        positionDto.setCallObligationValue(round2Digits(callObligationValue));
+        positionDto.setCallObligationMarketValue(round2Digits(callObligationMarketValue));
 
         positionDto.setCoveredPositionValue(round2Digits(put - putMarketPrice));
         double marketVsPositionsPercentage = ((marketValue / positionValue) * 100) - 100;
         positionDto.setMarketVsPositionsPercentage(round2Digits(marketVsPositionsPercentage));
+
+        // Calculate CALL coverage percentage (similar to PUT)
+        double callMarketVsObligationsPercentage = 0.0;
+        if (callObligationValue > 0) {
+            callMarketVsObligationsPercentage = ((callObligationMarketValue / callObligationValue) * 100) - 100;
+        }
+        positionDto.setCallMarketVsObligationsPercentage(round2Digits(callMarketVsObligationsPercentage));
+
         log.info("positionDto: {}", positionDto);
     }
 
