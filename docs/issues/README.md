@@ -47,53 +47,12 @@
 
 ## 📋 Issue Template
 
-Create new issues using this format:
+**Template File**: `docs/issues/ISSUE-TEMPLATE.md`
 
-```markdown
-# ISSUE-XXX: [Issue Title]
-
-**Created**: YYYY-MM-DD (Session XX)
-**Completed**: YYYY-MM-DD (Session YY) [if closed]
-**Status**: OPEN | PARTIAL | CLOSED
-**Priority**: CRITICAL | HIGH | MEDIUM | LOW
-**Category**: Feature | Bug | Infrastructure | Testing | Documentation
-**Estimated**: X hours/sessions
-**Actual**: Y hours [if completed]
-**Related**: ISSUE-###, ISSUE-### [if applicable]
-**Blocks**: ISSUE-### [if applicable]
-**Blocked By**: ISSUE-### [if applicable]
-
----
-
-## Problem
-
-[Describe the issue/feature/bug]
-
----
-
-## Approach
-
-[How to solve it]
-
----
-
-## Tasks
-
-- [ ] Task 1
-- [ ] Task 2
-
----
-
-## Notes
-
-[Any additional context]
-
----
-
-## Resolution
-
-[How it was resolved - fill when closing]
-```
+To create a new issue:
+1. Copy `ISSUE-TEMPLATE.md` to `ISSUE-XXX-short-description.md`
+2. Fill in all metadata and sections
+3. Update this README with the new issue
 
 ---
 
@@ -181,8 +140,8 @@ grep -l "Category: Bug" docs/issues/ISSUE-*.md
 
 ### Archive Policy
 - Closed issues remain in `docs/issues/` permanently
-- This README shows last 20 closed issues
-- Older closed issues listed in CHANGELOG.md
+- This README shows recently closed issues (configurable limit)
+- Archive older closed issues to CHANGELOG.md when list grows large
 
 ---
 
@@ -194,5 +153,5 @@ grep -l "Category: Bug" docs/issues/ISSUE-*.md
 
 ---
 
-**Version**: 1.0 (Session 1)
-**Next Update**: When first issue is created
+**Version**: 1.1 (Session 2)
+**Last Issue**: ISSUE-001 (closed)
