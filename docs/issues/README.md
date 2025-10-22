@@ -7,10 +7,10 @@
 
 ## 📊 Summary Statistics
 
-- **Total Issues**: 0
+- **Total Issues**: 1
 - **Open**: 0
 - **In Progress**: 0
-- **Closed**: 0
+- **Closed**: 1
 
 ---
 
@@ -32,7 +32,16 @@
 
 ## ✅ Recently Closed Issues
 
-*No closed issues yet*
+### ISSUE-001: Add CALL Option Sell Obligation Display to Positions Page
+**Status**: ✅ CLOSED
+**Completed**: 2025-10-21 (Session 2)
+**Category**: Feature
+**Priority**: Medium
+**Estimated**: 1.5 hours
+**Actual**: 2 hours
+**File**: [ISSUE-001-call-option-sell-obligations.md](ISSUE-001-call-option-sell-obligations.md)
+
+**Summary**: Implemented 3 new CALL obligation cards on positions page mirroring PUT structure with coverage status indicators and percentage calculations.
 
 ---
 
