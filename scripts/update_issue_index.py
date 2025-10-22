@@ -127,9 +127,26 @@ def generate_readme(issues: list[Issue]) -> str:
     open_pct = (open_count / total * 100) if total > 0 else 0
     closed_pct = (closed_count / total * 100) if total > 0 else 0
 
+    # Detect project name from git repo or directory name
+    import subprocess
+    try:
+        result = subprocess.run(
+            ["git", "config", "--get", "remote.origin.url"],
+            capture_output=True,
+            text=True,
+            check=True
+        )
+        # Extract project name from git URL (e.g., .../contrarian.git -> Contrarian)
+        url = result.stdout.strip()
+        project_name = url.rstrip("/").split("/")[-1].replace(".git", "")
+        project_name = project_name.capitalize()
+    except:
+        # Fallback: use directory name
+        project_name = Path(__file__).parent.parent.name.capitalize()
+
     # Generate content
     lines = [
-        "# Issue Tracking - Contrarian",
+        f"# Issue Tracking - {project_name}",
         "",
         "**Auto-generated** - Run `python scripts/update_issue_index.py` to update",
         "",

@@ -1,4 +1,4 @@
-# Issue Tracking - Contrarian
+# Issue Tracking - Srcprofit
 
 **Auto-generated** - Run `python scripts/update_issue_index.py` to update
 
