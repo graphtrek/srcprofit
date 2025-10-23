@@ -40,6 +40,7 @@ build/
 
 ### Kaizen Platform (External - Session 220 ISSUE-069) ###
 /kaizen               # Symlink to kaizen-live (read-only, NOT tracked)
-/kaizen.config.yaml   # Auto-generated config (gitignored)
 /kaizen-configure.sh  # Auto-generated script (gitignored)
 /.claude/             # Auto-generated symlinks (gitignored)
+# Note: kaizen.config.yaml IS tracked (project configuration)
+# Note: kaizen.local/ IS tracked (project customizations, if any)
