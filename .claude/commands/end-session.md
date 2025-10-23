@@ -493,7 +493,7 @@ Update `{{ACTIVE_CONTEXT_FILE}}`:
 **Auto-generate issue tracking README**:
 
 ```bash
-python scripts/update_issue_index.py
+python3 scripts/update_issue_index.py
 ```
 
 **What it does**:

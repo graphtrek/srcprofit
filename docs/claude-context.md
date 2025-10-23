@@ -91,9 +91,100 @@ co.grtk.srcprofit/
 - Definition of Done
 - Quality Gates (4-tier strategy)
 - Testing Strategy (Ground Truth TDD for options)
-- Issue Tracking System
+- Issue Tracking System ✅ (operational as of Session 2)
 - Slash Commands (/start-session, /end-session, /commit, /ship)
 - Agents (code-reviewer, trading-specialist, java-pro, etc.)
+
+---
+
+## 📋 Issue Tracking System
+
+**Status**: ✅ Operational (migrated from contrarian/kaizen, Session 2)
+
+### Quick Reference
+
+**Create Issue**:
+```bash
+cp docs/issues/TEMPLATE.md docs/issues/ISSUE-XXX-brief-description.md
+# Edit file: Status, Priority, Category, Problem, Approach, Success Criteria
+python3 scripts/update_issue_index.py
+```
+
+**Close Issue**:
+```bash
+# Edit ISSUE-XXX.md: Update Status to CLOSED, add Completed date & Actual effort
+python3 scripts/update_issue_index.py
+```
+
+**View Issues**:
+```bash
+cat docs/issues/README.md  # Auto-generated index
+```
+
+### Key Features
+
+1. **Auto-Generated Index** (`docs/issues/README.md`):
+   - Total issues count (Open/Closed/Partial percentages)
+   - Issues grouped by priority (CRITICAL → LOW)
+   - Issues grouped by category (Feature, Bug, Code Quality, etc.)
+   - Quick links to all issue files
+   - **Never edit manually** - script regenerates it
+
+2. **Script** (`scripts/update_issue_index.py`):
+   - Scans all `ISSUE-*.md` files in `docs/issues/`
+   - Extracts metadata (Status, Priority, Category, etc.)
+   - Generates statistics and categorization
+   - **Auto-detects project name** from git remote URL (generic for all Kaizen projects)
+
+3. **Template** (`docs/issues/TEMPLATE.md`):
+   - Standard structure for all issues
+   - Fields: Status, Priority, Category, Created, Completed, Actual effort
+   - Sections: Problem, Root Cause, Approach, Success Criteria, Acceptance Tests, Related Issues
+
+4. **Workflow Documentation** (`kaizen/docs/issue-tracking.md`):
+   - Complete guide to issue lifecycle (OPEN → IN PROGRESS → CLOSED)
+   - Priority guidelines (CRITICAL/HIGH/MEDIUM/LOW)
+   - Category guidelines (Feature/Bug/Code Quality/etc.)
+   - Best practices (DO/DON'T)
+   - Integration with `/end-session` command
+
+### Issue Lifecycle
+
+```
+OPEN → IN PROGRESS ← → BLOCKED (temporary) → CLOSED
+```
+
+**Statuses**:
+- **OPEN**: Ready to work on, not started
+- **IN PROGRESS**: Currently being worked on
+- **BLOCKED**: Can't proceed (waiting on something)
+- **CLOSED**: Completed and verified
+
+### Integration with Workflow
+
+**`/end-session` Command** (Step 5):
+- Automatically runs `python3 scripts/update_issue_index.py`
+- Keeps issue index current after every session
+- No manual intervention required
+
+**Issue Categories**:
+- Feature - New functionality
+- Bug - Something broken
+- Code Quality / Technical Debt - Refactoring
+- Documentation - Docs updates
+- Testing / Quality Assurance - Test coverage
+- Infrastructure - CI/CD, tooling
+- Workflow / Process Improvement - Development workflow
+- Developer Experience - Claude Code tools
+
+### Current Issues
+
+**Total**: 1 issue (as of Session 2)
+- **ISSUE-001**: Add CALL Option Sell Obligation Display to Positions Page
+  - Status: ✅ CLOSED (Session 2)
+  - Priority: MEDIUM
+  - Category: Feature
+  - Actual effort: 2 hours
 
 ---
 
@@ -125,8 +216,10 @@ co.grtk.srcprofit/
 - Context: `docs/claude-context.md` (this file)
 - Active context: `docs/claude-active-context.md`
 - Session summaries: `docs/sessions/SESSION_XX_COMPLETE.md`
-- Issues: `docs/issues/`
+- Issues: `docs/issues/` (README.md auto-generated, TEMPLATE.md for new issues)
+- Issue workflow: `kaizen/docs/issue-tracking.md`
 - Workflows: `docs/workflow/`
+- Scripts: `scripts/update_issue_index.py` (auto-gen issue index)
 
 ### Source Code
 - Entities: `src/main/java/co/grtk/srcprofit/entity/`

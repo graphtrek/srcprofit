@@ -30,6 +30,7 @@
 - **Context Used**: 121k/200k (60%)
 - **Work**: Implemented ISSUE-001 (CALL option sell obligations with 3 cards)
 - **Commit**: 147ed81 - feat(positions): add CALL option sell obligation cards
+- **Key Achievement**: First feature delivered using new workflow system
 
 ### Session 1 (2025-10-21) - ✅ COMPLETE
 **Goal**: Migrate proven workflow processes, trading domain knowledge, and quality protocols from contrarian project
@@ -44,6 +45,7 @@
 - ✅ Migrated trading domain knowledge
 - ✅ Set up agents (9 total)
 - ✅ Created slash commands (7 total)
+- ✅ Set up issue tracking system (TEMPLATE.md + update_issue_index.py)
 
 ---
 
@@ -80,10 +82,17 @@
 
 ## 🚨 Critical Reminders
 
-### For This Session
-- **Goal**: Complete full workflow migration in one session
-- **Time**: Estimated 6-7 hours total
-- **Output**: Complete workflow infrastructure ready for Session 2
+### Issue Tracking System
+- **Status**: ✅ Operational (as of Session 1)
+- **Documentation**: `kaizen/docs/issue-tracking.md`
+- **Auto-index script**: `scripts/update_issue_index.py` (auto-detects project name)
+- **Never edit**: `docs/issues/README.md` (auto-generated)
+- **Workflow integration**: `/end-session` runs script automatically
+
+### Kaizen Improvements
+- **Oct 22, 2025**: Script made portable (auto-detects project name from git remote)
+- Generic for all Kaizen projects (contrarian, srcprofit, future projects)
+- Improvements documented as issues for knowledge transfer
 
 ### For All Sessions
 - Use **kebab-case** for all file names (not UPPER_SNAKE_CASE)
@@ -91,6 +100,7 @@
 - Use `Decimal` for money (never `double`)
 - Push immediately after commits
 - Update this file at end of session
+- Run `python3 scripts/update_issue_index.py` after issue changes
 
 ---
 

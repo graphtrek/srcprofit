@@ -97,6 +97,27 @@ git pull origin master
 git push origin claude
 ```
 
+### Issue Tracking
+```bash
+# Create new issue
+cp docs/issues/TEMPLATE.md docs/issues/ISSUE-XXX-brief-description.md
+# Edit the issue file, then:
+python3 scripts/update_issue_index.py
+
+# View all issues
+cat docs/issues/README.md
+
+# Close an issue
+# Update issue file Status to CLOSED, add Completed date, then:
+python3 scripts/update_issue_index.py
+```
+
+**Key Points**:
+- `docs/issues/README.md` is **auto-generated** - never edit manually
+- Script auto-detects project name from git remote
+- Full workflow guide: `kaizen/docs/issue-tracking.md`
+- `/end-session` automatically updates issue index
+
 ---
 
 ## 📊 Quality Gates (4-Tier)
@@ -151,9 +172,17 @@ srcprofit/
 │   ├── knowledge-base-index.md         # Resource catalog
 │   ├── sessions/                       # Session history
 │   ├── issues/                         # Issue tracking
+│   │   ├── README.md                   # Auto-generated index
+│   │   ├── TEMPLATE.md                 # Issue template
+│   │   └── ISSUE-*.md                  # Individual issues
 │   ├── workflow/                       # Process docs
 │   ├── trading/                        # Trading methodology
 │   └── architecture/                   # ADRs
+├── kaizen/
+│   └── docs/
+│       └── issue-tracking.md           # Issue workflow guide
+├── scripts/
+│   └── update_issue_index.py           # Auto-gen issue README
 ├── .claude/
 │   ├── commands/                       # Slash commands
 │   └── agents/                         # Specialized agents
@@ -173,6 +202,7 @@ srcprofit/
 - **Testing Strategy**: `docs/workflow/testing-strategy.md`
 - **Quality Gates**: `docs/workflow/quality-gates.md`
 - **Documentation Standards**: `docs/workflow/documentation-standards.md`
+- **Issue Tracking Workflow**: `kaizen/docs/issue-tracking.md`
 - **TastyTrade Methodology**: `docs/trading/tastytrade-*.md`
 
 ### External
