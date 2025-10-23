@@ -38,5 +38,8 @@ build/
 ### ENV ###
 *.env
 
-### Claude Code ###
-.claude/settings.local.json
+### Kaizen Platform (External - Session 220 ISSUE-069) ###
+/kaizen               # Symlink to kaizen-live (read-only, NOT tracked)
+/kaizen.config.yaml   # Auto-generated config (gitignored)
+/kaizen-configure.sh  # Auto-generated script (gitignored)
+/.claude/             # Auto-generated symlinks (gitignored)

@@ -13,6 +13,42 @@
 
 ---
 
+## 🛠️ Kaizen Workflow System
+
+**SrcProfit uses the Kaizen platform** - an external lean workflow automation system.
+
+### What is Kaizen?
+
+Kaizen provides:
+- **Slash Commands**: `/start-session`, `/end-session`, `/commit`, `/ship`, etc.
+- **AI Agents**: code-reviewer, test-automator, fact-checker, documentation-generator, etc.
+- **Skills**: session-docs, test-before-commit, retrospective
+
+### How SrcProfit Uses Kaizen
+
+SrcProfit consumes Kaizen via **read-only symlink** to kaizen-live (stable release):
+
+```
+srcprofit/
+├── kaizen/ → ~/projects/kaizen-live  # External Kaizen (read-only)
+├── kaizen.local/                      # SrcProfit customizations (if any)
+└── .claude/                           # Merged symlinks (kaizen + kaizen.local)
+```
+
+### Kaizen Development (DO NOT DO IN SRCPROFIT!)
+
+**If you need to modify Kaizen workflows**:
+1. Switch to kaizen-dev: `cd ~/projects/kaizen-dev`
+2. Make changes to base/ or stacks/java/
+3. Test locally, commit to claude-coder-work
+4. Create PR to main (kaizen-live)
+5. Update kaizen-live: `cd ~/projects/kaizen-live && git pull`
+6. Changes automatically available in SrcProfit
+
+**DO NOT** edit `kaizen/` directly in SrcProfit - it's read-only!
+
+---
+
 ## 📍 Context Architecture
 
 **Layered Context System** (96% token reduction):
