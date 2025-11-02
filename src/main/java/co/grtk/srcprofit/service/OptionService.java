@@ -439,8 +439,8 @@ public class OptionService {
             }
             long end = System.currentTimeMillis();
             int elapsedSeconds = (int) ((end - start) / 1000.0);
-            int recordPerSecond = (int) (csvRecords.getRecordNumber() / elapsedSeconds);
-            log.info("CSV file parsed in {} sec, records: {} recordPerSeond: {}", elapsedSeconds, csvRecords.getRecordNumber(), recordPerSecond);
+
+            log.info("CSV file parsed in {} sec, records: {}", elapsedSeconds, csvRecords.getRecordNumber());
             return rowCount;
         } catch (Exception e) {
             log.error("Fail to parse CSV size: {}", csv.length(),e);
