@@ -1,11 +1,20 @@
 # Issue Tracking - Srcprofit
 
-**Auto-generated** - Run `python3 scripts/update_issue_index.py` to update
+**Auto-generated** - Run `python scripts/update_issue_index.py` to update
 
-**Total**: 2 issues
-**Open**: 0 (0%)
-**Closed**: 2 (100%)
+**Total**: 3 issues
+**Open**: 1 (33%)
+**Closed**: 2 (67%)
 **Partial**: 0
+
+---
+
+## Open Issues
+
+### MEDIUM (1)
+
+- **[ISSUE-003](ISSUE-003-flex-reports-automatic-synchronization.md)** - FLEX Reports Automatic Synchronization
+  - Priority: MEDIUM | Status: OPEN | Category: Infrastructure | Created: 2025-11-02 (Session 3)
 
 ---
 
@@ -23,11 +32,14 @@
 **Feature** (1):
   - ISSUE-001 ✅
 
+**Infrastructure** (1):
+  - ISSUE-003 🔴
+
 **Workflow / Process Improvement** (1):
   - ISSUE-002 ✅
 
 ---
 
-**Last updated**: 2025-10-23
+**Last updated**: 2025-11-03
 
-**How to update**: Run `python3 scripts/update_issue_index.py`
+**How to update**: Run `python scripts/update_issue_index.py`

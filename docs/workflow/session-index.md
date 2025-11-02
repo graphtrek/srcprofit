@@ -1,16 +1,17 @@
 # Session Index - SrcProfit
 
 **Purpose**: Complete chronological list of all development sessions
-**Last Updated**: 2025-10-21 (Session 2)
+**Latest Session**: 3
+**Last Updated**: 2025-11-03 (Session 3)
 
 ---
 
 ## 📊 Summary Statistics
 
-- **Total Sessions**: 2
+- **Total Sessions**: 3
 - **Current Phase**: Phase 1 - Development
-- **Total Commits**: 2 (eea91da, 147ed81)
-- **Total Issues**: 1 (ISSUE-001)
+- **Total Commits**: 3 (eea91da, 147ed81, 3eb66eb)
+- **Total Issues**: 3 (ISSUE-001, ISSUE-002, ISSUE-003)
 
 ---
 
@@ -18,12 +19,48 @@
 
 | # | Date | Focus | Status | File |
 |---|------|-------|--------|------|
+| 3 | 2025-11-03 | FLEX Reports Automatic Synchronization (ISSUE-003) | ✅ COMPLETE | SESSION_03_COMPLETE.md |
 | 2 | 2025-10-21 | CALL option sell obligations (ISSUE-001) | ✅ COMPLETE | SESSION_02_COMPLETE.md |
 | 1 | 2025-10-21 | Workflow migration from contrarian | ✅ COMPLETE | SESSION_01_COMPLETE.md |
 
 ---
 
 ## 📋 Detailed Sessions
+
+### Session 3: FLEX Reports Automatic Synchronization (2025-11-03) - ✅ COMPLETE
+**Duration**: 1.5 hours
+**Status**: ✅ COMPLETE
+**Focus**: Implement automated FLEX report imports with circular dependency resolution
+
+**Accomplished**:
+- ✅ Resolved circular dependency: Moved @Scheduled annotations from ScheduledReportsService to FlexReportsService
+- ✅ Created FlexStatementResponseEntity (JPA entity with FLEX_STATEMENT_RESPONSE table)
+- ✅ Created FlexStatementResponseRepository (Spring Data JPA repository)
+- ✅ Created FlexReportsService with @Scheduled importFlexTrades/importFlexNetAssetValue methods
+- ✅ Created FlexStatementPersistenceService for database persistence
+- ✅ Removed ScheduledReportsService and FlexStatementPersistence interface
+- ✅ Updated IbkrRestController to delegate to FlexReportsService
+- ✅ Build verification: Clean compile with no circular dependency errors
+
+**Key Achievement**: Clean separation of concerns (scheduling + orchestration vs. persistence-only)
+
+**Commit**: 3eb66eb - feat(flex-reports): implement automated FLEX report import system
+
+**Files Created**:
+- ISSUE-003: FLEX Reports Automatic Synchronization
+- FlexStatementResponseEntity.java (158 lines)
+- FlexStatementResponseRepository.java (52 lines)
+- FlexReportsService.java (188 lines)
+- FlexStatementPersistenceService.java (75 lines)
+
+**Next Steps**:
+- [ ] Integration testing (start app, verify no errors)
+- [ ] Test /ibkrFlexTradesImport and /ibkrFlexNetAssetValueImport endpoints
+- [ ] Verify FLEX_STATEMENT_RESPONSE table created
+- [ ] Verify @Scheduled methods execute on schedule
+- [ ] Consider thread-safety improvements (see TODO at FlexReportsService:49)
+
+---
 
 ### Session 2: CALL Option Sell Obligations (2025-10-21) - ✅ COMPLETE
 **Duration**: 2 hours
