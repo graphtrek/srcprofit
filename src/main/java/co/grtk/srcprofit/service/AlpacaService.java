@@ -55,8 +55,8 @@ public class AlpacaService {
 
         AlpacaQuotesDto alpacaQuotesDto = mapper.readValue(json, AlpacaQuotesDto.class);
 
-        //int count = (alpacaQuotesDto != null && alpacaQuotesDto.getQuotes() != null) ? alpacaQuotesDto.getQuotes().size() : 0;
-        log.info("getOptionsLatestQuotes /v1beta1/options/quotes/latest returned {}", alpacaQuotesDto);
+        int count = (alpacaQuotesDto != null && alpacaQuotesDto.getQuotes() != null) ? alpacaQuotesDto.getQuotes().size() : 0;
+        log.info("getOptionsLatestQuotes /v1beta1/options/quotes/latest returned {}", count);
         return alpacaQuotesDto;
     }
 
