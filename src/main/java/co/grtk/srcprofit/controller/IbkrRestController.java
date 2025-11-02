@@ -58,7 +58,7 @@ public class IbkrRestController {
             String flexTradesQuery = ibkrService.getFlexWebServiceGetStatement(flexTradesResponse.getUrl(), flexTradesResponse.getReferenceCode());
             File file = new File(userHome + "/FLEX_TRADES_" + flexTradesResponse.getReferenceCode() + ".csv");
             FileUtils.write(file, flexTradesQuery, CharsetNames.CS_UTF8);
-            int csvRecords = optionService.saveCSV(file.toPath());
+            int csvRecords = optionService.saveCSV(flexTradesQuery);
             int dataFixRecords = optionService.dataFix();
             flexTradesResponse = null;
             tradesReferenceCodeCounter = 0;
@@ -92,7 +92,7 @@ public class IbkrRestController {
             String flexTradesQuery = ibkrService.getFlexWebServiceGetStatement(flexNetAssetValueResponse.getUrl(), flexNetAssetValueResponse.getReferenceCode());
             File file = new File(userHome + "/FLEX_NET_ASSET_VALUE_" + flexNetAssetValueResponse.getReferenceCode() + ".csv");
             FileUtils.write(file, flexTradesQuery, CharsetNames.CS_UTF8);
-            int records = netAssetValueService.saveCSV(file.toPath());
+            int records = netAssetValueService.saveCSV(flexTradesQuery);
             flexNetAssetValueResponse = null;
             netAssetValueReferenceCodeCounter = 0;
 
