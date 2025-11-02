@@ -121,9 +121,9 @@ public class NetAssetValueService {
     }
 
     @Transactional
-    public int saveCSV(Path path) throws IOException {
+    public int saveCSV(String csv) throws IOException {
         int rowCount = 0;
-        try (CSVParser csvRecords = parse(path, StandardCharsets.UTF_8,
+        try (CSVParser csvRecords = parse(csv,
                 CSVFormat.Builder.create()
                         .setHeader()                   // első sor fejléc
                         .setSkipHeaderRecord(true)    // ne olvassa be újra a fejlécet

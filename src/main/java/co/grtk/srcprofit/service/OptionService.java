@@ -320,10 +320,10 @@ public class OptionService {
     }
 
     @Transactional
-    public int saveCSV(Path path) {
+    public int saveCSV(String csv) {
         int rowCount = 0;
         long start = System.currentTimeMillis();
-        try (CSVParser csvRecords = parse(path, StandardCharsets.UTF_8,
+        try (CSVParser csvRecords = parse(csv,
                 CSVFormat.Builder.create()
                         .setHeader()                   // első sor fejléc
                         .setSkipHeaderRecord(true)    // ne olvassa be újra a fejlécet
