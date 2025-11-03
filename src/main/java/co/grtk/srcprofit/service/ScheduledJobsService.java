@@ -114,7 +114,7 @@ public class ScheduledJobsService {
      *
      * This is a stateless operation with no retry logic (simple API call).
      */
-    @Scheduled(fixedDelay = 60000, initialDelay = 10000)
+    @Scheduled(fixedDelay = 5, initialDelay = 1, timeUnit = TimeUnit.MINUTES)
     public void refreshMarketData() {
         long startTime = System.currentTimeMillis();
         try {
