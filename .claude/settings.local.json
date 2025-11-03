@@ -12,7 +12,8 @@
       "Bash(timeout 30 ./mvnw:*)",
       "Bash(python3:*)",
       "Bash(./mvnw test:*)",
-      "Bash(./mvnw compile:*)"
+      "Bash(./mvnw compile:*)",
+      "Bash(timeout 120 ./mvnw clean compile:*)"
     ],
     "deny": [],
     "ask": []

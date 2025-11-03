@@ -11,7 +11,10 @@ import org.springframework.core.env.Environment;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import javax.sql.DataSource;
 import java.io.File;
+import java.sql.Connection;
+import java.sql.SQLException;
 import java.time.LocalDate;
 
 /**
@@ -55,18 +58,40 @@ public class FlexReportsService {
     private final NetAssetValueService netAssetValueService;
     private final Environment environment;
     private final FlexStatementResponseRepository flexStatementResponseRepository;
+    private final DataSource dataSource;
     private final String userHome = System.getProperty("user.home");
 
     public FlexReportsService(IbkrService ibkrService,
                               OptionService optionService,
                               NetAssetValueService netAssetValueService,
                               Environment environment,
-                              FlexStatementResponseRepository flexStatementResponseRepository) {
+                              FlexStatementResponseRepository flexStatementResponseRepository,
+                              DataSource dataSource) {
         this.ibkrService = ibkrService;
         this.optionService = optionService;
         this.netAssetValueService = netAssetValueService;
         this.environment = environment;
         this.flexStatementResponseRepository = flexStatementResponseRepository;
+        this.dataSource = dataSource;
+    }
+
+    /**
+     * Retrieves the database connection URL from DataSource.
+     *
+     * Extracts the JDBC URL from the configured DataSource, which identifies
+     * which database instance processed the import. Useful for multi-environment
+     * deployments (dev/staging/prod) to track where data was loaded.
+     *
+     * @return the JDBC database URL (e.g., "jdbc:postgresql://localhost:5432/srcprofit")
+     *         or null if the URL cannot be determined
+     */
+    private String getDatabaseUrl() {
+        try (Connection conn = dataSource.getConnection()) {
+            return conn.getMetaData().getURL();
+        } catch (SQLException e) {
+            log.warn("Failed to retrieve database URL: {}", e.getMessage());
+            return null;
+        }
     }
 
     /**
@@ -102,10 +127,11 @@ public class FlexReportsService {
             entity.setUrl(response.getUrl());
             entity.setReportType(reportType);
             entity.setOriginalTimestamp(response.getTimestamp());
+            entity.setDbUrl(getDatabaseUrl());
 
             flexStatementResponseRepository.save(entity);
-            log.info("Saved FlexStatementResponse to database: referenceCode={}, reportType={}, requestDate={}",
-                    entity.getReferenceCode(), entity.getReportType(), entity.getRequestDate());
+            log.info("Saved FlexStatementResponse to database: referenceCode={}, reportType={}, requestDate={}, dbUrl={}",
+                    entity.getReferenceCode(), entity.getReportType(), entity.getRequestDate(), entity.getDbUrl());
         } catch (Exception e) {
             // Log error but don't fail the import process
             log.error("Failed to save FlexStatementResponse to database: {}", e.getMessage(), e);
@@ -152,6 +178,17 @@ public class FlexReportsService {
             FileUtils.write(file, flexTradesQuery, CharsetNames.CS_UTF8);
             int csvRecords = optionService.saveCSV(flexTradesQuery);
             int dataFixRecords = optionService.dataFix();
+
+            // Update entity with monitoring fields
+            FlexStatementResponseEntity entity = flexStatementResponseRepository.findByReferenceCode(flexTradesResponse.getReferenceCode());
+            if (entity != null) {
+                entity.setCsvFilePath(file.getAbsolutePath());
+                entity.setCsvRecordsCount(csvRecords);
+                entity.setDataFixRecordsCount(dataFixRecords);
+                flexStatementResponseRepository.save(entity);
+                log.info("Updated FlexStatementResponse with monitoring fields: csvRecords={}, dataFixRecords={}, csvFilePath={}",
+                        csvRecords, dataFixRecords, file.getAbsolutePath());
+            }
 
             long elapsed = System.currentTimeMillis() - start;
             log.info("importFlexTrades file {} written elapsed:{}", file.getAbsolutePath(), elapsed);
@@ -202,6 +239,17 @@ public class FlexReportsService {
             File file = new File(userHome + "/FLEX_NET_ASSET_VALUE_" + flexNetAssetValueResponse.getReferenceCode() + ".csv");
             FileUtils.write(file, flexTradesQuery, CharsetNames.CS_UTF8);
             int records = netAssetValueService.saveCSV(flexTradesQuery);
+
+            // Update entity with monitoring fields
+            FlexStatementResponseEntity entity = flexStatementResponseRepository.findByReferenceCode(flexNetAssetValueResponse.getReferenceCode());
+            if (entity != null) {
+                entity.setCsvFilePath(file.getAbsolutePath());
+                entity.setCsvRecordsCount(records);
+                entity.setDataFixRecordsCount(null); // NAV reports don't have data fix
+                flexStatementResponseRepository.save(entity);
+                log.info("Updated FlexStatementResponse with monitoring fields: csvRecords={}, csvFilePath={}",
+                        records, file.getAbsolutePath());
+            }
 
             long elapsed = System.currentTimeMillis() - start;
             log.info("importFlexNetAssetValue file {} written elapsed:{}", file.getAbsolutePath(), elapsed);

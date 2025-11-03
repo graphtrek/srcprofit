@@ -73,6 +73,37 @@ public class FlexStatementResponseEntity {
     @Column(length = 50)
     private String originalTimestamp;
 
+    /**
+     * Database connection URL where the import was processed.
+     * Captures which database instance received the imported data.
+     * Useful for multi-environment deployments (dev/staging/prod).
+     */
+    @Column(name = "db_url", length = 500)
+    private String dbUrl;
+
+    /**
+     * File system path to the saved CSV file.
+     * Path to the CSV file written after GetStatement API call.
+     * Example: ~/FLEX_TRADES_ABC123.csv or ~/FLEX_NET_ASSET_VALUE_XYZ789.csv
+     */
+    @Column(name = "csv_file_path", length = 500)
+    private String csvFilePath;
+
+    /**
+     * Number of records imported from the CSV file.
+     * Count returned from saveCSV() method during import processing.
+     */
+    @Column(name = "csv_records_count")
+    private Integer csvRecordsCount;
+
+    /**
+     * Number of records processed in data fix operation.
+     * Only applicable to FLEX Trades imports (null for NAV reports).
+     * Count returned from dataFix() method.
+     */
+    @Column(name = "data_fix_records_count")
+    private Integer dataFixRecordsCount;
+
     // Constructors
 
     public FlexStatementResponseEntity() {
@@ -146,6 +177,38 @@ public class FlexStatementResponseEntity {
         this.originalTimestamp = originalTimestamp;
     }
 
+    public String getDbUrl() {
+        return dbUrl;
+    }
+
+    public void setDbUrl(String dbUrl) {
+        this.dbUrl = dbUrl;
+    }
+
+    public String getCsvFilePath() {
+        return csvFilePath;
+    }
+
+    public void setCsvFilePath(String csvFilePath) {
+        this.csvFilePath = csvFilePath;
+    }
+
+    public Integer getCsvRecordsCount() {
+        return csvRecordsCount;
+    }
+
+    public void setCsvRecordsCount(Integer csvRecordsCount) {
+        this.csvRecordsCount = csvRecordsCount;
+    }
+
+    public Integer getDataFixRecordsCount() {
+        return dataFixRecordsCount;
+    }
+
+    public void setDataFixRecordsCount(Integer dataFixRecordsCount) {
+        this.dataFixRecordsCount = dataFixRecordsCount;
+    }
+
     @Override
     public String toString() {
         return "FlexStatementResponseEntity{" +
@@ -156,6 +219,10 @@ public class FlexStatementResponseEntity {
                 ", url='" + url + '\'' +
                 ", reportType='" + reportType + '\'' +
                 ", originalTimestamp='" + originalTimestamp + '\'' +
+                ", dbUrl='" + dbUrl + '\'' +
+                ", csvFilePath='" + csvFilePath + '\'' +
+                ", csvRecordsCount=" + csvRecordsCount +
+                ", dataFixRecordsCount=" + dataFixRecordsCount +
                 '}';
     }
 }
