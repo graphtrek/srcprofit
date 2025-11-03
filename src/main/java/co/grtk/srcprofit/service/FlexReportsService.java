@@ -89,11 +89,11 @@ public class FlexReportsService {
             entity.setDbUrl(environment.getProperty("SRCPROFIT_DB_URL"));
 
             flexStatementResponseRepository.save(entity);
-            log.info("Saved FlexStatementResponse to database: referenceCode={}, reportType={}, requestDate={}, dbUrl={}",
+            log.debug("Saved FlexStatementResponse to database: referenceCode={}, reportType={}, requestDate={}, dbUrl={}",
                     entity.getReferenceCode(), entity.getReportType(), entity.getRequestDate(), entity.getDbUrl());
         } catch (Exception e) {
             // Log error but don't fail the import process
-            log.error("Failed to save FlexStatementResponse to database: {}", e.getMessage(), e);
+            log.debug("Failed to save FlexStatementResponse to database: {}", e.getMessage(), e);
         }
     }
 
@@ -129,7 +129,7 @@ public class FlexReportsService {
             // Save FLEX statement response metadata to database
             saveFlexStatementResponse(flexTradesResponse, "TRADES");
 
-            log.info("importFlexTrades flexTradesResponse {}", flexTradesResponse);
+            log.debug("importFlexTrades flexTradesResponse {}", flexTradesResponse);
             Thread.sleep(WAIT_FOR_REPORT_MS);
 
             String flexTradesQuery = ibkrService.getFlexWebServiceGetStatement(flexTradesResponse.getUrl(), flexTradesResponse.getReferenceCode());
@@ -145,12 +145,12 @@ public class FlexReportsService {
                 entity.setCsvRecordsCount(csvRecords);
                 entity.setDataFixRecordsCount(dataFixRecords);
                 flexStatementResponseRepository.save(entity);
-                log.info("Updated FlexStatementResponse with monitoring fields: csvRecords={}, dataFixRecords={}, csvFilePath={}",
+                log.debug("Updated FlexStatementResponse with monitoring fields: csvRecords={}, dataFixRecords={}, csvFilePath={}",
                         csvRecords, dataFixRecords, file.getAbsolutePath());
             }
 
             long elapsed = System.currentTimeMillis() - start;
-            log.info("importFlexTrades file {} written elapsed:{}", file.getAbsolutePath(), elapsed);
+            log.debug("importFlexTrades file {} written elapsed:{}", file.getAbsolutePath(), elapsed);
             return csvRecords + "/" + dataFixRecords + "/0";
         } catch (InterruptedException e) {
             Thread.currentThread().interrupt();
@@ -191,7 +191,7 @@ public class FlexReportsService {
             // Save FLEX statement response metadata to database
             saveFlexStatementResponse(flexNetAssetValueResponse, "NAV");
 
-            log.info("importFlexNetAssetValue flexNetAssetValueResponse {}", flexNetAssetValueResponse);
+            log.debug("importFlexNetAssetValue flexNetAssetValueResponse {}", flexNetAssetValueResponse);
             Thread.sleep(WAIT_FOR_REPORT_MS);
 
             String flexTradesQuery = ibkrService.getFlexWebServiceGetStatement(flexNetAssetValueResponse.getUrl(), flexNetAssetValueResponse.getReferenceCode());
@@ -206,12 +206,12 @@ public class FlexReportsService {
                 entity.setCsvRecordsCount(records);
                 entity.setDataFixRecordsCount(null); // NAV reports don't have data fix
                 flexStatementResponseRepository.save(entity);
-                log.info("Updated FlexStatementResponse with monitoring fields: csvRecords={}, csvFilePath={}",
+                log.debug("Updated FlexStatementResponse with monitoring fields: csvRecords={}, csvFilePath={}",
                         records, file.getAbsolutePath());
             }
 
             long elapsed = System.currentTimeMillis() - start;
-            log.info("importFlexNetAssetValue file {} written elapsed:{}", file.getAbsolutePath(), elapsed);
+            log.debug("importFlexNetAssetValue file {} written elapsed:{}", file.getAbsolutePath(), elapsed);
             return String.valueOf(records) + "/0";
         } catch (InterruptedException e) {
             Thread.currentThread().interrupt();

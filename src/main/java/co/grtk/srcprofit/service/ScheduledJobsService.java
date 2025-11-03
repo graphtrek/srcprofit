@@ -60,7 +60,7 @@ public class ScheduledJobsService {
     public String importFlexTrades() {
         long startTime = System.currentTimeMillis();
         try {
-            log.info("ScheduledJobsService: Starting importFlexTrades() job");
+            log.debug("ScheduledJobsService: Starting importFlexTrades() job");
             String result = flexReportsService.importFlexTrades();
             long elapsedTime = System.currentTimeMillis() - startTime;
             log.info("ScheduledJobsService: Completed importFlexTrades() in {}ms with result: {}", elapsedTime, result);
@@ -90,7 +90,7 @@ public class ScheduledJobsService {
     public String importFlexNetAssetValue() {
         long startTime = System.currentTimeMillis();
         try {
-            log.info("ScheduledJobsService: Starting importFlexNetAssetValue() job");
+            log.debug("ScheduledJobsService: Starting importFlexNetAssetValue() job");
             String result = flexReportsService.importFlexNetAssetValue();
             long elapsedTime = System.currentTimeMillis() - startTime;
             log.info("ScheduledJobsService: Completed importFlexNetAssetValue() in {}ms with result: {}", elapsedTime, result);
@@ -118,7 +118,7 @@ public class ScheduledJobsService {
     public void refreshMarketData() {
         long startTime = System.currentTimeMillis();
         try {
-            log.info("ScheduledJobsService: Starting refreshMarketData() job");
+            log.debug("ScheduledJobsService: Starting refreshMarketData() job");
             marketDataService.refreshAlpacaMarketData();
             long elapsedTime = System.currentTimeMillis() - startTime;
             log.info("ScheduledJobsService: Completed refreshMarketData() in {}ms", elapsedTime);
@@ -126,7 +126,7 @@ public class ScheduledJobsService {
             long elapsedTime = System.currentTimeMillis() - startTime;
             log.error("ScheduledJobsService: refreshMarketData() failed after {}ms - {}", elapsedTime, e.getMessage(), e);
             // Don't rethrow - market data refresh failures shouldn't crash the app
-            log.warn("ScheduledJobsService: Market data refresh will retry on next schedule");
+            log.debug("ScheduledJobsService: Market data refresh will retry on next schedule");
         }
     }
 }
