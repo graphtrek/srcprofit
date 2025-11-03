@@ -9,12 +9,23 @@ import co.grtk.srcprofit.entity.OptionEntity;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
 import java.util.stream.Collectors;
 
+/**
+ * Service for refreshing market data from external APIs (Alpaca, IBKR).
+ *
+ * This service provides orchestration for market data updates. Scheduling is
+ * handled by ScheduledJobsService via @Scheduled annotations.
+ *
+ * Methods:
+ * - refreshAlpacaMarketData(): Updates stock quotes and option prices from Alpaca
+ * - refreshIbkrMarketData(): Updates market data from Interactive Brokers (IBKR)
+ *
+ * @see ScheduledJobsService for @Scheduled annotations
+ */
 @Service
 public class MarketDataService {
     public final AlpacaService alpacaService;
@@ -30,7 +41,17 @@ public class MarketDataService {
         this.optionService = optionService;
     }
 
-    @Scheduled(fixedDelay = 60000, initialDelay = 10000)
+    /**
+     * Refreshes market data from Alpaca API.
+     *
+     * Updates:
+     * - Stock quotes for all instruments
+     * - Option market prices for all open options
+     *
+     * Called by ScheduledJobsService every 60 seconds.
+     *
+     * @throws JsonProcessingException if JSON parsing fails
+     */
     public void refreshAlpacaMarketData() throws JsonProcessingException {
         List<InstrumentDto> instruments = instrumentService.loadAllInstruments();
         String tickerCsv = instrumentService.buildTickerCsv(instruments);
