@@ -3,18 +3,9 @@
 **Auto-generated** - Run `python scripts/update_issue_index.py` to update
 
 **Total**: 5 issues
-**Open**: 1 (20%)
-**Closed**: 4 (80%)
+**Open**: 0 (0%)
+**Closed**: 5 (100%)
 **Partial**: 0
-
----
-
-## Open Issues
-
-### MEDIUM (1)
-
-- **[ISSUE-005](ISSUE-005-flex-import-monitoring-fields.md)** - FLEX Reports Import Monitoring Fields
-  - Priority: MEDIUM | Status: OPEN | Category: Feature | Created: 2025-11-03 (Session 05)
 
 ---
 
@@ -28,6 +19,8 @@
   - Priority: MEDIUM | Completed: 2025-11-03 (Session 3)
 - **[ISSUE-004](ISSUE-004-scheduled-reports-consolidation.md)** - ScheduledReports Consolidation - Centralized Job Scheduling Architecture
   - Priority: HIGH | Completed: 2025-11-03 (Session 4)
+- **[ISSUE-005](ISSUE-005-flex-import-monitoring-fields.md)** - FLEX Reports Import Monitoring Fields
+  - Priority: MEDIUM | Completed: 2025-11-03
 
 ---
 
@@ -37,7 +30,7 @@
   - ISSUE-004 ✅
 
 **Feature** (2):
-  - ISSUE-001 ✅, ISSUE-005 🔴
+  - ISSUE-001 ✅, ISSUE-005 ✅
 
 **Infrastructure** (1):
   - ISSUE-003 ✅
