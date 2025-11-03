@@ -11,11 +11,7 @@ import org.springframework.core.env.Environment;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import javax.sql.DataSource;
 import java.io.File;
-import java.sql.Connection;
-import java.sql.SQLException;
-import java.time.LocalDate;
 
 /**
  * Service for orchestrating FLEX report imports from Interactive Brokers.
@@ -58,40 +54,18 @@ public class FlexReportsService {
     private final NetAssetValueService netAssetValueService;
     private final Environment environment;
     private final FlexStatementResponseRepository flexStatementResponseRepository;
-    private final DataSource dataSource;
     private final String userHome = System.getProperty("user.home");
 
     public FlexReportsService(IbkrService ibkrService,
                               OptionService optionService,
                               NetAssetValueService netAssetValueService,
                               Environment environment,
-                              FlexStatementResponseRepository flexStatementResponseRepository,
-                              DataSource dataSource) {
+                              FlexStatementResponseRepository flexStatementResponseRepository) {
         this.ibkrService = ibkrService;
         this.optionService = optionService;
         this.netAssetValueService = netAssetValueService;
         this.environment = environment;
         this.flexStatementResponseRepository = flexStatementResponseRepository;
-        this.dataSource = dataSource;
-    }
-
-    /**
-     * Retrieves the database connection URL from DataSource.
-     *
-     * Extracts the JDBC URL from the configured DataSource, which identifies
-     * which database instance processed the import. Useful for multi-environment
-     * deployments (dev/staging/prod) to track where data was loaded.
-     *
-     * @return the JDBC database URL (e.g., "jdbc:postgresql://localhost:5432/srcprofit")
-     *         or null if the URL cannot be determined
-     */
-    private String getDatabaseUrl() {
-        try (Connection conn = dataSource.getConnection()) {
-            return conn.getMetaData().getURL();
-        } catch (SQLException e) {
-            log.warn("Failed to retrieve database URL: {}", e.getMessage());
-            return null;
-        }
     }
 
     /**
@@ -112,7 +86,7 @@ public class FlexReportsService {
             entity.setUrl(response.getUrl());
             entity.setReportType(reportType);
             entity.setOriginalTimestamp(response.getTimestamp());
-            entity.setDbUrl(getDatabaseUrl());
+            entity.setDbUrl(environment.getProperty("SRCPROFIT_DB_URL"));
 
             flexStatementResponseRepository.save(entity);
             log.info("Saved FlexStatementResponse to database: referenceCode={}, reportType={}, requestDate={}, dbUrl={}",
