@@ -95,25 +95,10 @@ public class FlexReportsService {
     }
 
     /**
-     * Converts FLEX API timestamp string to LocalDate.
-     *
-     * @param timestamp timestamp string from IBKR (e.g., "2025-11-02 20:55:44")
-     * @return LocalDate representing the date portion
-     * @throws IllegalArgumentException if timestamp is invalid
-     */
-    private LocalDate parseTimestampToLocalDate(String timestamp) {
-        if (timestamp == null || timestamp.length() < 10) {
-            throw new IllegalArgumentException("Invalid timestamp: " + timestamp);
-        }
-        // Extract date portion "YYYY-MM-DD" from timestamp
-        return LocalDate.parse(timestamp.substring(0, 10));
-    }
-
-    /**
      * Saves FlexStatementResponse metadata to database.
      *
      * Creates a persistence record of FLEX API request for audit trail,
-     * converting timestamp String to LocalDate for database storage.
+     * storing the full timestamp string from FLEX API response.
      *
      * @param response the FLEX API response containing reference code, timestamp, status, URL
      * @param reportType the report type ("TRADES" for options trades, "NAV" for net asset value)
@@ -122,7 +107,7 @@ public class FlexReportsService {
         try {
             FlexStatementResponseEntity entity = new FlexStatementResponseEntity();
             entity.setReferenceCode(response.getReferenceCode());
-            entity.setRequestDate(parseTimestampToLocalDate(response.getTimestamp()));
+            entity.setRequestDate(response.getTimestamp());
             entity.setStatus(response.getStatus());
             entity.setUrl(response.getUrl());
             entity.setReportType(reportType);

@@ -8,8 +8,6 @@ import jakarta.persistence.Id;
 import jakarta.persistence.Index;
 import jakarta.persistence.Table;
 
-import java.time.LocalDate;
-
 /**
  * Entity representing FLEX report API request metadata from Interactive Brokers.
  *
@@ -41,10 +39,11 @@ public class FlexStatementResponseEntity {
 
     /**
      * Date when FLEX report was requested.
-     * Converted from FlexStatementResponse.timestamp String to LocalDate.
+     * Stored as String from FlexStatementResponse.timestamp (e.g., "2025-11-03 20:55:44").
+     * Preserves full timestamp information from FLEX API.
      */
-    @Column(nullable = false)
-    private LocalDate requestDate;
+    @Column(nullable = false, length = 50)
+    private String requestDate;
 
     /**
      * Status from FLEX API response (e.g., "Success", "Fail").
@@ -78,7 +77,7 @@ public class FlexStatementResponseEntity {
      * Captures which database instance received the imported data.
      * Useful for multi-environment deployments (dev/staging/prod).
      */
-    @Column(name = "db_url", length = 500)
+    @Column(name = "db_url", length = 255)
     private String dbUrl;
 
     /**
@@ -86,7 +85,7 @@ public class FlexStatementResponseEntity {
      * Path to the CSV file written after GetStatement API call.
      * Example: ~/FLEX_TRADES_ABC123.csv or ~/FLEX_NET_ASSET_VALUE_XYZ789.csv
      */
-    @Column(name = "csv_file_path", length = 500)
+    @Column(name = "csv_file_path", length = 255)
     private String csvFilePath;
 
     /**
@@ -109,7 +108,7 @@ public class FlexStatementResponseEntity {
     public FlexStatementResponseEntity() {
     }
 
-    public FlexStatementResponseEntity(String referenceCode, LocalDate requestDate, String status,
+    public FlexStatementResponseEntity(String referenceCode, String requestDate, String status,
                                        String url, String reportType, String originalTimestamp) {
         this.referenceCode = referenceCode;
         this.requestDate = requestDate;
@@ -137,11 +136,11 @@ public class FlexStatementResponseEntity {
         this.referenceCode = referenceCode;
     }
 
-    public LocalDate getRequestDate() {
+    public String getRequestDate() {
         return requestDate;
     }
 
-    public void setRequestDate(LocalDate requestDate) {
+    public void setRequestDate(String requestDate) {
         this.requestDate = requestDate;
     }
 
