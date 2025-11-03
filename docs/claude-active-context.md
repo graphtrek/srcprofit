@@ -1,30 +1,42 @@
 # Claude Active Context - SrcProfit
 
-**Last Updated**: 2025-10-21 (Session 2)
+**Last Updated**: 2025-11-03 (Session 4)
 **Project**: SrcProfit Options Trading Tracker
-**Phase**: Phase 1 - Development Started
-**Focus**: Building CALL option sell obligation tracking features
+**Phase**: Phase 1 - Architecture Refactoring
+**Focus**: Centralized scheduling + atomic transactions
 
 ---
 
 ## 📋 Next Session
 
-**Session Number**: 4
-**Exit Type**: NORMAL_COMPLETE (Session 3 finished)
-**Code Status**: COMMITTED (commit 3eb66eb)
-**Context Used**: 48k/200k (24%)
+**Session Number**: 5
+**Exit Type**: NORMAL_COMPLETE (Session 4 finished)
+**Code Status**: COMMITTED (commits 8783812, 8087320)
+**Context Used**: 110k/200k (55%)
 
-**Resume Task**: Integration testing of FLEX reports implementation
+**Resume Task**: Integration testing of centralized scheduling and consolidated FLEX imports
 **Next Steps**:
-1. Start Spring Boot app and verify no circular dependency errors
+1. Start Spring Boot app with database configured
 2. Test /ibkrFlexTradesImport and /ibkrFlexNetAssetValueImport endpoints
-3. Verify FLEX_STATEMENT_RESPONSE table created in database
+3. Verify FLEX_STATEMENT_RESPONSE table created
 4. Verify @Scheduled methods execute on schedule
-5. Consider thread-safety improvements (see TODO at FlexReportsService:49)
+5. Close ISSUE-004 when integration testing complete
 
 ---
 
 ## 🎯 Active Work (Last 3 Sessions)
+
+### Session 4 (2025-11-03) - ✅ COMPLETE
+- **Exit**: NORMAL_COMPLETE
+- **Duration**: 3 hours
+- **Context Used**: 110k/200k (55%)
+- **Work**: ISSUE-004 - Centralized Scheduling Architecture + FlexStatementPersistenceService Consolidation
+- **Commits**: 8783812 (ScheduledJobsService), 8087320 (consolidation)
+- **Key Achievement**: Centralized @Scheduled annotations + atomic transactions + eliminated service layer
+- **Files Created**: ScheduledJobsService, ISSUE-004
+- **Files Modified**: FlexReportsService (added @Transactional), MarketDataService
+- **Files Deleted**: FlexStatementPersistenceService
+- **Status**: READY FOR INTEGRATION TESTING
 
 ### Session 3 (2025-11-03) - ✅ COMPLETE
 - **Exit**: NORMAL_COMPLETE
@@ -33,8 +45,7 @@
 - **Work**: ISSUE-003 - FLEX Reports Automatic Synchronization (circular dependency resolved)
 - **Commit**: 3eb66eb - feat(flex-reports): implement automated FLEX report import system
 - **Key Achievement**: Clean separation of scheduling (FlexReportsService) from persistence (FlexStatementPersistenceService)
-- **Files Created**: FlexStatementResponseEntity, FlexStatementResponseRepository, FlexReportsService, FlexStatementPersistenceService, ISSUE-003
-- **Status**: READY FOR INTEGRATION TESTING
+- **Status**: Foundation for Session 4 refactoring
 
 ### Session 2 (2025-10-21) - ✅ COMPLETE
 - **Exit**: NORMAL_COMPLETE
@@ -52,32 +63,27 @@
 
 ## 📋 Current Tasks
 
-### Phase 1: Branch & Context Foundation ✅
-- [x] Create `claude` branch
-- [x] Create docs/ structure
-- [x] Create CLAUDE.md
-- [x] Create claude-context.md
-- [x] Create claude-active-context.md
-- [ ] Create context-architecture.md
-- [ ] Create knowledge-base-index.md
+### Session 4 Completed Items ✅
+- [x] Create ScheduledJobsService with @Scheduled methods
+- [x] Refactor FlexReportsService (remove @Scheduled, make stateless)
+- [x] Refactor MarketDataService (remove @Scheduled)
+- [x] Verify IbkrRestController compatibility
+- [x] Clean compile and tests
+- [x] Consolidate FlexStatementPersistenceService into FlexReportsService
+- [x] Add @Transactional annotations to import methods
+- [x] Create ISSUE-004 with comprehensive design doc
 
-### Phase 2: Core Protocols Migration (NEXT)
-- [ ] Copy session-state-transfer-protocol.md
-- [ ] Copy definition-of-done.md
-- [ ] Adapt for Java/Spring Boot
-- [ ] Remove Python-specific references
+### Phase 2: Feature Development (IN PROGRESS)
+- [ ] Integration testing (Session 5)
+- [ ] Close ISSUE-004
+- [ ] Create next feature issue (ISSUE-005)
+- [ ] Consider thread-safety improvements if needed
 
-### Phase 3-12: Remaining Phases
-- [ ] Session workflow setup
-- [ ] Issue tracking
-- [ ] Trading domain migration
-- [ ] Agents migration
-- [ ] Quality gates
-- [ ] Documentation standards
-- [ ] Testing strategy
-- [ ] Project templates
-- [ ] Migration docs
-- [ ] Session 1 summary
+### Remaining Phases
+- [ ] Additional features/improvements
+- [ ] Performance optimization
+- [ ] Monitoring/observability
+- [ ] Production readiness
 
 ---
 
