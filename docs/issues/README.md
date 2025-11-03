@@ -2,9 +2,9 @@
 
 **Auto-generated** - Run `python scripts/update_issue_index.py` to update
 
-**Total**: 5 issues
+**Total**: 6 issues
 **Open**: 0 (0%)
-**Closed**: 5 (100%)
+**Closed**: 6 (100%)
 **Partial**: 0
 
 ---
@@ -21,6 +21,8 @@
   - Priority: HIGH | Completed: 2025-11-03 (Session 4)
 - **[ISSUE-005](ISSUE-005-flex-import-monitoring-fields.md)** - FLEX Reports Import Monitoring Fields
   - Priority: MEDIUM | Completed: 2025-11-03
+- **[ISSUE-006](ISSUE-006-docker-database-initialization.md)** - Docker Database Schema Initialization
+  - Priority: CRITICAL | Completed: 2025-11-03
 
 ---
 
@@ -34,6 +36,9 @@
 
 **Infrastructure** (1):
   - ISSUE-003 ✅
+
+**Infrastructure | Bug Fix** (1):
+  - ISSUE-006 ✅
 
 **Workflow / Process Improvement** (1):
   - ISSUE-002 ✅
