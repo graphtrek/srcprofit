@@ -1,10 +1,19 @@
--- Initialize SrcProfit schema for all databases
--- This script runs once when the database container starts
--- Tables will be auto-updated by Hibernate, but we need them to exist first
+#!/bin/bash
+# Initialize schema for all srcprofit databases
+# This runs after init-db.sh creates the users and databases
 
--- Note: PostgreSQL init scripts execute against postgres database by default
--- We create tables here and they're accessible to srcprofit user via ownership
+set -e
 
+: ${POSTGRES_USER:="postgres"}
+: ${SRCPROFIT_DB_USER:="srcprofit"}
+
+# SQL to create tables - same as 01-schema.sql but executed per database
+create_schema() {
+    local db_name=$1
+    echo "Creating schema for database: $db_name"
+
+    psql -v ON_ERROR_STOP=1 --username "$POSTGRES_USER" -d "$db_name" <<-EOSQL
+-- Initialize SrcProfit schema
 -- Create INSTRUMENT table (matches InstrumentEntity)
 CREATE TABLE IF NOT EXISTS instrument (
     id BIGSERIAL PRIMARY KEY,
@@ -110,3 +119,15 @@ CREATE TABLE IF NOT EXISTS flex_statement_response (
 CREATE INDEX IF NOT EXISTS fsr_reference_code_idx ON flex_statement_response(reference_code);
 CREATE INDEX IF NOT EXISTS fsr_request_date_idx ON flex_statement_response(request_date);
 CREATE INDEX IF NOT EXISTS fsr_report_type_idx ON flex_statement_response(report_type);
+EOSQL
+}
+
+# Create schema for each srcprofit database
+for db in srcprofit srcprofit1 srcprofit2; do
+    # Check if database exists before trying to create schema
+    if psql -v ON_ERROR_STOP=1 --username "$POSTGRES_USER" -lqt | cut -d \| -f 1 | grep -qw "$db"; then
+        create_schema "$db"
+    fi
+done
+
+echo "Schema initialization complete for all databases!"

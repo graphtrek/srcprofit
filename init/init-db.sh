@@ -28,4 +28,7 @@ EOSQL
     fi
 done
 
+# Create schema for each database
+/docker-entrypoint-initdb.d/02-create-schema.sh
+
 echo "Database initialization complete!"
