@@ -63,7 +63,7 @@ public class IbkrService {
                 "/FlexWebService/SendRequest?t=" +
                 environment.getRequiredProperty("IBKR_FLEX_API_TOKEN") +
                 "&q=" + IBKR_FLEX_QUERY_ID + "&v=3";
-        log.info("getFlexStatement uri:{}", uri);
+        log.debug("getFlexStatement uri:{}", uri);
         return ibkrFlexRestClient.get().uri(uri)
                 .retrieve()
                 .body(FlexStatementResponse.class);
@@ -74,7 +74,7 @@ public class IbkrService {
                 "?t=" +
                 environment.getRequiredProperty("IBKR_FLEX_API_TOKEN") +
                 "&q=" + referenceCode + "&v=3";
-        log.info("getFlexQuery uri:{}", uri);
+        log.debug("getFlexQuery uri:{}", uri);
         return ibkrFlexRestClient.get().uri(uri)
                 .retrieve()
                 .body(String.class);
