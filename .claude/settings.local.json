@@ -7,7 +7,10 @@
       "Bash(git commit:*)",
       "Bash(git push:*)",
       "Bash(git show:*)",
-      "Bash(git log:*)"
+      "Bash(git log:*)",
+      "Bash(cat:*)",
+      "Bash(timeout 30 ./mvnw:*)",
+      "Bash(python3:*)"
     ],
     "deny": [],
     "ask": []
