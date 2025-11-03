@@ -134,6 +134,18 @@ CREATE TABLE IF NOT EXISTS flex_statement_response (
 CREATE INDEX IF NOT EXISTS fsr_reference_code_idx ON flex_statement_response(reference_code);
 CREATE INDEX IF NOT EXISTS fsr_request_date_idx ON flex_statement_response(request_date);
 CREATE INDEX IF NOT EXISTS fsr_report_type_idx ON flex_statement_response(report_type);
+
+-- Grant all permissions to srcprofit user
+GRANT ALL PRIVILEGES ON ALL TABLES IN SCHEMA public TO ${SRCPROFIT_DB_USER};
+GRANT ALL PRIVILEGES ON ALL SEQUENCES IN SCHEMA public TO ${SRCPROFIT_DB_USER};
+GRANT ALL PRIVILEGES ON ALL FUNCTIONS IN SCHEMA public TO ${SRCPROFIT_DB_USER};
+EOSQL
+
+    # Grant default permissions for future tables
+    psql -v ON_ERROR_STOP=1 --username "$POSTGRES_USER" -d "$db" <<-EOSQL
+ALTER DEFAULT PRIVILEGES IN SCHEMA public GRANT ALL ON TABLES TO ${SRCPROFIT_DB_USER};
+ALTER DEFAULT PRIVILEGES IN SCHEMA public GRANT ALL ON SEQUENCES TO ${SRCPROFIT_DB_USER};
+ALTER DEFAULT PRIVILEGES IN SCHEMA public GRANT ALL ON FUNCTIONS TO ${SRCPROFIT_DB_USER};
 EOSQL
 }
 
