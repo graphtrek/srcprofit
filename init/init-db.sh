@@ -153,6 +153,10 @@ EOSQL
 for db in srcprofit srcprofit1 srcprofit2; do
     if psql -v ON_ERROR_STOP=1 --username "$POSTGRES_USER" -lqt | cut -d \| -f 1 | grep -qw "$db"; then
         create_schema "$db"
+
+        # Seed initial instrument data
+        echo "Seeding initial data for database: $db"
+        psql -v ON_ERROR_STOP=1 --username "$POSTGRES_USER" -d "$db" -f /docker-entrypoint-initdb.d/03-seed-data.sql
     fi
 done
 
