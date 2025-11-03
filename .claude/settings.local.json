@@ -10,7 +10,9 @@
       "Bash(git log:*)",
       "Bash(cat:*)",
       "Bash(timeout 30 ./mvnw:*)",
-      "Bash(python3:*)"
+      "Bash(python3:*)",
+      "Bash(./mvnw test:*)",
+      "Bash(./mvnw compile:*)"
     ],
     "deny": [],
     "ask": []

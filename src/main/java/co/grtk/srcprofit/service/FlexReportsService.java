@@ -1,29 +1,35 @@
 package co.grtk.srcprofit.service;
 
 import co.grtk.srcprofit.dto.FlexStatementResponse;
+import co.grtk.srcprofit.entity.FlexStatementResponseEntity;
+import co.grtk.srcprofit.repository.FlexStatementResponseRepository;
 import com.ctc.wstx.io.CharsetNames;
 import org.apache.commons.io.FileUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.core.env.Environment;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.io.File;
+import java.time.LocalDate;
 
 /**
  * Service for orchestrating FLEX report imports from Interactive Brokers.
  *
- * Handles the two-step FLEX API workflow:
+ * Handles the complete FLEX import workflow:
  * 1. SendRequest - Initiates report generation, returns reference code
- * 2. GetStatement - Retrieves generated CSV report using reference code
- * 3. CSV Parsing - Parses CSV and saves to database
- * 4. Data Cleanup - Removes orphaned records
+ * 2. Metadata Persistence - Saves FLEX API response to database (audit trail)
+ * 3. Wait - 15 seconds for report generation
+ * 4. GetStatement - Retrieves generated CSV report using reference code
+ * 5. File Write - Saves CSV to local filesystem
+ * 6. CSV Parsing - Parses CSV and saves to database
+ * 7. Data Cleanup - Removes orphaned records
  *
- * Extracted from IbkrRestController to enable reuse from scheduled jobs
- * and improve separation of concerns.
- *
- * Database persistence (saving FLEX API metadata) is delegated to
- * FlexStatementPersistenceService to maintain clean separation of concerns.
+ * Transaction Management:
+ * - Both import methods are @Transactional
+ * - Entire workflow is atomic (API call + metadata + CSV parsing)
+ * - Rollback occurs if any step fails
  *
  * IMPORTANT: This service is stateless orchestration only. Scheduling is handled
  * by ScheduledJobsService. Use this service for the actual FLEX API orchestration logic.
@@ -36,7 +42,7 @@ import java.io.File;
  * @see IbkrService for FLEX API methods
  * @see OptionService for trades CSV parsing
  * @see NetAssetValueService for NAV CSV parsing
- * @see FlexStatementPersistenceService for metadata persistence
+ * @see FlexStatementResponseRepository for FLEX metadata persistence
  */
 @Service
 public class FlexReportsService {
@@ -48,19 +54,62 @@ public class FlexReportsService {
     private final OptionService optionService;
     private final NetAssetValueService netAssetValueService;
     private final Environment environment;
-    private final FlexStatementPersistenceService flexStatementPersistenceService;
+    private final FlexStatementResponseRepository flexStatementResponseRepository;
     private final String userHome = System.getProperty("user.home");
 
     public FlexReportsService(IbkrService ibkrService,
                               OptionService optionService,
                               NetAssetValueService netAssetValueService,
                               Environment environment,
-                              FlexStatementPersistenceService flexStatementPersistenceService) {
+                              FlexStatementResponseRepository flexStatementResponseRepository) {
         this.ibkrService = ibkrService;
         this.optionService = optionService;
         this.netAssetValueService = netAssetValueService;
         this.environment = environment;
-        this.flexStatementPersistenceService = flexStatementPersistenceService;
+        this.flexStatementResponseRepository = flexStatementResponseRepository;
+    }
+
+    /**
+     * Converts FLEX API timestamp string to LocalDate.
+     *
+     * @param timestamp timestamp string from IBKR (e.g., "2025-11-02 20:55:44")
+     * @return LocalDate representing the date portion
+     * @throws IllegalArgumentException if timestamp is invalid
+     */
+    private LocalDate parseTimestampToLocalDate(String timestamp) {
+        if (timestamp == null || timestamp.length() < 10) {
+            throw new IllegalArgumentException("Invalid timestamp: " + timestamp);
+        }
+        // Extract date portion "YYYY-MM-DD" from timestamp
+        return LocalDate.parse(timestamp.substring(0, 10));
+    }
+
+    /**
+     * Saves FlexStatementResponse metadata to database.
+     *
+     * Creates a persistence record of FLEX API request for audit trail,
+     * converting timestamp String to LocalDate for database storage.
+     *
+     * @param response the FLEX API response containing reference code, timestamp, status, URL
+     * @param reportType the report type ("TRADES" for options trades, "NAV" for net asset value)
+     */
+    private void saveFlexStatementResponse(FlexStatementResponse response, String reportType) {
+        try {
+            FlexStatementResponseEntity entity = new FlexStatementResponseEntity();
+            entity.setReferenceCode(response.getReferenceCode());
+            entity.setRequestDate(parseTimestampToLocalDate(response.getTimestamp()));
+            entity.setStatus(response.getStatus());
+            entity.setUrl(response.getUrl());
+            entity.setReportType(reportType);
+            entity.setOriginalTimestamp(response.getTimestamp());
+
+            flexStatementResponseRepository.save(entity);
+            log.info("Saved FlexStatementResponse to database: referenceCode={}, reportType={}, requestDate={}",
+                    entity.getReferenceCode(), entity.getReportType(), entity.getRequestDate());
+        } catch (Exception e) {
+            // Log error but don't fail the import process
+            log.error("Failed to save FlexStatementResponse to database: {}", e.getMessage(), e);
+        }
     }
 
     /**
@@ -75,10 +124,9 @@ public class FlexReportsService {
      * 6. Parses CSV and saves trades to database (OptionService)
      * 7. Runs data cleanup to remove orphaned records (OptionService.dataFix)
      *
-     * Stateless Design:
-     * - No instance variable state (thread-safe for concurrent calls)
-     * - Each call is independent
-     * - Retry logic should be handled by ScheduledJobsService (not here)
+     * Transactional:
+     * - Entire workflow is atomic (API call + metadata + CSV parsing)
+     * - Rollback occurs if any step fails
      *
      * Environment Variables Required:
      * - IBKR_FLEX_TRADES_ID: Query ID for trades report
@@ -86,6 +134,7 @@ public class FlexReportsService {
      * @return Success: "{csvRecords}/{dataFixRecords}/0" (e.g., "42/3/0")
      * @throws RuntimeException if API call fails or CSV parsing fails
      */
+    @Transactional
     public String importFlexTrades() {
         long start = System.currentTimeMillis();
         try {
@@ -93,7 +142,7 @@ public class FlexReportsService {
             FlexStatementResponse flexTradesResponse = ibkrService.getFlexWebServiceSendRequest(IBKR_FLEX_TRADES_ID);
 
             // Save FLEX statement response metadata to database
-            flexStatementPersistenceService.saveFlexStatementResponse(flexTradesResponse, "TRADES");
+            saveFlexStatementResponse(flexTradesResponse, "TRADES");
 
             log.info("importFlexTrades flexTradesResponse {}", flexTradesResponse);
             Thread.sleep(WAIT_FOR_REPORT_MS);
@@ -126,10 +175,9 @@ public class FlexReportsService {
      * 5. Writes CSV to file: ~/FLEX_NET_ASSET_VALUE_{referenceCode}.csv
      * 6. Parses CSV and saves NAV records to database (NetAssetValueService)
      *
-     * Stateless Design:
-     * - No instance variable state (thread-safe for concurrent calls)
-     * - Each call is independent
-     * - Retry logic should be handled by ScheduledJobsService (not here)
+     * Transactional:
+     * - Entire workflow is atomic (API call + metadata + CSV parsing)
+     * - Rollback occurs if any step fails
      *
      * Environment Variables Required:
      * - IBKR_FLEX_NET_ASSET_VALUE_ID: Query ID for NAV report
@@ -137,6 +185,7 @@ public class FlexReportsService {
      * @return Success: "{records}/0" (e.g., "30/0")
      * @throws RuntimeException if API call fails or CSV parsing fails
      */
+    @Transactional
     public String importFlexNetAssetValue() {
         long start = System.currentTimeMillis();
         try {
@@ -144,7 +193,7 @@ public class FlexReportsService {
             FlexStatementResponse flexNetAssetValueResponse = ibkrService.getFlexWebServiceSendRequest(IBKR_FLEX_NET_ASSET_VALUE_ID);
 
             // Save FLEX statement response metadata to database
-            flexStatementPersistenceService.saveFlexStatementResponse(flexNetAssetValueResponse, "NAV");
+            saveFlexStatementResponse(flexNetAssetValueResponse, "NAV");
 
             log.info("importFlexNetAssetValue flexNetAssetValueResponse {}", flexNetAssetValueResponse);
             Thread.sleep(WAIT_FOR_REPORT_MS);
