@@ -4,7 +4,6 @@ import co.grtk.srcprofit.entity.FlexStatementResponseEntity;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
-import java.time.LocalDate;
 import java.util.List;
 
 /**
@@ -44,10 +43,10 @@ public interface FlexStatementResponseRepository extends JpaRepository<FlexState
     FlexStatementResponseEntity findTopByReportTypeOrderByRequestDateDesc(String reportType);
 
     /**
-     * Find all FLEX statement responses requested on a specific date.
+     * Find all FLEX statement responses requested on a specific date string.
      *
-     * @param requestDate the request date
+     * @param requestDate the request date string (e.g., "2025-11-03 20:55:44")
      * @return list of entities matching the request date
      */
-    List<FlexStatementResponseEntity> findByRequestDate(LocalDate requestDate);
+    List<FlexStatementResponseEntity> findByRequestDate(String requestDate);
 }
