@@ -1,7 +1,8 @@
 # ISSUE-007: Hide Admin Menus and Add updatedAt to FlexStatementResponseEntity
 
 **Created**: 2025-11-04
-**Status**: OPEN
+**Status**: CLOSED
+**Completed**: 2025-11-04
 **Priority**: MEDIUM
 **Category**: Code Quality / Technical Debt
 **Blocking**: None
