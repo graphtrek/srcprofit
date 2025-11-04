@@ -45,6 +45,6 @@
 
 ---
 
-**Last updated**: 2025-11-03
+**Last updated**: 2025-11-04
 
 **How to update**: Run `python scripts/update_issue_index.py`

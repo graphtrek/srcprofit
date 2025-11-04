@@ -281,5 +281,26 @@ Each gets identical schema initialization.
 
 **Fixed By**: Claude Code
 **Date**: 2025-11-03
-**Verification**: ✅ All success criteria met
+**Verification**: ✅ All success criteria met (verified with 2 consecutive fresh deployments)
 **Ready for**: Production deployment with Docker
+
+### Final Verification Results (2025-11-03)
+
+**Test 1 - Initial Deployment**:
+- ✅ All 3 applications started successfully
+- ✅ FLEX import jobs completed (8 trades, 6 NAV records)
+- ✅ Zero "relation does not exist" errors
+- ✅ Zero "permission denied" errors
+- ✅ flex_statement_response table populated
+
+**Test 2 - Reproducibility Verification**:
+- ✅ Fresh deployment with `docker-compose down -v`
+- ✅ Seed data loaded: 10 instruments per database
+- ✅ All 3 apps started (247-250 seconds each)
+- ✅ FLEX imports successful:
+  - Imre: 188 trades (36.8s), 6 NAV (16.5s)
+  - GraphTrek: 8 trades (25.5s)
+- ✅ Each database: 24 instruments, 2 flex_statement_response records
+- ✅ Zero errors across all containers
+
+**Conclusion**: Solution is stable, reproducible, and production-ready!
