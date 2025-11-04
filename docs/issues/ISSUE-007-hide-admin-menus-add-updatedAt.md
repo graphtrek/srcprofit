@@ -36,18 +36,22 @@ The SrcProfit UI currently displays "Admin Data" and "Admin" menu sections in th
 - Keep code intact for potential future use or debugging
 
 ### Task 2: Add updatedAt to FlexStatementResponseEntity
-Follow the pattern from `BaseAsset.java` (lines 43-47):
+Add field with `@UpdateTimestamp` annotation for automatic timestamp management:
 ```java
 @UpdateTimestamp(source = SourceType.DB)
+@Column
 private Instant updatedAt;
 ```
 
 **Implementation Steps**:
 1. Add the `updatedAt` field with `@UpdateTimestamp` annotation
-2. Add getter method: `public Instant getUpdatedAt()`
-3. Add setter method: `public void setUpdatedAt(Instant updatedAt)`
-4. Update `toString()` method to include `updatedAt` field
-5. No database migration required (Hibernate will auto-generate column on next schema update)
+2. Mark as nullable (`@Column` without `nullable = false`) to accommodate existing records
+3. Add getter method: `public Instant getUpdatedAt()`
+4. Add setter method: `public void setUpdatedAt(Instant updatedAt)`
+5. Update `toString()` method to include `updatedAt` field
+6. No manual database migration required (Hibernate will auto-generate column on next schema update)
+
+**Note**: Field is nullable initially to allow existing records (which have no update timestamp) to coexist with new records that will have `updatedAt` automatically populated.
 
 ---
 

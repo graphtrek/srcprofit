@@ -111,9 +111,10 @@ public class FlexStatementResponseEntity {
      * Timestamp when this entity was last updated.
      * Automatically managed by Hibernate using database server time.
      * Useful for auditing and tracking when report records are modified.
+     * Nullable to accommodate existing records without update timestamps.
      */
     @UpdateTimestamp(source = SourceType.DB)
-    @Column(nullable = false)
+    @Column
     private Instant updatedAt;
 
     // Constructors
