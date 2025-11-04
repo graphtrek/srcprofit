@@ -2,9 +2,9 @@
 
 **Auto-generated** - Run `python scripts/update_issue_index.py` to update
 
-**Total**: 6 issues
+**Total**: 7 issues
 **Open**: 0 (0%)
-**Closed**: 6 (100%)
+**Closed**: 7 (100%)
 **Partial**: 0
 
 ---
@@ -23,13 +23,15 @@
   - Priority: MEDIUM | Completed: 2025-11-03
 - **[ISSUE-006](ISSUE-006-docker-database-initialization.md)** - Docker Database Schema Initialization
   - Priority: CRITICAL | Completed: 2025-11-03
+- **[ISSUE-007](ISSUE-007-hide-admin-menus-add-updatedAt.md)** - Hide Admin Menus and Add updatedAt to FlexStatementResponseEntity
+  - Priority: MEDIUM | Completed: 2025-11-04
 
 ---
 
 ## By Category
 
-**Code Quality / Technical Debt** (1):
-  - ISSUE-004 ✅
+**Code Quality / Technical Debt** (2):
+  - ISSUE-004 ✅, ISSUE-007 ✅
 
 **Feature** (2):
   - ISSUE-001 ✅, ISSUE-005 ✅

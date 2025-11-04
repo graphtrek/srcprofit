@@ -154,6 +154,7 @@
             </a>
         </li><!-- End Earnings -->
 
+        <%-- COMMENTED OUT: Admin Data section
         <li class="nav-item">
             <a class="nav-link collapsed" data-bs-target="#admin-data" data-bs-toggle="collapse" href="#" aria-expanded="false">
               <i class="bi bi-bar-chart"></i><span>Admin Data</span><i class="bi bi-chevron-down ms-auto"></i>
@@ -203,8 +204,10 @@
               </li><!-- End Ibkr Flex Net Asset Value Import -->
             </ul>
         </li><!-- End Admin -->
+        --%>
 
 
+        <%-- COMMENTED OUT: Admin menu section
         <li class="nav-item">
             <a class="nav-link collapsed" data-bs-target="#admin-nav" data-bs-toggle="collapse" href="#" aria-expanded="false">
                 <i class="bi bi-bar-chart"></i><span>Admin</span><i class="bi bi-chevron-down ms-auto"></i>
@@ -266,6 +269,7 @@
                 </li><!-- End Ibkr Login Page Nav -->
             </ul>
         </li><!-- End Admin -->
+        --%>
 
         <li class="nav-item htmx-indicator" id="spinner">
         <div class="spinner-border" role="status">
