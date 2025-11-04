@@ -7,6 +7,10 @@ import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.Index;
 import jakarta.persistence.Table;
+import org.hibernate.annotations.UpdateTimestamp;
+import org.hibernate.annotations.SourceType;
+
+import java.time.Instant;
 
 /**
  * Entity representing FLEX report API request metadata from Interactive Brokers.
@@ -102,6 +106,15 @@ public class FlexStatementResponseEntity {
      */
     @Column(name = "data_fix_records_count")
     private Integer dataFixRecordsCount;
+
+    /**
+     * Timestamp when this entity was last updated.
+     * Automatically managed by Hibernate using database server time.
+     * Useful for auditing and tracking when report records are modified.
+     */
+    @UpdateTimestamp(source = SourceType.DB)
+    @Column(nullable = false)
+    private Instant updatedAt;
 
     // Constructors
 
@@ -208,6 +221,14 @@ public class FlexStatementResponseEntity {
         this.dataFixRecordsCount = dataFixRecordsCount;
     }
 
+    public Instant getUpdatedAt() {
+        return updatedAt;
+    }
+
+    public void setUpdatedAt(Instant updatedAt) {
+        this.updatedAt = updatedAt;
+    }
+
     @Override
     public String toString() {
         return "FlexStatementResponseEntity{" +
@@ -222,6 +243,7 @@ public class FlexStatementResponseEntity {
                 ", csvFilePath='" + csvFilePath + '\'' +
                 ", csvRecordsCount=" + csvRecordsCount +
                 ", dataFixRecordsCount=" + dataFixRecordsCount +
+                ", updatedAt=" + updatedAt +
                 '}';
     }
 }
