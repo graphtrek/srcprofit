@@ -157,6 +157,7 @@ public class OptionService {
 
     private Map<LocalDate, BigDecimal> getDailyPremium( List<OptionEntity> options) {
         Map<LocalDate, BigDecimal> dailyPremium = options.stream()
+                .filter(option -> option.getTradePrice() != null)
                 .collect(Collectors.groupingBy(
                         OptionEntity::getTradeDate,
                         Collectors.reducing(
@@ -283,7 +284,7 @@ public class OptionService {
         positionDto.setCallObligationMarketValue(round2Digits(callObligationMarketValue));
 
         positionDto.setCoveredPositionValue(round2Digits(put - putMarketPrice));
-        double marketVsPositionsPercentage = ((marketValue / positionValue) * 100) - 100;
+        double marketVsPositionsPercentage = positionValue > 0 ? ((marketValue / positionValue) * 100) - 100 : 0.0;
         positionDto.setMarketVsPositionsPercentage(round2Digits(marketVsPositionsPercentage));
 
         // Calculate CALL coverage percentage (similar to PUT)

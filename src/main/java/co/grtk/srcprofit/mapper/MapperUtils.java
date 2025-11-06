@@ -110,7 +110,14 @@ public class MapperUtils {
     public static String getValuesCsv(Map<LocalDate, BigDecimal> map) {
        return  map.entrySet().stream()
                 .sorted(Map.Entry.comparingByKey())
-                .map(entry -> entry.getValue().toString())
+                .map(entry -> {
+                    String value = entry.getValue().toString();
+                    // Filter out NaN and Infinity values to prevent chart rendering issues
+                    if (value.contains("NaN") || value.contains("Infinity")) {
+                        return "0";
+                    }
+                    return value;
+                })
                .collect(Collectors.joining(","));
     }
 }

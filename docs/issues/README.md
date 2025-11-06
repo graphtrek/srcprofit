@@ -2,10 +2,19 @@
 
 **Auto-generated** - Run `python scripts/update_issue_index.py` to update
 
-**Total**: 7 issues
-**Open**: 0 (0%)
-**Closed**: 7 (100%)
+**Total**: 8 issues
+**Open**: 1 (12%)
+**Closed**: 7 (88%)
 **Partial**: 0
+
+---
+
+## Open Issues
+
+### HIGH (1)
+
+- **[ISSUE-008](ISSUE-008-dashboard-put-premium-nan-fix.md)** - Dashboard Put Premium Displaying NaN Values
+  - Priority: HIGH | Status: OPEN | Category: Bug | Created: 2025-11-06 (Session N/A)
 
 ---
 
@@ -30,6 +39,9 @@
 
 ## By Category
 
+**Bug** (1):
+  - ISSUE-008 🔴
+
 **Code Quality / Technical Debt** (2):
   - ISSUE-004 ✅, ISSUE-007 ✅
 
@@ -47,6 +59,6 @@
 
 ---
 
-**Last updated**: 2025-11-04
+**Last updated**: 2025-11-06
 
 **How to update**: Run `python scripts/update_issue_index.py`
