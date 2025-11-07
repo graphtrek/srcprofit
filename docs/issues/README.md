@@ -2,19 +2,10 @@
 
 **Auto-generated** - Run `python scripts/update_issue_index.py` to update
 
-**Total**: 11 issues
-**Open**: 1 (9%)
-**Closed**: 10 (91%)
+**Total**: 12 issues
+**Open**: 0 (0%)
+**Closed**: 12 (100%)
 **Partial**: 0
-
----
-
-## Open Issues
-
-### MEDIUM (1)
-
-- **[ISSUE-011](ISSUE-011-tradingview-phase-1b-position-calculator.md)** - TradingView Phase 1B - Position Calculator Advanced Chart
-  - Priority: MEDIUM | Status: OPEN | Category: Enhancement | Created: 2025-11-07 | Blocks: Phase 2 (Indicator customization, earnings markers)
 
 ---
 
@@ -40,6 +31,10 @@
   - Priority: MEDIUM | Completed: 2025-11-07
 - **[ISSUE-010](ISSUE-010-tradingview-phase-1a-dashboard.md)** - TradingView Phase 1A Dashboard Integration
   - Priority: MEDIUM | Completed: 2025-11-07
+- **[ISSUE-011](ISSUE-011-tradingview-phase-1b-position-calculator.md)** - TradingView Phase 1B - Position Calculator Advanced Chart
+  - Priority: MEDIUM | Completed: 2025-11-07
+- **[ISSUE-012](ISSUE-012-tradingview-phase-1b-implementation-plan.md)** - TradingView Phase 1B - Implementation Plan & Execution
+  - Priority: HIGH | Completed: 2025-11-07
 
 ---
 
@@ -49,10 +44,13 @@
   - ISSUE-004 ✅, ISSUE-007 ✅, ISSUE-008 ✅
 
 **Enhancement** (1):
-  - ISSUE-011 🔴
+  - ISSUE-011 ✅
 
 **Feature** (4):
   - ISSUE-001 ✅, ISSUE-005 ✅, ISSUE-009 ✅, ISSUE-010 ✅
+
+**Feature | Developer Experience** (1):
+  - ISSUE-012 ✅
 
 **Infrastructure** (1):
   - ISSUE-003 ✅

@@ -149,6 +149,98 @@ function updateTradingViewSymbol(containerId, ticker) {
 }
 
 /**
+ * Initialize TradingView Advanced Chart widget for detailed technical analysis
+ *
+ * Used in Position Calculator modal with Bollinger Bands and ATR indicators
+ *
+ * @param {HTMLElement} container - DOM element where widget should be rendered
+ * @param {string} symbol - TradingView formatted symbol (e.g., "NASDAQ:AAPL")
+ */
+function initializeAdvancedChartWidget(container, symbol) {
+  if (!container || !symbol) {
+    console.warn('Missing container or symbol for Advanced Chart widget');
+    return;
+  }
+
+  // Clear existing content
+  container.innerHTML = '';
+
+  // Create widget container
+  const widgetContainer = document.createElement('div');
+  widgetContainer.className = 'tradingview-widget-container';
+
+  // Create inner widget div
+  const widgetDiv = document.createElement('div');
+  widgetDiv.className = 'tradingview-widget-container__widget';
+  widgetContainer.appendChild(widgetDiv);
+
+  // Create configuration script for Advanced Chart
+  const configScript = document.createElement('script');
+  configScript.type = 'text/javascript';
+  configScript.src = 'https://s3.tradingview.com/external-embedding/embed-widget-advanced-chart.js';
+  configScript.async = true;
+
+  // Advanced Chart configuration with Bollinger Bands and ATR indicators
+  configScript.textContent = `
+  {
+    "autosize": true,
+    "symbol": "${symbol}",
+    "interval": "D",
+    "timezone": "Etc/UTC",
+    "theme": "light",
+    "style": "1",
+    "locale": "en",
+    "toolbar_bg": "#f1f3f6",
+    "enable_publishing": false,
+    "allow_symbol_change": true,
+    "studies": [
+      "BB@tv-basicstudies",
+      "ATR@tv-basicstudies"
+    ],
+    "container_id": "tradingview_chart_container",
+    "height": "500",
+    "width": "100%"
+  }
+  `;
+
+  widgetContainer.appendChild(configScript);
+  container.appendChild(widgetContainer);
+
+  console.log('Initialized TradingView Advanced Chart for symbol:', symbol);
+}
+
+/**
+ * Update Advanced Chart symbol dynamically
+ *
+ * Called when user changes ticker in position calculator
+ *
+ * @param {string} containerId - ID of Advanced Chart container
+ * @param {string} ticker - New ticker symbol
+ */
+function updateAdvancedChartSymbol(containerId, ticker) {
+  const container = document.getElementById(containerId);
+  if (!container) {
+    console.warn(`Container not found: ${containerId}`);
+    return;
+  }
+
+  if (!ticker || ticker.trim() === '') {
+    console.warn('Invalid ticker provided');
+    return;
+  }
+
+  const useTradingView = container.getAttribute('data-use-tradingview') !== 'false';
+  if (!useTradingView) {
+    console.log('TradingView feature flag disabled, Advanced Chart update skipped');
+    return;
+  }
+
+  const tvSymbol = convertToTradingViewSymbol(ticker);
+  container.setAttribute('data-tradingview-symbol', ticker);
+  initializeAdvancedChartWidget(container, tvSymbol);
+}
+
+/**
  * Reinitialize widgets after HTMX content swap
  *
  * HTMX loads new HTML content, but TradingView widgets need to be reinitialized

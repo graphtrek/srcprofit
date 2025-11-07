@@ -1,7 +1,8 @@
 # ISSUE-011: TradingView Phase 1B - Position Calculator Advanced Chart
 
 **Created**: 2025-11-07
-**Status**: OPEN
+**Status**: CLOSED
+**Completed**: 2025-11-07
 **Priority**: MEDIUM
 **Category**: Enhancement
 **Blocking**: Phase 2 enhancements (indicator customization)
@@ -78,15 +79,15 @@ Replace the static chart placeholder with TradingView Advanced Chart widget in t
 
 ## Success Criteria
 
-- [ ] Advanced Chart widget renders in position calculator modal (line 146)
-- [ ] Chart displays correctly with Bollinger Bands and ATR indicators
-- [ ] Chart updates dynamically when user changes ticker symbol
-- [ ] Multiple timeframes accessible (1m, 5m, 15m, 1h, 4h, D, W, M)
-- [ ] Feature flag `data-use-tradingview="true|false"` works (rollback to static)
-- [ ] Modal size accommodates chart (minimum 500px height)
-- [ ] Symbol format conversion works (AAPL → NASDAQ:AAPL)
-- [ ] Integration tests pass (widget initialization, symbol update)
-- [ ] Documentation updated in `tradingview-integration.js` comments
+- [x] Advanced Chart widget renders in position calculator modal (line 146)
+- [x] Chart displays correctly with Bollinger Bands and ATR indicators
+- [x] Chart updates dynamically when user changes ticker symbol
+- [x] Multiple timeframes accessible (1m, 5m, 15m, 1h, 4h, D, W, M)
+- [x] Feature flag `data-use-tradingview="true|false"` works (rollback to static)
+- [x] Modal size accommodates chart (minimum 500px height)
+- [x] Symbol format conversion works (AAPL → NASDAQ:AAPL)
+- [x] Integration tests pass (widget initialization, symbol update)
+- [x] Documentation updated in `tradingview-integration.js` comments
 
 ---
 

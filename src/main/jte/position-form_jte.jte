@@ -142,8 +142,14 @@
                     <h5 class="modal-title">Daily Snapshot</h5>
                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
-                <div class="modal-body">
-                    <img id="chartImg" style="width: 100%" src="#" />
+                <div class="modal-body" style="min-height: 520px;">
+                    <div id="tradingview_advanced_chart"
+                         data-tradingview-symbol="AAPL"
+                         data-use-tradingview="true"
+                         style="width: 100%; height: 500px;">
+                    </div>
+                    <!-- Fallback for feature flag disabled -->
+                    <img id="chartImg" style="width: 100%; display: none;" src="#" />
                 </div>
                 <div class="modal-footer">
                     <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
@@ -306,6 +312,9 @@
         $('#ticker').on("change", function() {
             const ticker = $(this).val();
             if(ticker) {
+                // Update TradingView Advanced Chart
+                updateAdvancedChartSymbol('tradingview_advanced_chart', ticker);
+                // Keep fallback FinViz image updated for feature flag disabled case
                 $('#chartImg').attr('src', imgSrc.replace("ticker",ticker));
                 console.log('GET  /getPosition/' + ticker);
                 htmx.ajax('GET', '/getPosition/'+ticker, '#main');
@@ -320,6 +329,9 @@
         if(!ticker){
             $("#chartButton").prop("disabled", true);
         } else {
+            // Initialize TradingView Advanced Chart with default ticker
+            updateAdvancedChartSymbol('tradingview_advanced_chart', ticker);
+            // Keep fallback FinViz image updated
             $('#chartImg').attr('src', imgSrc.replace("ticker",ticker));
             $('#chartButton').prop("disabled", false);
             $('#tradingViewButton').attr('href', tradingView+ticker);
