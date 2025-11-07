@@ -20,6 +20,7 @@
 </div><!-- End Page Title -->
 
 <section class="section">
+    <!-- Calculate Position Card Start -->
     <div class="row">
         <div class="col-lg-12">
             <div class="card">
@@ -43,7 +44,7 @@
                     </div>
                     @endif
 
-                    <!-- No Labels Form -->
+                    <!-- Calculate Position Form Start -->
                     <form class="row g-3" hx-validate="true"
                           hx-post="/calculatePosition"
                           hx-trigger="submit"
@@ -126,12 +127,14 @@
                             </button>
                         </div>
                     </form>
-
+                    <!-- Calculate Position Form End-->
                 </div>
             </div>
         </div>
     </div>
+    <!-- Calculate Position Card End -->
 
+    <!-- Daily Snapshot Extra Large Modal Start -->
     <div class="modal fade" id="ExtralargeModal" tabindex="-1">
         <div class="modal-dialog modal-xl">
             <div class="modal-content">
@@ -139,15 +142,25 @@
                     <h5 class="modal-title">Daily Snapshot</h5>
                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
-                <div class="modal-body">
-                    <img id="chartImg" style="width: 100%" src="#" />
+                <div class="modal-body" style="min-height: 470px;">
+                    <div id="tradingview_advanced_chart"
+                         data-tradingview-symbol="AAPL"
+                         data-use-tradingview="true"
+                         data-widget-type="advanced"
+                         style="width: 100%; height: 450px;">
+                    </div>
+                    <!-- Fallback for feature flag disabled -->
+                    <img id="chartImg" style="width: 100%; display: none;" src="#" />
                 </div>
                 <div class="modal-footer">
                     <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
                 </div>
             </div>
         </div>
-    </div><!-- End Extra Large Modal-->
+    </div>
+    <!-- Daily Snapshot Extra Large Modal End -->
+
+    <!-- Open Positions Start -->
     @if(openOptions != null)
         <div class="row">
             <div class="col-lg-12">
@@ -217,7 +230,9 @@
             </div>
         </div>
     @endif
+    <!-- Open Positions End -->
 
+    <!-- Positions History Start -->
     @if(optionHistory != null)
     <div class="row">
         <div class="col-lg-12">
@@ -284,7 +299,7 @@
         </div>
     </div>
     @endif
-
+    <!-- Positions History End -->
 </section>
 
 <script>
@@ -298,6 +313,9 @@
         $('#ticker').on("change", function() {
             const ticker = $(this).val();
             if(ticker) {
+                // Update TradingView Advanced Chart
+                updateAdvancedChartSymbol('tradingview_advanced_chart', ticker);
+                // Keep fallback FinViz image updated for feature flag disabled case
                 $('#chartImg').attr('src', imgSrc.replace("ticker",ticker));
                 console.log('GET  /getPosition/' + ticker);
                 htmx.ajax('GET', '/getPosition/'+ticker, '#main');
@@ -312,6 +330,9 @@
         if(!ticker){
             $("#chartButton").prop("disabled", true);
         } else {
+            // Initialize TradingView Advanced Chart with default ticker
+            updateAdvancedChartSymbol('tradingview_advanced_chart', ticker);
+            // Keep fallback FinViz image updated
             $('#chartImg').attr('src', imgSrc.replace("ticker",ticker));
             $('#chartButton').prop("disabled", false);
             $('#tradingViewButton').attr('href', tradingView+ticker);

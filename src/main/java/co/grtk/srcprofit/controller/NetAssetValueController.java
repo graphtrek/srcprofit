@@ -40,7 +40,7 @@ public class NetAssetValueController {
             counter++;
             cash += netAssetValue.getCash();
             double averageCash = round2Digits(cash / counter);
-            log.info("counter: {} cash: {}, averageCash: {}", counter, cash, averageCash);
+            log.debug("counter: {} cash: {}, averageCash: {}", counter, cash, averageCash);
             netAssetValue.setAverageCash(averageCash);
             if (premium != null) {
                 double premiumValue = round2Digits(premium.doubleValue());

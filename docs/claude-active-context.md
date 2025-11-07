@@ -1,89 +1,108 @@
 # Claude Active Context - SrcProfit
 
-**Last Updated**: 2025-11-03 (Session 4)
+**Last Updated**: 2025-11-07 (Session 5)
 **Project**: SrcProfit Options Trading Tracker
-**Phase**: Phase 1 - Architecture Refactoring
-**Focus**: Centralized scheduling + atomic transactions
+**Phase**: Phase 1 - Controller Refactoring
+**Focus**: Separation of concerns - TradeLogController creation
 
 ---
 
-## 📋 Next Session
+## 📋 Current Session (Session 5)
 
 **Session Number**: 5
-**Exit Type**: NORMAL_COMPLETE (Session 4 finished)
-**Code Status**: COMMITTED (commits 8783812, 8087320)
-**Context Used**: 110k/200k (55%)
+**Date**: 2025-11-07
+**Status**: IN PROGRESS (active work)
+**Code Status**: STAGED (pending manual commit review)
 
-**Resume Task**: Integration testing of centralized scheduling and consolidated FLEX imports
+**Current Work**: ISSUE-008 - Create TradeLogController and separate trade log functionality
+**Approach**: Split PositionController into two focused controllers
+- TradeLogController: trade log viewing (/positions, /getPositionsFromDate)
+- PositionController: position calculation (/calculatePosition, /getPosition/{ticker})
+
+**Changes Completed**:
+1. ✅ Created TradeLogController with 2 endpoints
+2. ✅ Moved fillPositionsPage() → fillTradeLogPage()
+3. ✅ Created TradeLogControllerTest (7 test cases)
+4. ✅ Removed unnecessary dependencies:
+   - TradeLogController: removed AlpacaService, InstrumentService (not used)
+   - PositionController: removed NetAssetValueService (not used)
+5. ✅ Renamed template: positions_jte.jte → tradelog_jte.jte
+6. ✅ Updated all test assertions and method names
+7. ✅ All tests passing (7/7), build successful
+
+**Files Changed**:
+- NEW: TradeLogController.java (74 lines)
+- NEW: TradeLogControllerTest.java (213 lines)
+- MODIFIED: PositionController.java (removed 35 lines, cleaned dependencies)
+- RENAMED: positions_jte.jte → tradelog_jte.jte
+- NEW: ISSUE-008-trade-log-controller-separation.md
+
 **Next Steps**:
-1. Start Spring Boot app with database configured
-2. Test /ibkrFlexTradesImport and /ibkrFlexNetAssetValueImport endpoints
-3. Verify FLEX_STATEMENT_RESPONSE table created
-4. Verify @Scheduled methods execute on schedule
-5. Close ISSUE-004 when integration testing complete
+- User to review and approve changes
+- Manual commit required (no auto-commit per user preference)
+- Close ISSUE-008 when ready
 
 ---
 
 ## 🎯 Active Work (Last 3 Sessions)
 
+### Session 5 (2025-11-07) - IN PROGRESS
+- **Work**: ISSUE-008 - Create TradeLogController and separate trade log functionality
+- **Duration**: Ongoing
+- **Context Used**: ~80k/200k (40%)
+- **Key Achievement**: Clean separation of concerns - split PositionController into focused controllers
+- **Design Pattern**: Single Responsibility Principle (SRP)
+- **Status**: Implementation complete, tests passing, awaiting manual review/commit
+- **Commits Staged**: refactor(controller): Create TradeLogController and separate trade log functionality
+
 ### Session 4 (2025-11-03) - ✅ COMPLETE
 - **Exit**: NORMAL_COMPLETE
 - **Duration**: 3 hours
-- **Context Used**: 110k/200k (55%)
-- **Work**: ISSUE-004 - Centralized Scheduling Architecture + FlexStatementPersistenceService Consolidation
-- **Commits**: 8783812 (ScheduledJobsService), 8087320 (consolidation)
-- **Key Achievement**: Centralized @Scheduled annotations + atomic transactions + eliminated service layer
-- **Files Created**: ScheduledJobsService, ISSUE-004
-- **Files Modified**: FlexReportsService (added @Transactional), MarketDataService
-- **Files Deleted**: FlexStatementPersistenceService
+- **Work**: ISSUE-004 - Centralized Scheduling Architecture
+- **Commits**: 8783812, 8087320
+- **Key Achievement**: @Scheduled centralization + atomic transactions
 - **Status**: READY FOR INTEGRATION TESTING
 
 ### Session 3 (2025-11-03) - ✅ COMPLETE
 - **Exit**: NORMAL_COMPLETE
 - **Duration**: 1.5 hours
-- **Context Used**: 48k/200k (24%)
-- **Work**: ISSUE-003 - FLEX Reports Automatic Synchronization (circular dependency resolved)
-- **Commit**: 3eb66eb - feat(flex-reports): implement automated FLEX report import system
-- **Key Achievement**: Clean separation of scheduling (FlexReportsService) from persistence (FlexStatementPersistenceService)
-- **Status**: Foundation for Session 4 refactoring
+- **Work**: ISSUE-003 - FLEX Reports Automatic Synchronization
+- **Commit**: 3eb66eb
+- **Key Achievement**: Clean separation of scheduling from persistence
 
 ### Session 2 (2025-10-21) - ✅ COMPLETE
 - **Exit**: NORMAL_COMPLETE
-- **Duration**: 2 hours
-- **Context Used**: 121k/200k (60%)
-- **Work**: Implemented ISSUE-001 (CALL option sell obligations with 3 cards)
-- **Commit**: 147ed81 - feat(positions): add CALL option sell obligation cards
-- **Key Achievement**: First feature delivered using new workflow system
+- **Work**: ISSUE-001 - CALL option sell obligations
+- **Commit**: 147ed81
+- **Key Achievement**: First feature delivered
 
 ### Session 1 (2025-10-21) - ✅ COMPLETE
-**Goal**: Migrate proven workflow processes, trading domain knowledge, and quality protocols from contrarian project
-**Status**: ✅ Completed core foundation setup
+**Goal**: Migrate workflow processes from contrarian project
+**Status**: ✅ Foundation setup complete
 
 ---
 
 ## 📋 Current Tasks
 
-### Session 4 Completed Items ✅
-- [x] Create ScheduledJobsService with @Scheduled methods
-- [x] Refactor FlexReportsService (remove @Scheduled, make stateless)
-- [x] Refactor MarketDataService (remove @Scheduled)
-- [x] Verify IbkrRestController compatibility
-- [x] Clean compile and tests
-- [x] Consolidate FlexStatementPersistenceService into FlexReportsService
-- [x] Add @Transactional annotations to import methods
-- [x] Create ISSUE-004 with comprehensive design doc
+### Session 5 - ISSUE-008 Items ✅
+- [x] Create TradeLogController with focused endpoints
+- [x] Move trade log viewing logic to TradeLogController
+- [x] Create comprehensive unit tests (7 test cases)
+- [x] Remove unnecessary service dependencies:
+  - [x] Remove AlpacaService from TradeLogController
+  - [x] Remove InstrumentService from TradeLogController
+  - [x] Remove NetAssetValueService from PositionController
+- [x] Rename template: positions_jte.jte → tradelog_jte.jte
+- [x] Update all references and test assertions
+- [x] Verify build and tests passing
+- [ ] Manual commit and review (pending user approval)
+- [ ] Close ISSUE-008
 
-### Phase 2: Feature Development (IN PROGRESS)
-- [ ] Integration testing (Session 5)
-- [ ] Close ISSUE-004
-- [ ] Create next feature issue (ISSUE-005)
-- [ ] Consider thread-safety improvements if needed
-
-### Remaining Phases
-- [ ] Additional features/improvements
-- [ ] Performance optimization
-- [ ] Monitoring/observability
-- [ ] Production readiness
+### Upcoming Work
+- [ ] Integration testing if needed
+- [ ] ISSUE-005 or next feature issue
+- [ ] Performance optimization (thread-safety review)
+- [ ] Additional controller refactoring if required
 
 ---
 
@@ -133,18 +152,41 @@
 
 ---
 
-## 🔮 Next Session Preview
+## 💡 Design Patterns Applied
 
-After Session 1 completes:
-- `/start-session` will load 7k tokens (vs 50k)
-- Issue tracking ready
-- Agents available
-- Quality protocols enforced
-- Trading domain knowledge accessible
-- Ready to start actual development work
+### Session 5 - Controller Separation (SRP)
+**Pattern**: Single Responsibility Principle
+**Rationale**: Split PositionController into two focused controllers:
+- TradeLogController: Pure read/view operations (stateless)
+- PositionController: Calculation operations (stateful processing)
+
+**Benefits**:
+- Easier testing (focused mock requirements)
+- Clearer domain boundaries
+- Better code reusability
+- Reduced coupling between features
+
+**Template Naming Convention**:
+- `tradelog_jte.jte` - clearly indicates purpose (trade log display)
+- Method naming: `fillTradeLogPage()` - matches template intent
 
 ---
 
-**Status**: 🚧 IN PROGRESS - Phase 1 complete, starting Phase 2
-**Completion**: ~10% (1 of 12 phases)
-**Last Updated**: 2025-10-21 15:00
+## 📊 Code Metrics
+
+### Controller Dependency Cleanup
+| Controller | Before | After | Change |
+|-----------|--------|-------|--------|
+| TradeLogController | 4 services | 2 services | -50% |
+| PositionController | 4 services | 3 services | -25% |
+| **Total Lines Removed** | - | 35 | Cleaner |
+
+### Test Coverage
+- TradeLogControllerTest: 7 test cases, 100% pass rate
+- Coverage: endpoint behavior, null handling, service interactions
+
+---
+
+**Status**: 🚀 IMPLEMENTATION COMPLETE - Awaiting manual review/commit
+**Ready For**: Code review, testing, or next issue
+**Last Updated**: 2025-11-07 09:58

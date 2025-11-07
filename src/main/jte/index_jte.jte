@@ -31,6 +31,7 @@
   <link href="assets/css/style.css" rel="stylesheet">
   <script src="//unpkg.com/htmx.org@2.0.7"></script>
   <script src="//code.jquery.com/jquery-3.7.1.js"></script>
+  <!-- TradingView Widgets: loaded dynamically per widget -->
 </head>
 
 <body>
@@ -51,11 +52,11 @@
 
     <div class="search-bar">
       <form class="search-form d-flex align-items-center"
-            hx-post="/getPositionsFromDate"
+            hx-post="/tradelogFromDate"
             hx-trigger="submit"
             hx-target="#main"
             hx-swap="innerHTML"
-            hx-on::afterRequest="console.log('POST /getPositionsFromDate');">
+            hx-on::afterRequest="console.log('POST /tradelogFromDate');">
         <input type="date" name="fromDate" placeholder="Search" title="Enter search keyword">
         <button type="submit" title="Search"><i class="bi bi-search"></i></button>
       </form>
@@ -96,15 +97,15 @@
         <li class="nav-item">
             <a class="nav-link collapsed" href="#"
                hx-indicator="#spinner"
-               hx-get="/positions"
+               hx-get="/tradelog"
                hx-trigger="click"
                hx-target="#main"
                hx-swap="innerHTML"
-               hx-on::afterRequest="console.log('GET /positions')">
+               hx-on::afterRequest="console.log('GET /tradelog')">
               <i class="bi bi-card-list"></i>
-              <span>Positions</span>
+              <span>Trade Log</span>
             </a>
-        </li><!-- End Positions -->
+        </li><!-- End Trade Log -->
         <li class="nav-item">
             <a class="nav-link collapsed" href="#"
                hx-indicator="#spinner"
@@ -324,6 +325,8 @@
 
   <!-- Template Main JS File -->
   <script src="assets/js/main.js"></script>
+  <!-- TradingView Integration -->
+  <script src="assets/js/tradingview-integration.js"></script>
   <script>
       $( document ).ready(function() {
           console.log( "ready!" );

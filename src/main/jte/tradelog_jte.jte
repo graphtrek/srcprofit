@@ -8,11 +8,11 @@
 @param List<PositionDto> weeklyOpenPositions
 
 <div class="pagetitle">
-    <h1>Positions</h1>
+    <h1>Trade Log</h1>
     <nav>
         <ol class="breadcrumb">
             <li class="breadcrumb-item"><a href="/">Home</a></li>
-            <li class="breadcrumb-item active">Positions</li>
+            <li class="breadcrumb-item active">Trade Log</li>
         </ol>
     </nav>
 </div><!-- End Page Title -->
