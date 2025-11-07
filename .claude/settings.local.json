@@ -5,7 +5,6 @@
       "Bash(./mvnw clean compile:*)",
       "Bash(git add:*)",
       "Bash(git commit:*)",
-//      "Bash(git push:*)",
       "Bash(git show:*)",
       "Bash(git log:*)",
       "Bash(cat:*)",
@@ -18,7 +17,11 @@
       "Bash(psql:*)",
       "Bash(for db in srcprofit srcprofit1 srcprofit2)",
       "Bash(do echo \"=== Database: $db ===\")",
-      "Bash(done)"
+      "Bash(done)",
+      "Bash(env)",
+      "Bash(sed:*)",
+      "Bash(~/.bash_profile)",
+      "Bash(git clone:*)"
     ],
     "deny": [],
     "ask": []

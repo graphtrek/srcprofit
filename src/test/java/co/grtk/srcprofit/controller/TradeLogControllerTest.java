@@ -2,8 +2,6 @@ package co.grtk.srcprofit.controller;
 
 import co.grtk.srcprofit.dto.NetAssetValueDto;
 import co.grtk.srcprofit.dto.PositionDto;
-import co.grtk.srcprofit.service.AlpacaService;
-import co.grtk.srcprofit.service.InstrumentService;
 import co.grtk.srcprofit.service.NetAssetValueService;
 import co.grtk.srcprofit.service.OptionService;
 import org.junit.jupiter.api.BeforeEach;
@@ -38,12 +36,6 @@ class TradeLogControllerTest {
     private OptionService optionService;
 
     @Mock
-    private InstrumentService instrumentService;
-
-    @Mock
-    private AlpacaService alpacaService;
-
-    @Mock
     private NetAssetValueService netAssetValueService;
 
     @InjectMocks
@@ -61,7 +53,7 @@ class TradeLogControllerTest {
     }
 
     @Test
-    void testPositionsEndpoint_ReturnsPositionsPage() throws Exception {
+    void testTradelogEndpoint_ReturnsTradeLogPage() throws Exception {
         // Setup
         List<PositionDto> mockOpenPositions = new ArrayList<>();
         List<PositionDto> mockClosedPositions = new ArrayList<>();
@@ -76,9 +68,9 @@ class TradeLogControllerTest {
         doNothing().when(optionService).calculatePosition(any(PositionDto.class), anyList(), anyList());
 
         // Execute and verify
-        mockMvc.perform(get("/positions"))
+        mockMvc.perform(get("/tradelog"))
                 .andExpect(status().isOk())
-                .andExpect(view().name("positions_jte"))
+                .andExpect(view().name("tradelog_jte"))
                 .andExpect(model().attributeExists("positionDto", "openOptions", "optionHistory", "weeklyOpenPositions"));
 
         // Verify service calls
@@ -89,7 +81,7 @@ class TradeLogControllerTest {
     }
 
     @Test
-    void testPositionsEndpoint_WithNullNetAssetValue() throws Exception {
+    void testTradelogEndpoint_WithNullNetAssetValue() throws Exception {
         // Setup - NetAssetValue returns null
         List<PositionDto> mockOpenPositions = new ArrayList<>();
         List<PositionDto> mockClosedPositions = new ArrayList<>();
@@ -101,16 +93,16 @@ class TradeLogControllerTest {
         doNothing().when(optionService).calculatePosition(any(PositionDto.class), anyList(), anyList());
 
         // Execute and verify - should create default NetAssetValueDto
-        mockMvc.perform(get("/positions"))
+        mockMvc.perform(get("/tradelog"))
                 .andExpect(status().isOk())
-                .andExpect(view().name("positions_jte"))
+                .andExpect(view().name("tradelog_jte"))
                 .andExpect(model().attributeExists("positionDto"));
 
         verify(netAssetValueService).loadLatestNetAssetValue();
     }
 
     @Test
-    void testGetPositionsFromDateEndpoint_WithValidDate() throws Exception {
+    void testTradelogFromDateEndpoint_WithValidDate() throws Exception {
         // Setup
         LocalDate fromDate = LocalDate.of(2025, 1, 1);
         List<PositionDto> mockOpenPositions = new ArrayList<>();
@@ -126,11 +118,11 @@ class TradeLogControllerTest {
         doNothing().when(optionService).calculatePosition(any(PositionDto.class), anyList(), anyList());
 
         // Execute and verify
-        mockMvc.perform(post("/getPositionsFromDate")
+        mockMvc.perform(post("/tradelogFromDate")
                 .contentType(MediaType.APPLICATION_FORM_URLENCODED)
                 .param("fromDate", "2025-01-01"))
                 .andExpect(status().isOk())
-                .andExpect(view().name("positions_jte"))
+                .andExpect(view().name("tradelog_jte"))
                 .andExpect(model().attributeExists("positionDto", "openOptions", "optionHistory"));
 
         // Verify service calls with correct date
@@ -139,7 +131,7 @@ class TradeLogControllerTest {
     }
 
     @Test
-    void testPositionsPage_PopulatesModelAttributes() throws Exception {
+    void testTradelogPage_PopulatesModelAttributes() throws Exception {
         // Setup
         List<PositionDto> mockOpenPositions = new ArrayList<>();
         PositionDto openPos1 = new PositionDto();
@@ -162,7 +154,7 @@ class TradeLogControllerTest {
         doNothing().when(optionService).calculatePosition(any(PositionDto.class), anyList(), anyList());
 
         // Execute and verify model attributes
-        mockMvc.perform(get("/positions"))
+        mockMvc.perform(get("/tradelog"))
                 .andExpect(status().isOk())
                 .andExpect(model().attribute("openOptions", mockOpenPositions))
                 .andExpect(model().attribute("optionHistory", mockClosedPositions))
@@ -170,7 +162,7 @@ class TradeLogControllerTest {
     }
 
     @Test
-    void testPositionsEndpoint_CallsServiceMethods() throws Exception {
+    void testTradelogEndpoint_CallsServiceMethods() throws Exception {
         // Setup
         when(optionService.getAllOpenPositions(null)).thenReturn(new ArrayList<>());
         when(optionService.getAllClosedOptions(null)).thenReturn(new ArrayList<>());
@@ -179,7 +171,7 @@ class TradeLogControllerTest {
         doNothing().when(optionService).calculatePosition(any(PositionDto.class), anyList(), anyList());
 
         // Execute
-        mockMvc.perform(get("/positions"));
+        mockMvc.perform(get("/tradelog"));
 
         // Verify all service methods were called exactly once
         verify(optionService, times(1)).getAllOpenPositions(null);

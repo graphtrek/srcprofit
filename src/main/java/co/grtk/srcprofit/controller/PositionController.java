@@ -1,12 +1,10 @@
 package co.grtk.srcprofit.controller;
 
 import co.grtk.srcprofit.dto.InstrumentDto;
-import co.grtk.srcprofit.dto.NetAssetValueDto;
 import co.grtk.srcprofit.dto.PositionDto;
 import co.grtk.srcprofit.mapper.PositionMapper;
 import co.grtk.srcprofit.service.AlpacaService;
 import co.grtk.srcprofit.service.InstrumentService;
-import co.grtk.srcprofit.service.NetAssetValueService;
 import co.grtk.srcprofit.service.OptionService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -40,17 +38,14 @@ public class PositionController {
     private final OptionService optionService;
     private final InstrumentService instrumentService;
     private final AlpacaService alpacaService;
-    private final NetAssetValueService netAssetValueService;
 
     public PositionController(
             OptionService optionService,
             InstrumentService instrumentService,
-            AlpacaService alpacaService,
-            NetAssetValueService netAssetValueService) {
+            AlpacaService alpacaService) {
         this.optionService = optionService;
         this.instrumentService = instrumentService;
         this.alpacaService = alpacaService;
-        this.netAssetValueService = netAssetValueService;
     }
 
     @GetMapping("/calculatePosition")

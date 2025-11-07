@@ -2,9 +2,9 @@
 
 **Auto-generated** - Run `python scripts/update_issue_index.py` to update
 
-**Total**: 7 issues
+**Total**: 8 issues
 **Open**: 0 (0%)
-**Closed**: 7 (100%)
+**Closed**: 8 (100%)
 **Partial**: 0
 
 ---
@@ -25,13 +25,15 @@
   - Priority: CRITICAL | Completed: 2025-11-03
 - **[ISSUE-007](ISSUE-007-hide-admin-menus-add-updatedAt.md)** - Hide Admin Menus and Add updatedAt to FlexStatementResponseEntity
   - Priority: MEDIUM | Completed: 2025-11-04
+- **[ISSUE-008](ISSUE-008-trade-log-controller-separation.md)** - Create TradeLogController and Separate Trade Log Functionality
+  - Priority: MEDIUM | Completed: 2025-11-07
 
 ---
 
 ## By Category
 
-**Code Quality / Technical Debt** (2):
-  - ISSUE-004 ✅, ISSUE-007 ✅
+**Code Quality / Technical Debt** (3):
+  - ISSUE-004 ✅, ISSUE-007 ✅, ISSUE-008 ✅
 
 **Feature** (2):
   - ISSUE-001 ✅, ISSUE-005 ✅
@@ -47,6 +49,6 @@
 
 ---
 
-**Last updated**: 2025-11-04
+**Last updated**: 2025-11-07
 
 **How to update**: Run `python scripts/update_issue_index.py`
