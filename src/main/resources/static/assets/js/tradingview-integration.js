@@ -98,11 +98,19 @@ function initializeTradingViewWidget(container, symbol) {
  *
  * Called automatically on page load and after HTMX content swaps
  * Respects feature flag: data-use-tradingview="true|false"
+ * Skips Advanced Chart widgets (those with data-widget-type="advanced")
  */
 function initializeAllTradingViewWidgets() {
   const widgets = document.querySelectorAll('[data-tradingview-symbol]');
 
   widgets.forEach(function(container) {
+    // Skip Advanced Chart widgets - they are initialized manually
+    const widgetType = container.getAttribute('data-widget-type');
+    if (widgetType === 'advanced') {
+      console.log('Skipping Advanced Chart widget - initialized manually');
+      return;
+    }
+
     const useTradingView = container.getAttribute('data-use-tradingview') !== 'false';
 
     if (!useTradingView) {

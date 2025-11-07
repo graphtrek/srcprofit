@@ -146,6 +146,7 @@
                     <div id="tradingview_advanced_chart"
                          data-tradingview-symbol="AAPL"
                          data-use-tradingview="true"
+                         data-widget-type="advanced"
                          style="width: 100%; height: 600px;">
                     </div>
                     <!-- Fallback for feature flag disabled -->
