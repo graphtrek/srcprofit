@@ -190,3 +190,35 @@ function test_bollinger_and_atr_indicators_load() {
 - Earnings date markers on chart
 - Theme sync with SrcProfit dark/light mode
 - Integration with trade log (overlay historical entry/exit prices)
+
+---
+
+## Final Implementation Notes
+
+**Actual Configuration Deployed:**
+- Chart Type: Candlestick (default for Advanced Chart widget)
+- Moving Averages: 50, 100, 200-period using MASimple@tv-basicstudies
+- Volume: Displayed in separate pane below chart
+- Chart Height: 450px (reduced from initial 600px for better viewport fit)
+- Modal Height: 470px
+- Widget Type Discrimination: Added data-widget-type="advanced" to prevent mini-chart initialization
+
+**Key Technical Decisions:**
+1. Used MASimple@tv-basicstudies with explicit length inputs instead of preset MA50/MA100/MA200
+2. Removed unsupported parameters (chartType, container_id, show_popup_button)
+3. Proper nested structure: container > widget div > script > copyright
+4. Widget type discrimination to prevent auto-initialization by dashboard code
+
+**Commits:**
+- 8405e43: Initial implementation
+- 2ac187a: Update to SMA indicators with Volume
+- 17d7aa8: Fix indicator naming (MA not SMA)
+- 4bf3a26: Add explicit candlestick chart type
+- 6e7bb78: Enable Volume with proper height
+- 00d1f82: Fix iframe contentWindow error
+- 3a440b4: Use JSON.stringify for proper container_id
+- 9bbe95c: Complete rewrite with proper TradingView structure
+- 9d13a75: Prevent mini-chart initialization conflict
+- 479cb57: Final height adjustment (450px)
+
+**Status**: ✅ VERIFIED WORKING - Chart displays candlesticks with MA 50/100/200 and volume
