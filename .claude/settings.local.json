@@ -21,7 +21,8 @@
       "Bash(env)",
       "Bash(sed:*)",
       "Bash(~/.bash_profile)",
-      "Bash(git clone:*)"
+      "Bash(git clone:*)",
+      "WebFetch(domain:www.tradingview.com)"
     ],
     "deny": [],
     "ask": []
