@@ -166,8 +166,9 @@ function initializeAdvancedChartWidget(container, symbol) {
   container.innerHTML = '';
 
   // Create the main widget div that TradingView script will target
+  const widgetId = 'tradingview_chart_widget_' + Date.now(); // Unique ID
   const widgetDiv = document.createElement('div');
-  widgetDiv.id = 'tradingview_chart_widget_' + Date.now(); // Unique ID
+  widgetDiv.id = widgetId;
   widgetDiv.className = 'tradingview-widget-container__widget';
   container.appendChild(widgetDiv);
 
@@ -178,10 +179,9 @@ function initializeAdvancedChartWidget(container, symbol) {
   configScript.async = true;
 
   // Advanced Chart configuration with candlestick, SMAs (50, 100, 200), and Volume
-  configScript.textContent = `
-  {
+  const config = {
     "autosize": true,
-    "symbol": "${symbol}",
+    "symbol": symbol,
     "interval": "D",
     "timezone": "Etc/UTC",
     "theme": "light",
@@ -200,11 +200,12 @@ function initializeAdvancedChartWidget(container, symbol) {
       "MA200@tv-basicstudies",
       "Volume@tv-basicstudies"
     ],
-    "container_id": "${widgetDiv.id}",
+    "container_id": widgetId,
     "height": "600",
     "width": "100%"
-  }
-  `;
+  };
+
+  configScript.textContent = JSON.stringify(config);
 
   container.appendChild(configScript);
 
