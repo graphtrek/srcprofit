@@ -48,7 +48,7 @@
                             </h5>
 
                             <div class="d-flex align-items-center">
-                                <div class="zoom" style="width: 100%; height: 250px;">
+                                <div style="width: 100%; height: 220px;">
                                     <!-- Feature flag: data-use-tradingview="false" to fallback to FinViz -->
                                     <div data-tradingview-symbol="QQQ" data-use-tradingview="true" style="width: 100%; height: 100%;">
                                         <!-- Fallback if TradingView disabled -->
@@ -83,7 +83,7 @@
                             </h5>
 
                           <div class="d-flex align-items-center">
-                              <div class="zoom" style="width: 100%; height: 250px;">
+                              <div style="width: 100%; height: 220px;">
                                   <!-- Feature flag: data-use-tradingview="false" to fallback to FinViz -->
                                   <div data-tradingview-symbol="GDX" data-use-tradingview="true" style="width: 100%; height: 100%;">
                                       <!-- Fallback if TradingView disabled -->
@@ -120,7 +120,7 @@
                             </h5>
 
                             <div class="d-flex align-items-center">
-                                <div class="zoom" style="width: 100%; height: 250px;">
+                                <div style="width: 100%; height: 220px;">
                                     <!-- Feature flag: data-use-tradingview="false" to fallback to FinViz -->
                                     <div data-tradingview-symbol="IBIT" data-use-tradingview="true" style="width: 100%; height: 100%;">
                                         <!-- Fallback if TradingView disabled -->

@@ -22,7 +22,8 @@
       "Bash(sed:*)",
       "Bash(~/.bash_profile)",
       "Bash(git clone:*)",
-      "WebFetch(domain:www.tradingview.com)"
+      "WebFetch(domain:www.tradingview.com)",
+      "Bash(curl:*)"
     ],
     "deny": [],
     "ask": []

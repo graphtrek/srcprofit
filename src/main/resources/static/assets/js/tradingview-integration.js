@@ -27,10 +27,10 @@ function convertToTradingViewSymbol(ticker) {
     'NVDA': 'NASDAQ:NVDA',
     'IBIT': 'NASDAQ:IBIT',
 
-    // NYSE ARCA (ETF)
-    'GDX': 'NYSEARCA:GDX',
-    'SLV': 'NYSEARCA:SLV',
-    'GLD': 'NYSEARCA:GLD',
+    // AMEX (American Stock Exchange)
+    'GDX': 'AMEX:GDX',
+    'SLV': 'AMEX:SLV',
+    'GLD': 'AMEX:GLD',
 
     // NYSE
     'SPY': 'NYSE:SPY',
@@ -43,7 +43,7 @@ function convertToTradingViewSymbol(ticker) {
 }
 
 /**
- * Initialize TradingView Symbol Overview widget for given symbol
+ * Initialize TradingView Mini Chart widget for given symbol
  *
  * @param {HTMLElement} container - DOM element where widget should be rendered
  * @param {string} symbol - TradingView formatted symbol (e.g., "NASDAQ:AAPL")
@@ -57,49 +57,40 @@ function initializeTradingViewWidget(container, symbol) {
   // Clear existing content
   container.innerHTML = '';
 
-  // Create widget div with TradingView configuration
+  // Create widget container
+  const widgetContainer = document.createElement('div');
+  widgetContainer.className = 'tradingview-widget-container';
+
+  // Create inner widget div
   const widgetDiv = document.createElement('div');
-  widgetDiv.className = 'tradingview-widget-container';
-  widgetDiv.innerHTML = `
-    <div class="tradingview-widget-container__widget"></div>
-    <script type="text/javascript" src="https://s3.tradingview.com/external-embedding/embed-widget-symbol-overview.js">
-    {
-      "symbols": [
-        {
-          "proName": "${symbol}",
-          "title": "${symbol.split(':')[1]}"
-        }
-      ],
-      "chartOnly": false,
-      "width": "100%",
-      "height": "100%",
-      "locale": "en",
-      "colorTheme": "light",
-      "isTransparent": false,
-      "autosize": true,
-      "showVolume": false,
-      "showMA": false,
-      "hideDateRanges": false,
-      "hideMarketStatus": false,
-      "hideSymbolLogo": false,
-      "scalePosition": "right",
-      "scaleMode": "Normal",
-      "fontFamily": "-apple-system, BlinkMacSystemFont, Trebuchet MS, Roboto, Ubuntu, sans-serif",
-      "fontSize": "10",
-      "noTimezoneName": false,
-      "valuesTracking": "all",
-      "changelogNewsNumberOfRows": 0,
-      "disablePublishers": false
-    }
-    </script>
+  widgetDiv.className = 'tradingview-widget-container__widget';
+  widgetContainer.appendChild(widgetDiv);
+
+  // Create configuration script with proper JSON format
+  const configScript = document.createElement('script');
+  configScript.type = 'text/javascript';
+  configScript.src = 'https://s3.tradingview.com/external-embedding/embed-widget-mini-symbol-overview.js';
+  configScript.async = true;
+
+  // The configuration needs to be in a valid JSON format as text content
+  configScript.textContent = `
+  {
+    "symbol": "${symbol}",
+    "width": "100%",
+    "height": "100%",
+    "locale": "en",
+    "dateRange": "12M",
+    "colorTheme": "light",
+    "isTransparent": false,
+    "autosize": true,
+    "largeChartUrl": ""
+  }
   `;
 
-  container.appendChild(widgetDiv);
+  widgetContainer.appendChild(configScript);
+  container.appendChild(widgetContainer);
 
-  // Trigger TradingView script loading if available
-  if (typeof TradingView !== 'undefined' && TradingView.widget) {
-    TradingView.widget(new Function('return ' + widgetDiv.querySelector('script').textContent)());
-  }
+  console.log('Initialized TradingView mini-chart for symbol:', symbol);
 }
 
 /**

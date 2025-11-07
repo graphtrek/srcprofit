@@ -31,8 +31,7 @@
   <link href="assets/css/style.css" rel="stylesheet">
   <script src="//unpkg.com/htmx.org@2.0.7"></script>
   <script src="//code.jquery.com/jquery-3.7.1.js"></script>
-  <!-- TradingView Widgets -->
-  <script src="https://s3.tradingview.com/external-embedding/embed-widget-symbol-overview.js"></script>
+  <!-- TradingView Widgets: loaded dynamically per widget -->
 </head>
 
 <body>
