@@ -142,11 +142,11 @@
                     <h5 class="modal-title">Daily Snapshot</h5>
                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
-                <div class="modal-body" style="min-height: 520px;">
+                <div class="modal-body" style="min-height: 620px;">
                     <div id="tradingview_advanced_chart"
                          data-tradingview-symbol="AAPL"
                          data-use-tradingview="true"
-                         style="width: 100%; height: 500px;">
+                         style="width: 100%; height: 600px;">
                     </div>
                     <!-- Fallback for feature flag disabled -->
                     <img id="chartImg" style="width: 100%; display: none;" src="#" />

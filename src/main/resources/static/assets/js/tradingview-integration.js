@@ -194,6 +194,9 @@ function initializeAdvancedChartWidget(container, symbol) {
     "enable_publishing": false,
     "allow_symbol_change": true,
     "chartType": "candlestick",
+    "show_popup_button": true,
+    "popup_width": "1000",
+    "popup_height": "650",
     "studies": [
       "MA50@tv-basicstudies",
       "MA100@tv-basicstudies",
@@ -201,7 +204,7 @@ function initializeAdvancedChartWidget(container, symbol) {
       "Volume@tv-basicstudies"
     ],
     "container_id": "tradingview_chart_container",
-    "height": "500",
+    "height": "600",
     "width": "100%"
   }
   `;
