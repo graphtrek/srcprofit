@@ -2,9 +2,9 @@
 
 **Auto-generated** - Run `python scripts/update_issue_index.py` to update
 
-**Total**: 8 issues
+**Total**: 9 issues
 **Open**: 0 (0%)
-**Closed**: 8 (100%)
+**Closed**: 9 (100%)
 **Partial**: 0
 
 ---
@@ -27,6 +27,8 @@
   - Priority: MEDIUM | Completed: 2025-11-04
 - **[ISSUE-008](ISSUE-008-trade-log-controller-separation.md)** - Create TradeLogController and Separate Trade Log Functionality
   - Priority: MEDIUM | Completed: 2025-11-07
+- **[ISSUE-009](ISSUE-009-tradingview-chart-integration.md)** - TradingView Chart Integration Research
+  - Priority: MEDIUM | Completed: 2025-11-07
 
 ---
 
@@ -35,8 +37,8 @@
 **Code Quality / Technical Debt** (3):
   - ISSUE-004 ✅, ISSUE-007 ✅, ISSUE-008 ✅
 
-**Feature** (2):
-  - ISSUE-001 ✅, ISSUE-005 ✅
+**Feature** (3):
+  - ISSUE-001 ✅, ISSUE-005 ✅, ISSUE-009 ✅
 
 **Infrastructure** (1):
   - ISSUE-003 ✅

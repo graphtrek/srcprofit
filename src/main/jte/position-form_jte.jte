@@ -20,6 +20,7 @@
 </div><!-- End Page Title -->
 
 <section class="section">
+    <!-- Calculate Position Card Start -->
     <div class="row">
         <div class="col-lg-12">
             <div class="card">
@@ -43,7 +44,7 @@
                     </div>
                     @endif
 
-                    <!-- No Labels Form -->
+                    <!-- Calculate Position Form Start -->
                     <form class="row g-3" hx-validate="true"
                           hx-post="/calculatePosition"
                           hx-trigger="submit"
@@ -126,12 +127,14 @@
                             </button>
                         </div>
                     </form>
-
+                    <!-- Calculate Position Form End-->
                 </div>
             </div>
         </div>
     </div>
+    <!-- Calculate Position Card End -->
 
+    <!-- Daily Snapshot Extra Large Modal Start -->
     <div class="modal fade" id="ExtralargeModal" tabindex="-1">
         <div class="modal-dialog modal-xl">
             <div class="modal-content">
@@ -147,7 +150,10 @@
                 </div>
             </div>
         </div>
-    </div><!-- End Extra Large Modal-->
+    </div>
+    <!-- Daily Snapshot Extra Large Modal End -->
+
+    <!-- Open Positions Start -->
     @if(openOptions != null)
         <div class="row">
             <div class="col-lg-12">
@@ -217,7 +223,9 @@
             </div>
         </div>
     @endif
+    <!-- Open Positions End -->
 
+    <!-- Positions History Start -->
     @if(optionHistory != null)
     <div class="row">
         <div class="col-lg-12">
@@ -284,7 +292,7 @@
         </div>
     </div>
     @endif
-
+    <!-- Positions History End -->
 </section>
 
 <script>
