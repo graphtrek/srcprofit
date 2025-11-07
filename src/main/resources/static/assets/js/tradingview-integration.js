@@ -165,14 +165,11 @@ function initializeAdvancedChartWidget(container, symbol) {
   // Clear existing content
   container.innerHTML = '';
 
-  // Create widget container
-  const widgetContainer = document.createElement('div');
-  widgetContainer.className = 'tradingview-widget-container';
-
-  // Create inner widget div
+  // Create the main widget div that TradingView script will target
   const widgetDiv = document.createElement('div');
+  widgetDiv.id = 'tradingview_chart_widget_' + Date.now(); // Unique ID
   widgetDiv.className = 'tradingview-widget-container__widget';
-  widgetContainer.appendChild(widgetDiv);
+  container.appendChild(widgetDiv);
 
   // Create configuration script for Advanced Chart
   const configScript = document.createElement('script');
@@ -203,14 +200,13 @@ function initializeAdvancedChartWidget(container, symbol) {
       "MA200@tv-basicstudies",
       "Volume@tv-basicstudies"
     ],
-    "container_id": "tradingview_chart_container",
+    "container_id": "${widgetDiv.id}",
     "height": "600",
     "width": "100%"
   }
   `;
 
-  widgetContainer.appendChild(configScript);
-  container.appendChild(widgetContainer);
+  container.appendChild(configScript);
 
   console.log('Initialized TradingView Advanced Chart for symbol:', symbol);
 }
