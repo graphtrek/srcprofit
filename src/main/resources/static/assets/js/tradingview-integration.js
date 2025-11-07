@@ -165,12 +165,18 @@ function initializeAdvancedChartWidget(container, symbol) {
   // Clear existing content
   container.innerHTML = '';
 
-  // Create the main widget div that TradingView script will target
-  const widgetId = 'tradingview_chart_widget_' + Date.now(); // Unique ID
+  // Create the proper TradingView widget structure
+  const widgetContainer = document.createElement('div');
+  widgetContainer.className = 'tradingview-widget-container';
+  widgetContainer.style.height = '100%';
+  widgetContainer.style.width = '100%';
+
+  // Create the widget div
   const widgetDiv = document.createElement('div');
-  widgetDiv.id = widgetId;
   widgetDiv.className = 'tradingview-widget-container__widget';
-  container.appendChild(widgetDiv);
+  widgetDiv.style.height = 'calc(100% - 32px)';
+  widgetDiv.style.width = '100%';
+  widgetContainer.appendChild(widgetDiv);
 
   // Create configuration script for Advanced Chart
   const configScript = document.createElement('script');
@@ -187,27 +193,46 @@ function initializeAdvancedChartWidget(container, symbol) {
     "theme": "light",
     "style": "1",
     "locale": "en",
-    "toolbar_bg": "#f1f3f6",
     "enable_publishing": false,
     "allow_symbol_change": true,
-    "chartType": "candlestick",
-    "show_popup_button": true,
-    "popup_width": "1000",
-    "popup_height": "650",
     "studies": [
-      "MA50@tv-basicstudies",
-      "MA100@tv-basicstudies",
-      "MA200@tv-basicstudies",
+      {
+        "id": "MASimple@tv-basicstudies",
+        "inputs": {
+          "length": 50
+        }
+      },
+      {
+        "id": "MASimple@tv-basicstudies",
+        "inputs": {
+          "length": 100
+        }
+      },
+      {
+        "id": "MASimple@tv-basicstudies",
+        "inputs": {
+          "length": 200
+        }
+      },
       "Volume@tv-basicstudies"
     ],
-    "container_id": widgetId,
-    "height": "600",
-    "width": "100%"
+    "hide_side_toolbar": false,
+    "withdateranges": true,
+    "hide_top_toolbar": false,
+    "save_image": false,
+    "support_host": "https://www.tradingview.com"
   };
 
   configScript.textContent = JSON.stringify(config);
+  widgetContainer.appendChild(configScript);
 
-  container.appendChild(configScript);
+  // Add copyright div
+  const copyrightDiv = document.createElement('div');
+  copyrightDiv.className = 'tradingview-widget-copyright';
+  copyrightDiv.innerHTML = '<a href="https://www.tradingview.com/" rel="noopener nofollow" target="_blank"><span class="blue-text">Track all markets on TradingView</span></a>';
+  widgetContainer.appendChild(copyrightDiv);
+
+  container.appendChild(widgetContainer);
 
   console.log('Initialized TradingView Advanced Chart for symbol:', symbol);
 }
