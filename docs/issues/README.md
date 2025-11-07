@@ -2,9 +2,9 @@
 
 **Auto-generated** - Run `python scripts/update_issue_index.py` to update
 
-**Total**: 9 issues
+**Total**: 10 issues
 **Open**: 0 (0%)
-**Closed**: 9 (100%)
+**Closed**: 9 (90%)
 **Partial**: 0
 
 ---
@@ -37,8 +37,8 @@
 **Code Quality / Technical Debt** (3):
   - ISSUE-004 ✅, ISSUE-007 ✅, ISSUE-008 ✅
 
-**Feature** (3):
-  - ISSUE-001 ✅, ISSUE-005 ✅, ISSUE-009 ✅
+**Feature** (4):
+  - ISSUE-001 ✅, ISSUE-005 ✅, ISSUE-009 ✅, ISSUE-010 🔴
 
 **Infrastructure** (1):
   - ISSUE-003 ✅
