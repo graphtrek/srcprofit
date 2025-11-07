@@ -48,10 +48,14 @@
                             </h5>
 
                             <div class="d-flex align-items-center">
-                                <div class="zoom">
-                                    <a href="https://www.tradingview.com/chart/?symbol=QQQ" target="_blank">
-                                        <img id="finvizQQQ" style="width: 100%;" src="https://charts2-node.finviz.com/chart.ashx?cs=l&t=QQQ&tf=d&s=linear&ct=candle_stick&tm=d&o[0][ot]=sma&o[0][op]=50&o[0][oc]=FF8F33C6&o[1][ot]=sma&o[1][op]=200&o[1][oc]=DCB3326D&o[2][ot]=sma&o[2][op]=20&o[2][oc]=DC32B363&o[3][ot]=patterns&o[3][op]=&o[3][oc]=000"  alt="FinViz Chart QQQ"/>
-                                    </a>
+                                <div class="zoom" style="width: 100%; height: 250px;">
+                                    <!-- Feature flag: data-use-tradingview="false" to fallback to FinViz -->
+                                    <div data-tradingview-symbol="QQQ" data-use-tradingview="true" style="width: 100%; height: 100%;">
+                                        <!-- Fallback if TradingView disabled -->
+                                        <a href="https://www.tradingview.com/chart/?symbol=QQQ" target="_blank">
+                                            <img id="finvizQQQ" style="width: 100%;" src="https://charts2-node.finviz.com/chart.ashx?cs=l&t=QQQ&tf=d&s=linear&ct=candle_stick&tm=d&o[0][ot]=sma&o[0][op]=50&o[0][oc]=FF8F33C6&o[1][ot]=sma&o[1][op]=200&o[1][oc]=DCB3326D&o[2][ot]=sma&o[2][op]=20&o[2][oc]=DC32B363&o[3][ot]=patterns&o[3][op]=&o[3][oc]=000"  alt="FinViz Chart QQQ"/>
+                                        </a>
+                                    </div>
                                 </div>
                             </div>
                         </div>
@@ -79,10 +83,14 @@
                             </h5>
 
                           <div class="d-flex align-items-center">
-                              <div class="zoom">
-                                  <a href="https://www.tradingview.com/chart/?symbol=GDX" target="_blank">
-                                    <img id="finvizGDX" style="width: 100%;" src="https://charts2-node.finviz.com/chart.ashx?cs=l&t=GDX&tf=d&s=linear&ct=candle_stick&tm=d&o[0][ot]=sma&o[0][op]=50&o[0][oc]=FF8F33C6&o[1][ot]=sma&o[1][op]=200&o[1][oc]=DCB3326D&o[2][ot]=sma&o[2][op]=20&o[2][oc]=DC32B363&o[3][ot]=patterns&o[3][op]=&o[3][oc]=000"  alt="FinViz Chart GDX"/>
-                                  </a>
+                              <div class="zoom" style="width: 100%; height: 250px;">
+                                  <!-- Feature flag: data-use-tradingview="false" to fallback to FinViz -->
+                                  <div data-tradingview-symbol="GDX" data-use-tradingview="true" style="width: 100%; height: 100%;">
+                                      <!-- Fallback if TradingView disabled -->
+                                      <a href="https://www.tradingview.com/chart/?symbol=GDX" target="_blank">
+                                        <img id="finvizGDX" style="width: 100%;" src="https://charts2-node.finviz.com/chart.ashx?cs=l&t=GDX&tf=d&s=linear&ct=candle_stick&tm=d&o[0][ot]=sma&o[0][op]=50&o[0][oc]=FF8F33C6&o[1][ot]=sma&o[1][op]=200&o[1][oc]=DCB3326D&o[2][ot]=sma&o[2][op]=20&o[2][oc]=DC32B363&o[3][ot]=patterns&o[3][op]=&o[3][oc]=000"  alt="FinViz Chart GDX"/>
+                                      </a>
+                                  </div>
                               </div>
                           </div>
                         </div>
@@ -112,10 +120,14 @@
                             </h5>
 
                             <div class="d-flex align-items-center">
-                                <div class="zoom">
-                                    <a href="https://www.tradingview.com/chart/?symbol=IBIT" target="_blank">
-                                        <img id="finvizIBIT" style="width: 100%;" src="https://charts2-node.finviz.com/chart.ashx?cs=l&t=IBIT&tf=d&s=linear&ct=candle_stick&tm=d&o[0][ot]=sma&o[0][op]=50&o[0][oc]=FF8F33C6&o[1][ot]=sma&o[1][op]=200&o[1][oc]=DCB3326D&o[2][ot]=sma&o[2][op]=20&o[2][oc]=DC32B363&o[3][ot]=patterns&o[3][op]=&o[3][oc]=000"  alt="FinViz Chart IBIT"/>
-                                    </a>
+                                <div class="zoom" style="width: 100%; height: 250px;">
+                                    <!-- Feature flag: data-use-tradingview="false" to fallback to FinViz -->
+                                    <div data-tradingview-symbol="IBIT" data-use-tradingview="true" style="width: 100%; height: 100%;">
+                                        <!-- Fallback if TradingView disabled -->
+                                        <a href="https://www.tradingview.com/chart/?symbol=IBIT" target="_blank">
+                                            <img id="finvizIBIT" style="width: 100%;" src="https://charts2-node.finviz.com/chart.ashx?cs=l&t=IBIT&tf=d&s=linear&ct=candle_stick&tm=d&o[0][ot]=sma&o[0][op]=50&o[0][oc]=FF8F33C6&o[1][ot]=sma&o[1][op]=200&o[1][oc]=DCB3326D&o[2][ot]=sma&o[2][op]=20&o[2][oc]=DC32B363&o[3][ot]=patterns&o[3][op]=&o[3][oc]=000"  alt="FinViz Chart IBIT"/>
+                                        </a>
+                                    </div>
                                 </div>
                             </div>
 
