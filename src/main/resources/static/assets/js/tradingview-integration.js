@@ -151,7 +151,7 @@ function updateTradingViewSymbol(containerId, ticker) {
 /**
  * Initialize TradingView Advanced Chart widget for detailed technical analysis
  *
- * Used in Position Calculator modal with Bollinger Bands and ATR indicators
+ * Used in Position Calculator modal with candlestick chart, SMA indicators (50, 100, 200) and Volume
  *
  * @param {HTMLElement} container - DOM element where widget should be rendered
  * @param {string} symbol - TradingView formatted symbol (e.g., "NASDAQ:AAPL")
@@ -180,7 +180,7 @@ function initializeAdvancedChartWidget(container, symbol) {
   configScript.src = 'https://s3.tradingview.com/external-embedding/embed-widget-advanced-chart.js';
   configScript.async = true;
 
-  // Advanced Chart configuration with Bollinger Bands and ATR indicators
+  // Advanced Chart configuration with candlestick, SMAs (50, 100, 200), and Volume
   configScript.textContent = `
   {
     "autosize": true,
@@ -194,8 +194,10 @@ function initializeAdvancedChartWidget(container, symbol) {
     "enable_publishing": false,
     "allow_symbol_change": true,
     "studies": [
-      "BB@tv-basicstudies",
-      "ATR@tv-basicstudies"
+      "SMA50@tv-basicstudies",
+      "SMA100@tv-basicstudies",
+      "SMA200@tv-basicstudies",
+      "Volume@tv-basicstudies"
     ],
     "container_id": "tradingview_chart_container",
     "height": "500",
