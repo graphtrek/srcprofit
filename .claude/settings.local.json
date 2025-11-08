@@ -23,7 +23,11 @@
       "Bash(~/.bash_profile)",
       "Bash(git clone:*)",
       "WebFetch(domain:www.tradingview.com)",
-      "Bash(curl:*)"
+      "Bash(curl:*)",
+      "WebFetch(domain:docs.alpaca.markets)",
+      "WebSearch",
+      "WebFetch(domain:alpaca.markets)",
+      "WebFetch(domain:github.com)"
     ],
     "deny": [],
     "ask": []

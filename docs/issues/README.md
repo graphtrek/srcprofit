@@ -2,9 +2,9 @@
 
 **Auto-generated** - Run `python scripts/update_issue_index.py` to update
 
-**Total**: 12 issues
+**Total**: 13 issues
 **Open**: 0 (0%)
-**Closed**: 12 (100%)
+**Closed**: 13 (100%)
 **Partial**: 0
 
 ---
@@ -35,6 +35,8 @@
   - Priority: MEDIUM | Completed: 2025-11-07
 - **[ISSUE-012](ISSUE-012-tradingview-phase-1b-implementation-plan.md)** - TradingView Phase 1B - Implementation Plan & Execution
   - Priority: HIGH | Completed: 2025-11-07
+- **[ISSUE-013](ISSUE-013-alpaca-assets-api-research.md)** - Alpaca Assets API Research & Documentation
+  - Priority: MEDIUM
 
 ---
 
@@ -42,6 +44,9 @@
 
 **Code Quality / Technical Debt** (3):
   - ISSUE-004 ✅, ISSUE-007 ✅, ISSUE-008 ✅
+
+**Documentation** (1):
+  - ISSUE-013 ✅
 
 **Enhancement** (1):
   - ISSUE-011 ✅
@@ -63,6 +68,6 @@
 
 ---
 
-**Last updated**: 2025-11-07
+**Last updated**: 2025-11-08
 
 **How to update**: Run `python scripts/update_issue_index.py`
