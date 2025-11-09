@@ -123,7 +123,7 @@
                             <a id="tradingViewButton" href="https://www.tradingview.com/chart/?symbol=VIX" class="btn btn-info" role="button" target="_blank">TradingView</a>
                             <a id="perplexityButton" href="https://www.perplexity.ai/finance/" class="btn btn-secondary" role="button" target="_blank">Perplexity</a>
                             <button id="chartButton" type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#ExtralargeModal">
-                                Snapshot Chart
+                                Chart
                             </button>
                         </div>
                     </form>
