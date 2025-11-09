@@ -2,24 +2,10 @@
 
 **Auto-generated** - Run `python scripts/update_issue_index.py` to update
 
-**Total**: 16 issues
-**Open**: 2 (12%)
-**Closed**: 14 (88%)
+**Total**: 17 issues
+**Open**: 0 (0%)
+**Closed**: 17 (100%)
 **Partial**: 0
-
----
-
-## Open Issues
-
-### HIGH (1)
-
-- **[ISSUE-014](ISSUE-014-alpaca-assets-api-implementation.md)** - Implement Alpaca Assets API Integration
-  - Priority: HIGH | Status: OPEN | Category: Feature | Created: 2025-11-09 (Session Current)
-
-### MEDIUM (1)
-
-- **[ISSUE-016](ISSUE-016-scheduled-alpaca-assets-refresh.md)** - Scheduled Alpaca Assets Metadata Refresh
-  - Priority: MEDIUM | Status: OPEN | Category: Enhancement | Created: 2025-11-09 (Session Current)
 
 ---
 
@@ -51,7 +37,13 @@
   - Priority: HIGH | Completed: 2025-11-07
 - **[ISSUE-013](ISSUE-013-alpaca-assets-api-research.md)** - Alpaca Assets API Research & Documentation
   - Priority: MEDIUM
+- **[ISSUE-014](ISSUE-014-alpaca-assets-api-implementation.md)** - Implement Alpaca Assets API Integration
+  - Priority: HIGH | Completed: 2025-11-09 (Session Current)
 - **[ISSUE-015](ISSUE-015-tradingview-dynamic-exchange-mapping.md)** - Replace Hardcoded TradingView Exchange Mapping with Dynamic Instrument Data
+  - Priority: MEDIUM | Completed: 2025-11-09 (Session Current)
+- **[ISSUE-016](ISSUE-016-scheduled-alpaca-assets-refresh.md)** - Scheduled Alpaca Assets Metadata Refresh
+  - Priority: MEDIUM | Completed: 2025-11-09 (Session Current)
+- **[ISSUE-017](ISSUE-017-scheduled-earnings-refresh.md)** - Scheduled Earnings Calendar Refresh
   - Priority: MEDIUM | Completed: 2025-11-09 (Session Current)
 
 ---
@@ -65,10 +57,10 @@
   - ISSUE-013 ✅
 
 **Enhancement** (2):
-  - ISSUE-011 ✅, ISSUE-016 🔴
+  - ISSUE-011 ✅, ISSUE-016 ✅
 
-**Feature** (5):
-  - ISSUE-001 ✅, ISSUE-005 ✅, ISSUE-009 ✅, ISSUE-010 ✅, ISSUE-014 🔴
+**Feature** (6):
+  - ISSUE-001 ✅, ISSUE-005 ✅, ISSUE-009 ✅, ISSUE-010 ✅, ISSUE-014 ✅, ISSUE-017 ✅
 
 **Feature | Developer Experience** (1):
   - ISSUE-012 ✅

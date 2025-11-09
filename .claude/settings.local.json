@@ -29,7 +29,9 @@
       "WebFetch(domain:alpaca.markets)",
       "WebFetch(domain:github.com)",
       "Bash(./mvnw clean test:*)",
-      "Bash(java -version:*)"
+      "Bash(java -version:*)",
+      "Bash(timeout 120 ./mvnw clean test:*)",
+      "Bash(echo:*)"
     ],
     "deny": [],
     "ask": []

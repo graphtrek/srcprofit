@@ -1,7 +1,8 @@
 # ISSUE-016: Scheduled Alpaca Assets Metadata Refresh
 
 **Created**: 2025-11-09 (Session Current)
-**Status**: OPEN
+**Status**: CLOSED
+**Completed**: 2025-11-09 (Session Current)
 **Priority**: MEDIUM
 **Category**: Enhancement
 **Blocking**: None

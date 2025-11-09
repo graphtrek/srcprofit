@@ -21,14 +21,16 @@ import java.util.concurrent.TimeUnit;
  * Services are responsible for business logic; this service is responsible for scheduling.
  *
  * Scheduled Jobs:
- * 1. importFlexTrades() - Every 30 minutes (FLEX API - trades report)
- * 2. importFlexNetAssetValue() - Every 30 minutes (FLEX API - NAV report)
- * 3. refreshMarketData() - Every 60 seconds (Alpaca API - market data refresh)
- * 4. refreshAlpacaAssets() - Daily at 6:00 AM (Alpaca Assets API - metadata refresh)
+ * 1. importFlexTrades() - Every 12 hours (FLEX API - trades report)
+ * 2. importFlexNetAssetValue() - Every 12 hours (FLEX API - NAV report)
+ * 3. refreshMarketData() - Every 5 minutes (Alpaca API - market data refresh)
+ * 4. refreshAlpacaAssets() - Every 12 hours (Alpaca Assets API - metadata refresh)
+ * 5. refreshEarningsData() - Every 12 hours (Alpha Vantage - earnings calendar refresh)
  *
  * @see FlexReportsService for FLEX import orchestration
  * @see MarketDataService for market data refresh orchestration
  * @see AlpacaService for Alpaca assets metadata refresh orchestration
+ * @see EarningService for earnings calendar refresh orchestration
  */
 @Service
 @EnableScheduling
@@ -38,19 +40,22 @@ public class ScheduledJobsService {
     private final FlexReportsService flexReportsService;
     private final MarketDataService marketDataService;
     private final AlpacaService alpacaService;
+    private final EarningService earningService;
 
     public ScheduledJobsService(FlexReportsService flexReportsService,
                                  MarketDataService marketDataService,
-                                 AlpacaService alpacaService) {
+                                 AlpacaService alpacaService,
+                                 EarningService earningService) {
         this.flexReportsService = flexReportsService;
         this.marketDataService = marketDataService;
         this.alpacaService = alpacaService;
+        this.earningService = earningService;
     }
 
     /**
      * Scheduled job: Import FLEX Trades report from Interactive Brokers.
      *
-     * Schedule: Every 30 minutes, starting 1 minute after application startup
+     * Schedule: Every 12 hours, starting 1 minute after application startup
      * Delegates to: FlexReportsService.importFlexTrades()
      *
      * Retry Logic:
@@ -61,7 +66,7 @@ public class ScheduledJobsService {
      * @return Status string: "{csvRecords}/{dataFixRecords}/{counter}" on success
      *         or "WAITING_FOR REPORT /{counter}" if still waiting for API response
      */
-    @Scheduled(fixedDelay = 30, initialDelay = 1, timeUnit = TimeUnit.MINUTES)
+    @Scheduled(fixedDelay = 720, initialDelay = 1, timeUnit = TimeUnit.MINUTES)
     public String importFlexTrades() {
         long startTime = System.currentTimeMillis();
         try {
@@ -80,7 +85,7 @@ public class ScheduledJobsService {
     /**
      * Scheduled job: Import FLEX Net Asset Value report from Interactive Brokers.
      *
-     * Schedule: Every 30 minutes, starting 1 minute after application startup
+     * Schedule: Every 12 hours, starting 1 minute after application startup
      * Delegates to: FlexReportsService.importFlexNetAssetValue()
      *
      * Retry Logic:
@@ -91,7 +96,7 @@ public class ScheduledJobsService {
      * @return Status string: "{records}/{counter}" on success
      *         or "WAITING_FOR REPORT /{counter}" if still waiting for API response
      */
-    @Scheduled(fixedDelay = 30, initialDelay = 1, timeUnit = TimeUnit.MINUTES)
+    @Scheduled(fixedDelay = 720, initialDelay = 1, timeUnit = TimeUnit.MINUTES)
     public String importFlexNetAssetValue() {
         long startTime = System.currentTimeMillis();
         try {
@@ -138,8 +143,7 @@ public class ScheduledJobsService {
     /**
      * Scheduled job: Refresh stale Alpaca asset metadata.
      *
-     * Schedule: Daily at 6:00 AM UTC (cron: "0 0 6 * * ?")
-     * Rationale: Market closes at 4 PM EST; 6 AM allows full 14-hour staleness threshold.
+     * Schedule: Every 12 hours, starting 1 minute after application startup
      * Only refreshes instruments with metadata older than 24 hours (not all 500+).
      * Delegates to: AlpacaService.refreshStaleAssetMetadata()
      *
@@ -154,7 +158,7 @@ public class ScheduledJobsService {
      * Performance: Typically 20-50 instruments refreshed (~5-10 seconds)
      * API Rate Limit: Alpaca Assets API allows 200 requests/minute (well below limit)
      */
-    @Scheduled(cron = "0 0 6 * * ?") // Daily at 6:00 AM UTC
+    @Scheduled(fixedDelay = 720, initialDelay = 1, timeUnit = TimeUnit.MINUTES)
     public void refreshAlpacaAssets() {
         long startTime = System.currentTimeMillis();
         try {
@@ -168,6 +172,41 @@ public class ScheduledJobsService {
             log.error("ScheduledJobsService: refreshAlpacaAssets() failed after {}ms - {}",
                     elapsedTime, e.getMessage(), e);
             log.debug("ScheduledJobsService: Asset refresh will retry on next schedule");
+        }
+    }
+
+    /**
+     * Scheduled job: Refresh earnings calendar data for all instruments.
+     *
+     * Schedule: Every 12 hours, starting 1 minute after application startup
+     * Delegates to: EarningService.refreshEarningsDataForAllInstruments()
+     *
+     * Updates:
+     * - EarningEntity records with new earnings calendar data from Alpha Vantage API
+     * - InstrumentEntity.earningDate with earliest future earnings date
+     *
+     * Non-critical job: Errors are logged but don't abort the batch.
+     * Per-symbol API failures don't prevent others from being processed.
+     *
+     * Performance: Typically processes all instruments once daily (~10-20 seconds)
+     * API Rate Limit: Alpha Vantage API allows 5 requests/minute (batch request used)
+     *
+     * Returns: Summary string "{processed}/{newRecords}/{failures}"
+     */
+    @Scheduled(fixedDelay = 720, initialDelay = 1, timeUnit = TimeUnit.MINUTES)
+    public void refreshEarningsData() {
+        long startTime = System.currentTimeMillis();
+        try {
+            log.debug("ScheduledJobsService: Starting refreshEarningsData() job");
+            String result = earningService.refreshEarningsDataForAllInstruments();
+            long elapsedTime = System.currentTimeMillis() - startTime;
+            log.info("ScheduledJobsService: Completed refreshEarningsData() in {}ms with result: {}",
+                    elapsedTime, result);
+        } catch (Exception e) {
+            long elapsedTime = System.currentTimeMillis() - startTime;
+            log.error("ScheduledJobsService: refreshEarningsData() failed after {}ms - {}",
+                    elapsedTime, e.getMessage(), e);
+            log.debug("ScheduledJobsService: Earnings refresh will retry on next schedule");
         }
     }
 }
