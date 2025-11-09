@@ -2,10 +2,19 @@
 
 **Auto-generated** - Run `python scripts/update_issue_index.py` to update
 
-**Total**: 13 issues
-**Open**: 0 (0%)
-**Closed**: 13 (100%)
+**Total**: 14 issues
+**Open**: 1 (7%)
+**Closed**: 13 (93%)
 **Partial**: 0
+
+---
+
+## Open Issues
+
+### HIGH (1)
+
+- **[ISSUE-014](ISSUE-014-alpaca-assets-api-implementation.md)** - Implement Alpaca Assets API Integration
+  - Priority: HIGH | Status: OPEN | Category: Feature | Created: 2025-11-09 (Session Current)
 
 ---
 
@@ -51,8 +60,8 @@
 **Enhancement** (1):
   - ISSUE-011 ✅
 
-**Feature** (4):
-  - ISSUE-001 ✅, ISSUE-005 ✅, ISSUE-009 ✅, ISSUE-010 ✅
+**Feature** (5):
+  - ISSUE-001 ✅, ISSUE-005 ✅, ISSUE-009 ✅, ISSUE-010 ✅, ISSUE-014 🔴
 
 **Feature | Developer Experience** (1):
   - ISSUE-012 ✅
@@ -68,6 +77,6 @@
 
 ---
 
-**Last updated**: 2025-11-08
+**Last updated**: 2025-11-09
 
 **How to update**: Run `python scripts/update_issue_index.py`
