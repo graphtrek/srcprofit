@@ -27,7 +27,9 @@
       "WebFetch(domain:docs.alpaca.markets)",
       "WebSearch",
       "WebFetch(domain:alpaca.markets)",
-      "WebFetch(domain:github.com)"
+      "WebFetch(domain:github.com)",
+      "Bash(./mvnw clean test:*)",
+      "Bash(java -version:*)"
     ],
     "deny": [],
     "ask": []

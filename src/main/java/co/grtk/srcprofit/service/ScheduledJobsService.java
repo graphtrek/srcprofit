@@ -24,9 +24,11 @@ import java.util.concurrent.TimeUnit;
  * 1. importFlexTrades() - Every 30 minutes (FLEX API - trades report)
  * 2. importFlexNetAssetValue() - Every 30 minutes (FLEX API - NAV report)
  * 3. refreshMarketData() - Every 60 seconds (Alpaca API - market data refresh)
+ * 4. refreshAlpacaAssets() - Daily at 6:00 AM (Alpaca Assets API - metadata refresh)
  *
  * @see FlexReportsService for FLEX import orchestration
  * @see MarketDataService for market data refresh orchestration
+ * @see AlpacaService for Alpaca assets metadata refresh orchestration
  */
 @Service
 @EnableScheduling
@@ -35,11 +37,14 @@ public class ScheduledJobsService {
 
     private final FlexReportsService flexReportsService;
     private final MarketDataService marketDataService;
+    private final AlpacaService alpacaService;
 
     public ScheduledJobsService(FlexReportsService flexReportsService,
-                                 MarketDataService marketDataService) {
+                                 MarketDataService marketDataService,
+                                 AlpacaService alpacaService) {
         this.flexReportsService = flexReportsService;
         this.marketDataService = marketDataService;
+        this.alpacaService = alpacaService;
     }
 
     /**
@@ -127,6 +132,42 @@ public class ScheduledJobsService {
             log.error("ScheduledJobsService: refreshMarketData() failed after {}ms - {}", elapsedTime, e.getMessage(), e);
             // Don't rethrow - market data refresh failures shouldn't crash the app
             log.debug("ScheduledJobsService: Market data refresh will retry on next schedule");
+        }
+    }
+
+    /**
+     * Scheduled job: Refresh stale Alpaca asset metadata.
+     *
+     * Schedule: Daily at 6:00 AM UTC (cron: "0 0 6 * * ?")
+     * Rationale: Market closes at 4 PM EST; 6 AM allows full 14-hour staleness threshold.
+     * Only refreshes instruments with metadata older than 24 hours (not all 500+).
+     * Delegates to: AlpacaService.refreshStaleAssetMetadata()
+     *
+     * Updates:
+     * - Instrument tradability, marginability, shortability
+     * - Easy-to-borrow status (dynamic field, changes intraday)
+     * - Exchange, asset class, maintenance margin requirement
+     *
+     * Non-critical job: Errors are logged but don't abort the batch.
+     * Individual instrument failures don't prevent others from being refreshed.
+     *
+     * Performance: Typically 20-50 instruments refreshed (~5-10 seconds)
+     * API Rate Limit: Alpaca Assets API allows 200 requests/minute (well below limit)
+     */
+    @Scheduled(cron = "0 0 6 * * ?") // Daily at 6:00 AM UTC
+    public void refreshAlpacaAssets() {
+        long startTime = System.currentTimeMillis();
+        try {
+            log.debug("ScheduledJobsService: Starting refreshAlpacaAssets() job");
+            int refreshedCount = alpacaService.refreshStaleAssetMetadata();
+            long elapsedTime = System.currentTimeMillis() - startTime;
+            log.info("ScheduledJobsService: Completed refreshAlpacaAssets() in {}ms, refreshed {} instruments",
+                    elapsedTime, refreshedCount);
+        } catch (Exception e) {
+            long elapsedTime = System.currentTimeMillis() - startTime;
+            log.error("ScheduledJobsService: refreshAlpacaAssets() failed after {}ms - {}",
+                    elapsedTime, e.getMessage(), e);
+            log.debug("ScheduledJobsService: Asset refresh will retry on next schedule");
         }
     }
 }
