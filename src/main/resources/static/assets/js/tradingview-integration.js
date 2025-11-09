@@ -216,12 +216,12 @@ async function initializeAllTradingViewWidgets() {
  * Handle dynamic symbol updates in modals (e.g., Position Calculator)
  *
  * Called when user selects new ticker in position calculator
- * Handles async exchange conversion
+ * Handles async exchange conversion (internally)
  *
  * @param {string} containerId - ID of widget container to update
  * @param {string} ticker - New ticker symbol
  */
-async function updateTradingViewSymbol(containerId, ticker) {
+function updateTradingViewSymbol(containerId, ticker) {
   const container = document.getElementById(containerId);
   if (!container) {
     console.warn(`Container not found: ${containerId}`);
@@ -235,12 +235,16 @@ async function updateTradingViewSymbol(containerId, ticker) {
     return;
   }
 
-  const tvSymbol = await convertToTradingViewSymbol(ticker);
-  if (tvSymbol) {
-    initializeTradingViewWidget(container, tvSymbol);
-  } else {
-    console.error(`Failed to convert ticker ${ticker} to TradingView symbol`);
-  }
+  // Handle async conversion internally without exposing Promise to caller
+  convertToTradingViewSymbol(ticker).then(tvSymbol => {
+    if (tvSymbol) {
+      initializeTradingViewWidget(container, tvSymbol);
+    } else {
+      console.error(`Failed to convert ticker ${ticker} to TradingView symbol`);
+    }
+  }).catch(error => {
+    console.error(`Error updating TradingView symbol for ${ticker}:`, error);
+  });
 }
 
 /**
@@ -336,12 +340,12 @@ function initializeAdvancedChartWidget(container, symbol) {
  * Update Advanced Chart symbol dynamically
  *
  * Called when user changes ticker in position calculator
- * Handles async exchange conversion
+ * Handles async exchange conversion (internally)
  *
  * @param {string} containerId - ID of Advanced Chart container
  * @param {string} ticker - New ticker symbol
  */
-async function updateAdvancedChartSymbol(containerId, ticker) {
+function updateAdvancedChartSymbol(containerId, ticker) {
   const container = document.getElementById(containerId);
   if (!container) {
     console.warn(`Container not found: ${containerId}`);
@@ -359,13 +363,17 @@ async function updateAdvancedChartSymbol(containerId, ticker) {
     return;
   }
 
-  const tvSymbol = await convertToTradingViewSymbol(ticker);
-  if (tvSymbol) {
-    container.setAttribute('data-tradingview-symbol', ticker);
-    initializeAdvancedChartWidget(container, tvSymbol);
-  } else {
-    console.error(`Failed to convert ticker ${ticker} to TradingView symbol`);
-  }
+  // Handle async conversion internally without exposing Promise to caller
+  convertToTradingViewSymbol(ticker).then(tvSymbol => {
+    if (tvSymbol) {
+      container.setAttribute('data-tradingview-symbol', ticker);
+      initializeAdvancedChartWidget(container, tvSymbol);
+    } else {
+      console.error(`Failed to convert ticker ${ticker} to TradingView symbol`);
+    }
+  }).catch(error => {
+    console.error(`Error updating Advanced Chart symbol for ${ticker}:`, error);
+  });
 }
 
 /**
