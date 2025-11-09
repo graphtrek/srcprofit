@@ -53,7 +53,7 @@ public class RestClientConfig {
     @Bean(name = "alpacaTradingRestClient")
     public RestClient alpacaTradingRestClient() {
         // Determine base URL based on environment (paper or live trading)
-        boolean usePaperTrading = environment.getProperty("ALPACA_PAPER_TRADING", Boolean.class, true);
+        boolean usePaperTrading = environment.getProperty("ALPACA_PAPER_TRADING", Boolean.class, false);
         String baseUrl = usePaperTrading ?
                 "https://paper-api.alpaca.markets" :
                 "https://api.alpaca.markets";
