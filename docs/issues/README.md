@@ -2,9 +2,9 @@
 
 **Auto-generated** - Run `python scripts/update_issue_index.py` to update
 
-**Total**: 15 issues
-**Open**: 1 (7%)
-**Closed**: 14 (93%)
+**Total**: 16 issues
+**Open**: 2 (12%)
+**Closed**: 14 (88%)
 **Partial**: 0
 
 ---
@@ -15,6 +15,11 @@
 
 - **[ISSUE-014](ISSUE-014-alpaca-assets-api-implementation.md)** - Implement Alpaca Assets API Integration
   - Priority: HIGH | Status: OPEN | Category: Feature | Created: 2025-11-09 (Session Current)
+
+### MEDIUM (1)
+
+- **[ISSUE-016](ISSUE-016-scheduled-alpaca-assets-refresh.md)** - Scheduled Alpaca Assets Metadata Refresh
+  - Priority: MEDIUM | Status: OPEN | Category: Enhancement | Created: 2025-11-09 (Session Current)
 
 ---
 
@@ -59,8 +64,8 @@
 **Documentation** (1):
   - ISSUE-013 ✅
 
-**Enhancement** (1):
-  - ISSUE-011 ✅
+**Enhancement** (2):
+  - ISSUE-011 ✅, ISSUE-016 🔴
 
 **Feature** (5):
   - ISSUE-001 ✅, ISSUE-005 ✅, ISSUE-009 ✅, ISSUE-010 ✅, ISSUE-014 🔴
