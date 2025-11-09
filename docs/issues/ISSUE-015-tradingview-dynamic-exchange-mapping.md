@@ -1,7 +1,8 @@
 # ISSUE-015: Replace Hardcoded TradingView Exchange Mapping with Dynamic Instrument Data
 
 **Created**: 2025-11-09 (Session Current)
-**Status**: OPEN
+**Status**: CLOSED
+**Completed**: 2025-11-09 (Session Current)
 **Priority**: MEDIUM
 **Category**: Code Quality / Technical Debt
 **Blocking**: None

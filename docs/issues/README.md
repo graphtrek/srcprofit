@@ -2,9 +2,9 @@
 
 **Auto-generated** - Run `python scripts/update_issue_index.py` to update
 
-**Total**: 14 issues
+**Total**: 15 issues
 **Open**: 1 (7%)
-**Closed**: 13 (93%)
+**Closed**: 14 (93%)
 **Partial**: 0
 
 ---
@@ -46,13 +46,15 @@
   - Priority: HIGH | Completed: 2025-11-07
 - **[ISSUE-013](ISSUE-013-alpaca-assets-api-research.md)** - Alpaca Assets API Research & Documentation
   - Priority: MEDIUM
+- **[ISSUE-015](ISSUE-015-tradingview-dynamic-exchange-mapping.md)** - Replace Hardcoded TradingView Exchange Mapping with Dynamic Instrument Data
+  - Priority: MEDIUM | Completed: 2025-11-09 (Session Current)
 
 ---
 
 ## By Category
 
-**Code Quality / Technical Debt** (3):
-  - ISSUE-004 ✅, ISSUE-007 ✅, ISSUE-008 ✅
+**Code Quality / Technical Debt** (4):
+  - ISSUE-004 ✅, ISSUE-007 ✅, ISSUE-008 ✅, ISSUE-015 ✅
 
 **Documentation** (1):
   - ISSUE-013 ✅
