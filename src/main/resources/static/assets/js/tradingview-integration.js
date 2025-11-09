@@ -4,42 +4,119 @@
  * Provides helper functions for initializing TradingView Symbol Overview widgets
  * with support for feature flag toggle (FinViz ↔ TradingView).
  *
+ * Dynamically fetches exchange information from backend API instead of using
+ * hardcoded mappings. Implements client-side caching to minimize API calls.
+ *
  * Dependencies: TradingView external-embedding script (loaded in index_jte.jte)
  */
 
 /**
- * Convert simple ticker to TradingView symbol format
- * Examples: "AAPL" -> "NASDAQ:AAPL", "GDX" -> "NYSEARCA:GDX"
- *
- * @param {string} ticker - Simple ticker symbol (e.g., "AAPL")
- * @returns {string} TradingView formatted symbol (e.g., "NASDAQ:AAPL")
+ * Client-side cache for ticker -> exchange mappings
+ * Persists for entire page session; cleared on page reload
+ * @type {Map<string, string>}
  */
-function convertToTradingViewSymbol(ticker) {
-  // Symbol to exchange mapping for common SrcProfit instruments
-  const exchangeMap = {
-    // NASDAQ symbols
-    'QQQ': 'NASDAQ:QQQ',
-    'AAPL': 'NASDAQ:AAPL',
-    'MSFT': 'NASDAQ:MSFT',
-    'GOOGL': 'NASDAQ:GOOGL',
-    'AMZN': 'NASDAQ:AMZN',
-    'TSLA': 'NASDAQ:TSLA',
-    'NVDA': 'NASDAQ:NVDA',
-    'IBIT': 'NASDAQ:IBIT',
+const exchangeCache = new Map();
 
-    // AMEX (American Stock Exchange)
-    'GDX': 'AMEX:GDX',
-    'SLV': 'AMEX:SLV',
-    'GLD': 'AMEX:GLD',
+/**
+ * Map Alpaca exchange names to TradingView exchange codes
+ * Handles differences in exchange naming conventions
+ * @param {string} alpacaExchange - Exchange name from Alpaca API (e.g., "NASDAQ", "NYSEARCA")
+ * @returns {string} TradingView exchange code or null if unmapped
+ */
+function mapAlpacaExchangeToTradingView(alpacaExchange) {
+  if (!alpacaExchange) {
+    return null;
+  }
 
-    // NYSE
-    'SPY': 'NYSE:SPY',
-    'IWM': 'NYSE:IWM',
-    'DIA': 'NYSE:DIA',
+  // Map of Alpaca exchange names to TradingView exchange codes
+  const exchangeMapping = {
+    'NASDAQ': 'NASDAQ',
+    'NYSE': 'NYSE',
+    'ARCA': 'AMEX',      // NYSE Arca -> AMEX (TradingView convention)
+    'NYSEARCA': 'AMEX',  // NYSEARCA -> AMEX
+    'AMEX': 'AMEX',
+    'CBOE': 'CBOE',
+    'PINK': 'PINK',      // Pink Sheets / OTC Markets
   };
 
-  // Return mapped value or default to NASDAQ (most common)
-  return exchangeMap[ticker] || `NASDAQ:${ticker}`;
+  return exchangeMapping[alpacaExchange] || null;
+}
+
+/**
+ * Fetch instrument exchange data from backend API
+ * Results are cached to avoid redundant API calls
+ *
+ * @param {string} ticker - Ticker symbol to look up
+ * @returns {Promise<string|null>} TradingView exchange code or null if not found/error
+ */
+async function fetchInstrumentExchange(ticker) {
+  // Check cache first
+  if (exchangeCache.has(ticker)) {
+    console.log(`Exchange cache hit for ${ticker}: ${exchangeCache.get(ticker)}`);
+    return exchangeCache.get(ticker);
+  }
+
+  try {
+    const response = await fetch(`/api/instruments/${encodeURIComponent(ticker)}`);
+
+    if (!response.ok) {
+      if (response.status === 404) {
+        console.warn(`Instrument not found in database: ${ticker}`);
+      } else {
+        console.error(`Error fetching instrument ${ticker}: HTTP ${response.status}`);
+      }
+      return null;
+    }
+
+    const data = await response.json();
+    const alpacaExchange = data.alpacaExchange;
+
+    if (!alpacaExchange) {
+      console.warn(`No exchange data for ticker ${ticker}`);
+      return null;
+    }
+
+    const tvExchange = mapAlpacaExchangeToTradingView(alpacaExchange);
+    if (!tvExchange) {
+      console.warn(`Unmapped Alpaca exchange for ${ticker}: ${alpacaExchange}`);
+      return null;
+    }
+
+    // Cache the result
+    exchangeCache.set(ticker, tvExchange);
+    console.log(`Cached exchange for ${ticker}: ${tvExchange}`);
+    return tvExchange;
+
+  } catch (error) {
+    console.error(`Exception fetching instrument ${ticker}:`, error);
+    return null;
+  }
+}
+
+/**
+ * Convert simple ticker to TradingView symbol format
+ * Dynamically fetches exchange from backend, with fallback to NASDAQ
+ * Examples: "AAPL" -> "NASDAQ:AAPL", "GDX" -> "AMEX:GDX"
+ *
+ * @param {string} ticker - Simple ticker symbol (e.g., "AAPL")
+ * @returns {Promise<string>} TradingView formatted symbol (e.g., "NASDAQ:AAPL")
+ */
+async function convertToTradingViewSymbol(ticker) {
+  if (!ticker || typeof ticker !== 'string') {
+    console.warn('Invalid ticker provided');
+    return null;
+  }
+
+  // Fetch exchange from backend API
+  const exchange = await fetchInstrumentExchange(ticker);
+
+  // Fallback to NASDAQ if exchange not found (covers unknown tickers)
+  if (!exchange) {
+    console.warn(`Falling back to NASDAQ for ticker: ${ticker}`);
+    return `NASDAQ:${ticker}`;
+  }
+
+  return `${exchange}:${ticker}`;
 }
 
 /**
@@ -99,16 +176,17 @@ function initializeTradingViewWidget(container, symbol) {
  * Called automatically on page load and after HTMX content swaps
  * Respects feature flag: data-use-tradingview="true|false"
  * Skips Advanced Chart widgets (those with data-widget-type="advanced")
+ * Handles async exchange conversion
  */
-function initializeAllTradingViewWidgets() {
+async function initializeAllTradingViewWidgets() {
   const widgets = document.querySelectorAll('[data-tradingview-symbol]');
 
-  widgets.forEach(function(container) {
+  for (const container of widgets) {
     // Skip Advanced Chart widgets - they are initialized manually
     const widgetType = container.getAttribute('data-widget-type');
     if (widgetType === 'advanced') {
       console.log('Skipping Advanced Chart widget - initialized manually');
-      return;
+      continue;
     }
 
     const useTradingView = container.getAttribute('data-use-tradingview') !== 'false';
@@ -116,29 +194,34 @@ function initializeAllTradingViewWidgets() {
     if (!useTradingView) {
       // Feature flag disabled - keep existing FinViz image
       console.log('TradingView feature flag disabled, using FinViz fallback');
-      return;
+      continue;
     }
 
     const ticker = container.getAttribute('data-tradingview-symbol');
     if (!ticker) {
       console.warn('Missing data-tradingview-symbol attribute');
-      return;
+      continue;
     }
 
-    const tvSymbol = convertToTradingViewSymbol(ticker);
-    initializeTradingViewWidget(container, tvSymbol);
-  });
+    const tvSymbol = await convertToTradingViewSymbol(ticker);
+    if (tvSymbol) {
+      initializeTradingViewWidget(container, tvSymbol);
+    } else {
+      console.error(`Failed to convert ticker ${ticker} to TradingView symbol`);
+    }
+  }
 }
 
 /**
  * Handle dynamic symbol updates in modals (e.g., Position Calculator)
  *
  * Called when user selects new ticker in position calculator
+ * Handles async exchange conversion
  *
  * @param {string} containerId - ID of widget container to update
  * @param {string} ticker - New ticker symbol
  */
-function updateTradingViewSymbol(containerId, ticker) {
+async function updateTradingViewSymbol(containerId, ticker) {
   const container = document.getElementById(containerId);
   if (!container) {
     console.warn(`Container not found: ${containerId}`);
@@ -152,8 +235,12 @@ function updateTradingViewSymbol(containerId, ticker) {
     return;
   }
 
-  const tvSymbol = convertToTradingViewSymbol(ticker);
-  initializeTradingViewWidget(container, tvSymbol);
+  const tvSymbol = await convertToTradingViewSymbol(ticker);
+  if (tvSymbol) {
+    initializeTradingViewWidget(container, tvSymbol);
+  } else {
+    console.error(`Failed to convert ticker ${ticker} to TradingView symbol`);
+  }
 }
 
 /**
@@ -249,11 +336,12 @@ function initializeAdvancedChartWidget(container, symbol) {
  * Update Advanced Chart symbol dynamically
  *
  * Called when user changes ticker in position calculator
+ * Handles async exchange conversion
  *
  * @param {string} containerId - ID of Advanced Chart container
  * @param {string} ticker - New ticker symbol
  */
-function updateAdvancedChartSymbol(containerId, ticker) {
+async function updateAdvancedChartSymbol(containerId, ticker) {
   const container = document.getElementById(containerId);
   if (!container) {
     console.warn(`Container not found: ${containerId}`);
@@ -271,9 +359,13 @@ function updateAdvancedChartSymbol(containerId, ticker) {
     return;
   }
 
-  const tvSymbol = convertToTradingViewSymbol(ticker);
-  container.setAttribute('data-tradingview-symbol', ticker);
-  initializeAdvancedChartWidget(container, tvSymbol);
+  const tvSymbol = await convertToTradingViewSymbol(ticker);
+  if (tvSymbol) {
+    container.setAttribute('data-tradingview-symbol', ticker);
+    initializeAdvancedChartWidget(container, tvSymbol);
+  } else {
+    console.error(`Failed to convert ticker ${ticker} to TradingView symbol`);
+  }
 }
 
 /**

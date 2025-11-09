@@ -33,6 +33,8 @@ public class InstrumentDto {
     private Double collectedPremium;
     private LocalDate earningDate;
 
+    private String alpacaExchange;
+
     public Long getId() {
         return id;
     }
@@ -147,6 +149,14 @@ public class InstrumentDto {
 
     public Integer getEarningDay() {
         return earningDate == null ? 999 : (int) ChronoUnit.DAYS.between(LocalDate.now(), earningDate.atStartOfDay());
+    }
+
+    public String getAlpacaExchange() {
+        return alpacaExchange;
+    }
+
+    public void setAlpacaExchange(String alpacaExchange) {
+        this.alpacaExchange = alpacaExchange;
     }
     @Override
     public String toString() {
