@@ -217,10 +217,14 @@ public class OptionService {
         }
         positionDto.setRealizedProfitOrLoss(round2Digits(realizedProfitOrLoss));
 
+        if(!openPositions.isEmpty())
+            endDate = LocalDate.now();
+
         for (PositionDto dto : openPositions) {
             if (dto.getTradeDate().isBefore(startDate)) {
                 startDate = dto.getTradeDate();
             }
+
             if (dto.getExpirationDate().isAfter(endDate)) {
                 endDate = dto.getExpirationDate();
             }

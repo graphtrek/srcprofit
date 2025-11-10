@@ -1,68 +1,85 @@
 # Claude Active Context - SrcProfit
 
-**Last Updated**: 2025-11-10 (Session 6)
+**Last Updated**: 2025-11-10 (Session 7)
 **Project**: SrcProfit Options Trading Tracker
 **Phase**: Phase 1 - UI/UX Improvements
-**Focus**: Trade Log/History separation and DataTable configuration
+**Focus**: Position Calculator DataTables Implementation
 
 ---
 
-## 📋 Current Session (Session 6)
+## 📋 Current Session (Session 7)
 
-**Session Number**: 6
+**Session Number**: 7
 **Date**: 2025-11-10
 **Status**: ✅ COMPLETE
-**Code Status**: READY FOR COMMIT
+**Code Status**: ✅ COMMITTED AND PUSHED
 
-**Work Completed**: ISSUE-020 - Trade History Menu Separation
-**Approach**: Separate closed positions (Trade History) from open positions (Trade Log)
-- Created dedicated TradeHistoryController with `/tradehistory` and `/tradehistoryFromDate` endpoints
-- Moved closed positions display to new Trade History page
-- Refactored TradeLogController to show only open positions
-- Updated navigation menu with new Trade History item
-- Configured DataTables: Trade Log shows all rows, Trade History shows 500 rows per page
+**Work Completed**: ISSUE-022 - Position Calculator DataTables Enhancement
+**Approach**: Implement DataTables with row grouping for Position Calculator tables
+- Open Positions: DataTables with expiration date grouping (matches Trade Log)
+- Position History: DataTables with trade date grouping
+- Both tables support sorting, filtering, pagination
+- Interactive group headers with click-to-toggle sort
+- HTMX row click handlers for position detail navigation
+- Currency formatting with Intl.NumberFormat (USD, no decimals)
 
 **Changes Completed**:
-1. ✅ Created TradeHistoryController.java (47 lines)
-2. ✅ Created trade_history_jte.jte template (156 lines) with filter dropdown
-3. ✅ Created TradeHistoryControllerTest.java (175 lines, 10 tests)
-4. ✅ Updated TradeLogController.java (removed closed positions logic)
-5. ✅ Updated TradeLogControllerTest.java (7 tests, verify no closed positions)
-6. ✅ Updated tradelog_jte.jte (removed Closed Positions section)
-7. ✅ Updated index_jte.jte (added Trade History menu item)
-8. ✅ Configured Trade Log DataTable: pageLength = -1 (all rows)
-9. ✅ Configured Trade History DataTable: pageLength = 500 (500 rows default)
-10. ✅ All tests passing (62/62), build successful
+1. ✅ Created ISSUE-022 documentation (Position Calculator DataTables)
+2. ✅ Updated position-form_jte.jte with DataTables for Open Positions
+   - Changed from plain HTML table to DataTables with grouping
+   - Group by Expiration Date (column 4)
+   - Sort: Expiration asc, then Symbol asc
+   - Show all records (pageLength: -1)
+   - Added HTMX row click navigation
+3. ✅ Updated position-form_jte.jte with DataTables for Position History
+   - Changed from plain HTML table to DataTables with grouping
+   - Group by Trade Date (column 3)
+   - Sort: TradeDate desc (most recent first), then Symbol asc
+   - Show 500 records per page (pageLength: 500)
+   - Added HTMX row click navigation
+4. ✅ Implemented currency formatting (Intl.NumberFormat)
+5. ✅ Added smaller font size (0.85rem) for compact display
+6. ✅ Updated group header styling in Trade Log and Trade History for consistency
+7. ✅ All tests passing (build SUCCESS)
 
 **Files Created**:
-- NEW: TradeHistoryController.java (47 lines)
-- NEW: trade_history_jte.jte (156 lines)
-- NEW: TradeHistoryControllerTest.java (175 lines)
+- NEW: docs/issues/ISSUE-022-position-calculator-datatables.md
 
 **Files Modified**:
-- MODIFIED: TradeLogController.java (removed closed positions, cleaner logic)
-- MODIFIED: TradeLogControllerTest.java (7 updated tests with never() assertions)
-- MODIFIED: tradelog_jte.jte (removed Closed Positions section, updated params)
-- MODIFIED: index_jte.jte (added Trade History menu with archive icon)
+- MODIFIED: src/main/jte/position-form_jte.jte (full DataTables implementation)
+- MODIFIED: src/main/jte/tradelog_jte.jte (group header styling)
+- MODIFIED: src/main/jte/trade_history_jte.jte (group header styling)
+- MODIFIED: docs/issues/README.md (auto-generated issue index)
 
-**Next Steps**:
-- Commit all changes
-- Push to remote
-- Update issue status to CLOSED
-- Session complete
+**Commits**:
+1. feat(ISSUE-022): Implement DataTables for Position Calculator with proper grouping
+2. docs(ISSUE-022): Update issue with final implementation details
+
+**All Changes**: ✅ Committed and pushed to origin/claude branch
 
 ---
 
 ## 🎯 Active Work (Last 3 Sessions)
 
-### Session 5 (2025-11-07) - IN PROGRESS
+### Session 7 (2025-11-10) - ✅ COMPLETE
+- **Work**: ISSUE-022 - Position Calculator DataTables Enhancement
+- **Duration**: 45 minutes
+- **Key Achievement**: Full DataTables implementation with row grouping and HTMX integration
+- **Design Pattern**: DataTables library with Bootstrap 5 theming, HTMX for navigation
+- **Status**: ✅ Complete, tested, committed and pushed
+- **Commits**: 97c7489 (feat), 42b7a7c (docs)
+
+### Session 6 (2025-11-10) - ✅ COMPLETE
+- **Work**: ISSUE-020 - Trade History Menu Separation
+- **Duration**: Previous session
+- **Key Achievement**: Separated closed positions into dedicated Trade History page
+- **Status**: ✅ Complete with dedicated controller and menu item
+
+### Session 5 (2025-11-07) - ✅ COMPLETE
 - **Work**: ISSUE-008 - Create TradeLogController and separate trade log functionality
-- **Duration**: Ongoing
-- **Context Used**: ~80k/200k (40%)
 - **Key Achievement**: Clean separation of concerns - split PositionController into focused controllers
 - **Design Pattern**: Single Responsibility Principle (SRP)
-- **Status**: Implementation complete, tests passing, awaiting manual review/commit
-- **Commits Staged**: refactor(controller): Create TradeLogController and separate trade log functionality
+- **Status**: ✅ Complete, all tests passing
 
 ### Session 4 (2025-11-03) - ✅ COMPLETE
 - **Exit**: NORMAL_COMPLETE
@@ -196,6 +213,6 @@
 
 ---
 
-**Status**: 🚀 IMPLEMENTATION COMPLETE - Awaiting manual review/commit
-**Ready For**: Code review, testing, or next issue
-**Last Updated**: 2025-11-07 09:58
+**Status**: ✅ SESSION 7 COMPLETE - All changes committed and pushed
+**Ready For**: Next feature or issue
+**Last Updated**: 2025-11-10 21:40
