@@ -50,6 +50,21 @@ public class RestClientConfig {
                 .baseUrl("https://data.alpaca.markets").build();
     }
 
+    @Bean(name = "alpacaTradingRestClient")
+    public RestClient alpacaTradingRestClient() {
+        // Determine base URL based on environment (paper or live trading)
+        boolean usePaperTrading = environment.getProperty("ALPACA_PAPER_TRADING", Boolean.class, false);
+        String baseUrl = usePaperTrading ?
+                "https://paper-api.alpaca.markets" :
+                "https://api.alpaca.markets";
+
+        return RestClient.builder()
+                .requestFactory(new SimpleClientHttpRequestFactory())
+                .defaultHeader("APCA-API-KEY-ID", environment.getRequiredProperty("ALPACA_API_KEY"))
+                .defaultHeader("APCA-API-SECRET-KEY", environment.getRequiredProperty("ALPACA_API_SECRET_KEY"))
+                .baseUrl(baseUrl).build();
+    }
+
     @Bean(name = "alphaVintageRestClient")
     public RestClient alphaVintageRestClient() {
         return RestClient.builder()

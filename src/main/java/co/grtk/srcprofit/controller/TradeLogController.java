@@ -27,7 +27,6 @@ public class TradeLogController {
     private static final String MODEL_ATTRIBUTE_DTO = "positionDto";
     private static final String MODEL_ATTRIBUTE_WEEKLY_OPTION_OPEN = "weeklyOpenPositions";
     private static final String MODEL_ATTRIBUTE_OPTION_OPEN = "openOptions";
-    private static final String MODEL_ATTRIBUTE_OPTION_HISTORY = "optionHistory";
 
     private final OptionService optionService;
     private final NetAssetValueService netAssetValueService;
@@ -59,9 +58,7 @@ public class TradeLogController {
     private void fillTradeLogPage(PositionDto positionDto, Model model) {
         List<PositionDto> openOptions = optionService.getAllOpenPositions(positionDto.getPositionsFromDate());
         model.addAttribute(MODEL_ATTRIBUTE_OPTION_OPEN, openOptions);
-        List<PositionDto> optionHistory = optionService.getAllClosedOptions(positionDto.getPositionsFromDate());
-        model.addAttribute(MODEL_ATTRIBUTE_OPTION_HISTORY, optionHistory);
-        optionService.calculatePosition(positionDto, openOptions, optionHistory);
+        optionService.calculatePosition(positionDto, openOptions, List.of());
         NetAssetValueDto netAssetValueDto = netAssetValueService.loadLatestNetAssetValue();
         if(netAssetValueDto == null)
             netAssetValueDto = new NetAssetValueDto();

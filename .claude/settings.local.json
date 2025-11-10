@@ -4,7 +4,6 @@
       "Bash(export JAVA_HOME=/Users/Imre/Library/Java/JavaVirtualMachines/openjdk-24.0.2+12-54/Contents/Home)",
       "Bash(./mvnw clean compile:*)",
       "Bash(git add:*)",
-      "Bash(git commit:*)",
       "Bash(git show:*)",
       "Bash(git log:*)",
       "Bash(cat:*)",
@@ -23,7 +22,16 @@
       "Bash(~/.bash_profile)",
       "Bash(git clone:*)",
       "WebFetch(domain:www.tradingview.com)",
-      "Bash(curl:*)"
+      "Bash(curl:*)",
+      "WebFetch(domain:docs.alpaca.markets)",
+      "WebSearch",
+      "WebFetch(domain:alpaca.markets)",
+      "WebFetch(domain:github.com)",
+      "Bash(./mvnw clean test:*)",
+      "Bash(java -version:*)",
+      "Bash(timeout 120 ./mvnw clean test:*)",
+      "Bash(echo:*)",
+      "WebFetch(domain:datatables.net)"
     ],
     "deny": [],
     "ask": []

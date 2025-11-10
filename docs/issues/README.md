@@ -2,10 +2,23 @@
 
 **Auto-generated** - Run `python scripts/update_issue_index.py` to update
 
-**Total**: 12 issues
-**Open**: 0 (0%)
-**Closed**: 12 (100%)
+**Total**: 21 issues
+**Open**: 3 (14%)
+**Closed**: 18 (86%)
 **Partial**: 0
+
+---
+
+## Open Issues
+
+### MEDIUM (3)
+
+- **[ISSUE-018](ISSUE-018-datatables-row-grouping-research.md)** - Research DataTables Row Grouping for Trade Log Tables
+  - Priority: MEDIUM | Status: OPEN | Category: Feature | Created: 2025-11-09 (Session N/A)
+- **[ISSUE-019](ISSUE-019-datatables-expiration-grouping-implementation.md)** - Implement DataTables Row Grouping by Expiration Date for Open Positions
+  - Priority: MEDIUM | Status: OPEN | Category: Feature | Created: 2025-11-10 (Session N/A)
+- **[ISSUE-021](ISSUE-021-trade-history-symbol-grouping.md)** - Trade History Symbol Grouping & Color Consistency
+  - Priority: MEDIUM | Status: OPEN | Category: Feature / UX Enhancement | Created: 2025-11-10 (Session 6)
 
 ---
 
@@ -35,19 +48,40 @@
   - Priority: MEDIUM | Completed: 2025-11-07
 - **[ISSUE-012](ISSUE-012-tradingview-phase-1b-implementation-plan.md)** - TradingView Phase 1B - Implementation Plan & Execution
   - Priority: HIGH | Completed: 2025-11-07
+- **[ISSUE-013](ISSUE-013-alpaca-assets-api-research.md)** - Alpaca Assets API Research & Documentation
+  - Priority: MEDIUM
+- **[ISSUE-014](ISSUE-014-alpaca-assets-api-implementation.md)** - Implement Alpaca Assets API Integration
+  - Priority: HIGH | Completed: 2025-11-09 (Session Current)
+- **[ISSUE-015](ISSUE-015-tradingview-dynamic-exchange-mapping.md)** - Replace Hardcoded TradingView Exchange Mapping with Dynamic Instrument Data
+  - Priority: MEDIUM | Completed: 2025-11-09 (Session Current)
+- **[ISSUE-016](ISSUE-016-scheduled-alpaca-assets-refresh.md)** - Scheduled Alpaca Assets Metadata Refresh
+  - Priority: MEDIUM | Completed: 2025-11-09 (Session Current)
+- **[ISSUE-017](ISSUE-017-scheduled-earnings-refresh.md)** - Scheduled Earnings Calendar Refresh
+  - Priority: MEDIUM | Completed: 2025-11-09 (Session Current)
+- **[ISSUE-020](ISSUE-020-trade-history-menu-separation.md)** - Trade History Menu Separation
+  - Priority: HIGH | Completed: 2025-11-10 (Session 6)
 
 ---
 
 ## By Category
 
-**Code Quality / Technical Debt** (3):
-  - ISSUE-004 ✅, ISSUE-007 ✅, ISSUE-008 ✅
+**Code Quality / Technical Debt** (4):
+  - ISSUE-004 ✅, ISSUE-007 ✅, ISSUE-008 ✅, ISSUE-015 ✅
 
-**Enhancement** (1):
-  - ISSUE-011 ✅
+**Documentation** (1):
+  - ISSUE-013 ✅
 
-**Feature** (4):
-  - ISSUE-001 ✅, ISSUE-005 ✅, ISSUE-009 ✅, ISSUE-010 ✅
+**Enhancement** (2):
+  - ISSUE-011 ✅, ISSUE-016 ✅
+
+**Feature** (8):
+  - ISSUE-001 ✅, ISSUE-005 ✅, ISSUE-009 ✅, ISSUE-010 ✅, ISSUE-014 ✅, ISSUE-017 ✅, ISSUE-018 🔴, ISSUE-019 🔴
+
+**Feature / Code Quality** (1):
+  - ISSUE-020 ✅
+
+**Feature / UX Enhancement** (1):
+  - ISSUE-021 🔴
 
 **Feature | Developer Experience** (1):
   - ISSUE-012 ✅
@@ -63,6 +97,6 @@
 
 ---
 
-**Last updated**: 2025-11-07
+**Last updated**: 2025-11-10
 
 **How to update**: Run `python scripts/update_issue_index.py`

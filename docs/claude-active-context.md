@@ -1,46 +1,55 @@
 # Claude Active Context - SrcProfit
 
-**Last Updated**: 2025-11-07 (Session 5)
+**Last Updated**: 2025-11-10 (Session 6)
 **Project**: SrcProfit Options Trading Tracker
-**Phase**: Phase 1 - Controller Refactoring
-**Focus**: Separation of concerns - TradeLogController creation
+**Phase**: Phase 1 - UI/UX Improvements
+**Focus**: Trade Log/History separation and DataTable configuration
 
 ---
 
-## 📋 Current Session (Session 5)
+## 📋 Current Session (Session 6)
 
-**Session Number**: 5
-**Date**: 2025-11-07
-**Status**: IN PROGRESS (active work)
-**Code Status**: STAGED (pending manual commit review)
+**Session Number**: 6
+**Date**: 2025-11-10
+**Status**: ✅ COMPLETE
+**Code Status**: READY FOR COMMIT
 
-**Current Work**: ISSUE-008 - Create TradeLogController and separate trade log functionality
-**Approach**: Split PositionController into two focused controllers
-- TradeLogController: trade log viewing (/positions, /getPositionsFromDate)
-- PositionController: position calculation (/calculatePosition, /getPosition/{ticker})
+**Work Completed**: ISSUE-020 - Trade History Menu Separation
+**Approach**: Separate closed positions (Trade History) from open positions (Trade Log)
+- Created dedicated TradeHistoryController with `/tradehistory` and `/tradehistoryFromDate` endpoints
+- Moved closed positions display to new Trade History page
+- Refactored TradeLogController to show only open positions
+- Updated navigation menu with new Trade History item
+- Configured DataTables: Trade Log shows all rows, Trade History shows 500 rows per page
 
 **Changes Completed**:
-1. ✅ Created TradeLogController with 2 endpoints
-2. ✅ Moved fillPositionsPage() → fillTradeLogPage()
-3. ✅ Created TradeLogControllerTest (7 test cases)
-4. ✅ Removed unnecessary dependencies:
-   - TradeLogController: removed AlpacaService, InstrumentService (not used)
-   - PositionController: removed NetAssetValueService (not used)
-5. ✅ Renamed template: positions_jte.jte → tradelog_jte.jte
-6. ✅ Updated all test assertions and method names
-7. ✅ All tests passing (7/7), build successful
+1. ✅ Created TradeHistoryController.java (47 lines)
+2. ✅ Created trade_history_jte.jte template (156 lines) with filter dropdown
+3. ✅ Created TradeHistoryControllerTest.java (175 lines, 10 tests)
+4. ✅ Updated TradeLogController.java (removed closed positions logic)
+5. ✅ Updated TradeLogControllerTest.java (7 tests, verify no closed positions)
+6. ✅ Updated tradelog_jte.jte (removed Closed Positions section)
+7. ✅ Updated index_jte.jte (added Trade History menu item)
+8. ✅ Configured Trade Log DataTable: pageLength = -1 (all rows)
+9. ✅ Configured Trade History DataTable: pageLength = 500 (500 rows default)
+10. ✅ All tests passing (62/62), build successful
 
-**Files Changed**:
-- NEW: TradeLogController.java (74 lines)
-- NEW: TradeLogControllerTest.java (213 lines)
-- MODIFIED: PositionController.java (removed 35 lines, cleaned dependencies)
-- RENAMED: positions_jte.jte → tradelog_jte.jte
-- NEW: ISSUE-008-trade-log-controller-separation.md
+**Files Created**:
+- NEW: TradeHistoryController.java (47 lines)
+- NEW: trade_history_jte.jte (156 lines)
+- NEW: TradeHistoryControllerTest.java (175 lines)
+
+**Files Modified**:
+- MODIFIED: TradeLogController.java (removed closed positions, cleaner logic)
+- MODIFIED: TradeLogControllerTest.java (7 updated tests with never() assertions)
+- MODIFIED: tradelog_jte.jte (removed Closed Positions section, updated params)
+- MODIFIED: index_jte.jte (added Trade History menu with archive icon)
 
 **Next Steps**:
-- User to review and approve changes
-- Manual commit required (no auto-commit per user preference)
-- Close ISSUE-008 when ready
+- Commit all changes
+- Push to remote
+- Update issue status to CLOSED
+- Session complete
 
 ---
 

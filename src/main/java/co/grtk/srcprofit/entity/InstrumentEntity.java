@@ -17,6 +17,7 @@ import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.SourceType;
 import org.hibernate.annotations.UpdateTimestamp;
 
+import java.math.BigDecimal;
 import java.time.Instant;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
@@ -31,7 +32,8 @@ import java.util.List;
         indexes = {
                 @Index(name = "instr_ticker_idx", columnList = "ticker"),
                 @Index(name = "instr_conid_idx", columnList = "conid"),
-                @Index(name = "instr_name_idx", columnList = "name")
+                @Index(name = "instr_name_idx", columnList = "name"),
+                @Index(name = "instr_alpaca_asset_id_idx", columnList = "alpaca_asset_id")
         }
 
 )
@@ -72,6 +74,40 @@ public class InstrumentEntity {
     private Instant updatedAt;
 
     private LocalDate earningDate;
+
+    // Alpaca Asset Metadata Fields
+    @Column(unique = true)
+    private String alpacaAssetId;
+
+    @Column
+    private Boolean alpacaTradable;
+
+    @Column
+    private Boolean alpacaMarginable;
+
+    @Column
+    private Boolean alpacaShortable;
+
+    @Column
+    private Boolean alpacaEasyToBorrow;
+
+    @Column
+    private Boolean alpacaFractionable;
+
+    @Column(precision = 10, scale = 4)
+    private BigDecimal alpacaMaintenanceMarginRequirement;
+
+    @Column
+    private String alpacaExchange;
+
+    @Column
+    private String alpacaStatus;
+
+    @Column
+    private String alpacaAssetClass;
+
+    @Column
+    private Instant alpacaMetadataUpdatedAt;
 
     public Long getId() {
         return id;
@@ -174,6 +210,95 @@ public class InstrumentEntity {
 
     public void setEarningDate(LocalDate earningsDate) {
         this.earningDate = earningsDate;
+    }
+
+    // Alpaca Asset Metadata Getters and Setters
+    public String getAlpacaAssetId() {
+        return alpacaAssetId;
+    }
+
+    public void setAlpacaAssetId(String alpacaAssetId) {
+        this.alpacaAssetId = alpacaAssetId;
+    }
+
+    public Boolean getAlpacaTradable() {
+        return alpacaTradable;
+    }
+
+    public void setAlpacaTradable(Boolean alpacaTradable) {
+        this.alpacaTradable = alpacaTradable;
+    }
+
+    public Boolean getAlpacaMarginable() {
+        return alpacaMarginable;
+    }
+
+    public void setAlpacaMarginable(Boolean alpacaMarginable) {
+        this.alpacaMarginable = alpacaMarginable;
+    }
+
+    public Boolean getAlpacaShortable() {
+        return alpacaShortable;
+    }
+
+    public void setAlpacaShortable(Boolean alpacaShortable) {
+        this.alpacaShortable = alpacaShortable;
+    }
+
+    public Boolean getAlpacaEasyToBorrow() {
+        return alpacaEasyToBorrow;
+    }
+
+    public void setAlpacaEasyToBorrow(Boolean alpacaEasyToBorrow) {
+        this.alpacaEasyToBorrow = alpacaEasyToBorrow;
+    }
+
+    public Boolean getAlpacaFractionable() {
+        return alpacaFractionable;
+    }
+
+    public void setAlpacaFractionable(Boolean alpacaFractionable) {
+        this.alpacaFractionable = alpacaFractionable;
+    }
+
+    public BigDecimal getAlpacaMaintenanceMarginRequirement() {
+        return alpacaMaintenanceMarginRequirement;
+    }
+
+    public void setAlpacaMaintenanceMarginRequirement(BigDecimal alpacaMaintenanceMarginRequirement) {
+        this.alpacaMaintenanceMarginRequirement = alpacaMaintenanceMarginRequirement;
+    }
+
+    public String getAlpacaExchange() {
+        return alpacaExchange;
+    }
+
+    public void setAlpacaExchange(String alpacaExchange) {
+        this.alpacaExchange = alpacaExchange;
+    }
+
+    public String getAlpacaStatus() {
+        return alpacaStatus;
+    }
+
+    public void setAlpacaStatus(String alpacaStatus) {
+        this.alpacaStatus = alpacaStatus;
+    }
+
+    public String getAlpacaAssetClass() {
+        return alpacaAssetClass;
+    }
+
+    public void setAlpacaAssetClass(String alpacaAssetClass) {
+        this.alpacaAssetClass = alpacaAssetClass;
+    }
+
+    public Instant getAlpacaMetadataUpdatedAt() {
+        return alpacaMetadataUpdatedAt;
+    }
+
+    public void setAlpacaMetadataUpdatedAt(Instant alpacaMetadataUpdatedAt) {
+        this.alpacaMetadataUpdatedAt = alpacaMetadataUpdatedAt;
     }
 
     @Override

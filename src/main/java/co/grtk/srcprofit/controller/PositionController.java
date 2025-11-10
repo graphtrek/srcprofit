@@ -1,8 +1,11 @@
 package co.grtk.srcprofit.controller;
 
+import co.grtk.srcprofit.dto.AlpacaAssetDto;
 import co.grtk.srcprofit.dto.InstrumentDto;
 import co.grtk.srcprofit.dto.PositionDto;
+import co.grtk.srcprofit.entity.InstrumentEntity;
 import co.grtk.srcprofit.mapper.PositionMapper;
+import co.grtk.srcprofit.repository.InstrumentRepository;
 import co.grtk.srcprofit.service.AlpacaService;
 import co.grtk.srcprofit.service.InstrumentService;
 import co.grtk.srcprofit.service.OptionService;
@@ -38,14 +41,17 @@ public class PositionController {
     private final OptionService optionService;
     private final InstrumentService instrumentService;
     private final AlpacaService alpacaService;
+    private final InstrumentRepository instrumentRepository;
 
     public PositionController(
             OptionService optionService,
             InstrumentService instrumentService,
-            AlpacaService alpacaService) {
+            AlpacaService alpacaService,
+            InstrumentRepository instrumentRepository) {
         this.optionService = optionService;
         this.instrumentService = instrumentService;
         this.alpacaService = alpacaService;
+        this.instrumentRepository = instrumentRepository;
     }
 
     @GetMapping("/calculatePosition")
@@ -93,14 +99,91 @@ public class PositionController {
         model.addAttribute(MODEL_ATTRIBUTE_DTO, positionDto);
     }
 
+    /**
+     * Get market value for a position with cache-first asset metadata loading.
+     *
+     * Phase 1: Fetch market data snapshot from Alpaca
+     * Phase 2: Check if asset metadata is cached, if not fetch and save
+     *
+     * ISSUE-014 Implementation
+     */
     private void getMarketValue(PositionDto positionDto) {
-        Optional.ofNullable(alpacaService.getMarketDataSnapshot(positionDto.getTicker()))
+        String ticker = positionDto.getTicker();
+
+        // Fetch market data snapshot (Phase 1)
+        Optional.ofNullable(alpacaService.getMarketDataSnapshot(ticker))
                 .map(data -> {
                     instrumentService.saveAlpacaQuotes(data);
+
+                    // Phase 2: Load asset metadata from cache or API
+                    loadAssetMetadata(ticker);
+
                     return data.getQuotes();
                 })
-                .map(quotes -> quotes.get(positionDto.getTicker()))
+                .map(quotes -> quotes.get(ticker))
                 .map(alpacaSingleAssetDto -> alpacaSingleAssetDto.getLatestTrade().getPrice())
                 .ifPresent(price -> positionDto.setMarketValue(round2Digits(price * 100)));
+    }
+
+    /**
+     * Load Alpaca asset metadata with cache-first strategy.
+     *
+     * Strategy:
+     * 1. Check if asset already exists in database
+     * 2. If not found, fetch from Alpaca API and save
+     * 3. Log validation warnings if tradable/marginable flags are problematic
+     */
+    private void loadAssetMetadata(String ticker) {
+        InstrumentEntity instrument = instrumentRepository.findByTicker(ticker);
+
+        if (instrument == null) {
+            log.debug("Asset {} not found in cache, fetching from Alpaca API", ticker);
+            return; // Asset not in database, cannot fetch without existing entity
+        }
+
+        // Check if asset metadata is already cached
+        if (instrument.getAlpacaAssetId() != null && instrument.getAlpacaMetadataUpdatedAt() != null) {
+            log.debug("Asset {} found in cache, metadata updated at {}",
+                    ticker, instrument.getAlpacaMetadataUpdatedAt());
+            logAssetValidationWarnings(instrument);
+            return;
+        }
+
+        // Asset metadata not cached, fetch from Alpaca API
+        try {
+            log.info("Asset {} not cached, fetching from Alpaca and saving", ticker);
+            AlpacaAssetDto assetDto = alpacaService.getAsset(ticker);
+            alpacaService.saveAssetMetadata(assetDto, instrument);
+            instrumentRepository.save(instrument);
+            log.info("Asset {} metadata saved: tradable={}, marginable={}",
+                    ticker, assetDto.getTradable(), assetDto.getMarginable());
+            logAssetValidationWarnings(instrument);
+        } catch (Exception e) {
+            log.warn("Failed to fetch asset metadata for {} from Alpaca API", ticker, e);
+            // Continue gracefully, market data is still available
+        }
+    }
+
+    /**
+     * Log validation warnings for asset constraints
+     */
+    private void logAssetValidationWarnings(InstrumentEntity instrument) {
+        String ticker = instrument.getTicker();
+
+        if (instrument.getAlpacaTradable() != null && !instrument.getAlpacaTradable()) {
+            log.warn("Asset {} is NOT tradable on Alpaca - trades may be rejected", ticker);
+        }
+
+        if (instrument.getAlpacaMarginable() != null && !instrument.getAlpacaMarginable()) {
+            log.warn("Asset {} is NOT marginable on Alpaca - margin purchases may be rejected", ticker);
+        }
+
+        if (instrument.getAlpacaShortable() != null && !instrument.getAlpacaShortable()) {
+            log.warn("Asset {} is NOT shortable on Alpaca - short positions may be rejected", ticker);
+        }
+
+        if (instrument.getAlpacaEasyToBorrow() != null && !instrument.getAlpacaEasyToBorrow()) {
+            log.warn("Asset {} is NOT easy to borrow on Alpaca - short positions may have high costs", ticker);
+        }
     }
 }

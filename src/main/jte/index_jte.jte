@@ -109,6 +109,18 @@
         <li class="nav-item">
             <a class="nav-link collapsed" href="#"
                hx-indicator="#spinner"
+               hx-get="/tradehistory"
+               hx-trigger="click"
+               hx-target="#main"
+               hx-swap="innerHTML"
+               hx-on::afterRequest="console.log('GET /tradehistory')">
+              <i class="bi bi-archive"></i>
+              <span>Trade History</span>
+            </a>
+        </li><!-- End Trade History -->
+        <li class="nav-item">
+            <a class="nav-link collapsed" href="#"
+               hx-indicator="#spinner"
                hx-get="/calculatePosition"
                hx-trigger="click"
                hx-target="#main"

@@ -150,7 +150,7 @@ h6 {
     top: -7px;
     right: 20px;
     transform: rotate(45deg);
-    border-top: 1px solid #eaedf1;
+    border-top: 1px solid #4154f1;
     border-left: 1px solid #eaedf1;
   }
 }
@@ -320,7 +320,7 @@ h6 {
 
 /* Bordered Tabs */
 .nav-tabs-bordered {
-  border-bottom: 2px solid #ebeef4;
+  border-bottom: 2px solid #4154f1;
 }
 
 .nav-tabs-bordered .nav-link {
@@ -1206,7 +1206,7 @@ h6 {
   padding: 20px 0;
   font-size: 14px;
   transition: all 0.3s;
-  border-top: 1px solid #cddfff;
+  border-top: 1px solid #4154f1;
 }
 
 .footer .copyright {
@@ -1235,4 +1235,24 @@ h6 {
     margin: 5% auto; /* Only centers horizontally not vertically! */
     left: 0;
     right: 0;
+}
+
+/* DataTables row grouping styles */
+tr.group {
+    background-color: #c3c3c3 !important;
+    cursor: pointer;
+    font-weight: bold;
+    color: #000 !important;
+}
+
+tr.group:hover {
+    background-color: #b0b0b0 !important;
+}
+
+tr.group td {
+    padding: 12px 8px !important;
+    border-top: 3px solid #4154f1;
+    border-bottom: 3px solid #4154f1;
+    color: #000 !important;
+    font-weight: bold;
 }
