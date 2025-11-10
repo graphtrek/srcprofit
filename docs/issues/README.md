@@ -2,14 +2,19 @@
 
 **Auto-generated** - Run `python scripts/update_issue_index.py` to update
 
-**Total**: 19 issues
-**Open**: 2 (11%)
-**Closed**: 17 (89%)
+**Total**: 20 issues
+**Open**: 3 (15%)
+**Closed**: 17 (85%)
 **Partial**: 0
 
 ---
 
 ## Open Issues
+
+### HIGH (1)
+
+- **[ISSUE-020](ISSUE-020-trade-history-menu-separation.md)** - Trade History Menu Separation
+  - Priority: HIGH | Status: OPEN | Category: Feature / Code Quality | Created: 2025-11-10 (Session TBD)
 
 ### MEDIUM (2)
 
@@ -72,6 +77,9 @@
 
 **Feature** (8):
   - ISSUE-001 ✅, ISSUE-005 ✅, ISSUE-009 ✅, ISSUE-010 ✅, ISSUE-014 ✅, ISSUE-017 ✅, ISSUE-018 🔴, ISSUE-019 🔴
+
+**Feature / Code Quality** (1):
+  - ISSUE-020 🔴
 
 **Feature | Developer Experience** (1):
   - ISSUE-012 ✅

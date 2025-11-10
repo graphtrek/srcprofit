@@ -3,7 +3,6 @@
 
 @import java.util.List
 @param co.grtk.srcprofit.dto.PositionDto positionDto
-@param List<PositionDto> optionHistory
 @param List<PositionDto> openOptions
 @param List<PositionDto> weeklyOpenPositions
 
@@ -322,80 +321,6 @@
                 </div>
                 <!-- End DataTable Open Positions -->
 
-                <!-- DataTable Closed Positions-->
-                <div class="col-12">
-                    <div class="card recent-sales overflow-auto">
-
-                        <div class="filter">
-                            <a class="icon" href="#" data-bs-toggle="dropdown"><i class="bi bi-three-dots"></i></a>
-                            <ul class="dropdown-menu dropdown-menu-end dropdown-menu-arrow">
-                                <li class="dropdown-header text-start">
-                                    <h6>Filter</h6>
-                                </li>
-
-                                <li><a class="dropdown-item" href="#">This Week</a></li>
-                                <li><a class="dropdown-item" href="#">This Month</a></li>
-                                <li><a class="dropdown-item" href="#">This Year</a></li>
-                                <li><a class="dropdown-item" href="#">All</a></li>
-                            </ul>
-                        </div>
-
-                        <div class="card-body">
-                            <h5 class="card-title">Closed Positions <span></span></h5>
-
-                            <table id="datatableClosedPositions" class="table table-striped">
-                                <thead>
-                                <tr>
-                                    <th scope="col">#</th>
-                                    <th scope="col">Code</th>
-                                    <th scope="col">Symbol</th>
-                                    <th scope="col">TradeDate</th>
-                                    <th scope="col">Expiration</th>
-                                    <th scope="col">DaysLeft</th>
-                                    <th scope="col">Qty</th>
-                                    <th scope="col">Value</th>
-                                    <th scope="col">MrktValue</th>
-                                    <th scope="col">Price</th>
-                                    <th scope="col">Earning</th>
-                                    <th scope="col">Type</th>
-                                    <th scope="col">Status</th>
-                                </tr>
-                                </thead>
-                                <tbody>
-                                @for(var option : optionHistory )
-                                    <tr style="cursor: pointer;">
-                                        <td style="color:${option.getColor()};">${option.getId()}</td>
-                                        <td style="color:${option.getColor()};text-wrap: nowrap;">${option.getCode()}</td>
-                                        <td class="text-uppercase">${option.getTicker()}</td>
-                                        <td>${option.getTradeDateString()}</td>
-                                        <td>${option.getExpirationDateString()}</td>
-                                        <td>${option.getDaysLeft()}</td>
-                                        <td>${option.getQuantity()}</td>
-                                        <td class="currency-usd">${option.getPositionValue()}</td>
-                                        <td class="currency-usd">${option.getMarketValue()}</td>
-                                        <td class="currency-usd">${option.getTradePrice()}</td>
-
-                                        <td>${option.getEarningDay()}</td>
-                                        <td>${option.getType()}</td>
-                                        @if(OptionStatus.PENDING.equals(option.getStatus()))
-                                            <td class="badge bg-warning">${option.getStatus()}</td>
-                                        @elseif(OptionStatus.CLOSED.equals(option.getStatus()))
-                                            <td class="badge bg-success">${option.getStatus()}</td>
-                                        @else
-                                            <td class="badge bg-danger">${option.getStatus()}</td>
-                                        @endif
-                                    </tr>
-                                @endfor
-                                </tbody>
-                            </table>
-
-                        </div>
-
-                    </div>
-                </div>
-                <!-- End  DataTable Closed Positions -->
-
-
             </div>
         </div><!-- End Left side columns -->
 
@@ -422,7 +347,7 @@
             var groupColumnOpen = 4; // Expiration date column (0-indexed)
 
             const tableOpen = new DataTable('#datatableOpenPositions', {
-                pageLength: 10,
+                pageLength: -1,
                 perPageSelect: [5, 10, 15, ["All", -1]],
                 columnDefs: [{target: 1, visible: false, searchable: false}], // code hidden
                 order: [[groupColumnOpen, 'asc'], [2, 'asc']], // Expiration first, then Symbol
@@ -436,7 +361,7 @@
                         .each(function (group, i) {
                             if (last !== group) {
                                 $(rows).eq(i).before(
-                                    '<tr class="group"><td colspan="14" style="font-weight:bold; background-color:#c3c3c3; color:#000; padding:12px 8px; border-top:3px solid #000; border-bottom:3px solid #000;">' +
+                                    '<tr class="group"><td colspan="14" style="font-weight:bold; background-color:#c3c3c3; color:#4154f1; padding:12px 8px; border-top:3px solid #4154f1; border-bottom:3px solid #4154f1;">' +
                                     group +
                                     '</td></tr>'
                                 );
@@ -476,19 +401,6 @@
 
                 // ... do something with data(), or row.node(), etc
             } );
-
-            const tableClosed = new DataTable('#datatableClosedPositions', {
-                pageLength: 10,
-                perPageSelect: [5, 10, 15, ["All", -1]],
-                columnDefs: [{target: 1, visible: false, searchable: false}], // code hidden
-                order: [[1, 'asc'],[3, 'desc']] // code, TradeDate
-            });
-
-            $('#datatableClosedPositions tbody').on('click', 'tr', function() {
-                const ticker = tableClosed.row(this).data()[2];
-                console.log('GET  /getPosition/' + ticker);
-                htmx.ajax('GET', '/getPosition/' + ticker, '#main');
-            });
         }
         datatable();
         totalSeconds = 0;

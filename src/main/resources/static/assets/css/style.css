@@ -150,7 +150,7 @@ h6 {
     top: -7px;
     right: 20px;
     transform: rotate(45deg);
-    border-top: 1px solid #eaedf1;
+    border-top: 1px solid #4154f1;
     border-left: 1px solid #eaedf1;
   }
 }
@@ -320,7 +320,7 @@ h6 {
 
 /* Bordered Tabs */
 .nav-tabs-bordered {
-  border-bottom: 2px solid #ebeef4;
+  border-bottom: 2px solid #4154f1;
 }
 
 .nav-tabs-bordered .nav-link {
@@ -1206,7 +1206,7 @@ h6 {
   padding: 20px 0;
   font-size: 14px;
   transition: all 0.3s;
-  border-top: 1px solid #cddfff;
+  border-top: 1px solid #4154f1;
 }
 
 .footer .copyright {
@@ -1251,8 +1251,8 @@ tr.group:hover {
 
 tr.group td {
     padding: 12px 8px !important;
-    border-top: 3px solid #000;
-    border-bottom: 3px solid #000;
+    border-top: 3px solid #4154f1;
+    border-bottom: 3px solid #4154f1;
     color: #000 !important;
     font-weight: bold;
 }

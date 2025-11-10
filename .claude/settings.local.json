@@ -4,7 +4,6 @@
       "Bash(export JAVA_HOME=/Users/Imre/Library/Java/JavaVirtualMachines/openjdk-24.0.2+12-54/Contents/Home)",
       "Bash(./mvnw clean compile:*)",
       "Bash(git add:*)",
-      "Bash(git commit:*)",
       "Bash(git show:*)",
       "Bash(git log:*)",
       "Bash(cat:*)",
