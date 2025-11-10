@@ -1236,3 +1236,19 @@ h6 {
     left: 0;
     right: 0;
 }
+
+/* DataTables row grouping styles */
+tr.group {
+    background-color: rgba(65, 84, 241, 0.1) !important;
+    cursor: pointer;
+    font-weight: bold;
+}
+
+tr.group:hover {
+    background-color: rgba(65, 84, 241, 0.2) !important;
+}
+
+tr.group td {
+    padding: 12px 8px !important;
+    border-top: 2px solid rgba(65, 84, 241, 0.3);
+}

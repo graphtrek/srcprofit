@@ -419,14 +419,45 @@
 
         function datatable() {
             console.log('datatable init');
+            var groupColumnOpen = 4; // Expiration date column (0-indexed)
+
             const tableOpen = new DataTable('#datatableOpenPositions', {
                 pageLength: 10,
                 perPageSelect: [5, 10, 15, ["All", -1]],
                 columnDefs: [{target: 1, visible: false, searchable: false}], // code hidden
-                order: [[4, 'asc'],[1, 'asc']] // daysLeft, code
+                order: [[groupColumnOpen, 'asc'], [2, 'asc']], // Expiration first, then Symbol
+                drawCallback: function (settings) {
+                    var api = this.api();
+                    var rows = api.rows({ page: 'current' }).nodes();
+                    var last = null;
+
+                    api.column(groupColumnOpen, { page: 'current' })
+                        .data()
+                        .each(function (group, i) {
+                            if (last !== group) {
+                                $(rows).eq(i).before(
+                                    '<tr class="group"><td colspan="14" style="font-weight:bold;">' +
+                                    group +
+                                    '</td></tr>'
+                                );
+                                last = group;
+                            }
+                        });
+                }
             });
 
-            $('#datatableOpenPositions tbody').on('click', 'tr', function() {
+            // Interactive group header click handler
+            $('#datatableOpenPositions tbody').on('click', 'tr.group', function () {
+                var currentOrder = tableOpen.order()[0];
+                if (currentOrder[0] === groupColumnOpen && currentOrder[1] === 'asc') {
+                    tableOpen.order([[groupColumnOpen, 'desc']]).draw();
+                } else {
+                    tableOpen.order([[groupColumnOpen, 'asc']]).draw();
+                }
+            });
+
+            // Keep existing row click handler - exclude group rows
+            $('#datatableOpenPositions tbody').on('click', 'tr:not(.group)', function() {
                 const ticker = tableOpen.row(this).data()[2];
                 console.log('GET  /getPosition/' + ticker);
                 htmx.ajax('GET', '/getPosition/' + ticker, '#main');
