@@ -2,26 +2,23 @@
 
 **Auto-generated** - Run `python scripts/update_issue_index.py` to update
 
-**Total**: 20 issues
-**Open**: 3 (15%)
-**Closed**: 17 (85%)
+**Total**: 21 issues
+**Open**: 3 (14%)
+**Closed**: 18 (86%)
 **Partial**: 0
 
 ---
 
 ## Open Issues
 
-### HIGH (1)
-
-- **[ISSUE-020](ISSUE-020-trade-history-menu-separation.md)** - Trade History Menu Separation
-  - Priority: HIGH | Status: OPEN | Category: Feature / Code Quality | Created: 2025-11-10 (Session TBD)
-
-### MEDIUM (2)
+### MEDIUM (3)
 
 - **[ISSUE-018](ISSUE-018-datatables-row-grouping-research.md)** - Research DataTables Row Grouping for Trade Log Tables
   - Priority: MEDIUM | Status: OPEN | Category: Feature | Created: 2025-11-09 (Session N/A)
 - **[ISSUE-019](ISSUE-019-datatables-expiration-grouping-implementation.md)** - Implement DataTables Row Grouping by Expiration Date for Open Positions
   - Priority: MEDIUM | Status: OPEN | Category: Feature | Created: 2025-11-10 (Session N/A)
+- **[ISSUE-021](ISSUE-021-trade-history-symbol-grouping.md)** - Trade History Symbol Grouping & Color Consistency
+  - Priority: MEDIUM | Status: OPEN | Category: Feature / UX Enhancement | Created: 2025-11-10 (Session 6)
 
 ---
 
@@ -61,6 +58,8 @@
   - Priority: MEDIUM | Completed: 2025-11-09 (Session Current)
 - **[ISSUE-017](ISSUE-017-scheduled-earnings-refresh.md)** - Scheduled Earnings Calendar Refresh
   - Priority: MEDIUM | Completed: 2025-11-09 (Session Current)
+- **[ISSUE-020](ISSUE-020-trade-history-menu-separation.md)** - Trade History Menu Separation
+  - Priority: HIGH | Completed: 2025-11-10 (Session 6)
 
 ---
 
@@ -79,7 +78,10 @@
   - ISSUE-001 ✅, ISSUE-005 ✅, ISSUE-009 ✅, ISSUE-010 ✅, ISSUE-014 ✅, ISSUE-017 ✅, ISSUE-018 🔴, ISSUE-019 🔴
 
 **Feature / Code Quality** (1):
-  - ISSUE-020 🔴
+  - ISSUE-020 ✅
+
+**Feature / UX Enhancement** (1):
+  - ISSUE-021 🔴
 
 **Feature | Developer Experience** (1):
   - ISSUE-012 ✅

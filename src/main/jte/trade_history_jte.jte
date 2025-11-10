@@ -118,15 +118,45 @@
 
         function datatable() {
             console.log('datatable init');
+            var groupColumnHistory = 2; // Symbol column (0-indexed)
 
             const tableHistory = new DataTable('#datatableTradeHistory', {
                 pageLength: 500,
                 perPageSelect: [5, 10, 15, ["All", -1]],
                 columnDefs: [{target: 1, visible: false, searchable: false}], // code hidden
-                order: [[1, 'asc'],[3, 'desc']] // code, TradeDate
+                order: [[3, 'desc'], [groupColumnHistory, 'asc']], // TradeDate desc, Symbol asc
+                drawCallback: function (settings) {
+                    var api = this.api();
+                    var rows = api.rows({ page: 'current' }).nodes();
+                    var last = null;
+
+                    api.column(groupColumnHistory, { page: 'current' })
+                        .data()
+                        .each(function (group, i) {
+                            if (last !== group) {
+                                $(rows).eq(i).before(
+                                    '<tr class="group"><td colspan="13" style="font-weight:bold; background-color:#c3c3c3; color:#4154f1; padding:12px 8px; border-top:3px solid #4154f1; border-bottom:3px solid #4154f1;">' +
+                                    group +
+                                    '</td></tr>'
+                                );
+                                last = group;
+                            }
+                        });
+                }
             });
 
-            $('#datatableTradeHistory tbody').on('click', 'tr', function() {
+            // Interactive group header click handler
+            $('#datatableTradeHistory tbody').on('click', 'tr.group', function () {
+                var currentOrder = tableHistory.order()[0];
+                if (currentOrder[0] === groupColumnHistory && currentOrder[1] === 'asc') {
+                    tableHistory.order([[groupColumnHistory, 'desc']]).draw();
+                } else {
+                    tableHistory.order([[groupColumnHistory, 'asc']]).draw();
+                }
+            });
+
+            // Keep existing row click handler - exclude group rows
+            $('#datatableTradeHistory tbody').on('click', 'tr:not(.group)', function() {
                 const ticker = tableHistory.row(this).data()[2];
                 console.log('GET  /getPosition/' + ticker);
                 htmx.ajax('GET', '/getPosition/' + ticker, '#main');
