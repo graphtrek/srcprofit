@@ -436,7 +436,7 @@
                         .each(function (group, i) {
                             if (last !== group) {
                                 $(rows).eq(i).before(
-                                    '<tr class="group"><td colspan="14" style="font-weight:bold;">' +
+                                    '<tr class="group"><td colspan="14" style="font-weight:bold; background-color:#c3c3c3; color:#000; padding:12px 8px; border-top:3px solid #000; border-bottom:3px solid #000;">' +
                                     group +
                                     '</td></tr>'
                                 );

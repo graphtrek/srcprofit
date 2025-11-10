@@ -3,18 +3,20 @@
 **Auto-generated** - Run `python scripts/update_issue_index.py` to update
 
 **Total**: 19 issues
-**Open**: 1 (5%)
-**Closed**: 18 (95%)
+**Open**: 2 (11%)
+**Closed**: 17 (89%)
 **Partial**: 0
 
 ---
 
 ## Open Issues
 
-### MEDIUM (1)
+### MEDIUM (2)
 
 - **[ISSUE-018](ISSUE-018-datatables-row-grouping-research.md)** - Research DataTables Row Grouping for Trade Log Tables
   - Priority: MEDIUM | Status: OPEN | Category: Feature | Created: 2025-11-09 (Session N/A)
+- **[ISSUE-019](ISSUE-019-datatables-expiration-grouping-implementation.md)** - Implement DataTables Row Grouping by Expiration Date for Open Positions
+  - Priority: MEDIUM | Status: OPEN | Category: Feature | Created: 2025-11-10 (Session N/A)
 
 ---
 
@@ -54,8 +56,6 @@
   - Priority: MEDIUM | Completed: 2025-11-09 (Session Current)
 - **[ISSUE-017](ISSUE-017-scheduled-earnings-refresh.md)** - Scheduled Earnings Calendar Refresh
   - Priority: MEDIUM | Completed: 2025-11-09 (Session Current)
-- **[ISSUE-019](ISSUE-019-datatables-expiration-grouping-implementation.md)** - Implement DataTables Row Grouping by Expiration Date for Open Positions
-  - Priority: MEDIUM | Completed: 2025-11-10
 
 ---
 
@@ -71,7 +71,7 @@
   - ISSUE-011 ✅, ISSUE-016 ✅
 
 **Feature** (8):
-  - ISSUE-001 ✅, ISSUE-005 ✅, ISSUE-009 ✅, ISSUE-010 ✅, ISSUE-014 ✅, ISSUE-017 ✅, ISSUE-018 🔴, ISSUE-019 ✅
+  - ISSUE-001 ✅, ISSUE-005 ✅, ISSUE-009 ✅, ISSUE-010 ✅, ISSUE-014 ✅, ISSUE-017 ✅, ISSUE-018 🔴, ISSUE-019 🔴
 
 **Feature | Developer Experience** (1):
   - ISSUE-012 ✅

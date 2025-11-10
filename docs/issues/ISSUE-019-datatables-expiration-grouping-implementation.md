@@ -1,8 +1,7 @@
 # ISSUE-019: Implement DataTables Row Grouping by Expiration Date for Open Positions
 
 **Created**: 2025-11-10 (Session N/A)
-**Completed**: 2025-11-10
-**Status**: CLOSED
+**Status**: OPEN
 **Priority**: MEDIUM
 **Category**: Feature
 **Blocking**: None

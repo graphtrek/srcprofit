@@ -48,12 +48,12 @@ class ScheduledJobsServiceTest {
     }
 
     /**
-     * Test 1: Scheduled job has correct cron expression
-     * Verifies that refreshAlpacaAssets() is scheduled for 6 AM daily
-     * Cron: "0 0 6 * * ?" = Daily at 6:00:00 AM UTC
+     * Test 1: Scheduled job has correct fixedDelay configuration
+     * Verifies that refreshAlpacaAssets() is scheduled for every 12 hours with fixedDelay
+     * Schedule: fixedDelay=720 minutes (12 hours), initialDelay=1 minute
      */
     @Test
-    void testRefreshAlpacaAssetsHasCorrectCronExpression() throws NoSuchMethodException {
+    void testRefreshAlpacaAssetsHasCorrectScheduleConfiguration() throws NoSuchMethodException {
         // Get the method
         Method method = ScheduledJobsService.class.getMethod("refreshAlpacaAssets");
 
@@ -64,9 +64,17 @@ class ScheduledJobsServiceTest {
         // Get the annotation
         Scheduled annotation = method.getAnnotation(Scheduled.class);
 
-        // Verify cron expression
-        assertEquals("0 0 6 * * ?", annotation.cron(),
-                "Cron expression should be '0 0 6 * * ?' (daily at 6 AM UTC)");
+        // Verify fixedDelay (720 minutes = 12 hours)
+        assertEquals(720, annotation.fixedDelay(),
+                "fixedDelay should be 720 (minutes), which equals 12 hours");
+
+        // Verify initialDelay
+        assertEquals(1, annotation.initialDelay(),
+                "initialDelay should be 1 minute");
+
+        // Verify timeUnit
+        assertEquals(java.util.concurrent.TimeUnit.MINUTES, annotation.timeUnit(),
+                "timeUnit should be MINUTES");
     }
 
     /**
@@ -223,12 +231,12 @@ class ScheduledJobsServiceTest {
     // ==================== EARNINGS REFRESH TESTS ====================
 
     /**
-     * Test 11: Earnings refresh job has correct cron expression
-     * Verifies that refreshEarningsData() is scheduled for 6 AM daily
-     * Cron: "0 0 6 * * ?" = Daily at 6:00:00 AM UTC
+     * Test 11: Earnings refresh job has correct fixedDelay configuration
+     * Verifies that refreshEarningsData() is scheduled for every 12 hours with fixedDelay
+     * Schedule: fixedDelay=720 minutes (12 hours), initialDelay=1 minute
      */
     @Test
-    void testRefreshEarningsDataHasCorrectCronExpression() throws NoSuchMethodException {
+    void testRefreshEarningsDataHasCorrectScheduleConfiguration() throws NoSuchMethodException {
         // Get the method
         Method method = ScheduledJobsService.class.getMethod("refreshEarningsData");
 
@@ -239,9 +247,17 @@ class ScheduledJobsServiceTest {
         // Get the annotation
         Scheduled annotation = method.getAnnotation(Scheduled.class);
 
-        // Verify cron expression
-        assertEquals("0 0 6 * * ?", annotation.cron(),
-                "Cron expression should be '0 0 6 * * ?' (daily at 6 AM UTC)");
+        // Verify fixedDelay (720 minutes = 12 hours)
+        assertEquals(720, annotation.fixedDelay(),
+                "fixedDelay should be 720 (minutes), which equals 12 hours");
+
+        // Verify initialDelay
+        assertEquals(1, annotation.initialDelay(),
+                "initialDelay should be 1 minute");
+
+        // Verify timeUnit
+        assertEquals(java.util.concurrent.TimeUnit.MINUTES, annotation.timeUnit(),
+                "timeUnit should be MINUTES");
     }
 
     /**
