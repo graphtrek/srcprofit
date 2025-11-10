@@ -168,57 +168,55 @@
                     <div class="card-body">
                         <h5 class="card-title">Open Positions <span></span></h5>
 
-                        <table id="datatable" class="table table-borderless">
-                            <thead class="text-center">
-                            <tr style="cursor: pointer;">
+                        <table id="datatableOpenPositions" class="table table-striped" style="font-size: 0.85rem;">
+                            <thead>
+                            <tr>
                                 <th scope="col">#</th>
-<%--                                <th scope="col">Code</th>--%>
+                                <th scope="col">Code</th>
                                 <th scope="col">Symbol</th>
                                 <th scope="col">TradeDate</th>
                                 <th scope="col">Expiration</th>
-                                <th scope="col">DaysLeft</th>
+                                <th scope="col">D.Left</th>
                                 <th scope="col">Qty</th>
                                 <th scope="col">Value</th>
                                 <th scope="col">MrktValue</th>
                                 <th scope="col">Price</th>
                                 <th scope="col">MrktPrice</th>
-                                <th scope="col">Days</th>
+                                <th scope="col">P&L</th>
+                                <th scope="col">Earning</th>
                                 <th scope="col">Type</th>
-                                <th scope="col">Status</th>
                             </tr>
                             </thead>
-                            <tbody class="text-end">
+                            <tbody>
                             @for(var option : openOptions )
                                 <tr style="cursor: pointer;">
-                                    <td style="color:${option.getColor()};">${option.getId()}</td>
-<%--                                    <th style="color:${option.getColor()};text-wrap: nowrap;">${option.getCode()}</th>--%>
-                                    <td class="text-uppercase">${option.getTicker()}</td>
+                                    @if(option.getMarketValue() < option.getPositionValue())
+                                        <td style="background-color:rgb(220 53 69)">${option.getId()}</td>
+                                    @else
+                                        <td>${option.getId()}</td>
+                                    @endif
+                                    <td style="text-wrap: nowrap;">${option.getCode()}</td>
+                                    @if(option.getQuantity() < 0)
+                                        <td class="text-uppercase" style="font-weight: bold;">${option.getTicker()}</td>
+                                    @else
+                                        <td class="text-uppercase">${option.getTicker()}</td>
+                                    @endif
                                     <td>${option.getTradeDateString()}</td>
                                     <td>${option.getExpirationDateString()}</td>
                                     <td>${option.getDaysLeft()}</td>
-                                    <td>${option.getQuantity()}</td>
-
-                                    @if(option.getTradePrice() > 0)
-                                        <td><b class="currency-usd">${option.getPositionValue()}</b></td>
-                                        <td><b class="currency-usd">${option.getMarketValue()}</b></td>
-                                        <td><b class="currency-usd">${option.getTradePrice()}</b></td>
-                                        <td><b class="currency-usd">${option.getMarketPrice()}</b></td>
+                                    @if(option.getQuantity() < 0)
+                                        <td style="font-weight: bold;">${option.getQuantity()}</td>
                                     @else
-                                        <td class="currency-usd">${option.getPositionValue()}</td>
-                                        <td class="currency-usd">${option.getMarketValue()}</td>
-                                        <td class="currency-usd">${option.getTradePrice()}</td>
-                                        <td class="currency-usd">${option.getMarketPrice()}</td>
+                                        <td>${option.getQuantity()}</td>
                                     @endif
 
-                                    <td>${option.getDaysBetween()}</td>
+                                    <td class="currency-usd">${option.getPositionValue()}</td>
+                                    <td class="currency-usd">${option.getMarketValue()}</td>
+                                    <td class="currency-usd">${option.getTradePrice()}</td>
+                                    <td class="currency-usd">${option.getMarketPrice()}</td>
+                                    <td class="currency-usd">${option.getUnRealizedProfitOrLoss()}</td>
+                                    <td>${option.getEarningDay()}</td>
                                     <td>${option.getType()}</td>
-                                    @if(OptionStatus.PENDING.equals(option.getStatus()))
-                                        <td class="badge bg-warning">${option.getStatus()}</td>
-                                    @elseif(OptionStatus.CLOSED.equals(option.getStatus()))
-                                        <td class="badge bg-success">${option.getStatus()}</td>
-                                    @else
-                                        <td class="badge bg-danger">${option.getStatus()}</td>
-                                    @endif
                                 </tr>
                             @endfor
                             </tbody>
@@ -236,15 +234,15 @@
     @if(optionHistory != null)
     <div class="row">
         <div class="col-lg-12">
-            <div class="card">
+            <div class="card recent-sales overflow-auto">
                 <div class="card-body">
                     <h5 class="card-title">Position History <span></span></h5>
 
-                    <table id="datatable" class="table table-borderless">
-                        <thead class="text-center">
-                        <tr style="cursor: pointer;">
+                    <table id="datatablePositionHistory" class="table table-striped" style="font-size: 0.85rem;">
+                        <thead>
+                        <tr>
                             <th scope="col">#</th>
-<%--                            <th scope="col">Code</th>--%>
+                            <th scope="col">Code</th>
                             <th scope="col">Symbol</th>
                             <th scope="col">TradeDate</th>
                             <th scope="col">Expiration</th>
@@ -253,33 +251,26 @@
                             <th scope="col">Value</th>
                             <th scope="col">MrktValue</th>
                             <th scope="col">Price</th>
-                            <th scope="col">Days</th>
+                            <th scope="col">Earning</th>
                             <th scope="col">Type</th>
                             <th scope="col">Status</th>
                         </tr>
                         </thead>
-                        <tbody class="text-end">
+                        <tbody>
                         @for(var option : optionHistory )
                             <tr style="cursor: pointer;">
                                 <td style="color:${option.getColor()};">${option.getId()}</td>
-<%--                                <th style="color:${option.getColor()};text-wrap: nowrap;">${option.getCode()}</th>--%>
+                                <td style="color:${option.getColor()};text-wrap: nowrap;">${option.getCode()}</td>
                                 <td class="text-uppercase">${option.getTicker()}</td>
                                 <td>${option.getTradeDateString()}</td>
                                 <td>${option.getExpirationDateString()}</td>
                                 <td>${option.getDaysLeft()}</td>
                                 <td>${option.getQuantity()}</td>
+                                <td class="currency-usd">${option.getPositionValue()}</td>
+                                <td class="currency-usd">${option.getMarketValue()}</td>
+                                <td class="currency-usd">${option.getTradePrice()}</td>
 
-                                @if(option.getTradePrice() > 0)
-                                    <td><b class="currency-usd">${option.getPositionValue()}</b></td>
-                                    <td><b class="currency-usd">${option.getMarketValue()}</b></td>
-                                    <td><b class="currency-usd">${option.getTradePrice()}</b></td>
-                                @else
-                                    <td class="currency-usd">${option.getPositionValue()}</td>
-                                    <td class="currency-usd">${option.getMarketValue()}</td>
-                                    <td class="currency-usd">${option.getTradePrice()}</td>
-                                @endif
-
-                                <td>${option.getDaysBetween()}</td>
+                                <td>${option.getEarningDay()}</td>
                                 <td>${option.getType()}</td>
                                 @if(OptionStatus.PENDING.equals(option.getStatus()))
                                     <td class="badge bg-warning">${option.getStatus()}</td>
@@ -339,6 +330,112 @@
             $('#perplexityButton').attr('href', perplexity+ticker);
         }
 
+        $('.currency-usd').each(function () {
+            var monetary_value = $(this).text();
+            var i = new Intl.NumberFormat('en-US', {
+                style: 'currency',
+                currency: 'USD',
+                maximumFractionDigits: 0
+            }).format(monetary_value);
+            $(this).text(i);
+        });
+
+        function initOpenPositionsTable() {
+            console.log('Open Positions DataTable init');
+            var groupColumnOpen = 4; // Expiration date column (0-indexed)
+
+            const tableOpen = new DataTable('#datatableOpenPositions', {
+                pageLength: -1,
+                perPageSelect: [5, 10, 15, ["All", -1]],
+                columnDefs: [{target: 1, visible: false, searchable: false}], // code hidden
+                order: [[groupColumnOpen, 'asc'], [2, 'asc']], // Expiration first, then Symbol
+                drawCallback: function (settings) {
+                    var api = this.api();
+                    var rows = api.rows({ page: 'current' }).nodes();
+                    var last = null;
+
+                    api.column(groupColumnOpen, { page: 'current' })
+                        .data()
+                        .each(function (group, i) {
+                            if (last !== group) {
+                                $(rows).eq(i).before(
+                                    '<tr class="group"><td colspan="14" style="font-weight:bold; background-color:#d7deea; color:#4154f1; padding:12px 8px; border-top:2px solid #4154f1; border-bottom:2px solid #4154f1;">' +
+                                    group +
+                                    '</td></tr>'
+                                );
+                                last = group;
+                            }
+                        });
+                }
+            });
+
+            // Interactive group header click handler
+            $('#datatableOpenPositions tbody').on('click', 'tr.group', function () {
+                var currentOrder = tableOpen.order()[0];
+                if (currentOrder[0] === groupColumnOpen && currentOrder[1] === 'asc') {
+                    tableOpen.order([[groupColumnOpen, 'desc']]).draw();
+                } else {
+                    tableOpen.order([[groupColumnOpen, 'asc']]).draw();
+                }
+            });
+
+            // Keep existing row click handler - exclude group rows
+            $('#datatableOpenPositions tbody').on('click', 'tr:not(.group)', function() {
+                const ticker = tableOpen.row(this).data()[2];
+                console.log('GET  /getPosition/' + ticker);
+                htmx.ajax('GET', '/getPosition/' + ticker, '#main');
+            });
+        }
+
+        function initPositionHistoryTable() {
+            console.log('Position History DataTable init');
+            var groupColumnHistory = 3; // TradeDate column (0-indexed)
+
+            const tableHistory = new DataTable('#datatablePositionHistory', {
+                pageLength: 500,
+                perPageSelect: [5, 10, 15, ["All", -1]],
+                columnDefs: [{target: 1, visible: false, searchable: false}], // code hidden
+                order: [[groupColumnHistory, 'desc'], [2, 'asc']], // TradeDate desc, Symbol asc
+                drawCallback: function (settings) {
+                    var api = this.api();
+                    var rows = api.rows({ page: 'current' }).nodes();
+                    var last = null;
+
+                    api.column(groupColumnHistory, { page: 'current' })
+                        .data()
+                        .each(function (group, i) {
+                            if (last !== group) {
+                                $(rows).eq(i).before(
+                                    '<tr class="group"><td colspan="13" style="font-weight:bold; background-color:#d7deea; color:#4154f1; padding:12px 8px; border-top:2px solid #4154f1; border-bottom:2px solid #4154f1;">' +
+                                    group +
+                                    '</td></tr>'
+                                );
+                                last = group;
+                            }
+                        });
+                }
+            });
+
+            // Interactive group header click handler
+            $('#datatablePositionHistory tbody').on('click', 'tr.group', function () {
+                var currentOrder = tableHistory.order()[0];
+                if (currentOrder[0] === groupColumnHistory && currentOrder[1] === 'desc') {
+                    tableHistory.order([[groupColumnHistory, 'asc'], [2, 'asc']]).draw();
+                } else {
+                    tableHistory.order([[groupColumnHistory, 'desc'], [2, 'asc']]).draw();
+                }
+            });
+
+            // Keep existing row click handler - exclude group rows
+            $('#datatablePositionHistory tbody').on('click', 'tr:not(.group)', function() {
+                const ticker = tableHistory.row(this).data()[2];
+                console.log('GET  /getPosition/' + ticker);
+                htmx.ajax('GET', '/getPosition/' + ticker, '#main');
+            });
+        }
+
+        initOpenPositionsTable();
+        initPositionHistoryTable();
         totalSeconds = 0;
     });
 </script>

@@ -2,14 +2,19 @@
 
 **Auto-generated** - Run `python scripts/update_issue_index.py` to update
 
-**Total**: 21 issues
-**Open**: 3 (14%)
-**Closed**: 18 (86%)
+**Total**: 23 issues
+**Open**: 4 (17%)
+**Closed**: 19 (83%)
 **Partial**: 0
 
 ---
 
 ## Open Issues
+
+### HIGH (1)
+
+- **[ISSUE-008](ISSUE-008-dashboard-put-premium-nan-fix.md)** - Dashboard Put Premium Displaying NaN Values
+  - Priority: HIGH | Status: OPEN | Category: Bug | Created: 2025-11-06 (Session N/A)
 
 ### MEDIUM (3)
 
@@ -60,10 +65,15 @@
   - Priority: MEDIUM | Completed: 2025-11-09 (Session Current)
 - **[ISSUE-020](ISSUE-020-trade-history-menu-separation.md)** - Trade History Menu Separation
   - Priority: HIGH | Completed: 2025-11-10 (Session 6)
+- **[ISSUE-022](ISSUE-022-position-calculator-datatables.md)** - Position Calculator DataTables Enhancement
+  - Priority: MEDIUM | Completed: 2025-11-10
 
 ---
 
 ## By Category
+
+**Bug** (1):
+  - ISSUE-008 🔴
 
 **Code Quality / Technical Debt** (4):
   - ISSUE-004 ✅, ISSUE-007 ✅, ISSUE-008 ✅, ISSUE-015 ✅
@@ -80,8 +90,8 @@
 **Feature / Code Quality** (1):
   - ISSUE-020 ✅
 
-**Feature / UX Enhancement** (1):
-  - ISSUE-021 🔴
+**Feature / UX Enhancement** (2):
+  - ISSUE-021 🔴, ISSUE-022 ✅
 
 **Feature | Developer Experience** (1):
   - ISSUE-012 ✅
