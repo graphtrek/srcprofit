@@ -2,9 +2,9 @@
 
 **Auto-generated** - Run `python scripts/update_issue_index.py` to update
 
-**Total**: 23 issues
-**Open**: 3 (13%)
-**Closed**: 20 (87%)
+**Total**: 25 issues
+**Open**: 3 (12%)
+**Closed**: 22 (88%)
 **Partial**: 0
 
 ---
@@ -64,13 +64,17 @@
   - Priority: MEDIUM | Completed: 2025-11-10
 - **[ISSUE-023](ISSUE-023-refactor-annualized-roi-calculation.md)** - Refactor calculateAndSetAnnualizedRoi Method
   - Priority: HIGH | Completed: 2025-11-11 (Session 8)
+- **[ISSUE-024](ISSUE-024-position-weighted-portfolio-calculations.md)** - Position-Weighted Portfolio Probability and ROI Calculations
+  - Priority: HIGH | Completed: 2025-11-11
+- **[ISSUE-025](ISSUE-025-time-weighted-portfolio-calculations.md)** - Time-Weighted Portfolio Calculations
+  - Priority: MEDIUM | Completed: 2025-11-11
 
 ---
 
 ## By Category
 
-**Code Quality / Technical Debt** (5):
-  - ISSUE-004 ✅, ISSUE-007 ✅, ISSUE-008 ✅, ISSUE-015 ✅, ISSUE-023 ✅
+**Code Quality / Technical Debt** (6):
+  - ISSUE-004 ✅, ISSUE-007 ✅, ISSUE-008 ✅, ISSUE-015 ✅, ISSUE-023 ✅, ISSUE-024 ✅
 
 **Documentation** (1):
   - ISSUE-013 ✅
@@ -83,6 +87,9 @@
 
 **Feature / Code Quality** (1):
   - ISSUE-020 ✅
+
+**Feature / Enhancement** (1):
+  - ISSUE-025 ✅
 
 **Feature / UX Enhancement** (2):
   - ISSUE-021 🔴, ISSUE-022 ✅

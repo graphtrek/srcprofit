@@ -185,6 +185,193 @@ public class OptionService {
         return cumulativePremiumPerDay;
     }
 
+    /**
+     * Calculate position-weighted ROI for portfolio.
+     * Weight each position's ROI by its capital at risk (positionValue * quantity).
+     * Formula: sum(roi * positionValue * quantity) / sum(positionValue * quantity)
+     *
+     * @param openPositions List of open positions
+     * @return Weighted ROI percentage, or 0 if no valid positions
+     */
+    private double calculateWeightedROI(List<PositionDto> openPositions) {
+        if (openPositions == null || openPositions.isEmpty()) {
+            return 0.0;
+        }
+
+        double totalWeightedROI = 0.0;
+        double totalCapitalAtRisk = 0.0;
+
+        for (PositionDto position : openPositions) {
+            Integer roi = position.getAnnualizedRoiPercent();
+            Double posValue = position.getPositionValue();
+            int qty = abs(position.getQuantity());
+
+            if (roi != null && posValue != null && posValue > 0) {
+                double capitalAtRisk = posValue * qty;
+                totalWeightedROI += (roi * capitalAtRisk);
+                totalCapitalAtRisk += capitalAtRisk;
+            }
+        }
+
+        if (totalCapitalAtRisk == 0) {
+            return 0.0;
+        }
+
+        double weightedROI = totalWeightedROI / totalCapitalAtRisk;
+        return round2Digits(weightedROI);
+    }
+
+    /**
+     * Calculate position-weighted probability for portfolio.
+     * Weight each position's probability by its capital at risk (positionValue * quantity).
+     * Formula: sum(probability * positionValue * quantity) / sum(positionValue * quantity)
+     *
+     * @param openPositions List of open positions
+     * @return Weighted probability (0-100), or 0 if no valid positions
+     */
+    private double calculateWeightedProbability(List<PositionDto> openPositions) {
+        if (openPositions == null || openPositions.isEmpty()) {
+            return 0.0;
+        }
+
+        double totalWeightedProbability = 0.0;
+        double totalCapitalAtRisk = 0.0;
+
+        for (PositionDto position : openPositions) {
+            Integer probability = position.getProbability();
+            Double posValue = position.getPositionValue();
+            int qty = abs(position.getQuantity());
+
+            if (probability != null && posValue != null && posValue > 0) {
+                double capitalAtRisk = posValue * qty;
+                totalWeightedProbability += (probability * capitalAtRisk);
+                totalCapitalAtRisk += capitalAtRisk;
+            }
+        }
+
+        if (totalCapitalAtRisk == 0) {
+            return 0.0;
+        }
+
+        double weightedProbability = totalWeightedProbability / totalCapitalAtRisk;
+        return round2Digits(weightedProbability);
+    }
+
+    /**
+     * Calculate normalized time weight using square root scaling.
+     * Reference: 45 DTE = 1.0 (TastyTrade mechanical trading standard)
+     *
+     * Formula: √(daysLeft / 45)
+     * - Longer-dated options have MORE uncertainty (wider distributions)
+     * - Matches volatility scaling in options theory (σ × √t)
+     * - Consistent with existing probability calculation (PositionMapper.java:158)
+     *
+     * Examples:
+     * -  7 DTE → 0.39 (61% less weight than baseline)
+     * - 30 DTE → 0.82 (18% less weight)
+     * - 45 DTE → 1.00 (baseline)
+     * - 60 DTE → 1.15 (15% more weight)
+     * - 90 DTE → 1.41 (41% more weight)
+     *
+     * @param daysLeft days remaining until expiration
+     * @return normalized time weight (0.0 if invalid)
+     */
+    private double calculateNormalizedTimeWeight(Integer daysLeft) {
+        if (daysLeft == null || daysLeft <= 0) {
+            return 0.0;
+        }
+        // Normalize to 45 DTE reference period
+        return Math.sqrt(daysLeft / 45.0);
+    }
+
+    /**
+     * Calculate time-weighted ROI for portfolio.
+     * Weights each position by: positionValue × quantity × √(daysLeft / 45)
+     *
+     * This reflects time-based uncertainty:
+     * - Longer-dated positions have wider probability distributions (more risk)
+     * - Weight scaling matches Black-Scholes volatility term (σ√t)
+     * - 45 DTE baseline aligns with TastyTrade mechanical trading standard
+     *
+     * Formula: sum(roi × posValue × qty × √(days/45)) / sum(posValue × qty × √(days/45))
+     *
+     * @param openPositions List of open positions
+     * @return Time-weighted ROI percentage, or 0 if no valid positions
+     */
+    private double calculateTimeWeightedROI(List<PositionDto> openPositions) {
+        if (openPositions == null || openPositions.isEmpty()) {
+            return 0.0;
+        }
+
+        double totalWeightedROI = 0.0;
+        double totalWeight = 0.0;
+
+        for (PositionDto position : openPositions) {
+            Integer roi = position.getAnnualizedRoiPercent();
+            Double posValue = position.getPositionValue();
+            Integer daysLeft = position.getDaysLeft();
+            int qty = abs(position.getQuantity());
+
+            if (roi != null && posValue != null && posValue > 0
+                && daysLeft != null && daysLeft > 0) {
+
+                double timeWeight = calculateNormalizedTimeWeight(daysLeft);
+                double weight = posValue * qty * timeWeight;
+
+                totalWeightedROI += (roi * weight);
+                totalWeight += weight;
+            }
+        }
+
+        if (totalWeight == 0) {
+            return 0.0;
+        }
+
+        double timeWeightedROI = totalWeightedROI / totalWeight;
+        return round2Digits(timeWeightedROI);
+    }
+
+    /**
+     * Calculate time-weighted probability for portfolio.
+     * Weights each position by: positionValue × quantity × √(daysLeft / 45)
+     *
+     * Formula: sum(prob × posValue × qty × √(days/45)) / sum(posValue × qty × √(days/45))
+     *
+     * @param openPositions List of open positions
+     * @return Time-weighted probability (0-100), or 0 if no valid positions
+     */
+    private double calculateTimeWeightedProbability(List<PositionDto> openPositions) {
+        if (openPositions == null || openPositions.isEmpty()) {
+            return 0.0;
+        }
+
+        double totalWeightedProbability = 0.0;
+        double totalWeight = 0.0;
+
+        for (PositionDto position : openPositions) {
+            Integer probability = position.getProbability();
+            Double posValue = position.getPositionValue();
+            Integer daysLeft = position.getDaysLeft();
+            int qty = abs(position.getQuantity());
+
+            if (probability != null && posValue != null && posValue > 0
+                && daysLeft != null && daysLeft > 0) {
+
+                double timeWeight = calculateNormalizedTimeWeight(daysLeft);
+                double weight = posValue * qty * timeWeight;
+
+                totalWeightedProbability += (probability * weight);
+                totalWeight += weight;
+            }
+        }
+
+        if (totalWeight == 0) {
+            return 0.0;
+        }
+
+        double timeWeightedProbability = totalWeightedProbability / totalWeight;
+        return round2Digits(timeWeightedProbability);
+    }
 
     public void calculatePosition(PositionDto positionDto, List<PositionDto> openPositions, List<PositionDto> closedPositions) {
 
@@ -288,16 +475,18 @@ public class OptionService {
 
         calculateAndSetAnnualizedRoi(positionDto);
 
+        // Calculate position-weighted portfolio metrics
         if(positionDto.getPositionValue() == 0) {
             positionDto.setProbability(0);
             positionDto.setAnnualizedRoiPercent(0);
         } else if(openPositionsSize > 0) {
+            // Use position-weighted calculations instead of simple averaging
+            // Weight by capital at risk (positionValue * quantity) to properly reflect portfolio impact
+            double weightedROI = calculateWeightedROI(openPositions);
+            double weightedProbability = calculateWeightedProbability(openPositions);
 
-            if (allpop > 0)
-                positionDto.setProbability((int) (allpop / openPositionsSize));
-
-            if (allRoi > 0)
-                positionDto.setAnnualizedRoiPercent((int) (allRoi / openPositionsSize));
+            positionDto.setAnnualizedRoiPercent((int) weightedROI);
+            positionDto.setProbability((int) weightedProbability);
         }
 
 
