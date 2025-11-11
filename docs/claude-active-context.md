@@ -1,65 +1,73 @@
 # Claude Active Context - SrcProfit
 
-**Last Updated**: 2025-11-10 (Session 7)
+**Last Updated**: 2025-11-11 (Session 8)
 **Project**: SrcProfit Options Trading Tracker
-**Phase**: Phase 1 - UI/UX Improvements
-**Focus**: Position Calculator DataTables Implementation
+**Phase**: Phase 2 - Portfolio Calculation Enhancements
+**Focus**: Position-Weighted, Time-Weighted, and Manual Recalculation Features
 
 ---
 
-## 📋 Current Session (Session 7)
+## 📋 Current Session (Session 8)
 
-**Session Number**: 7
-**Date**: 2025-11-10
+**Session Number**: 8
+**Date**: 2025-11-11
 **Status**: ✅ COMPLETE
 **Code Status**: ✅ COMMITTED AND PUSHED
 
-**Work Completed**: ISSUE-022 - Position Calculator DataTables Enhancement
-**Approach**: Implement DataTables with row grouping for Position Calculator tables
-- Open Positions: DataTables with expiration date grouping (matches Trade Log)
-- Position History: DataTables with trade date grouping
-- Both tables support sorting, filtering, pagination
-- Interactive group headers with click-to-toggle sort
-- HTMX row click handlers for position detail navigation
-- Currency formatting with Intl.NumberFormat (USD, no decimals)
+**Work Completed**:
+1. ✅ ISSUE-024 - Position-Weighted Portfolio Calculations
+2. ✅ ISSUE-025 - Time-Weighted Portfolio Calculations
+3. ✅ ISSUE-026 - Position Calculator Manual Recalculation
 
-**Changes Completed**:
-1. ✅ Created ISSUE-022 documentation (Position Calculator DataTables)
-2. ✅ Updated position-form_jte.jte with DataTables for Open Positions
-   - Changed from plain HTML table to DataTables with grouping
-   - Group by Expiration Date (column 4)
-   - Sort: Expiration asc, then Symbol asc
-   - Show all records (pageLength: -1)
-   - Added HTMX row click navigation
-3. ✅ Updated position-form_jte.jte with DataTables for Position History
-   - Changed from plain HTML table to DataTables with grouping
-   - Group by Trade Date (column 3)
-   - Sort: TradeDate desc (most recent first), then Symbol asc
-   - Show 500 records per page (pageLength: 500)
-   - Added HTMX row click navigation
-4. ✅ Implemented currency formatting (Intl.NumberFormat)
-5. ✅ Added smaller font size (0.85rem) for compact display
-6. ✅ Updated group header styling in Trade Log and Trade History for consistency
-7. ✅ All tests passing (build SUCCESS)
+**Key Features Implemented**:
+- **Capital-weighted ROI/Probability**: Weight by positionValue × quantity
+- **Time-weighted Calculations**: Apply √(daysLeft/45) scaling (45 DTE = baseline 1.0)
+- **Manual Recalculation Mode**: What-if analysis using form inputs only, no database interference
+- **Test Coverage**: 156 tests passing (no regressions)
 
 **Files Created**:
-- NEW: docs/issues/ISSUE-022-position-calculator-datatables.md
+- NEW: docs/issues/ISSUE-024-position-weighted-portfolio-calculations.md (142 lines)
+- NEW: docs/issues/ISSUE-025-time-weighted-portfolio-calculations.md (367 lines)
+- NEW: docs/issues/ISSUE-026-position-calculator-manual-recalculation.md (390 lines)
+- NEW: src/test/java/co/grtk/srcprofit/service/OptionServiceTest.java (9 tests)
+- NEW: src/test/java/co/grtk/srcprofit/service/TimeWeightedCalculationTest.java (21 tests)
+- NEW: src/test/java/co/grtk/srcprofit/service/ManualCalculationTest.java (23 tests)
 
 **Files Modified**:
-- MODIFIED: src/main/jte/position-form_jte.jte (full DataTables implementation)
-- MODIFIED: src/main/jte/tradelog_jte.jte (group header styling)
-- MODIFIED: src/main/jte/trade_history_jte.jte (group header styling)
+- MODIFIED: src/main/java/co/grtk/srcprofit/service/OptionService.java
+  - Added `calculateWeightedROI()` method (lines 196-222)
+  - Added `calculateWeightedProbability()` method (lines 232-258)
+  - Added `calculateNormalizedTimeWeight()` helper (lines 260-284)
+  - Added `calculateTimeWeightedROI()` method (lines 287-331)
+  - Added `calculateTimeWeightedProbability()` method (lines 334-373)
+  - Added `calculateSinglePosition()` method (lines 513-589)
+  - Refactored `calculatePosition()` to use weighted methods (lines 362-374)
 - MODIFIED: docs/issues/README.md (auto-generated issue index)
 
 **Commits**:
-1. feat(ISSUE-022): Implement DataTables for Position Calculator with proper grouping
-2. docs(ISSUE-022): Update issue with final implementation details
+1. be25b86 - feat(ISSUE-024,ISSUE-025): Position-weighted and time-weighted calculations
+2. cfc57d6 - feat(ISSUE-026): Position Calculator manual recalculation
 
 **All Changes**: ✅ Committed and pushed to origin/claude branch
 
 ---
 
 ## 🎯 Active Work (Last 3 Sessions)
+
+### Session 8 (2025-11-11) - ✅ COMPLETE
+- **Work**: ISSUE-024, ISSUE-025, ISSUE-026 - Portfolio Calculation Enhancements
+- **Duration**: Multiple implementations
+- **Key Achievements**:
+  - Position-weighted portfolio calculations (capital × ROI/probability)
+  - Time-weighted calculations with √(daysLeft/45) normalization (45 DTE baseline)
+  - Manual recalculation for what-if analysis scenarios
+- **Design Patterns**:
+  - Capital-weighted averaging for portfolio aggregation
+  - Normalized time weighting matching Black-Scholes volatility theory
+  - Separate calculateSinglePosition() for form-input-only calculations
+- **Test Coverage**: 53 new tests across 3 test classes, 156 total passing
+- **Status**: ✅ Complete, tested, committed and pushed
+- **Commits**: be25b86, cfc57d6
 
 ### Session 7 (2025-11-10) - ✅ COMPLETE
 - **Work**: ISSUE-022 - Position Calculator DataTables Enhancement
@@ -74,12 +82,6 @@
 - **Duration**: Previous session
 - **Key Achievement**: Separated closed positions into dedicated Trade History page
 - **Status**: ✅ Complete with dedicated controller and menu item
-
-### Session 5 (2025-11-07) - ✅ COMPLETE
-- **Work**: ISSUE-008 - Create TradeLogController and separate trade log functionality
-- **Key Achievement**: Clean separation of concerns - split PositionController into focused controllers
-- **Design Pattern**: Single Responsibility Principle (SRP)
-- **Status**: ✅ Complete, all tests passing
 
 ### Session 4 (2025-11-03) - ✅ COMPLETE
 - **Exit**: NORMAL_COMPLETE
@@ -110,25 +112,38 @@
 
 ## 📋 Current Tasks
 
-### Session 5 - ISSUE-008 Items ✅
-- [x] Create TradeLogController with focused endpoints
-- [x] Move trade log viewing logic to TradeLogController
-- [x] Create comprehensive unit tests (7 test cases)
-- [x] Remove unnecessary service dependencies:
-  - [x] Remove AlpacaService from TradeLogController
-  - [x] Remove InstrumentService from TradeLogController
-  - [x] Remove NetAssetValueService from PositionController
-- [x] Rename template: positions_jte.jte → tradelog_jte.jte
-- [x] Update all references and test assertions
-- [x] Verify build and tests passing
-- [ ] Manual commit and review (pending user approval)
-- [ ] Close ISSUE-008
+### Session 8 - Portfolio Calculation Enhancements ✅ COMPLETE
+- [x] ISSUE-024: Position-weighted portfolio calculations
+  - [x] Implement `calculateWeightedROI()` method
+  - [x] Implement `calculateWeightedProbability()` method
+  - [x] Refactor `calculatePosition()` to use weighted methods
+  - [x] Create 9 unit tests for capital-weighted calculations
+  - [x] Verify all tests passing (no regressions)
+
+- [x] ISSUE-025: Time-weighted portfolio calculations
+  - [x] Implement `calculateNormalizedTimeWeight()` helper with 45 DTE baseline
+  - [x] Implement `calculateTimeWeightedROI()` method
+  - [x] Implement `calculateTimeWeightedProbability()` method
+  - [x] Create 21 unit tests for time-weighted calculations
+  - [x] Verify all tests passing (no regressions)
+
+- [x] ISSUE-026: Manual position recalculation
+  - [x] Implement `calculateSinglePosition()` method
+  - [x] Enable what-if analysis without database interference
+  - [x] Create 23 unit tests for manual recalculation
+  - [x] Fix assertion type mismatches (Double vs Integer)
+  - [x] Fix repository method names in test verify statements
+  - [x] Fix days calculation boundary conditions (inclusive vs exclusive)
+  - [x] Verify all tests passing (156 total tests)
+
+- [x] Final commit and push to origin/claude branch
 
 ### Upcoming Work
-- [ ] Integration testing if needed
-- [ ] ISSUE-005 or next feature issue
-- [ ] Performance optimization (thread-safety review)
-- [ ] Additional controller refactoring if required
+- [ ] Review implementation with product team
+- [ ] User acceptance testing of portfolio calculations
+- [ ] ISSUE-027 or next feature issue (TBD)
+- [ ] Performance profiling if needed
+- [ ] Additional UI enhancements for time-weighted metrics display
 
 ---
 
@@ -213,6 +228,7 @@
 
 ---
 
-**Status**: ✅ SESSION 7 COMPLETE - All changes committed and pushed
-**Ready For**: Next feature or issue
-**Last Updated**: 2025-11-10 21:40
+**Status**: ✅ SESSION 8 COMPLETE - All changes committed and pushed
+**Test Results**: 156/156 tests passing (0 failures, 0 regressions)
+**Ready For**: User acceptance testing or next feature
+**Last Updated**: 2025-11-11
