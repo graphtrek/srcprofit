@@ -67,8 +67,17 @@ public class PositionController {
     public String calculatePosition(@RequestBody MultiValueMap<String, String> formData, Model model) {
         log.info("calculatePosition formData {}", formData);
         PositionDto positionDto = PositionMapper.mapFromData(formData);
+
+        // Fetch live market data from Alpaca
         getMarketValue(positionDto);
-        fillPositionForm(positionDto, model);
+
+        // Manual recalculation: use ONLY form values (ISSUE-026)
+        optionService.calculateSinglePosition(positionDto);
+
+        // Load related data for template
+        fillPositionFormData(positionDto, model);
+        model.addAttribute(MODEL_ATTRIBUTE_DTO, positionDto);
+
         return POSITION_FORM_PATH;
     }
 
@@ -78,11 +87,18 @@ public class PositionController {
         PositionDto positionDto = new PositionDto();
         positionDto.setTicker(ticker);
         getMarketValue(positionDto);
-        fillPositionForm(positionDto, model);
+        loadPositionData(positionDto, model);
         return POSITION_FORM_PATH;
     }
 
-    private void fillPositionForm(PositionDto positionDto, Model model) {
+    /**
+     * Load related data for position form (open/closed positions, instrument info)
+     * Called by both GET /getPosition/{ticker} and POST /calculatePosition
+     *
+     * This method loads database positions and calculates aggregated metrics
+     * (Used when viewing existing ticker positions, not for what-if analysis)
+     */
+    private void loadPositionData(PositionDto positionDto, Model model) {
         List<PositionDto> optionHistory = optionService.getClosedOptionsByTicker(positionDto.getTicker());
         model.addAttribute(MODEL_ATTRIBUTE_OPTION_HISTORY, optionHistory);
 
@@ -91,12 +107,32 @@ public class PositionController {
         InstrumentDto instrumentDto = instrumentService.loadInstrumentByTicker(positionDto.getTicker());
         Optional.ofNullable(instrumentDto).ifPresent(instrumentDto1 ->
                 {
-                  //  positionDto.setMarketValue(instrumentDto1.getPrice() != null ? instrumentDto1.getPrice() * 100 : 0);
                     positionDto.setEarningDate(instrumentDto.getEarningDate());
                 });
 
         optionService.calculatePosition(positionDto, openOptions, optionHistory);
         model.addAttribute(MODEL_ATTRIBUTE_DTO, positionDto);
+    }
+
+    /**
+     * Load template data without calculating aggregated metrics.
+     * Used by POST /calculatePosition for what-if analysis (ISSUE-026).
+     *
+     * Loads open/closed positions for display but does NOT recalculate metrics
+     * (metrics already calculated by calculateSinglePosition).
+     */
+    private void fillPositionFormData(PositionDto positionDto, Model model) {
+        List<PositionDto> optionHistory = optionService.getClosedOptionsByTicker(positionDto.getTicker());
+        model.addAttribute(MODEL_ATTRIBUTE_OPTION_HISTORY, optionHistory);
+
+        List<PositionDto> openOptions = optionService.getOpenOptionsByTicker(positionDto.getTicker());
+        model.addAttribute(MODEL_ATTRIBUTE_OPTION_OPEN, openOptions);
+
+        InstrumentDto instrumentDto = instrumentService.loadInstrumentByTicker(positionDto.getTicker());
+        Optional.ofNullable(instrumentDto).ifPresent(instrumentDto1 ->
+                {
+                    positionDto.setEarningDate(instrumentDto.getEarningDate());
+                });
     }
 
     /**
