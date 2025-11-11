@@ -107,7 +107,7 @@ public class PositionMapper {
         if (dto.getTradePrice() == null)
             dto.setTradePrice(Math.round(positionValue * 0.0014 * daysBetween * 100.0) / 100.0);
 
-        double tradePrice = dto.getTradePrice() + dto.getRealizedProfitOrLoss();
+        double tradePrice = dto.getTradePrice();
         OptionType type = dto.getType();
 
         if (tradePrice > 0 && type == OptionType.PUT) {

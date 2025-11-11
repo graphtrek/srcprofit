@@ -199,26 +199,30 @@ public class OptionService {
         LocalDate startDate = LocalDate.now();
         LocalDate endDate = LocalDate.now();
         double positionValue = 0.0;
+
         double marketPrice = 0.0;
         double putMarketPrice = 0.0;
         double callObligationValue = 0.0;
         double callObligationMarketValue = 0.0;
+        double allpop = 0.0;
+        double allRoi = 0.0;
+        int openPositionsSize = openPositions.size();
 
         for (PositionDto dto : closedPositions) {
             int qty = abs(dto.getQuantity());
-            if (dto.getTradeDate().isBefore(startDate)) {
-                startDate = dto.getTradeDate();
-            }
-            if (dto.getExpirationDate().isAfter(endDate)) {
-                endDate = dto.getExpirationDate();
-            }
+//            if (dto.getTradeDate().isBefore(startDate)) {
+//                startDate = dto.getTradeDate();
+//            }
+//            if (dto.getExpirationDate().isAfter(endDate)) {
+//                endDate = dto.getExpirationDate();
+//            }
             collectedPremium += dto.getTradePrice() * qty;
             realizedProfitOrLoss += dto.getTradePrice() * qty;
         }
         positionDto.setRealizedProfitOrLoss(round2Digits(realizedProfitOrLoss));
 
-        if(!openPositions.isEmpty())
-            endDate = LocalDate.now();
+//        if(!openPositions.isEmpty())
+//            endDate = LocalDate.now();
 
         for (PositionDto dto : openPositions) {
             if (dto.getTradeDate().isBefore(startDate)) {
@@ -251,6 +255,8 @@ public class OptionService {
 
             positionDto.setType(dto.getType());
             calculateAndSetAnnualizedRoi(dto);
+            allpop += dto.getProbability();
+            allRoi += dto.getAnnualizedRoiPercent();
             if(dto.getTradePrice() > 0) {
                 marketPrice += (dto.getMarketPrice() * qty);
             } else {
@@ -267,9 +273,6 @@ public class OptionService {
         if (positionDto.getUnRealizedProfitOrLoss() == null)
             positionDto.setUnRealizedProfitOrLoss(round2Digits(unRealizedProfitOrLoss));
 
-        if (positionDto.getPositionValue() == null)
-            positionDto.setPositionValue(round2Digits(positionValue));
-
         if (positionDto.getExpirationDate() == null)
             positionDto.setExpirationDate(endDate);
 
@@ -281,7 +284,24 @@ public class OptionService {
 
         positionDto.setCollectedPremium(round2Digits(collectedPremium));
 
+        if (positionDto.getPositionValue() == null)
+            positionDto.setPositionValue(round2Digits(positionValue));
+
         calculateAndSetAnnualizedRoi(positionDto);
+
+        if(positionDto.getPositionValue() == 0) {
+            positionDto.setProbability(0);
+            positionDto.setAnnualizedRoiPercent(0);
+        } else if(openPositionsSize > 0) {
+            if (allpop > 0)
+                positionDto.setProbability((int) (allpop / openPositionsSize));
+
+            if (allRoi > 0)
+                positionDto.setAnnualizedRoiPercent((int) (allRoi / openPositionsSize));
+        }
+
+
+
         positionDto.setMarketPrice(round2Digits(marketPrice));
         positionDto.setPutMarketPrice(round2Digits(putMarketPrice));
         positionDto.setCallObligationValue(round2Digits(callObligationValue));
