@@ -76,26 +76,33 @@ public class PositionMapper {
         return positionDto;
     }
 
+    /**
+     * Calculates ROI, break-even, and probability metrics for a position and sets them on the DTO.
+     *
+     * This method orchestrates the calculation of financial metrics for an options position:
+     * - daysBetween: Days from trade to expiration
+     * - daysLeft: Days from now to expiration
+     * - tradePrice: Estimated if not provided
+     * - breakEven: Calculated based on option type
+     * - annualizedRoiPercent: Annualized return on investment
+     * - probability: Probability of profit at expiration
+     *
+     * @param dto the position DTO to calculate and set metrics on
+     */
     public static void calculateAndSetAnnualizedRoi(PositionDto dto) {
-        if (dto == null ||
-                dto.getTradeDate() == null || dto.getExpirationDate() == null) {
+        if (!isValidForCalculation(dto)) {
             return;
         }
 
-        int daysBetween =
-                (int) ChronoUnit.DAYS.between(dto.getTradeDate(), dto.getExpirationDate()
-                        .plusDays(1)
-                        .atStartOfDay());
+        int daysBetween = PositionCalculationHelper.calculateDaysBetween(dto.getTradeDate(), dto.getExpirationDate());
         if (daysBetween <= 0) {
             dto.setAnnualizedRoiPercent(null);
             return;
         }
 
+        // Set time-based metrics
         dto.setDaysBetween(daysBetween);
-        int daysLeft =
-                (int) ChronoUnit.DAYS.between(LocalDateTime.now(), dto.getExpirationDate()
-                        .plusDays(1)
-                        .atStartOfDay());
+        int daysLeft = PositionCalculationHelper.calculateDaysLeft(dto.getExpirationDate());
         dto.setDaysLeft(daysLeft);
 
         if (dto.getPositionValue() == null) {
@@ -104,36 +111,39 @@ public class PositionMapper {
 
         double positionValue = dto.getPositionValue();
 
-        if (dto.getTradePrice() == null)
-            dto.setTradePrice(Math.round(positionValue * 0.0014 * daysBetween * 100.0) / 100.0);
-
-        double tradePrice = dto.getTradePrice();
-        OptionType type = dto.getType();
-
-        if (tradePrice > 0 && type == OptionType.PUT) {
-            dto.setBreakEven(round2Digits(positionValue - tradePrice));
-        } else if (tradePrice > 0 && type == OptionType.CALL) {
-            dto.setBreakEven(round2Digits(positionValue + tradePrice));
+        // Estimate trade price if not provided
+        if (dto.getTradePrice() == null) {
+            double estimatedPrice = PositionCalculationHelper.estimateTradePrice(positionValue, daysBetween);
+            dto.setTradePrice(estimatedPrice);
         }
 
-        float roiBasePrice = (float) tradePrice;
-        if (dto.getFee() != null)
-            roiBasePrice -= dto.getFee().floatValue();
+        double tradePrice = dto.getTradePrice();
 
-        float roiPerDay = abs(roiBasePrice) / daysBetween;
-        float annualizedRoi = roiPerDay * 365;
-        double roiPercent = (annualizedRoi / positionValue) * 100;
+        // Calculate break-even based on option type
+        Double breakEven = PositionCalculationHelper.calculateBreakEven(positionValue, tradePrice, dto.getType());
+        if (breakEven != null) {
+            dto.setBreakEven(breakEven);
+        }
 
-        dto.setAnnualizedRoiPercent((int) Math.round(roiPercent));
+        // Calculate annualized ROI percentage
+        int roiPercent = PositionCalculationHelper.calculateAnnualizedRoiPercent(positionValue, tradePrice, dto.getFee(), daysBetween);
+        dto.setAnnualizedRoiPercent(roiPercent);
 
-        if (dto.getMarketValue() == null)
-            return;
-        BigDecimal tradeValue = BigDecimal.valueOf(positionValue);
-        double marketMean = dto.getMarketValue(); // jelenlegi vagy várt érték
-        double dailyStdDev = marketMean * 0.05;  // napi szórás
+        // Calculate probability of profit (only if market value is available)
+        if (dto.getMarketValue() != null) {
+            int probability = PositionCalculationHelper.calculateProbability(positionValue, dto.getMarketValue(), daysBetween);
+            dto.setProbability(probability);
+        }
+    }
 
-        int probability = probabilityMarketExceedsTradeValue(tradeValue, marketMean, dailyStdDev, daysBetween);
-        dto.setProbability(probability);
+    /**
+     * Validates that the DTO has the minimum required fields for ROI calculation.
+     *
+     * @param dto the position DTO to validate
+     * @return true if DTO is valid for calculation, false otherwise
+     */
+    private static boolean isValidForCalculation(PositionDto dto) {
+        return dto != null && dto.getTradeDate() != null && dto.getExpirationDate() != null;
     }
 
 

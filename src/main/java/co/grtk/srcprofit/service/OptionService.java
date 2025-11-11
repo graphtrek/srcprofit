@@ -292,6 +292,7 @@ public class OptionService {
             positionDto.setProbability(0);
             positionDto.setAnnualizedRoiPercent(0);
         } else if(openPositionsSize > 0) {
+
             if (allpop > 0)
                 positionDto.setProbability((int) (allpop / openPositionsSize));
 
