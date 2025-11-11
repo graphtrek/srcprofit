@@ -510,6 +510,85 @@ public class OptionService {
         log.info("positionDto: {}", positionDto);
     }
 
+    /**
+     * Calculate metrics for a single position using ONLY form-input values.
+     * Does NOT load or aggregate from database positions.
+     *
+     * This method enables what-if analysis: users can enter hypothetical position parameters
+     * (trade date, expiration, trade price, position value) and see calculated metrics
+     * without database position interference.
+     *
+     * Differs from calculatePosition():
+     * - No database position loading (no openPositions, closedPositions)
+     * - No aggregation logic
+     * - No portfolio-weighted calculations
+     * - Aggregated fields (Realized P&L, etc) set to zero
+     * - Single-position focus only
+     *
+     * @param positionDto position with form input values (Trade Date, Expiration, Trade Price, Position Value, Market Value)
+     * @return positionDto with calculated metrics (Days, ROI, Probability, P&L)
+     */
+    public PositionDto calculateSinglePosition(PositionDto positionDto) {
+        // Validate required fields for calculation
+        if (positionDto == null
+            || positionDto.getTradeDate() == null
+            || positionDto.getExpirationDate() == null
+            || positionDto.getPositionValue() == null
+            || positionDto.getPositionValue() == 0) {
+            log.debug("Invalid position for calculation: missing required fields");
+            return positionDto;
+        }
+
+        // Calculate individual position metrics using form inputs
+        // This uses PositionMapper.calculateAndSetAnnualizedRoi which calculates:
+        // - daysBetween (trade date to expiration)
+        // - daysLeft (now to expiration)
+        // - tradePrice (estimated if missing)
+        // - breakEven (based on position value and trade price)
+        // - annualizedRoiPercent (ROI calculation)
+        // - probability (if market value available)
+        calculateAndSetAnnualizedRoi(positionDto);
+
+        // Clear aggregated fields that require database positions
+        // These make sense only when aggregating from multiple database positions
+        positionDto.setRealizedProfitOrLoss(0.0);
+        positionDto.setCallObligationValue(0.0);
+        positionDto.setCallObligationMarketValue(0.0);
+        positionDto.setMarketVsPositionsPercentage(0.0);
+        positionDto.setCallMarketVsObligationsPercentage(0.0);
+
+        // Set collected premium from form trade price
+        if (positionDto.getTradePrice() != null) {
+            int qty = abs(positionDto.getQuantity());
+            positionDto.setCollectedPremium(round2Digits(positionDto.getTradePrice() * qty));
+        }
+
+        // Calculate unrealized P&L (market value - position value)
+        if (positionDto.getMarketValue() != null && positionDto.getPositionValue() != null) {
+            double unRealizedPnL = positionDto.getMarketValue() - positionDto.getPositionValue();
+            positionDto.setUnRealizedProfitOrLoss(round2Digits(unRealizedPnL));
+
+            // Market price is the difference between market and position values
+            double marketPrice = unRealizedPnL;
+            positionDto.setMarketPrice(round2Digits(marketPrice));
+
+            // Covered position value represents the P&L
+            positionDto.setCoveredPositionValue(round2Digits(marketPrice));
+        }
+
+        // For single position, PUT and CALL values come from form inputs
+        if (OptionType.PUT.equals(positionDto.getType())) {
+            positionDto.setPut(round2Digits(positionDto.getTradePrice() != null ? positionDto.getTradePrice() : 0.0));
+            positionDto.setCall(0.0);
+        } else if (OptionType.CALL.equals(positionDto.getType())) {
+            positionDto.setCall(round2Digits(positionDto.getTradePrice() != null ? positionDto.getTradePrice() : 0.0));
+            positionDto.setPut(0.0);
+        }
+
+        log.info("calculateSinglePosition result: {}", positionDto);
+        return positionDto;
+    }
+
     @Transactional
     public void saveOption(OptionEntity optionEntity) {
         log.debug("Saving option {}", optionEntity);

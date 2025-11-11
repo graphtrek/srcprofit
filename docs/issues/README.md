@@ -2,9 +2,9 @@
 
 **Auto-generated** - Run `python scripts/update_issue_index.py` to update
 
-**Total**: 25 issues
+**Total**: 26 issues
 **Open**: 3 (12%)
-**Closed**: 22 (88%)
+**Closed**: 23 (88%)
 **Partial**: 0
 
 ---
@@ -68,6 +68,8 @@
   - Priority: HIGH | Completed: 2025-11-11
 - **[ISSUE-025](ISSUE-025-time-weighted-portfolio-calculations.md)** - Time-Weighted Portfolio Calculations
   - Priority: MEDIUM | Completed: 2025-11-11
+- **[ISSUE-026](ISSUE-026-position-calculator-manual-recalculation.md)** - Position Calculator Manual Recalculation
+  - Priority: HIGH | Completed: 2025-11-11
 
 ---
 
@@ -88,8 +90,8 @@
 **Feature / Code Quality** (1):
   - ISSUE-020 ✅
 
-**Feature / Enhancement** (1):
-  - ISSUE-025 ✅
+**Feature / Enhancement** (2):
+  - ISSUE-025 ✅, ISSUE-026 ✅
 
 **Feature / UX Enhancement** (2):
   - ISSUE-021 🔴, ISSUE-022 ✅
