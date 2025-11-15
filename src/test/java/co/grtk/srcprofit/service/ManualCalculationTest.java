@@ -190,28 +190,32 @@ class ManualCalculationTest {
     }
 
     @Test
-    @DisplayName("Manual Calculation: UnRealized P&L calculated")
+    @DisplayName("Manual Calculation: UnRealized P&L is preserved")
     void testManualCalculation_UnRealizedPnL() {
         PositionDto input = createPosition(10000.0, 100.0, 30);
-        input.setMarketValue(10500.0);  // Profit: 500
+        input.setMarketValue(10500.0);
+        input.setUnRealizedProfitOrLoss(500.0);  // Pre-set value
 
         PositionDto result = optionService.calculateSinglePosition(input);
 
+        // calculateSinglePosition() should NOT modify UnRealized P&L
         assertThat(result.getUnRealizedProfitOrLoss())
-                .as("UnRealized P&L should be market value - position value")
+                .as("UnRealized P&L should be preserved from input")
                 .isEqualTo(500.0);
     }
 
     @Test
-    @DisplayName("Manual Calculation: Negative UnRealized P&L")
+    @DisplayName("Manual Calculation: Negative UnRealized P&L is preserved")
     void testManualCalculation_NegativePnL() {
         PositionDto input = createPosition(10000.0, 100.0, 30);
-        input.setMarketValue(9500.0);  // Loss: -500
+        input.setMarketValue(9500.0);
+        input.setUnRealizedProfitOrLoss(-500.0);  // Pre-set value
 
         PositionDto result = optionService.calculateSinglePosition(input);
 
+        // calculateSinglePosition() should NOT modify UnRealized P&L
         assertThat(result.getUnRealizedProfitOrLoss())
-                .as("UnRealized P&L should reflect loss")
+                .as("UnRealized P&L should be preserved from input")
                 .isEqualTo(-500.0);
     }
 
@@ -228,15 +232,17 @@ class ManualCalculationTest {
     }
 
     @Test
-    @DisplayName("Manual Calculation: Market price reflects P&L")
+    @DisplayName("Manual Calculation: Market price is preserved")
     void testManualCalculation_MarketPrice() {
         PositionDto input = createPosition(10000.0, 100.0, 30);
         input.setMarketValue(10300.0);
+        input.setMarketPrice(300.0);  // Pre-set value
 
         PositionDto result = optionService.calculateSinglePosition(input);
 
+        // calculateSinglePosition() should NOT modify Market Price
         assertThat(result.getMarketPrice())
-                .as("Market price should be market value - position value")
+                .as("Market price should be preserved from input")
                 .isEqualTo(300.0);
     }
 
@@ -395,16 +401,21 @@ class ManualCalculationTest {
         // Scenario 1: Up $200
         PositionDto input1 = createPosition(10000.0, 100.0, 30);
         input1.setMarketValue(10200.0);
+        input1.setUnRealizedProfitOrLoss(200.0);  // Pre-set value
         PositionDto result1 = optionService.calculateSinglePosition(input1);
 
         // Scenario 2: Down $200
         PositionDto input2 = createPosition(10000.0, 100.0, 30);
         input2.setMarketValue(9800.0);
+        input2.setUnRealizedProfitOrLoss(-200.0);  // Pre-set value
         PositionDto result2 = optionService.calculateSinglePosition(input2);
 
-        // Market value affects P&L
+        // P&L values should be preserved (not calculated)
         assertThat(result1.getUnRealizedProfitOrLoss())
-                .as("Higher market value should have positive P&L")
-                .isGreaterThan(result2.getUnRealizedProfitOrLoss());
+                .as("Higher market value P&L should be preserved from input")
+                .isEqualTo(200.0);
+        assertThat(result2.getUnRealizedProfitOrLoss())
+                .as("Lower market value P&L should be preserved from input")
+                .isEqualTo(-200.0);
     }
 }

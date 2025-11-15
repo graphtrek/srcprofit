@@ -51,6 +51,7 @@
                           hx-trigger="submit"
                           hx-target="#main"
                           hx-swap="innerHTML"
+                          hx-scroll="false"
                           hx-on::afterRequest="console.log('calculatePosition');">
                         <input hidden name="id" id="id" type="number" value="${positionDto.getId()}" />
                         <input hidden name="parentId" id="parentId" type="number" value="${positionDto.getParentId()}" />

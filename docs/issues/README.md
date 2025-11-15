@@ -2,16 +2,21 @@
 
 **Auto-generated** - Run `python scripts/update_issue_index.py` to update
 
-**Total**: 26 issues
-**Open**: 3 (12%)
-**Closed**: 23 (88%)
+**Total**: 30 issues
+**Open**: 5 (17%)
+**Closed**: 24 (80%)
 **Partial**: 0
 
 ---
 
 ## Open Issues
 
-### MEDIUM (3)
+### HIGH (1)
+
+- **[ISSUE-008](ISSUE-008-dashboard-put-premium-nan-fix.md)** - Dashboard Put Premium Displaying NaN Values
+  - Priority: HIGH | Status: OPEN | Category: Bug | Created: 2025-11-06 (Session N/A)
+
+### MEDIUM (4)
 
 - **[ISSUE-018](ISSUE-018-datatables-row-grouping-research.md)** - Research DataTables Row Grouping for Trade Log Tables
   - Priority: MEDIUM | Status: OPEN | Category: Feature | Created: 2025-11-09 (Session N/A)
@@ -19,6 +24,8 @@
   - Priority: MEDIUM | Status: OPEN | Category: Feature | Created: 2025-11-10 (Session N/A)
 - **[ISSUE-021](ISSUE-021-trade-history-symbol-grouping.md)** - Trade History Symbol Grouping & Color Consistency
   - Priority: MEDIUM | Status: OPEN | Category: Feature / UX Enhancement | Created: 2025-11-10 (Session 6)
+- **[ISSUE-027](ISSUE-027-position-calculator-recalculate-button.md)** - Add Recalculate Button to Position Calculator
+  - Priority: MEDIUM | Status: OPEN | Category: Feature / UX Enhancement | Created: 2025-11-13 (Session Current)
 
 ---
 
@@ -70,10 +77,18 @@
   - Priority: MEDIUM | Completed: 2025-11-11
 - **[ISSUE-026](ISSUE-026-position-calculator-manual-recalculation.md)** - Position Calculator Manual Recalculation
   - Priority: HIGH | Completed: 2025-11-11
+- **[ISSUE-029](ISSUE-029-prevent-scroll-after-calculation.md)** - Prevent Page Scroll After Calculation
+  - Priority: MEDIUM | Completed: 2025-11-15
 
 ---
 
 ## By Category
+
+**Bug** (1):
+  - ISSUE-008 🔴
+
+**Bug Fix / UX Enhancement** (1):
+  - ISSUE-029 ✅
 
 **Code Quality / Technical Debt** (6):
   - ISSUE-004 ✅, ISSUE-007 ✅, ISSUE-008 ✅, ISSUE-015 ✅, ISSUE-023 ✅, ISSUE-024 ✅
@@ -84,8 +99,8 @@
 **Enhancement** (2):
   - ISSUE-011 ✅, ISSUE-016 ✅
 
-**Feature** (8):
-  - ISSUE-001 ✅, ISSUE-005 ✅, ISSUE-009 ✅, ISSUE-010 ✅, ISSUE-014 ✅, ISSUE-017 ✅, ISSUE-018 🔴, ISSUE-019 🔴
+**Feature** (9):
+  - ISSUE-001 ✅, ISSUE-005 ✅, ISSUE-009 ✅, ISSUE-010 ✅, ISSUE-014 ✅, ISSUE-017 ✅, ISSUE-018 🔴, ISSUE-019 🔴, ISSUE-028 🔴
 
 **Feature / Code Quality** (1):
   - ISSUE-020 ✅
@@ -93,8 +108,8 @@
 **Feature / Enhancement** (2):
   - ISSUE-025 ✅, ISSUE-026 ✅
 
-**Feature / UX Enhancement** (2):
-  - ISSUE-021 🔴, ISSUE-022 ✅
+**Feature / UX Enhancement** (3):
+  - ISSUE-021 🔴, ISSUE-022 ✅, ISSUE-027 🔴
 
 **Feature | Developer Experience** (1):
   - ISSUE-012 ✅
@@ -110,6 +125,6 @@
 
 ---
 
-**Last updated**: 2025-11-11
+**Last updated**: 2025-11-15
 
 **How to update**: Run `python scripts/update_issue_index.py`
