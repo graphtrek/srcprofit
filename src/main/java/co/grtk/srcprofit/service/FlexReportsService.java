@@ -135,23 +135,24 @@ public class FlexReportsService {
             String flexTradesQuery = ibkrService.getFlexWebServiceGetStatement(flexTradesResponse.getUrl(), flexTradesResponse.getReferenceCode());
             File file = new File(userHome + "/FLEX_TRADES_" + flexTradesResponse.getReferenceCode() + ".csv");
             FileUtils.write(file, flexTradesQuery, CharsetNames.CS_UTF8);
-            int csvRecords = optionService.saveCSV(flexTradesQuery);
+            var csvImportResult = optionService.saveCSV(flexTradesQuery);
             int dataFixRecords = optionService.dataFix();
 
             // Update entity with monitoring fields
             FlexStatementResponseEntity entity = flexStatementResponseRepository.findByReferenceCode(flexTradesResponse.getReferenceCode());
             if (entity != null) {
                 entity.setCsvFilePath(file.getAbsolutePath());
-                entity.setCsvRecordsCount(csvRecords);
+                entity.setCsvRecordsCount(csvImportResult.getSuccessfulRecords());
                 entity.setDataFixRecordsCount(dataFixRecords);
                 flexStatementResponseRepository.save(entity);
-                log.debug("Updated FlexStatementResponse with monitoring fields: csvRecords={}, dataFixRecords={}, csvFilePath={}",
-                        csvRecords, dataFixRecords, file.getAbsolutePath());
+                log.debug("Updated FlexStatementResponse with monitoring fields: successful={}, failed={}, skipped={}, dataFixRecords={}, csvFilePath={}",
+                        csvImportResult.getSuccessfulRecords(), csvImportResult.getFailedRecords(),
+                        csvImportResult.getSkippedRecords(), dataFixRecords, file.getAbsolutePath());
             }
 
             long elapsed = System.currentTimeMillis() - start;
             log.debug("importFlexTrades file {} written elapsed:{}", file.getAbsolutePath(), elapsed);
-            return csvRecords + "/" + dataFixRecords + "/0";
+            return csvImportResult.getSuccessfulRecords() + "/" + dataFixRecords + "/" + csvImportResult.getFailedRecords();
         } catch (InterruptedException e) {
             Thread.currentThread().interrupt();
             throw new RuntimeException("Interrupted while waiting for FLEX report", e);

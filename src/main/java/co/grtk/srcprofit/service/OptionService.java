@@ -1,6 +1,7 @@
 package co.grtk.srcprofit.service;
 
 import co.grtk.srcprofit.dto.ChartDataDto;
+import co.grtk.srcprofit.dto.CsvImportResult;
 import co.grtk.srcprofit.dto.PositionDto;
 import co.grtk.srcprofit.entity.AssetClass;
 import co.grtk.srcprofit.entity.InstrumentEntity;
@@ -651,8 +652,8 @@ public class OptionService {
     }
 
     @Transactional
-    public int saveCSV(String csv) {
-        int rowCount = 0;
+    public CsvImportResult saveCSV(String csv) {
+        CsvImportResult result = new CsvImportResult();
         long start = System.currentTimeMillis();
         try (CSVParser csvRecords = parse(csv,
                 CSVFormat.Builder.create()
@@ -662,104 +663,203 @@ public class OptionService {
                         .setTrim(true)                // whitespace-ek levágása
                         .get())) {
             for (CSVRecord csvRecord : csvRecords) {
-                String account = csvRecord.get("ClientAccountID");
-                String assetClass = csvRecord.get("AssetClass");
-                String ticker = csvRecord.get("UnderlyingSymbol");
-                String putCall = csvRecord.get("Put/Call");
-                String status = csvRecord.get("Open/CloseIndicator");
-                String tradeDate = csvRecord.get("TradeDate");
-                String expirationDate = csvRecord.get("Expiry");
-                String strike = csvRecord.get("Strike");
-                int quantity = MapperUtils.parseInt(csvRecord.get("Quantity"),1);
-                String underlyingConid = csvRecord.get("UnderlyingConid");
-                Long conid = Long.parseLong(csvRecord.get("Conid"));
-                String netCash = csvRecord.get("NetCash");
-                String code = csvRecord.get("Symbol");
-                String fifoPnlRealized = csvRecord.get("FifoPnlRealized");
+                result.setTotalRecords(result.getTotalRecords() + 1);
 
-                if (AssetClass.OPT.getCode().equals(assetClass) &&
-                        Objects.nonNull(ticker) &&
-                        Objects.nonNull(putCall) &&
-                        Objects.nonNull(status)) {
+                try {
+                    String account = csvRecord.get("ClientAccountID");
+                    String assetClass = csvRecord.get("AssetClass");
+                    String ticker = csvRecord.get("UnderlyingSymbol");
+                    String putCall = csvRecord.get("Put/Call");
+                    String status = csvRecord.get("Open/CloseIndicator");
+                    String tradeDate = csvRecord.get("TradeDate");
+                    String expirationDate = csvRecord.get("Expiry");
+                    String strike = csvRecord.get("Strike");
+                    int quantity = MapperUtils.parseInt(csvRecord.get("Quantity"),1);
+                    String underlyingConid = csvRecord.get("UnderlyingConid");
+                    String conidStr = csvRecord.get("Conid");
+                    String netCash = csvRecord.get("NetCash");
+                    String code = csvRecord.get("Symbol");
+                    String fifoPnlRealized = csvRecord.get("FifoPnlRealized");
 
-                    if("LCID1".equals(ticker))
-                        ticker = "LCID";
+                    if (AssetClass.OPT.getCode().equals(assetClass) &&
+                            Objects.nonNull(ticker) &&
+                            Objects.nonNull(putCall) &&
+                            Objects.nonNull(status)) {
 
-                    OptionStatus optionStatus = OptionStatus.PENDING;
-                    if ("C".equals(status))
-                        optionStatus = OptionStatus.CLOSED;
-                    else
-                        optionStatus = OptionStatus.OPEN;
+                        if("LCID1".equals(ticker))
+                            ticker = "LCID";
 
-                    double tradePrice = Math.round(Double.parseDouble(netCash) * 100.0) / 100.0;
+                        OptionStatus optionStatus = OptionStatus.PENDING;
+                        if ("C".equals(status))
+                            optionStatus = OptionStatus.CLOSED;
+                        else
+                            optionStatus = OptionStatus.OPEN;
 
-                    log.debug("ticker: {}, optionStatus: {}, conid:{} qty:{}, tradePrice:{}", ticker, optionStatus, conid, quantity, tradePrice);
-                    OptionEntity optionEntity = optionRepository.findByConidAndStatusAndTradePrice(conid, optionStatus,tradePrice);
-                    if( optionEntity == null)
-                        optionEntity = new OptionEntity();
-                    else
-                        continue;
-                    optionEntity.setAccount(account);
-                    optionEntity.setConid(conid);
-                    optionEntity.setStatus(optionStatus);
-                    optionEntity.setAssetClass(AssetClass.OPT);
+                        Long conid;
+                        try {
+                            conid = Long.parseLong(conidStr);
+                        } catch (NumberFormatException e) {
+                            result.incrementFailed();
+                            result.addError(new CsvImportResult.CsvRecordError(
+                                    (int)csvRecord.getRecordNumber(), "Conid", conidStr,
+                                    e.getMessage(), "NumberFormatException"));
+                            log.error("CSV Record #{} - NumberFormatException parsing 'Conid' (value: '{}'): {}",
+                                    csvRecord.getRecordNumber(), conidStr, e.getMessage());
+                            continue;
+                        }
 
-                    if ("C".equals(putCall))
-                        optionEntity.setType(OptionType.CALL);
-                    else
-                        optionEntity.setType(OptionType.PUT);
+                        double tradePrice;
+                        try {
+                            tradePrice = Math.round(Double.parseDouble(netCash) * 100.0) / 100.0;
+                        } catch (NumberFormatException e) {
+                            result.incrementFailed();
+                            result.addError(new CsvImportResult.CsvRecordError(
+                                    (int)csvRecord.getRecordNumber(), "NetCash", netCash,
+                                    e.getMessage(), "NumberFormatException"));
+                            log.error("CSV Record #{} - NumberFormatException parsing 'NetCash' (value: '{}'): {}",
+                                    csvRecord.getRecordNumber(), netCash, e.getMessage());
+                            continue;
+                        }
 
-                    optionEntity.setTradeDate(LocalDate.parse(tradeDate));
-                    optionEntity.setExpirationDate(LocalDate.parse(expirationDate));
-                    optionEntity.setPositionValue(Double.parseDouble(strike) * 100);
-                    optionEntity.setQuantity(quantity);
+                        log.debug("ticker: {}, optionStatus: {}, conid:{} qty:{}, tradePrice:{}", ticker, optionStatus, conid, quantity, tradePrice);
+                        OptionEntity optionEntity = optionRepository.findByConidAndStatusAndTradePrice(conid, optionStatus,tradePrice);
+                        if( optionEntity == null)
+                            optionEntity = new OptionEntity();
+                        else {
+                            result.incrementSkipped();
+                            continue;
+                        }
+                        optionEntity.setAccount(account);
+                        optionEntity.setConid(conid);
+                        optionEntity.setStatus(optionStatus);
+                        optionEntity.setAssetClass(AssetClass.OPT);
 
-                    InstrumentEntity instrumentEntity = instrumentRepository.findByTicker(ticker);
-                    if ((instrumentEntity == null || instrumentEntity.getId() == null)) {
-                        instrumentEntity = new InstrumentEntity();
-                        instrumentEntity.setTicker(ticker);
-                        instrumentEntity.setConid(Long.parseLong(underlyingConid));
-                        instrumentRepository.save(instrumentEntity);
+                        if ("C".equals(putCall))
+                            optionEntity.setType(OptionType.CALL);
+                        else
+                            optionEntity.setType(OptionType.PUT);
+
+                        LocalDate tradeLocalDate;
+                        try {
+                            tradeLocalDate = LocalDate.parse(tradeDate);
+                        } catch (Exception e) {
+                            result.incrementFailed();
+                            result.addError(new CsvImportResult.CsvRecordError(
+                                    (int)csvRecord.getRecordNumber(), "TradeDate", tradeDate,
+                                    e.getMessage(), e.getClass().getSimpleName()));
+                            log.error("CSV Record #{} - {} parsing 'TradeDate' (value: '{}'): {}",
+                                    csvRecord.getRecordNumber(), e.getClass().getSimpleName(), tradeDate, e.getMessage());
+                            continue;
+                        }
+
+                        LocalDate expirationLocalDate;
+                        try {
+                            expirationLocalDate = LocalDate.parse(expirationDate);
+                        } catch (Exception e) {
+                            result.incrementFailed();
+                            result.addError(new CsvImportResult.CsvRecordError(
+                                    (int)csvRecord.getRecordNumber(), "Expiry", expirationDate,
+                                    e.getMessage(), e.getClass().getSimpleName()));
+                            log.error("CSV Record #{} - {} parsing 'Expiry' (value: '{}'): {}",
+                                    csvRecord.getRecordNumber(), e.getClass().getSimpleName(), expirationDate, e.getMessage());
+                            continue;
+                        }
+
+                        optionEntity.setTradeDate(tradeLocalDate);
+                        optionEntity.setExpirationDate(expirationLocalDate);
+
+                        double strikeValue;
+                        try {
+                            strikeValue = Double.parseDouble(strike) * 100;
+                        } catch (NumberFormatException e) {
+                            result.incrementFailed();
+                            result.addError(new CsvImportResult.CsvRecordError(
+                                    (int)csvRecord.getRecordNumber(), "Strike", strike,
+                                    e.getMessage(), "NumberFormatException"));
+                            log.error("CSV Record #{} - NumberFormatException parsing 'Strike' (value: '{}'): {}",
+                                    csvRecord.getRecordNumber(), strike, e.getMessage());
+                            continue;
+                        }
+
+                        optionEntity.setPositionValue(strikeValue);
+                        optionEntity.setQuantity(quantity);
+
+                        InstrumentEntity instrumentEntity = instrumentRepository.findByTicker(ticker);
+                        if ((instrumentEntity == null || instrumentEntity.getId() == null)) {
+                            instrumentEntity = new InstrumentEntity();
+                            instrumentEntity.setTicker(ticker);
+                            try {
+                                instrumentEntity.setConid(Long.parseLong(underlyingConid));
+                            } catch (NumberFormatException e) {
+                                result.incrementFailed();
+                                result.addError(new CsvImportResult.CsvRecordError(
+                                        (int)csvRecord.getRecordNumber(), "UnderlyingConid", underlyingConid,
+                                        e.getMessage(), "NumberFormatException"));
+                                log.error("CSV Record #{} - NumberFormatException parsing 'UnderlyingConid' (value: '{}'): {}",
+                                        csvRecord.getRecordNumber(), underlyingConid, e.getMessage());
+                                continue;
+                            }
+                            instrumentRepository.save(instrumentEntity);
+                        }
+
+                        optionEntity.setTicker(ticker);
+                        optionEntity.setCode(code);
+
+                        double pnl;
+                        try {
+                            pnl = Math.round(Double.parseDouble(fifoPnlRealized) * 100.0) / 100.0;
+                        } catch (NumberFormatException e) {
+                            result.incrementFailed();
+                            result.addError(new CsvImportResult.CsvRecordError(
+                                    (int)csvRecord.getRecordNumber(), "FifoPnlRealized", fifoPnlRealized,
+                                    e.getMessage(), "NumberFormatException"));
+                            log.error("CSV Record #{} - NumberFormatException parsing 'FifoPnlRealized' (value: '{}'): {}",
+                                    csvRecord.getRecordNumber(), fifoPnlRealized, e.getMessage());
+                            continue;
+                        }
+
+                        optionEntity.setRealizedProfitOrLoss(pnl);
+                        optionEntity.setTradePrice(tradePrice);
+                        optionEntity.setInstrument(instrumentEntity);
+
+                        double marketValue = Math.round((strikeValue + tradePrice) * 100.0) / 100.0;
+                        optionEntity.setMarketValue(marketValue);
+
+                        int daysBetween =
+                                (int) ChronoUnit.DAYS.between(optionEntity.getTradeDate(), optionEntity.getExpirationDate()
+                                        .plusDays(1)
+                                        .atStartOfDay());
+                        optionEntity.setDaysBetween(daysBetween);
+
+                        int daysLeft =
+                                (int) ChronoUnit.DAYS.between(LocalDateTime.now(), optionEntity.getExpirationDate()
+                                        .plusDays(1)
+                                        .atStartOfDay());
+                        optionEntity.setDaysLeft(daysLeft);
+
+                        optionRepository.save(optionEntity);
+                        log.debug("CSV Record #{} saved: {}", csvRecord.getRecordNumber(), csvRecord.toString());
+                        result.incrementSuccessful();
+                    } else {
+                        result.incrementSkipped();
                     }
-
-                    optionEntity.setTicker(ticker);
-                    optionEntity.setCode(code);
-
-                    double pnl = Math.round(Double.parseDouble(fifoPnlRealized) * 100.0) / 100.0;
-                    optionEntity.setRealizedProfitOrLoss(pnl);
-
-
-                    optionEntity.setTradePrice(tradePrice);
-                    optionEntity.setInstrument(instrumentEntity);
-
-                    double marketValue = Math.round(((Double.parseDouble(strike) * 100) + tradePrice) * 100.0) / 100.0;
-                    optionEntity.setMarketValue(marketValue);
-
-                    int daysBetween =
-                            (int) ChronoUnit.DAYS.between(optionEntity.getTradeDate(), optionEntity.getExpirationDate()
-                                    .plusDays(1)
-                                    .atStartOfDay());
-                    optionEntity.setDaysBetween(daysBetween);
-
-                    int daysLeft =
-                            (int) ChronoUnit.DAYS.between(LocalDateTime.now(), optionEntity.getExpirationDate()
-                                    .plusDays(1)
-                                    .atStartOfDay());
-                    optionEntity.setDaysLeft(daysLeft);
-
-                    optionRepository.save(optionEntity);
-                    log.info(csvRecord.toString());
-                    rowCount++;
+                } catch (Exception e) {
+                    result.incrementFailed();
+                    result.addError(new CsvImportResult.CsvRecordError(
+                            (int)csvRecord.getRecordNumber(), "UNKNOWN", "",
+                            e.getMessage(), e.getClass().getSimpleName()));
+                    log.error("CSV Record #{} - Unexpected error: {}", csvRecord.getRecordNumber(), e.getMessage(), e);
                 }
             }
             long end = System.currentTimeMillis();
             int elapsedSeconds = (int) ((end - start) / 1000.0);
 
-            log.info("CSV file parsed in {} sec, records: {}", elapsedSeconds, csvRecords.getRecordNumber());
-            return rowCount;
+            log.info(result.getSummary());
+            log.info("CSV file parsed in {} sec, total records in file: {}", elapsedSeconds, csvRecords.getRecordNumber());
+            return result;
         } catch (Exception e) {
-            log.error("Fail to parse CSV size: {}", csv.length(),e);
-            throw new RuntimeException("Fail to parse CSV " + e.getMessage(),e);
+            log.error("CSV parsing configuration error (missing columns or malformed CSV): {}", e.getMessage(), e);
+            throw new RuntimeException("Fail to parse CSV " + e.getMessage(), e);
         }
     }
 
