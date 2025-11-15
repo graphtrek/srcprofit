@@ -36,7 +36,7 @@ public class PositionDto {
     Double realizedProfitOrLoss;
     Double unRealizedProfitOrLoss;
     Double positionValue;
-    Double coveredPositionValue;
+    Double profitOrLoss;
     Double collectedPremium;
     LocalDate positionsFromDate;
     LocalDate expirationDate;
@@ -268,12 +268,12 @@ public class PositionDto {
         this.positionsFromDate = positionsFromDate;
     }
 
-    public Double getCoveredPositionValue() {
-        return coveredPositionValue;
+    public Double getProfitOrLoss() {
+        return profitOrLoss;
     }
 
-    public void setCoveredPositionValue(Double coveredPositionValue) {
-        this.coveredPositionValue = coveredPositionValue;
+    public void setProfitOrLoss(Double profitOrLoss) {
+        this.profitOrLoss = profitOrLoss;
     }
 
     public Double getMarketVsPositionsPercentage() {
@@ -416,7 +416,7 @@ public class PositionDto {
                 ", realizedProfitOrLoss=" + realizedProfitOrLoss +
                 ", unRealizedProfitOrLoss=" + unRealizedProfitOrLoss +
                 ", positionValue=" + positionValue +
-                ", coveredPositionValue=" + coveredPositionValue +
+                ", profitOrLoss=" + profitOrLoss +
                 ", collectedPremium=" + collectedPremium +
                 ", positionsFromDate=" + positionsFromDate +
                 ", expirationDate=" + expirationDate +

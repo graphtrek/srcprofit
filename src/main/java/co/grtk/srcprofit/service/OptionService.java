@@ -524,7 +524,7 @@ public class OptionService {
         positionDto.setCallObligationValue(round2Digits(callObligationValue));
         positionDto.setCallObligationMarketValue(round2Digits(callObligationMarketValue));
 
-        positionDto.setCoveredPositionValue(round2Digits(put - putMarketPrice));
+        positionDto.setProfitOrLoss(round2Digits(put - putMarketPrice));
         double marketVsPositionsPercentage = positionValue > 0 ? ((marketValue / positionValue) * 100) - 100 : 0.0;
         positionDto.setMarketVsPositionsPercentage(round2Digits(marketVsPositionsPercentage));
 

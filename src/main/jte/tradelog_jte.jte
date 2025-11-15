@@ -102,7 +102,7 @@
                                     @if(positionDto.getPutMarketPrice() > positionDto.getPut())
                                         <span class="text-danger small pt-1 fw-bold currency-usd">- ${positionDto.getPutMarketPrice()}</span>
                                     @else
-                                        <span class="text-success small pt-1 fw-bold currency-usd">${positionDto.getCoveredPositionValue()}</span>
+                                        <span class="text-success small pt-1 fw-bold currency-usd">${positionDto.getProfitOrLoss()}</span>
                                     @endif
                                 </div>
                             </div>
@@ -227,7 +227,7 @@
                                         <td class="currency-usd">${option.getMarketPrice()}</td>
                                         <td>${option.getAnnualizedRoiPercent()}</td>
                                         <td>${option.getProbability()}</td>
-                                        <td class="currency-usd">${option.getCoveredPositionValue()}</td>
+                                        <td class="currency-usd">${option.getProfitOrLoss()}</td>
                                     </tr>
                                 @endfor
                                 </tbody>

@@ -43,9 +43,9 @@ public class PositionMapper {
         Double positionValue = parseDouble(formData.getFirst("positionValue"), null);
         Double tradePrice = parseDouble(formData.getFirst("tradePrice"), null);
 
-        // Note: coveredPositionValue is NOT extracted from form data because it's a calculated
+        // Note: profitOrLoss is NOT extracted from form data because it's a calculated
         // portfolio-level metric based on existing positions, not user input.
-        // For virtual positions, the portfolio's actual coveredPositionValue should be preserved.
+        // For virtual positions, the portfolio's actual profitOrLoss should be preserved.
         String status = formData.getFirst("status");
         String color = formData.getFirst("color");
 
@@ -58,7 +58,7 @@ public class PositionMapper {
         positionDto.setTradeDate(startDate);
         positionDto.setColor(color);
         positionDto.setAssetClass(AssetClass.OPT);
-        // Note: coveredPositionValue is NOT set from form data - it's a calculated portfolio metric
+        // Note: profitOrLoss is NOT set from form data - it's a calculated portfolio metric
         positionDto.setType(OptionType.fromCode(optionType));
 
         Optional.ofNullable(status)

@@ -112,8 +112,8 @@
                             <input id="breakEven" name="breakEven" type="number" class="form-control" step="0.01" value="${positionDto.getMarketPrice()}" readonly>
                         </div>
                         <div class="col-md-1">
-                            <label for="coveredPositionValue" class="form-label">P&L</label>
-                            <input id="coveredPositionValue" name="coveredPositionValue" type="number" class="form-control" value="${positionDto.getCoveredPositionValue()}" readonly>
+                            <label for="profitOrLoss" class="form-label">P&L</label>
+                            <input id="profitOrLoss" name="profitOrLoss" type="number" class="form-control" value="${positionDto.getProfitOrLoss()}" readonly>
                         </div>
                         <div class="col-md-1">
                             <label for="earning" class="form-label">Earning</label>
