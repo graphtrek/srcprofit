@@ -4,11 +4,14 @@ import co.grtk.srcprofit.dto.AlpacaAssetDto;
 import co.grtk.srcprofit.dto.InstrumentDto;
 import co.grtk.srcprofit.dto.PositionDto;
 import co.grtk.srcprofit.entity.InstrumentEntity;
+import co.grtk.srcprofit.entity.OptionEntity;
 import co.grtk.srcprofit.mapper.PositionMapper;
 import co.grtk.srcprofit.repository.InstrumentRepository;
 import co.grtk.srcprofit.service.AlpacaService;
 import co.grtk.srcprofit.service.InstrumentService;
 import co.grtk.srcprofit.service.OptionService;
+import co.grtk.srcprofit.service.VirtualPositionService;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.http.MediaType;
@@ -42,16 +45,22 @@ public class PositionController {
     private final InstrumentService instrumentService;
     private final AlpacaService alpacaService;
     private final InstrumentRepository instrumentRepository;
+    private final VirtualPositionService virtualPositionService;
+    private final ObjectMapper objectMapper;
 
     public PositionController(
             OptionService optionService,
             InstrumentService instrumentService,
             AlpacaService alpacaService,
-            InstrumentRepository instrumentRepository) {
+            InstrumentRepository instrumentRepository,
+            VirtualPositionService virtualPositionService,
+            ObjectMapper objectMapper) {
         this.optionService = optionService;
         this.instrumentService = instrumentService;
         this.alpacaService = alpacaService;
         this.instrumentRepository = instrumentRepository;
+        this.virtualPositionService = virtualPositionService;
+        this.objectMapper = objectMapper;
     }
 
     @GetMapping("/calculatePosition")
@@ -68,14 +77,20 @@ public class PositionController {
         log.info("calculatePosition formData {}", formData);
         PositionDto positionDto = PositionMapper.mapFromData(formData);
 
-        // Fetch live market data from Alpaca
-        getMarketValue(positionDto);
+        // Fetch live market data from Alpaca only if not already provided
+        if (positionDto.getMarketValue() == null || positionDto.getMarketValue() == 0) {
+            getMarketValue(positionDto);
+        }
 
-        // Manual recalculation: use ONLY form values (ISSUE-026)
-        optionService.calculateSinglePosition(positionDto);
+        // Create virtual position from form input (what-if scenario)
+        // Virtual positions are stored in session and included in portfolio calculations
+        OptionEntity virtualPosition = createVirtualPositionFromDto(positionDto);
+        virtualPositionService.setVirtualPosition(virtualPosition);
+        log.debug("Stored virtual position for ticker: {}", positionDto.getTicker());
 
-        // Load related data for template
-        fillPositionFormData(positionDto, model);
+        // Calculate with virtual position included in portfolio metrics (ISSUE-028)
+        // Load related data for template (including virtual position from session)
+        loadPositionDataWithVirtual(positionDto, model);
         model.addAttribute(MODEL_ATTRIBUTE_DTO, positionDto);
 
         return POSITION_FORM_PATH;
@@ -221,5 +236,98 @@ public class PositionController {
         if (instrument.getAlpacaEasyToBorrow() != null && !instrument.getAlpacaEasyToBorrow()) {
             log.warn("Asset {} is NOT easy to borrow on Alpaca - short positions may have high costs", ticker);
         }
+    }
+
+    /**
+     * Load position data WITH virtual position from session included in calculations.
+     * Used by POST /calculatePosition to show what-if scenario with portfolio impact.
+     *
+     * This method:
+     * 1. Loads open/closed positions from database
+     * 2. Includes virtual position from session (if exists)
+     * 3. Calculates position with virtual included for weighted metrics
+     */
+    private void loadPositionDataWithVirtual(PositionDto positionDto, Model model) {
+        List<PositionDto> optionHistory = optionService.getClosedOptionsByTicker(positionDto.getTicker());
+        model.addAttribute(MODEL_ATTRIBUTE_OPTION_HISTORY, optionHistory);
+
+        // Get open positions including virtual if it exists (ISSUE-028)
+        List<PositionDto> openOptions = optionService.getOpenOptionsByTickerWithVirtual(positionDto.getTicker());
+        model.addAttribute(MODEL_ATTRIBUTE_OPTION_OPEN, openOptions);
+
+        InstrumentDto instrumentDto = instrumentService.loadInstrumentByTicker(positionDto.getTicker());
+        Optional.ofNullable(instrumentDto).ifPresent(instrumentDto1 ->
+                {
+                    positionDto.setEarningDate(instrumentDto.getEarningDate());
+                });
+
+        // Calculate with virtual position included (position-weighted calculations include virtual)
+        optionService.calculatePosition(positionDto, openOptions, optionHistory);
+
+        // Add virtual position to model for separate display in "What-If Scenario" section
+        virtualPositionService.getVirtualPosition(positionDto.getTicker())
+                .ifPresent(virtualEntity -> {
+                    PositionDto virtualDto = objectMapper.convertValue(virtualEntity, PositionDto.class);
+                    virtualDto.setTicker(positionDto.getTicker());
+                    virtualDto.setVirtual(true);
+                    model.addAttribute("virtualPosition", virtualDto);
+                    log.debug("Added virtual position to model for display");
+                });
+
+        model.addAttribute(MODEL_ATTRIBUTE_DTO, positionDto);
+    }
+
+    /**
+     * Create a virtual OptionEntity from a PositionDto for session storage.
+     * Virtual positions have:
+     * - id = null (not persisted)
+     * - status = PENDING (marks as what-if)
+     * - conid = temporary ID (timestamp-based for uniqueness)
+     */
+    private OptionEntity createVirtualPositionFromDto(PositionDto positionDto) {
+        OptionEntity virtualPosition = new OptionEntity();
+
+        // Set core fields from DTO
+        virtualPosition.setTradeDate(positionDto.getTradeDate());
+        virtualPosition.setExpirationDate(positionDto.getExpirationDate());
+        virtualPosition.setTradePrice(positionDto.getTradePrice());
+        virtualPosition.setPositionValue(positionDto.getPositionValue());
+        virtualPosition.setMarketValue(positionDto.getMarketValue());
+        virtualPosition.setQuantity(positionDto.getQuantity());
+        virtualPosition.setType(positionDto.getType());
+
+        // Mark as virtual/pending (not saved to database)
+        virtualPosition.setStatus(co.grtk.srcprofit.entity.OptionStatus.PENDING);
+        virtualPosition.setId(null); // No database ID
+        virtualPosition.setConid(System.currentTimeMillis()); // Temporary unique ID
+
+        // Set instrument from ticker
+        InstrumentEntity instrument = instrumentRepository.findByTicker(positionDto.getTicker());
+        if (instrument != null) {
+            virtualPosition.setInstrument(instrument);
+        }
+
+        log.debug("Created virtual position: ticker={}, type={}, tradeDate={}, expiration={}",
+                positionDto.getTicker(), positionDto.getType(), positionDto.getTradeDate(),
+                positionDto.getExpirationDate());
+
+        return virtualPosition;
+    }
+
+    /**
+     * Clear the virtual position from session.
+     * Called when user clicks "Clear Scenario" button.
+     */
+    @PostMapping(path = "/clearVirtualPosition")
+    public String clearVirtualPosition(Model model) {
+        log.info("Clearing virtual position from session");
+        virtualPositionService.clearVirtualPosition();
+
+        // Initialize empty position form for display
+        PositionDto positionDto = new PositionDto();
+        positionDto.setTradeDate(LocalDate.now());
+        model.addAttribute(MODEL_ATTRIBUTE_DTO, positionDto);
+
+        return POSITION_FORM_PATH;
     }
 }

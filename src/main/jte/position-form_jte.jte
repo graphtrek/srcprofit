@@ -8,6 +8,7 @@
 @param String error
 @param List<PositionDto> optionHistory
 @param List<PositionDto> openOptions
+@param PositionDto virtualPosition
 
 <div class="pagetitle">
     <h1>Position Calculator</h1>
@@ -99,23 +100,23 @@
 
                         <div class="col-md-2">
                             <label for="unRealizedProfitOrLoss" class="form-label">UnRealized P&L</label>
-                            <input id="unRealizedProfitOrLoss" name="unRealizedProfitOrLoss" type="number" disabled class="form-control" step="0.01" value="${positionDto.getUnRealizedProfitOrLoss()}">
+                            <input id="unRealizedProfitOrLoss" name="unRealizedProfitOrLoss" type="number" class="form-control" step="0.01" value="${positionDto.getUnRealizedProfitOrLoss()}" readonly>
                         </div>
                         <div class="col-md-2">
                             <label for="realizedProfitOrLoss" class="form-label">Realized P&L</label>
-                            <input id="realizedProfitOrLoss" name="realizedProfitOrLoss" type="number" disabled class="form-control" step="0.01" value="${positionDto.getRealizedProfitOrLoss()}">
+                            <input id="realizedProfitOrLoss" name="realizedProfitOrLoss" type="number" class="form-control" step="0.01" value="${positionDto.getRealizedProfitOrLoss()}" readonly>
                         </div>
                         <div class="col-md-2">
                             <label for="breakEven" class="form-label">Market Price</label>
-                            <input id="breakEven" name="breakEven" type="number" disabled class="form-control" step="0.01" value="${positionDto.getMarketPrice()}">
+                            <input id="breakEven" name="breakEven" type="number" class="form-control" step="0.01" value="${positionDto.getMarketPrice()}" readonly>
                         </div>
                         <div class="col-md-1">
                             <label for="coveredPositionValue" class="form-label">P&L</label>
-                            <input id="coveredPositionValue" name="coveredPositionValue" type="number" disabled class="form-control" value="${positionDto.getCoveredPositionValue()}">
+                            <input id="coveredPositionValue" name="coveredPositionValue" type="number" class="form-control" value="${positionDto.getCoveredPositionValue()}" readonly>
                         </div>
                         <div class="col-md-1">
-                            <label for="coveredPositionValue" class="form-label">Earning</label>
-                            <input id="coveredPositionValue" name="coveredPositionValue" type="number" disabled class="form-control" value="${positionDto.getEarningDay()}">
+                            <label for="earning" class="form-label">Earning</label>
+                            <input id="earning" name="earning" type="number" disabled class="form-control" value="${positionDto.getEarningDay()}">
                         </div>
 
                         <div class="text-center">
@@ -160,6 +161,76 @@
     </div>
     <!-- Daily Snapshot Extra Large Modal End -->
 
+    <!-- What-If Scenario Section (Virtual Position) Start -->
+    @if(virtualPosition != null)
+    <div class="row">
+        <div class="col-lg-12">
+            <div class="card" style="border-left: 4px solid #ffc107; background-color: #fffbf0;">
+                <div class="card-body">
+                    <div style="display: flex; justify-content: space-between; align-items: center;">
+                        <h5 class="card-title">
+                            <i class="bi bi-lightning-fill" style="color: #ffc107;"></i>
+                            What-If Scenario
+                            <span class="badge bg-warning">VIRTUAL</span>
+                        </h5>
+                        <form hx-post="/clearVirtualPosition" hx-target="#main" hx-swap="innerHTML" style="display: inline;">
+                            <button type="submit" class="btn btn-sm btn-outline-warning">
+                                <i class="bi bi-trash"></i> Clear Scenario
+                            </button>
+                        </form>
+                    </div>
+
+                    <table class="table table-sm" style="margin-top: 15px;">
+                        <thead>
+                        <tr style="background-color: #fff9e6;">
+                            <th scope="col">Code</th>
+                            <th scope="col">Symbol</th>
+                            <th scope="col">Type</th>
+                            <th scope="col">Trade Date</th>
+                            <th scope="col">Expiration</th>
+                            <th scope="col">Days Left</th>
+                            <th scope="col">Qty</th>
+                            <th scope="col">Position Value</th>
+                            <th scope="col">Market Value</th>
+                            <th scope="col">Trade Price</th>
+                            <th scope="col">Market Price</th>
+                        </tr>
+                        </thead>
+                        <tbody>
+                        <tr style="background-color: #fffef5; font-weight: 500;">
+                            <td style="color: #ffc107; font-weight: bold;">VIRTUAL</td>
+                            <td class="text-uppercase" style="color: #ffc107; font-weight: bold;">${virtualPosition.getTicker()}</td>
+                            <td>
+                                @if(OptionType.PUT.equals(virtualPosition.getType()))
+                                    <span class="badge bg-danger">PUT</span>
+                                @else
+                                    <span class="badge bg-success">CALL</span>
+                                @endif
+                            </td>
+                            <td>${virtualPosition.getTradeDateString()}</td>
+                            <td>${virtualPosition.getExpirationDateString()}</td>
+                            <td style="color: #ff6b6b;">${virtualPosition.getDaysLeft()}</td>
+                            <td>${virtualPosition.getQuantity()}</td>
+                            <td class="currency-usd">${virtualPosition.getPositionValue()}</td>
+                            <td class="currency-usd">${virtualPosition.getMarketValue()}</td>
+                            <td class="currency-usd">${virtualPosition.getTradePrice()}</td>
+                            <td class="currency-usd">${virtualPosition.getMarketPrice()}</td>
+                        </tr>
+                        </tbody>
+                    </table>
+
+                    <div class="alert alert-info" style="margin-top: 15px; margin-bottom: 0;">
+                        <i class="bi bi-info-circle me-2"></i>
+                        <strong>Impact on Portfolio:</strong> This virtual position is included in the portfolio calculations above
+                        (weighted ROI, probability, total P&L). It will be cleared when you close this session.
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    @endif
+    <!-- What-If Scenario Section (Virtual Position) End -->
+
     <!-- Open Positions Start -->
     @if(openOptions != null)
         <div class="row">
@@ -189,6 +260,7 @@
                             </thead>
                             <tbody>
                             @for(var option : openOptions )
+                                @if(!option.getVirtual())
                                 <tr style="cursor: pointer;">
                                     @if(option.getMarketValue() < option.getPositionValue())
                                         <td style="background-color:rgb(220 53 69)">${option.getId()}</td>
@@ -218,6 +290,7 @@
                                     <td>${option.getEarningDay()}</td>
                                     <td>${option.getType()}</td>
                                 </tr>
+                                @endif
                             @endfor
                             </tbody>
                         </table>

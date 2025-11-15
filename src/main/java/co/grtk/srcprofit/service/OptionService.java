@@ -47,12 +47,14 @@ public class OptionService {
     private final OptionRepository optionRepository;
     private final InstrumentRepository instrumentRepository;
     private final ObjectMapper objectMapper;
+    private final VirtualPositionService virtualPositionService;
     Logger log = LoggerFactory.getLogger(OptionService.class);
 
-    public OptionService(OptionRepository optionRepository, InstrumentRepository instrumentRepository, ObjectMapper objectMapper) {
+    public OptionService(OptionRepository optionRepository, InstrumentRepository instrumentRepository, ObjectMapper objectMapper, VirtualPositionService virtualPositionService) {
         this.optionRepository = optionRepository;
         this.objectMapper = objectMapper;
         this.instrumentRepository = instrumentRepository;
+        this.virtualPositionService = virtualPositionService;
     }
 
     private List<PositionDto> getPositionDtos(List<OptionEntity> optionEntities) {
@@ -110,6 +112,29 @@ public class OptionService {
     public List<PositionDto> getOpenOptionsByTicker(String ticker) {
         List<OptionEntity> optionEntities = optionRepository.findAllOpenByTicker(ticker);
         return getPositionDtos(optionEntities);
+    }
+
+    /**
+     * Get open positions for a ticker, including any virtual position from the session.
+     * Virtual positions are included in portfolio calculations (weighted ROI, probability, etc.).
+     *
+     * @param ticker the ticker symbol
+     * @return list of open positions including virtual position if one exists for this ticker
+     */
+    public List<PositionDto> getOpenOptionsByTickerWithVirtual(String ticker) {
+        // Use a mutable list to support adding virtual position
+        List<PositionDto> openPositions = new ArrayList<>(getOpenOptionsByTicker(ticker));
+
+        // Add virtual position if it exists for this ticker
+        virtualPositionService.getVirtualPosition(ticker).ifPresent(virtualEntity -> {
+            PositionDto virtualDto = objectMapper.convertValue(virtualEntity, PositionDto.class);
+            virtualDto.setEarningDate(virtualEntity.getInstrument().getEarningDate());
+            virtualDto.setTicker(ticker);
+            virtualDto.setVirtual(true); // Mark as virtual for UI distinction
+            openPositions.add(virtualDto);
+        });
+
+        return openPositions;
     }
 
     public List<PositionDto> getClosedOptionsByTicker(String ticker) {
@@ -412,11 +437,13 @@ public class OptionService {
 //            endDate = LocalDate.now();
 
         for (PositionDto dto : openPositions) {
-            if (dto.getTradeDate().isBefore(startDate)) {
+            if (dto.getTradeDate().isBefore(startDate)
+                    && positionDto.getTradeDate()==null) {
                 startDate = dto.getTradeDate();
             }
 
-            if (dto.getExpirationDate().isAfter(endDate)) {
+            if (dto.getExpirationDate().isAfter(endDate)
+                    && positionDto.getExpirationDate()==null) {
                 endDate = dto.getExpirationDate();
             }
 
@@ -552,7 +579,7 @@ public class OptionService {
 
         // Clear aggregated fields that require database positions
         // These make sense only when aggregating from multiple database positions
-        positionDto.setRealizedProfitOrLoss(0.0);
+        // Note: RealizedProfitOrLoss is preserved (mapped from form data)
         positionDto.setCallObligationValue(0.0);
         positionDto.setCallObligationMarketValue(0.0);
         positionDto.setMarketVsPositionsPercentage(0.0);
@@ -564,18 +591,12 @@ public class OptionService {
             positionDto.setCollectedPremium(round2Digits(positionDto.getTradePrice() * qty));
         }
 
-        // Calculate unrealized P&L (market value - position value)
-        if (positionDto.getMarketValue() != null && positionDto.getPositionValue() != null) {
-            double unRealizedPnL = positionDto.getMarketValue() - positionDto.getPositionValue();
-            positionDto.setUnRealizedProfitOrLoss(round2Digits(unRealizedPnL));
-
-            // Market price is the difference between market and position values
-            double marketPrice = unRealizedPnL;
-            positionDto.setMarketPrice(round2Digits(marketPrice));
-
-            // Covered position value represents the P&L
-            positionDto.setCoveredPositionValue(round2Digits(marketPrice));
-        }
+        // Note: UnRealized P&L, Realized P&L, and Market Price are NOT modified here
+        // These values are mapped from form data and should be preserved as-is
+        // calculateSinglePosition() only recalculates:
+        // - daysBetween, daysLeft
+        // - annualizedRoiPercent, probability
+        // - collectedPremium (from trade price)
 
         // For single position, PUT and CALL values come from form inputs
         if (OptionType.PUT.equals(positionDto.getType())) {

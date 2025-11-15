@@ -54,6 +54,7 @@ public class PositionDto {
     Double callObligationMarketValue;
     Double callMarketVsObligationsPercentage;
     LocalDate earningDate;
+    Boolean virtual = false; // Marks position as virtual (what-if scenario)
 
     public String getTradeDateString() {
         return getLocalDateAsString(tradeDate);
@@ -381,6 +382,14 @@ public class PositionDto {
 
     public Integer getEarningDay() {
         return earningDate == null ? 999 : (int) ChronoUnit.DAYS.between(LocalDate.now(), earningDate.atStartOfDay());
+    }
+
+    public Boolean getVirtual() {
+        return virtual != null ? virtual : false;
+    }
+
+    public void setVirtual(Boolean virtual) {
+        this.virtual = virtual;
     }
 
     @Override
