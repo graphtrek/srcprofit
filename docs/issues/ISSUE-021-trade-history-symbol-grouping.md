@@ -1,7 +1,8 @@
 # ISSUE-021: Trade History Symbol Grouping & Color Consistency
 
 **Created**: 2025-11-10 (Session 6)
-**Status**: OPEN
+**Status**: CLOSED
+**Completed**: 2025-11-15
 **Priority**: MEDIUM
 **Category**: Feature / UX Enhancement
 **Blocking**: None

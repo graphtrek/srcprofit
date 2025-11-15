@@ -3,29 +3,9 @@
 **Auto-generated** - Run `python scripts/update_issue_index.py` to update
 
 **Total**: 30 issues
-**Open**: 5 (17%)
-**Closed**: 24 (80%)
+**Open**: 0 (0%)
+**Closed**: 29 (97%)
 **Partial**: 0
-
----
-
-## Open Issues
-
-### HIGH (1)
-
-- **[ISSUE-008](ISSUE-008-dashboard-put-premium-nan-fix.md)** - Dashboard Put Premium Displaying NaN Values
-  - Priority: HIGH | Status: OPEN | Category: Bug | Created: 2025-11-06 (Session N/A)
-
-### MEDIUM (4)
-
-- **[ISSUE-018](ISSUE-018-datatables-row-grouping-research.md)** - Research DataTables Row Grouping for Trade Log Tables
-  - Priority: MEDIUM | Status: OPEN | Category: Feature | Created: 2025-11-09 (Session N/A)
-- **[ISSUE-019](ISSUE-019-datatables-expiration-grouping-implementation.md)** - Implement DataTables Row Grouping by Expiration Date for Open Positions
-  - Priority: MEDIUM | Status: OPEN | Category: Feature | Created: 2025-11-10 (Session N/A)
-- **[ISSUE-021](ISSUE-021-trade-history-symbol-grouping.md)** - Trade History Symbol Grouping & Color Consistency
-  - Priority: MEDIUM | Status: OPEN | Category: Feature / UX Enhancement | Created: 2025-11-10 (Session 6)
-- **[ISSUE-027](ISSUE-027-position-calculator-recalculate-button.md)** - Add Recalculate Button to Position Calculator
-  - Priority: MEDIUM | Status: OPEN | Category: Feature / UX Enhancement | Created: 2025-11-13 (Session Current)
 
 ---
 
@@ -45,6 +25,8 @@
   - Priority: CRITICAL | Completed: 2025-11-03
 - **[ISSUE-007](ISSUE-007-hide-admin-menus-add-updatedAt.md)** - Hide Admin Menus and Add updatedAt to FlexStatementResponseEntity
   - Priority: MEDIUM | Completed: 2025-11-04
+- **[ISSUE-008](ISSUE-008-dashboard-put-premium-nan-fix.md)** - Dashboard Put Premium Displaying NaN Values
+  - Priority: HIGH | Completed: 2025-11-15
 - **[ISSUE-008](ISSUE-008-trade-log-controller-separation.md)** - Create TradeLogController and Separate Trade Log Functionality
   - Priority: MEDIUM | Completed: 2025-11-07
 - **[ISSUE-009](ISSUE-009-tradingview-chart-integration.md)** - TradingView Chart Integration Research
@@ -65,8 +47,14 @@
   - Priority: MEDIUM | Completed: 2025-11-09 (Session Current)
 - **[ISSUE-017](ISSUE-017-scheduled-earnings-refresh.md)** - Scheduled Earnings Calendar Refresh
   - Priority: MEDIUM | Completed: 2025-11-09 (Session Current)
+- **[ISSUE-018](ISSUE-018-datatables-row-grouping-research.md)** - Research DataTables Row Grouping for Trade Log Tables
+  - Priority: MEDIUM | Completed: 2025-11-15
+- **[ISSUE-019](ISSUE-019-datatables-expiration-grouping-implementation.md)** - Implement DataTables Row Grouping by Expiration Date for Open Positions
+  - Priority: MEDIUM | Completed: 2025-11-15
 - **[ISSUE-020](ISSUE-020-trade-history-menu-separation.md)** - Trade History Menu Separation
   - Priority: HIGH | Completed: 2025-11-10 (Session 6)
+- **[ISSUE-021](ISSUE-021-trade-history-symbol-grouping.md)** - Trade History Symbol Grouping & Color Consistency
+  - Priority: MEDIUM | Completed: 2025-11-15
 - **[ISSUE-022](ISSUE-022-position-calculator-datatables.md)** - Position Calculator DataTables Enhancement
   - Priority: MEDIUM | Completed: 2025-11-10
 - **[ISSUE-023](ISSUE-023-refactor-annualized-roi-calculation.md)** - Refactor calculateAndSetAnnualizedRoi Method
@@ -77,6 +65,8 @@
   - Priority: MEDIUM | Completed: 2025-11-11
 - **[ISSUE-026](ISSUE-026-position-calculator-manual-recalculation.md)** - Position Calculator Manual Recalculation
   - Priority: HIGH | Completed: 2025-11-11
+- **[ISSUE-027](ISSUE-027-position-calculator-recalculate-button.md)** - Add Recalculate Button to Position Calculator
+  - Priority: MEDIUM | Completed: 2025-11-15
 - **[ISSUE-029](ISSUE-029-prevent-scroll-after-calculation.md)** - Prevent Page Scroll After Calculation
   - Priority: MEDIUM | Completed: 2025-11-15
 
@@ -85,7 +75,7 @@
 ## By Category
 
 **Bug** (1):
-  - ISSUE-008 🔴
+  - ISSUE-008 ✅
 
 **Bug Fix / UX Enhancement** (1):
   - ISSUE-029 ✅
@@ -100,7 +90,7 @@
   - ISSUE-011 ✅, ISSUE-016 ✅
 
 **Feature** (9):
-  - ISSUE-001 ✅, ISSUE-005 ✅, ISSUE-009 ✅, ISSUE-010 ✅, ISSUE-014 ✅, ISSUE-017 ✅, ISSUE-018 🔴, ISSUE-019 🔴, ISSUE-028 🔴
+  - ISSUE-001 ✅, ISSUE-005 ✅, ISSUE-009 ✅, ISSUE-010 ✅, ISSUE-014 ✅, ISSUE-017 ✅, ISSUE-018 ✅, ISSUE-019 ✅, ISSUE-028 🔴
 
 **Feature / Code Quality** (1):
   - ISSUE-020 ✅
@@ -109,7 +99,7 @@
   - ISSUE-025 ✅, ISSUE-026 ✅
 
 **Feature / UX Enhancement** (3):
-  - ISSUE-021 🔴, ISSUE-022 ✅, ISSUE-027 🔴
+  - ISSUE-021 ✅, ISSUE-022 ✅, ISSUE-027 ✅
 
 **Feature | Developer Experience** (1):
   - ISSUE-012 ✅
