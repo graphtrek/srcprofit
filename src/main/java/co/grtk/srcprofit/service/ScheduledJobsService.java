@@ -21,8 +21,8 @@ import java.util.concurrent.TimeUnit;
  * Services are responsible for business logic; this service is responsible for scheduling.
  *
  * Scheduled Jobs:
- * 1. importFlexTrades() - Every 12 hours (FLEX API - trades report)
- * 2. importFlexNetAssetValue() - Every 12 hours (FLEX API - NAV report)
+ * 1. importFlexTrades() - Every 6 hours (FLEX API - trades report)
+ * 2. importFlexNetAssetValue() - Every 6 hours (FLEX API - NAV report)
  * 3. refreshMarketData() - Every 5 minutes (Alpaca API - market data refresh)
  * 4. refreshAlpacaAssets() - Every 12 hours (Alpaca Assets API - metadata refresh)
  * 5. refreshEarningsData() - Every 12 hours (Alpha Vantage - earnings calendar refresh)
@@ -55,7 +55,7 @@ public class ScheduledJobsService {
     /**
      * Scheduled job: Import FLEX Trades report from Interactive Brokers.
      *
-     * Schedule: Every 12 hours, starting 1 minute after application startup
+     * Schedule: Every 6 hours, starting 1 minute after application startup
      * Delegates to: FlexReportsService.importFlexTrades()
      *
      * Retry Logic:
@@ -66,7 +66,7 @@ public class ScheduledJobsService {
      * @return Status string: "{csvRecords}/{dataFixRecords}/{counter}" on success
      *         or "WAITING_FOR REPORT /{counter}" if still waiting for API response
      */
-    @Scheduled(fixedDelay = 720, initialDelay = 1, timeUnit = TimeUnit.MINUTES)
+    @Scheduled(fixedDelay = 360, initialDelay = 1, timeUnit = TimeUnit.MINUTES)
     public String importFlexTrades() {
         long startTime = System.currentTimeMillis();
         try {
@@ -85,7 +85,7 @@ public class ScheduledJobsService {
     /**
      * Scheduled job: Import FLEX Net Asset Value report from Interactive Brokers.
      *
-     * Schedule: Every 12 hours, starting 1 minute after application startup
+     * Schedule: Every 6 hours, starting 1 minute after application startup
      * Delegates to: FlexReportsService.importFlexNetAssetValue()
      *
      * Retry Logic:
@@ -96,7 +96,7 @@ public class ScheduledJobsService {
      * @return Status string: "{records}/{counter}" on success
      *         or "WAITING_FOR REPORT /{counter}" if still waiting for API response
      */
-    @Scheduled(fixedDelay = 720, initialDelay = 1, timeUnit = TimeUnit.MINUTES)
+    @Scheduled(fixedDelay = 360, initialDelay = 1, timeUnit = TimeUnit.MINUTES)
     public String importFlexNetAssetValue() {
         long startTime = System.currentTimeMillis();
         try {

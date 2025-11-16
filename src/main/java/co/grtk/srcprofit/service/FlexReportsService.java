@@ -143,6 +143,8 @@ public class FlexReportsService {
             if (entity != null) {
                 entity.setCsvFilePath(file.getAbsolutePath());
                 entity.setCsvRecordsCount(csvImportResult.getSuccessfulRecords());
+                entity.setCsvFailedRecordsCount(csvImportResult.getFailedRecords());
+                entity.setCsvSkippedRecordsCount(csvImportResult.getSkippedRecords());
                 entity.setDataFixRecordsCount(dataFixRecords);
                 flexStatementResponseRepository.save(entity);
                 log.debug("Updated FlexStatementResponse with monitoring fields: successful={}, failed={}, skipped={}, dataFixRecords={}, csvFilePath={}",
@@ -205,6 +207,8 @@ public class FlexReportsService {
             if (entity != null) {
                 entity.setCsvFilePath(file.getAbsolutePath());
                 entity.setCsvRecordsCount(records);
+                entity.setCsvFailedRecordsCount(0); // NAV import doesn't track failed records separately
+                entity.setCsvSkippedRecordsCount(0); // NAV import doesn't track skipped records
                 entity.setDataFixRecordsCount(null); // NAV reports don't have data fix
                 flexStatementResponseRepository.save(entity);
                 log.debug("Updated FlexStatementResponse with monitoring fields: csvRecords={}, csvFilePath={}",

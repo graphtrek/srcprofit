@@ -10,7 +10,7 @@ import jakarta.persistence.Table;
 import org.hibernate.annotations.UpdateTimestamp;
 import org.hibernate.annotations.SourceType;
 
-import java.time.Instant;
+import java.time.LocalDateTime;
 
 /**
  * Entity representing FLEX report API request metadata from Interactive Brokers.
@@ -108,14 +108,32 @@ public class FlexStatementResponseEntity {
     private Integer dataFixRecordsCount;
 
     /**
+     * Number of CSV records that failed during import.
+     * Records that had parsing or validation errors.
+     * Count extracted from CsvImportResult during import processing.
+     * Provides observability into import quality and error rates.
+     */
+    @Column(name = "csv_failed_records_count")
+    private Integer csvFailedRecordsCount;
+
+    /**
+     * Number of CSV records that were skipped during import.
+     * Valid records but non-OPT assets (e.g., STK records in trades).
+     * Count extracted from CsvImportResult during import processing.
+     * Helps track data filtering and asset class filtering.
+     */
+    @Column(name = "csv_skipped_records_count")
+    private Integer csvSkippedRecordsCount;
+
+    /**
      * Timestamp when this entity was last updated.
      * Automatically managed by Hibernate using database server time.
      * Useful for auditing and tracking when report records are modified.
      * Nullable to accommodate existing records without update timestamps.
      */
     @UpdateTimestamp(source = SourceType.DB)
-    @Column
-    private Instant updatedAt;
+    @Column(name = "updated_at")
+    private LocalDateTime updatedAt;
 
     // Constructors
 
@@ -222,11 +240,27 @@ public class FlexStatementResponseEntity {
         this.dataFixRecordsCount = dataFixRecordsCount;
     }
 
-    public Instant getUpdatedAt() {
+    public Integer getCsvFailedRecordsCount() {
+        return csvFailedRecordsCount;
+    }
+
+    public void setCsvFailedRecordsCount(Integer csvFailedRecordsCount) {
+        this.csvFailedRecordsCount = csvFailedRecordsCount;
+    }
+
+    public Integer getCsvSkippedRecordsCount() {
+        return csvSkippedRecordsCount;
+    }
+
+    public void setCsvSkippedRecordsCount(Integer csvSkippedRecordsCount) {
+        this.csvSkippedRecordsCount = csvSkippedRecordsCount;
+    }
+
+    public LocalDateTime getUpdatedAt() {
         return updatedAt;
     }
 
-    public void setUpdatedAt(Instant updatedAt) {
+    public void setUpdatedAt(LocalDateTime updatedAt) {
         this.updatedAt = updatedAt;
     }
 
@@ -244,6 +278,8 @@ public class FlexStatementResponseEntity {
                 ", csvFilePath='" + csvFilePath + '\'' +
                 ", csvRecordsCount=" + csvRecordsCount +
                 ", dataFixRecordsCount=" + dataFixRecordsCount +
+                ", csvFailedRecordsCount=" + csvFailedRecordsCount +
+                ", csvSkippedRecordsCount=" + csvSkippedRecordsCount +
                 ", updatedAt=" + updatedAt +
                 '}';
     }

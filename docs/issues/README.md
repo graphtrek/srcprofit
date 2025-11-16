@@ -2,9 +2,9 @@
 
 **Auto-generated** - Run `python scripts/update_issue_index.py` to update
 
-**Total**: 31 issues
+**Total**: 32 issues
 **Open**: 0 (0%)
-**Closed**: 30 (97%)
+**Closed**: 31 (97%)
 **Partial**: 0
 
 ---
@@ -71,6 +71,8 @@
   - Priority: MEDIUM | Completed: 2025-11-15
 - **[ISSUE-030](ISSUE-030-optionservice-savecsv-resilient-error-handling.md)** - OptionService saveCSV Should Not Fail on Single CSV Record
   - Priority: HIGH | Completed: 2025-11-15
+- **[ISSUE-031](ISSUE-031-flex-statement-response-tracking.md)** - Add failed/skipped records tracking to FlexStatementResponseEntity
+  - Priority: MEDIUM | Completed: 2025-11-16
 
 ---
 
@@ -85,8 +87,8 @@
 **Bug Fix / UX Enhancement** (1):
   - ISSUE-029 ✅
 
-**Code Quality / Technical Debt** (6):
-  - ISSUE-004 ✅, ISSUE-007 ✅, ISSUE-008 ✅, ISSUE-015 ✅, ISSUE-023 ✅, ISSUE-024 ✅
+**Code Quality / Technical Debt** (7):
+  - ISSUE-004 ✅, ISSUE-007 ✅, ISSUE-008 ✅, ISSUE-015 ✅, ISSUE-023 ✅, ISSUE-024 ✅, ISSUE-031 ✅
 
 **Documentation** (1):
   - ISSUE-013 ✅
@@ -120,6 +122,6 @@
 
 ---
 
-**Last updated**: 2025-11-15
+**Last updated**: 2025-11-16
 
 **How to update**: Run `python scripts/update_issue_index.py`

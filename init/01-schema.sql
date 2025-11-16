@@ -104,7 +104,10 @@ CREATE TABLE IF NOT EXISTS flex_statement_response (
     db_url VARCHAR(255),
     csv_file_path VARCHAR(255),
     csv_records_count INTEGER,
-    data_fix_records_count INTEGER
+    data_fix_records_count INTEGER,
+    csv_failed_records_count INTEGER,
+    csv_skipped_records_count INTEGER,
+    updated_at TIMESTAMP
 );
 
 CREATE INDEX IF NOT EXISTS fsr_reference_code_idx ON flex_statement_response(reference_code);
