@@ -3,18 +3,9 @@
 **Auto-generated** - Run `python scripts/update_issue_index.py` to update
 
 **Total**: 31 issues
-**Open**: 1 (3%)
-**Closed**: 29 (94%)
+**Open**: 0 (0%)
+**Closed**: 30 (97%)
 **Partial**: 0
-
----
-
-## Open Issues
-
-### HIGH (1)
-
-- **[ISSUE-030](ISSUE-030-optionservice-savecsv-resilient-error-handling.md)** - OptionService saveCSV Should Not Fail on Single CSV Record
-  - Priority: HIGH | Status: OPEN | Category: Bug Fix / Resilience Enhancement | Created: 2025-11-15
 
 ---
 
@@ -78,6 +69,8 @@
   - Priority: MEDIUM | Completed: 2025-11-15
 - **[ISSUE-029](ISSUE-029-prevent-scroll-after-calculation.md)** - Prevent Page Scroll After Calculation
   - Priority: MEDIUM | Completed: 2025-11-15
+- **[ISSUE-030](ISSUE-030-optionservice-savecsv-resilient-error-handling.md)** - OptionService saveCSV Should Not Fail on Single CSV Record
+  - Priority: HIGH | Completed: 2025-11-15
 
 ---
 
@@ -87,7 +80,7 @@
   - ISSUE-008 ✅
 
 **Bug Fix / Resilience Enhancement** (1):
-  - ISSUE-030 🔴
+  - ISSUE-030 ✅
 
 **Bug Fix / UX Enhancement** (1):
   - ISSUE-029 ✅
