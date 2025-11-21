@@ -2,9 +2,9 @@
 
 **Auto-generated** - Run `python scripts/update_issue_index.py` to update
 
-**Total**: 32 issues
+**Total**: 33 issues
 **Open**: 0 (0%)
-**Closed**: 31 (97%)
+**Closed**: 32 (97%)
 **Partial**: 0
 
 ---
@@ -73,6 +73,8 @@
   - Priority: HIGH | Completed: 2025-11-15
 - **[ISSUE-031](ISSUE-031-flex-statement-response-tracking.md)** - Add failed/skipped records tracking to FlexStatementResponseEntity
   - Priority: MEDIUM | Completed: 2025-11-16
+- **[ISSUE-032](ISSUE-032-flex-import-history-view.md)** - Create FLEX Import History View with DataTable
+  - Priority: MEDIUM | Completed: 2025-11-21
 
 ---
 
@@ -96,8 +98,8 @@
 **Enhancement** (2):
   - ISSUE-011 ✅, ISSUE-016 ✅
 
-**Feature** (9):
-  - ISSUE-001 ✅, ISSUE-005 ✅, ISSUE-009 ✅, ISSUE-010 ✅, ISSUE-014 ✅, ISSUE-017 ✅, ISSUE-018 ✅, ISSUE-019 ✅, ISSUE-028 🔴
+**Feature** (10):
+  - ISSUE-001 ✅, ISSUE-005 ✅, ISSUE-009 ✅, ISSUE-010 ✅, ISSUE-014 ✅, ISSUE-017 ✅, ISSUE-018 ✅, ISSUE-019 ✅, ISSUE-028 🔴, ISSUE-032 ✅
 
 **Feature / Code Quality** (1):
   - ISSUE-020 ✅
@@ -122,6 +124,6 @@
 
 ---
 
-**Last updated**: 2025-11-16
+**Last updated**: 2025-11-21
 
 **How to update**: Run `python scripts/update_issue_index.py`

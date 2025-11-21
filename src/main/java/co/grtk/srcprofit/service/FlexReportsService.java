@@ -1,9 +1,11 @@
 package co.grtk.srcprofit.service;
 
+import co.grtk.srcprofit.dto.FlexImportHistoryDto;
 import co.grtk.srcprofit.dto.FlexStatementResponse;
 import co.grtk.srcprofit.entity.FlexStatementResponseEntity;
 import co.grtk.srcprofit.repository.FlexStatementResponseRepository;
 import com.ctc.wstx.io.CharsetNames;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import org.apache.commons.io.FileUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -12,6 +14,8 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.io.File;
+import java.util.Comparator;
+import java.util.List;
 
 /**
  * Service for orchestrating FLEX report imports from Interactive Brokers.
@@ -54,18 +58,21 @@ public class FlexReportsService {
     private final NetAssetValueService netAssetValueService;
     private final Environment environment;
     private final FlexStatementResponseRepository flexStatementResponseRepository;
+    private final ObjectMapper objectMapper;
     private final String userHome = System.getProperty("user.home");
 
     public FlexReportsService(IbkrService ibkrService,
                               OptionService optionService,
                               NetAssetValueService netAssetValueService,
                               Environment environment,
-                              FlexStatementResponseRepository flexStatementResponseRepository) {
+                              FlexStatementResponseRepository flexStatementResponseRepository,
+                              ObjectMapper objectMapper) {
         this.ibkrService = ibkrService;
         this.optionService = optionService;
         this.netAssetValueService = netAssetValueService;
         this.environment = environment;
         this.flexStatementResponseRepository = flexStatementResponseRepository;
+        this.objectMapper = objectMapper;
     }
 
     /**
@@ -224,5 +231,30 @@ public class FlexReportsService {
         } catch (Exception e) {
             throw new RuntimeException("Failed to import FLEX Net Asset Value", e);
         }
+    }
+
+    /**
+     * Retrieves all FLEX import history records as DTOs.
+     *
+     * Loads all FlexStatementResponseEntity records from database and converts them to
+     * FlexImportHistoryDto for display purposes. Results are sorted by updatedAt descending
+     * (most recent first), with null updatedAt values appearing last.
+     *
+     * @return list of FlexImportHistoryDto sorted by updatedAt descending
+     */
+    public List<FlexImportHistoryDto> getAllImportHistory() {
+        List<FlexImportHistoryDto> history = flexStatementResponseRepository
+                .findAll()
+                .stream()
+                .map(entity -> objectMapper.convertValue(entity, FlexImportHistoryDto.class))
+                .toList();
+
+        // Sort by updatedAt descending (most recent first), null values last
+        return history.stream()
+                .sorted(Comparator.comparing(
+                        FlexImportHistoryDto::getUpdatedAt,
+                        Comparator.nullsLast(Comparator.reverseOrder())
+                ))
+                .toList();
     }
 }

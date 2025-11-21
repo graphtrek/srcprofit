@@ -166,6 +166,18 @@
                 <span>Earnings</span>
             </a>
         </li><!-- End Earnings -->
+        <li class="nav-item">
+            <a class="nav-link collapsed" href="#"
+               hx-indicator="#spinner"
+               hx-get="/flexImportHistory"
+               hx-trigger="click"
+               hx-target="#main"
+               hx-swap="innerHTML"
+               hx-on::afterRequest="console.log('GET /flexImportHistory')">
+                <i class="bi bi-clock-history"></i>
+                <span>Import History</span>
+            </a>
+        </li><!-- End FLEX Import History -->
 
         <%-- COMMENTED OUT: Admin Data section
         <li class="nav-item">
