@@ -404,6 +404,7 @@ public class OptionService {
 
         double realizedProfitOrLoss = 0.0;
         double collectedPremium = 0.0;
+        double openPositionsTradePrice = 0.0;
         double marketValue = 0.0;
 
         double unRealizedProfitOrLoss = 0.0;
@@ -451,7 +452,10 @@ public class OptionService {
 
             int qty = abs(dto.getQuantity());
             collectedPremium += dto.getTradePrice() * qty;
-            unRealizedProfitOrLoss += dto.getTradePrice() * qty;
+            openPositionsTradePrice += dto.getTradePrice() * qty;
+            // ISSUE-033: Calculate unrealized P&L using both trade price and market price (TastyTrade methodology)
+            // Unrealized P&L = (Entry Price - Current Market Price) * Quantity
+            unRealizedProfitOrLoss += (dto.getTradePrice() - dto.getMarketPrice()) * qty;
 
             if (OptionType.PUT.equals(dto.getType())) {
                 put += dto.getTradePrice() * qty;
@@ -483,7 +487,7 @@ public class OptionService {
         positionDto.setCall(round2Digits(call));
 
         if (positionDto.getTradePrice() == null)
-            positionDto.setTradePrice(round2Digits(unRealizedProfitOrLoss));
+            positionDto.setTradePrice(round2Digits(openPositionsTradePrice));
 
         if (positionDto.getUnRealizedProfitOrLoss() == null)
             positionDto.setUnRealizedProfitOrLoss(round2Digits(unRealizedProfitOrLoss));
@@ -525,7 +529,17 @@ public class OptionService {
         positionDto.setCallObligationValue(round2Digits(callObligationValue));
         positionDto.setCallObligationMarketValue(round2Digits(callObligationMarketValue));
 
-        positionDto.setProfitOrLoss(round2Digits(put - putMarketPrice));
+        // Total P&L = Realized P&L + Unrealized P&L (TastyTrade methodology)
+        // ISSUE-033: Fixed to follow standard accounting principle
+        double totalProfitOrLoss = 0.0;
+        if (positionDto.getRealizedProfitOrLoss() != null) {
+            totalProfitOrLoss += positionDto.getRealizedProfitOrLoss();
+        }
+        if (positionDto.getUnRealizedProfitOrLoss() != null) {
+            totalProfitOrLoss += positionDto.getUnRealizedProfitOrLoss();
+        }
+        positionDto.setProfitOrLoss(round2Digits(totalProfitOrLoss));
+
         double marketVsPositionsPercentage = positionValue > 0 ? ((marketValue / positionValue) * 100) - 100 : 0.0;
         positionDto.setMarketVsPositionsPercentage(round2Digits(marketVsPositionsPercentage));
 

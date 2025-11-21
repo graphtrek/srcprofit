@@ -2,9 +2,9 @@
 
 **Auto-generated** - Run `python scripts/update_issue_index.py` to update
 
-**Total**: 33 issues
+**Total**: 34 issues
 **Open**: 0 (0%)
-**Closed**: 32 (97%)
+**Closed**: 33 (97%)
 **Partial**: 0
 
 ---
@@ -75,13 +75,15 @@
   - Priority: MEDIUM | Completed: 2025-11-16
 - **[ISSUE-032](ISSUE-032-flex-import-history-view.md)** - Create FLEX Import History View with DataTable
   - Priority: MEDIUM | Completed: 2025-11-21
+- **[ISSUE-033](ISSUE-033-fix-profit-loss-calculation-tastytrade-methodology.md)** - Fix P&L Calculations to Follow TastyTrade Methodology
+  - Priority: HIGH | Completed: 2025-11-21
 
 ---
 
 ## By Category
 
-**Bug** (1):
-  - ISSUE-008 ✅
+**Bug** (2):
+  - ISSUE-008 ✅, ISSUE-033 ✅
 
 **Bug Fix / Resilience Enhancement** (1):
   - ISSUE-030 ✅
