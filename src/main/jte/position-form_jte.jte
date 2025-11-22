@@ -255,7 +255,7 @@
                                 <th scope="col">Price</th>
                                 <th scope="col">MrktPrice</th>
                                 <th scope="col">P&L</th>
-                                <th scope="col">Earning</th>
+                                <th scope="col">P.O.P</th>
                                 <th scope="col">Type</th>
                             </tr>
                             </thead>
@@ -288,7 +288,7 @@
                                     <td class="currency-usd">${option.getTradePrice()}</td>
                                     <td class="currency-usd">${option.getMarketPrice()}</td>
                                     <td class="currency-usd">${option.getUnRealizedProfitOrLoss()}</td>
-                                    <td>${option.getEarningDay()}</td>
+                                    <td>${option.getProbability()}</td>
                                     <td>${option.getType()}</td>
                                 </tr>
                                 @endif
@@ -325,7 +325,6 @@
                             <th scope="col">Value</th>
                             <th scope="col">MrktValue</th>
                             <th scope="col">Price</th>
-                            <th scope="col">Earning</th>
                             <th scope="col">Type</th>
                             <th scope="col">Status</th>
                         </tr>
@@ -343,8 +342,6 @@
                                 <td class="currency-usd">${option.getPositionValue()}</td>
                                 <td class="currency-usd">${option.getMarketValue()}</td>
                                 <td class="currency-usd">${option.getTradePrice()}</td>
-
-                                <td>${option.getEarningDay()}</td>
                                 <td>${option.getType()}</td>
                                 @if(OptionStatus.PENDING.equals(option.getStatus()))
                                     <td class="badge bg-warning">${option.getStatus()}</td>

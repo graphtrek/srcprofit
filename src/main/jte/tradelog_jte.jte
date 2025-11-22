@@ -85,14 +85,12 @@
                                 </div>
                                 <div class="ps-3">
                                     <h6 class="currency-usd">${positionDto.getPut()}</h6>
-<%--
-                                    @if(positionDto.getPut() > positionDto.getPutMarketPrice())
+                                    @if(positionDto.getPut() < positionDto.getPutMarketPrice())
                                         <span class="text-danger small pt-1 fw-bold currency-usd">${positionDto.getPutMarketPrice()}</span>
                                     @else
                                         <span class="text-success small pt-1 fw-bold currency-usd">${positionDto.getPutMarketPrice()}</span>
                                     @endif
                                     <span class="text-muted small pt-2 ps-1">Market Value</span>
---%>
                                 </div>
                             </div>
                         </div>
@@ -154,15 +152,12 @@
                                 </div>
                                 <div class="ps-3">
                                     <h6 class="currency-usd">${positionDto.getCall()}</h6>
-<%--
                                     @if(positionDto.getCall() > positionDto.getCallMarketPrice())
                                         <span class="text-success small pt-1 fw-bold currency-usd">${positionDto.getCallMarketPrice()}</span>
                                     @else
                                         <span class="text-danger small pt-1 fw-bold currency-usd">${positionDto.getCallMarketPrice()}</span>
                                     @endif
-
                                     <span class="text-muted small pt-2 ps-1">Market Value</span>
---%>
                                 </div>
                             </div>
                         </div>
@@ -253,7 +248,7 @@
                                     <th scope="col">Price</th>
                                     <th scope="col">MrktPrice</th>
                                     <th scope="col">P&L</th>
-                                    <th scope="col">Earning</th>
+                                    <th scope="col">P.O.P</th>
                                     <th scope="col">Type</th>
                                 </tr>
                                 </thead>
@@ -285,7 +280,7 @@
                                         <td class="currency-usd">${option.getTradePrice()}</td>
                                         <td class="currency-usd">${option.getMarketPrice()}</td>
                                         <td class="currency-usd">${option.getUnRealizedProfitOrLoss()}</td>
-                                        <td>${option.getEarningDay()}</td>
+                                        <td>${option.getProbability()}</td>
                                         <td>${option.getType()}</td>
                                     </tr>
                                 @endfor

@@ -55,7 +55,7 @@
                                     <th scope="col">Value</th>
                                     <th scope="col">MrktValue</th>
                                     <th scope="col">Price</th>
-                                    <th scope="col">Earning</th>
+                                    <th scope="col">P&L</th>
                                     <th scope="col">Type</th>
                                     <th scope="col">Status</th>
                                 </tr>
@@ -74,7 +74,7 @@
                                         <td class="currency-usd">${option.getMarketValue()}</td>
                                         <td class="currency-usd">${option.getTradePrice()}</td>
 
-                                        <td>${option.getEarningDay()}</td>
+                                        <td>${option.getRealizedProfitOrLoss()}</td>
                                         <td>${option.getType()}</td>
                                         @if(OptionStatus.PENDING.equals(option.getStatus()))
                                             <td class="badge bg-warning">${option.getStatus()}</td>
