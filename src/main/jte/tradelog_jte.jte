@@ -32,7 +32,7 @@
 
                             <div class="d-flex align-items-center">
                                 <div class="card-icon rounded-circle d-flex align-items-center justify-content-center">
-                                    <i class="bi bi-cart"></i>
+                                    <i class="bi bi-inbox"></i>
                                 </div>
                                 <div class="ps-3">
                                     <h6 class="currency-usd">${positionDto.getMarketValue()}</h6>
@@ -55,7 +55,7 @@
 
                             <div class="d-flex align-items-center">
                                 <div class="card-icon rounded-circle d-flex align-items-center justify-content-center">
-                                    <i class="bi bi-people"></i>
+                                    <i class="bi bi-bookmark-check"></i>
                                 </div>
                                 <div class="ps-3">
                                     <h6 class="currency-usd">${positionDto.getPositionValue()}</h6>
@@ -109,7 +109,7 @@
 
                             <div class="d-flex align-items-center">
                                 <div class="card-icon rounded-circle d-flex align-items-center justify-content-center">
-                                    <i class="bi bi-box-arrow-up"></i>
+                                    <i class="bi bi-arrow-bar-up"></i>
                                 </div>
                                 <div class="ps-3">
                                     <h6 class="currency-usd">${positionDto.getCallObligationMarketValue()}</h6>
@@ -129,7 +129,7 @@
 
                             <div class="d-flex align-items-center">
                                 <div class="card-icon rounded-circle d-flex align-items-center justify-content-center">
-                                    <i class="bi bi-people"></i>
+                                    <i class="bi bi-hand-thumbs-up"></i>
                                 </div>
                                 <div class="ps-3">
                                     <h6 class="currency-usd">${positionDto.getCallObligationValue()}</h6>

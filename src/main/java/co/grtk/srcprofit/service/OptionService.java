@@ -456,7 +456,13 @@ public class OptionService {
             openPositionsTradePrice += dto.getTradePrice() * qty;
             // ISSUE-033: Calculate unrealized P&L using both trade price and market price (TastyTrade methodology)
             // Unrealized P&L = (Entry Price - Current Market Price) * Quantity
-            unRealizedProfitOrLoss += (dto.getTradePrice() - dto.getMarketPrice()) * qty;
+
+            if(dto.getQuantity() < 0)
+                dto.setUnRealizedProfitOrLoss((abs(dto.getTradePrice()) - abs(dto.getMarketPrice())) * qty);
+            else
+                dto.setUnRealizedProfitOrLoss((abs(dto.getMarketPrice()) - abs(dto.getTradePrice())) * qty);
+
+            unRealizedProfitOrLoss += dto.getUnRealizedProfitOrLoss();
 
             if (OptionType.PUT.equals(dto.getType())) {
                 put += dto.getTradePrice() * qty;

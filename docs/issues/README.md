@@ -2,9 +2,9 @@
 
 **Auto-generated** - Run `python scripts/update_issue_index.py` to update
 
-**Total**: 34 issues
+**Total**: 35 issues
 **Open**: 0 (0%)
-**Closed**: 33 (97%)
+**Closed**: 33 (94%)
 **Partial**: 0
 
 ---
@@ -94,6 +94,9 @@
 **Code Quality / Technical Debt** (7):
   - ISSUE-004 ✅, ISSUE-007 ✅, ISSUE-008 ✅, ISSUE-015 ✅, ISSUE-023 ✅, ISSUE-024 ✅, ISSUE-031 ✅
 
+**Developer Experience** (1):
+  - ISSUE-034 🔴
+
 **Documentation** (1):
   - ISSUE-013 ✅
 
@@ -126,6 +129,6 @@
 
 ---
 
-**Last updated**: 2025-11-21
+**Last updated**: 2025-11-22
 
 **How to update**: Run `python scripts/update_issue_index.py`

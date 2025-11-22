@@ -102,7 +102,7 @@
                hx-target="#main"
                hx-swap="innerHTML"
                hx-on::afterRequest="console.log('GET /tradelog')">
-              <i class="bi bi-card-list"></i>
+              <i class="bi bi-journal-text"></i>
               <span>Trade Log</span>
             </a>
         </li><!-- End Trade Log -->
@@ -126,7 +126,7 @@
                hx-target="#main"
                hx-swap="innerHTML"
                hx-on::afterRequest="console.log('GET /calculatePosition');">
-              <i class="bi bi-card-list"></i>
+              <i class="bi bi-calculator"></i>
               <span>Position Calculator</span>
             </a>
         </li><!-- End PositionForm -->
@@ -138,7 +138,7 @@
                hx-target="#main"
                hx-swap="innerHTML"
                hx-on::afterRequest="console.log('GET /instruments')">
-              <i class="bi bi-card-list"></i>
+              <i class="bi bi-collection"></i>
               <span>Instruments</span>
             </a>
         </li><!-- End Instruments -->
@@ -150,7 +150,7 @@
                hx-target="#main"
                hx-swap="innerHTML"
                hx-on::afterRequest="console.log('GET /netAssetValues')">
-              <i class="bi bi-card-list"></i>
+              <i class="bi bi-pie-chart"></i>
               <span>Net Asset Value</span>
             </a>
         </li><!-- End Net Asset Values -->
@@ -162,7 +162,7 @@
                hx-target="#main"
                hx-swap="innerHTML"
                hx-on::afterRequest="console.log('GET /earnings')">
-                <i class="bi bi-card-list"></i>
+                <i class="bi bi-calendar"></i>
                 <span>Earnings</span>
             </a>
         </li><!-- End Earnings -->
