@@ -29,6 +29,8 @@
   <link href="//cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/5.3.3/css/bootstrap.min.css" rel="stylesheet">
   <!-- Template Main CSS File -->
   <link href="assets/css/style.css" rel="stylesheet">
+  <!-- DataTables Dark Mode Overrides -->
+  <link href="assets/css/datatables-dark.css" rel="stylesheet">
   <script src="//unpkg.com/htmx.org@2.0.7"></script>
   <script src="//code.jquery.com/jquery-3.7.1.js"></script>
   <!-- TradingView Widgets: loaded dynamically per widget -->

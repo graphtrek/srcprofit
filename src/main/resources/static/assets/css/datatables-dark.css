@@ -1,0 +1,138 @@
+/**
+ * DataTables Dark Mode Styling
+ * DataTables automatically applies dark mode when:
+ * - html has class="dark"
+ * - html has data-bs-theme="dark"
+ *
+ * DataTables Bootstrap5 theme handles most dark mode automatically.
+ * This file provides additional customizations and ensures proper styling.
+ */
+
+/* DataTables respects system color-scheme and Bootstrap's data-bs-theme */
+
+/* Custom theme variable overrides for dark mode */
+html.dark,
+html[data-bs-theme="dark"] {
+  color-scheme: dark;
+  --dt-row-selected-bg: #2d3238;
+  --dt-row-selected-text: #f1f3f5;
+}
+
+/* Ensure DataTables components work well with our custom theme */
+[data-theme="dark"] {
+  color-scheme: dark;
+  --dt-row-selected-bg: #2d3238;
+  --dt-row-selected-text: #f1f3f5;
+}
+
+/* DataTables tables inherit proper colors from Bootstrap when dark mode is active */
+html.dark table,
+html[data-bs-theme="dark"] table,
+[data-theme="dark"] table {
+  color: inherit;
+  background-color: inherit;
+}
+
+/* Ensure text is readable in DataTables controls */
+html.dark .dataTables_wrapper,
+html[data-bs-theme="dark"] .dataTables_wrapper,
+[data-theme="dark"] .dataTables_wrapper {
+  color: inherit;
+}
+
+/* Row grouping in dark mode */
+html.dark tr.group,
+html[data-bs-theme="dark"] tr.group,
+[data-theme="dark"] tr.group {
+  background-color: #2d3238 !important;
+  color: #f1f3f5 !important;
+}
+
+html.dark tr.group td,
+html[data-bs-theme="dark"] tr.group td,
+[data-theme="dark"] tr.group td {
+  color: #f1f3f5 !important;
+}
+
+html.dark tr.group:hover,
+html[data-bs-theme="dark"] tr.group:hover,
+[data-theme="dark"] tr.group:hover {
+  background-color: #6ea8fe !important;
+  opacity: 0.8;
+}
+
+/* Override light gray colors that don't work in dark mode */
+/* Target inline style background-color:#d7deea (no spaces) */
+html.dark [style*="#d7deea"],
+html[data-bs-theme="dark"] [style*="#d7deea"],
+[data-theme="dark"] [style*="#d7deea"] {
+  background-color: #2f3032 !important !important;
+}
+
+/* Override DataTables Blue color #4154f1 in dark mode - too bright */
+html.dark [style*="#4154f1"],
+html[data-bs-theme="dark"] [style*="#4154f1"],
+[data-theme="dark"] [style*="#4154f1"] {
+  color: #9ec5fe !important !important;
+}
+
+/* Fallback for elements with both colors */
+html.dark td[style*="#d7deea"],
+html[data-bs-theme="dark"] td[style*="#d7deea"],
+[data-theme="dark"] td[style*="#d7deea"],
+html.dark tr[style*="#d7deea"],
+html[data-bs-theme="dark"] tr[style*="#d7deea"],
+[data-theme="dark"] tr[style*="#d7deea"] {
+  background-color: #2f3032 !important;
+  color: #9ec5fe !important;
+}
+
+/* Override Bootstrap's light row styling in dark mode */
+html.dark .table-light,
+html[data-bs-theme="dark"] .table-light,
+[data-theme="dark"] .table-light {
+  background-color: #212529 !important;
+  color: #f1f3f5 !important;
+}
+
+html.dark .table-light tbody,
+html[data-bs-theme="dark"] .table-light tbody,
+[data-theme="dark"] .table-light tbody {
+  background-color: #212529 !important;
+}
+
+/* Fix any remaining light backgrounds in DataTables */
+html.dark .dataTables_wrapper .dataTable tbody tr,
+html[data-bs-theme="dark"] .dataTables_wrapper .dataTable tbody tr,
+[data-theme="dark"] .dataTables_wrapper .dataTable tbody tr {
+  background-color: #212529 !important;
+}
+
+/* Override black text colors in DataTables for dark mode */
+html.dark [style*="color: black"],
+html[data-bs-theme="dark"] [style*="color: black"],
+[data-theme="dark"] [style*="color: black"] {
+  color: #f1f3f5 !important;
+}
+
+html.dark [style*="color:black"],
+html[data-bs-theme="dark"] [style*="color:black"],
+[data-theme="dark"] [style*="color:black"] {
+  color: #f1f3f5 !important;
+}
+
+/* Override color: rgb(0, 0, 0) */
+html.dark [style*="color: rgb(0, 0, 0)"],
+html[data-bs-theme="dark"] [style*="color: rgb(0, 0, 0)"],
+[data-theme="dark"] [style*="color: rgb(0, 0, 0)"] {
+  color: #f1f3f5 !important;
+}
+
+/* Smooth theme transitions */
+html,
+html.dark,
+html[data-bs-theme],
+table,
+.dataTables_wrapper {
+  transition: background-color 0.3s ease, color 0.3s ease;
+}

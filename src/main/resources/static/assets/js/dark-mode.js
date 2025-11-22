@@ -1,6 +1,7 @@
 /**
  * Dark Mode Toggle
  * Manages dark/light theme switching with localStorage persistence
+ * Supports both custom data-theme and Bootstrap's data-bs-theme
  */
 
 (function() {
@@ -9,20 +10,17 @@
   const LIGHT_THEME = 'light';
 
   /**
-   * Get current theme from localStorage or system preference
+   * Get current theme from localStorage
+   * Default to LIGHT theme (never use system preference)
    */
   function getCurrentTheme() {
-    // Check localStorage first
+    // Check localStorage first - only source of truth for stored preference
     const stored = localStorage.getItem(THEME_KEY);
     if (stored) {
       return stored;
     }
 
-    // Check system preference
-    if (window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches) {
-      return DARK_THEME;
-    }
-
+    // Default to light theme - no system preference auto-detection
     return LIGHT_THEME;
   }
 
@@ -33,13 +31,25 @@
     const html = document.documentElement;
 
     if (theme === DARK_THEME) {
+      // For custom dark mode
       html.setAttribute('data-theme', DARK_THEME);
+      // For Bootstrap 5.3+ DataTables dark mode
+      html.setAttribute('data-bs-theme', DARK_THEME);
+      // For DataTables default dark mode
+      html.classList.add('dark');
     } else {
+      // For custom dark mode
       html.removeAttribute('data-theme');
+      // For Bootstrap 5.3+ DataTables dark mode
+      html.removeAttribute('data-bs-theme');
+      // For DataTables default dark mode
+      html.classList.remove('dark');
     }
 
     localStorage.setItem(THEME_KEY, theme);
     updateThemeIcon(theme);
+    updateTradingViewTheme(theme);
+    updateApexChartsTheme(theme);
   }
 
   /**
@@ -57,6 +67,68 @@
       icon.classList.remove('bi-sun');
       icon.classList.add('bi-moon');
     }
+  }
+
+  /**
+   * Update TradingView widgets to match theme
+   */
+  function updateTradingViewTheme(theme) {
+    // TradingView uses data-theme attribute on the widget containers
+    const tvWidgets = document.querySelectorAll('[data-tradingview-symbol]');
+
+    tvWidgets.forEach(widget => {
+      // Set the theme attribute for TradingView
+      if (theme === DARK_THEME) {
+        widget.setAttribute('data-tradingview-theme', 'dark');
+      } else {
+        widget.setAttribute('data-tradingview-theme', 'light');
+      }
+    });
+  }
+
+  /**
+   * Update ApexCharts to match theme
+   */
+  function updateApexChartsTheme(theme) {
+    if (typeof ApexCharts === 'undefined') return;
+
+    // Get all ApexCharts instances
+    const charts = document.querySelectorAll('[data-apexcharts], .apexcharts-canvas');
+
+    charts.forEach(chartEl => {
+      // Find the ApexCharts instance for this element
+      const chart = window.ApexCharts?.getChartByID?.(chartEl.id);
+      if (!chart) return;
+
+      // Dark mode color palette - better visibility on dark backgrounds
+      const darkColors = theme === DARK_THEME ? {
+        colors: ['#6ea896', '#ffb74d', '#6ea8fe', '#9ec5fe', '#ffd966', '#6edff6'],
+        foreColor: '#f1f3f5'
+      } : {
+        colors: ['#2eca6a', '#ff771d', '#4154f1', '#717ff5', '#ffc107', '#17a2b8'],
+        foreColor: '#444444'
+      };
+
+      const options = {
+        theme: theme === DARK_THEME ? 'dark' : 'light',
+        chart: {
+          foreColor: darkColors.foreColor
+        },
+        colors: darkColors.colors,
+        plotOptions: {
+          radialBar: {
+            track: {
+              background: theme === DARK_THEME ? '#2d3238' : '#f6f9ff'
+            }
+          }
+        },
+        stroke: {
+          colors: [darkColors.foreColor]
+        }
+      };
+
+      chart.updateOptions(options, false);
+    });
   }
 
   /**
