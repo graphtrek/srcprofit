@@ -416,6 +416,7 @@ public class OptionService {
 
         double marketPrice = 0.0;
         double putMarketPrice = 0.0;
+        double callMarketPrice = 0.0;
         double callObligationValue = 0.0;
         double callObligationMarketValue = 0.0;
         double allpop = 0.0;
@@ -466,6 +467,7 @@ public class OptionService {
                 }
             } else {
                 call += dto.getTradePrice() * qty;
+                callMarketPrice += dto.getMarketPrice();
                 if (dto.getTradePrice() >= 0) { //CALL SELL
                     callObligationMarketValue += dto.getMarketValue() * qty;
                     callObligationValue += dto.getPositionValue() * qty;
@@ -526,6 +528,7 @@ public class OptionService {
 
         positionDto.setMarketPrice(round2Digits(marketPrice));
         positionDto.setPutMarketPrice(round2Digits(putMarketPrice));
+        positionDto.setCallMarketPrice(round2Digits(callMarketPrice));
         positionDto.setCallObligationValue(round2Digits(callObligationValue));
         positionDto.setCallObligationMarketValue(round2Digits(callObligationMarketValue));
 

@@ -36,15 +36,6 @@
                                 </div>
                                 <div class="ps-3">
                                     <h6 class="currency-usd">${positionDto.getMarketValue()}</h6>
-                                    @if(positionDto.getMarketVsPositionsPercentage() > 0)
-                                        <span class="text-success small pt-1 fw-bold">+ ${positionDto.getMarketVsPositionsPercentage()} %</span> /
-                                        <span class="text-success small pt-1 fw-bold currency-usd">${positionDto.getMarketValue() - positionDto.getPositionValue()}</span>
-                                        <span class="text-muted small pt-2 ps-1">Covered</span>
-                                    @else
-                                        <span class="text-danger small pt-1 fw-bold">${positionDto.getMarketVsPositionsPercentage()} %</span> /
-                                        <span class="text-danger small pt-1 fw-bold currency-usd">${positionDto.getPositionValue() - positionDto.getMarketValue()}</span>
-                                        <span class="text-muted small pt-2 ps-1">Covered</span>
-                                    @endif
                                  </div>
                             </div>
                         </div>
@@ -94,16 +85,14 @@
                                 </div>
                                 <div class="ps-3">
                                     <h6 class="currency-usd">${positionDto.getPut()}</h6>
-                                    <span class="text-muted small pt-2 ps-1">PUT</span>
-                                    <span class="text-danger small pt-1 fw-bold currency-usd">${positionDto.getPut()}</span>
-                                    <span class="text-muted small pt-2 ps-1">/</span>
-                                    <span class="text-danger small pt-1 fw-bold currency-usd">${positionDto.getPutMarketPrice()}</span>
-                                    <span class="text-muted small pt-2 ps-1">/</span>
-                                    @if(positionDto.getPutMarketPrice() > positionDto.getPut())
-                                        <span class="text-danger small pt-1 fw-bold currency-usd">- ${positionDto.getPutMarketPrice()}</span>
+<%--
+                                    @if(positionDto.getPut() > positionDto.getPutMarketPrice())
+                                        <span class="text-danger small pt-1 fw-bold currency-usd">${positionDto.getPutMarketPrice()}</span>
                                     @else
-                                        <span class="text-success small pt-1 fw-bold currency-usd">${positionDto.getProfitOrLoss()}</span>
+                                        <span class="text-success small pt-1 fw-bold currency-usd">${positionDto.getPutMarketPrice()}</span>
                                     @endif
+                                    <span class="text-muted small pt-2 ps-1">Market Value</span>
+--%>
                                 </div>
                             </div>
                         </div>
@@ -124,15 +113,6 @@
                                 </div>
                                 <div class="ps-3">
                                     <h6 class="currency-usd">${positionDto.getCallObligationMarketValue()}</h6>
-                                    @if(positionDto.getCallMarketVsObligationsPercentage() > 0)
-                                        <span class="text-success small pt-1 fw-bold">+ ${positionDto.getCallMarketVsObligationsPercentage()} %</span> /
-                                        <span class="text-success small pt-1 fw-bold currency-usd">${positionDto.getCallObligationMarketValue() - positionDto.getCallObligationValue()}</span>
-                                        <span class="text-muted small pt-2 ps-1">Covered</span>
-                                    @else
-                                        <span class="text-danger small pt-1 fw-bold">${positionDto.getCallMarketVsObligationsPercentage()} %</span> /
-                                        <span class="text-danger small pt-1 fw-bold currency-usd">${positionDto.getCallObligationValue() - positionDto.getCallObligationMarketValue()}</span>
-                                        <span class="text-muted small pt-2 ps-1">Covered</span>
-                                    @endif
                                 </div>
                             </div>
                         </div>
@@ -153,14 +133,6 @@
                                 </div>
                                 <div class="ps-3">
                                     <h6 class="currency-usd">${positionDto.getCallObligationValue()}</h6>
-                                    @if(positionDto.getStock() != null && positionDto.getCallObligationValue() != null && positionDto.getStock() >= positionDto.getCallObligationValue())
-                                        <span class="text-success small pt-1 fw-bold">Covered</span>
-                                    @else
-                                        <span class="text-danger small pt-1 fw-bold">Not Covered</span>
-                                    @endif
-                                    <span class="text-muted small pt-2 ps-1">/</span>
-                                    <span class="text-success small pt-1 fw-bold currency-usd">${positionDto.getStock()}</span>
-                                    <span class="text-muted small pt-2 ps-1">Stock</span>
                                 </div>
                             </div>
 
@@ -182,10 +154,15 @@
                                 </div>
                                 <div class="ps-3">
                                     <h6 class="currency-usd">${positionDto.getCall()}</h6>
-                                    <span class="text-muted small pt-2 ps-1">CALL</span>
-                                    <span class="text-success small pt-1 fw-bold currency-usd">${positionDto.getCall()}</span>
-                                    <span class="text-muted small pt-2 ps-1">/</span>
-                                    <span class="text-success small pt-1 fw-bold currency-usd">${positionDto.getCallMarketPrice()}</span>
+<%--
+                                    @if(positionDto.getCall() > positionDto.getCallMarketPrice())
+                                        <span class="text-success small pt-1 fw-bold currency-usd">${positionDto.getCallMarketPrice()}</span>
+                                    @else
+                                        <span class="text-danger small pt-1 fw-bold currency-usd">${positionDto.getCallMarketPrice()}</span>
+                                    @endif
+
+                                    <span class="text-muted small pt-2 ps-1">Market Value</span>
+--%>
                                 </div>
                             </div>
                         </div>
