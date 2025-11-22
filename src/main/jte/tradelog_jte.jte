@@ -204,7 +204,7 @@
                                         <td class="currency-usd">${option.getMarketPrice()}</td>
                                         <td>${option.getAnnualizedRoiPercent()}</td>
                                         <td>${option.getProbability()}</td>
-                                        <td class="currency-usd">${option.getProfitOrLoss()}</td>
+                                        <td class="currency-usd">${option.getUnRealizedProfitOrLoss()}</td>
                                     </tr>
                                 @endfor
                                 </tbody>

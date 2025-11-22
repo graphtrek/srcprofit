@@ -50,7 +50,6 @@
                                     <th scope="col">Price$</th>
                                     <th scope="col">Change$</th>
                                     <th scope="col">Percent</th>
-                                    <th scope="col">Premium</th>
                                     <th scope="col">RealP&L</th>
                                     <th scope="col">UnRealP&L</th>
                                     <th scope="col">Earning</th>
@@ -76,7 +75,6 @@
                                         <td>${instrument.getPrice()}</td>
                                         <td>${instrument.getChange()}</td>
                                         <td>${instrument.getChangePercent()}</td>
-                                        <td>${instrument.getCollectedPremium()}</td>
                                         <td>${instrument.getRealizedProfitOrLoss()}</td>
                                         <td>${instrument.getUnRealizedProfitOrLoss()}</td>
                                         <td>${instrument.getEarningDateStr()}</td>
