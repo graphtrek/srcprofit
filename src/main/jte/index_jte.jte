@@ -71,6 +71,11 @@
           </a>
         </li><!-- End Search Icon-->
 
+        <li class="nav-item">
+          <a class="nav-link nav-icon" href="#" id="theme-toggle" title="Toggle Dark Mode">
+            <i class="bi bi-moon"></i>
+          </a>
+        </li><!-- End Dark Mode Toggle -->
 
       </ul>
     </nav><!-- End Icons Navigation -->
@@ -349,6 +354,8 @@
 
   <!-- Template Main JS File -->
   <script src="assets/js/main.js"></script>
+  <!-- Dark Mode Toggle -->
+  <script src="assets/js/dark-mode.js"></script>
   <!-- TradingView Integration -->
   <script src="assets/js/tradingview-integration.js"></script>
   <script>
