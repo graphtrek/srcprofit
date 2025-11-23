@@ -74,7 +74,7 @@
                                         <td class="currency-usd">${option.getMarketValue()}</td>
                                         <td class="currency-usd">${option.getTradePrice()}</td>
 
-                                        <td>${option.getRealizedProfitOrLoss()}</td>
+                                        <td class="currency-usd">${option.getRealizedProfitOrLoss()}</td>
                                         <td>${option.getType()}</td>
                                         @if(OptionStatus.PENDING.equals(option.getStatus()))
                                             <td class="badge bg-warning">${option.getStatus()}</td>

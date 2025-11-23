@@ -255,6 +255,7 @@
                                 <th scope="col">Price</th>
                                 <th scope="col">MrktPrice</th>
                                 <th scope="col">P&L</th>
+                                <th scope="col">R.O.I</th>
                                 <th scope="col">P.O.P</th>
                                 <th scope="col">Type</th>
                             </tr>
@@ -288,6 +289,7 @@
                                     <td class="currency-usd">${option.getTradePrice()}</td>
                                     <td class="currency-usd">${option.getMarketPrice()}</td>
                                     <td class="currency-usd">${option.getUnRealizedProfitOrLoss()}</td>
+                                    <td>${option.getAnnualizedRoiPercent()}</td>
                                     <td>${option.getProbability()}</td>
                                     <td>${option.getType()}</td>
                                 </tr>
@@ -418,7 +420,7 @@
             const tableOpen = new DataTable('#datatableOpenPositions', {
                 pageLength: -1,
                 perPageSelect: [5, 10, 15, ["All", -1]],
-                columnDefs: [{target: 1, visible: false, searchable: false}], // code hidden
+                columnDefs: [{target: 1, visible: false, searchable: false},{target: 4, visible: false, searchable: false}], // code hidden
                 order: [[groupColumnOpen, 'asc'], [2, 'asc']], // Expiration first, then Symbol
                 drawCallback: function (settings) {
                     var api = this.api();

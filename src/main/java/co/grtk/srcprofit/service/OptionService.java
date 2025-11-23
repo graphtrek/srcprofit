@@ -510,6 +510,8 @@ public class OptionService {
             positionDto.setMarketValue(marketValue);
 
         positionDto.setCollectedPremium(round2Digits(collectedPremium));
+        if(positionValue == 0 && openPositionsSize == 1)
+            positionValue = openPositions.getFirst().getPositionValue();
 
         if (positionDto.getPositionValue() == null)
             positionDto.setPositionValue(round2Digits(positionValue));

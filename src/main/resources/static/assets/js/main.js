@@ -41,6 +41,21 @@
   }
 
   /**
+   * Active nav-link state management
+   */
+  const navLinks = select('.sidebar-nav .nav-link', true)
+  if (navLinks && navLinks.length > 0) {
+    navLinks.forEach(link => {
+      link.addEventListener('click', function(e) {
+        // Remove collapsed class from all nav-links
+        navLinks.forEach(l => l.classList.add('collapsed'))
+        // Add active styling to clicked link
+        this.classList.remove('collapsed')
+      })
+    })
+  }
+
+  /**
    * Search bar toggle
    */
   if (select('.search-bar-toggle')) {

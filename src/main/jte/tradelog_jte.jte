@@ -183,9 +183,10 @@
                                     <th scope="col">MrktValue</th>
                                     <th scope="col">Price</th>
                                     <th scope="col">MrktPrice</th>
+                                    <th scope="col">P&L</th>
                                     <th scope="col">R.O.I</th>
                                     <th scope="col">P.O.P</th>
-                                    <th scope="col">P&L</th>
+
                                 </tr>
                                 </thead>
                                 <tbody>
@@ -197,9 +198,9 @@
                                         <td class="currency-usd">${option.getMarketValue()}</td>
                                         <td class="currency-usd">${option.getTradePrice()}</td>
                                         <td class="currency-usd">${option.getMarketPrice()}</td>
+                                        <td class="currency-usd">${option.getUnRealizedProfitOrLoss()}</td>
                                         <td>${option.getAnnualizedRoiPercent()}%</td>
                                         <td>${option.getProbability()}%</td>
-                                        <td class="currency-usd">${option.getUnRealizedProfitOrLoss()}</td>
                                     </tr>
                                 @endfor
                                 </tbody>
