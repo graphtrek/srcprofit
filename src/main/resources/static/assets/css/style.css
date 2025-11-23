@@ -272,15 +272,15 @@ h6 {
 }
 
 [data-theme="dark"] .bg-success-light {
-  background-color: #1a3a2a;
-  border-color: #1a3a2a;
-  color: #6ea896;
+  background-color: #14532d;
+  border-color: #14532d;
+  color: #22c55e;
 }
 
 [data-theme="dark"] .bg-danger-light {
-  background-color: #3f1f27;
-  border-color: #3f1f27;
-  color: #f8888c;
+  background-color: #7f1d1d;
+  border-color: #7f1d1d;
+  color: #ef4444;
 }
 
 [data-theme="dark"] .bg-warning-light {
@@ -303,11 +303,23 @@ h6 {
 
 /* Badge styling - Dark Theme */
 [data-theme="dark"] .badge {
-  background-color: #6ea8fe;
-  color: #000;
+  background-color: #374151;
+  color: #f1f3f5;
+}
+
+/* Badge color inversion in dark mode - when badge HAS success/danger class */
+[data-theme="dark"] .badge.bg-success-light {
+  background-color: #14532d !important;
+  color: #22c55e !important;
+}
+
+[data-theme="dark"] .badge.bg-danger-light {
+  background-color: #7f1d1d !important;
+  color: #ef4444 !important;
 }
 
 [data-theme="dark"] .badge.fw-bold {
+  background-color: #4b5563;
   color: #f1f3f5;
 }
 
@@ -340,6 +352,10 @@ h6 {
   color: #899bbd;
   font-size: 14px;
   font-weight: 400;
+}
+
+[data-theme="dark"] .card-title span {
+  color: var(--text-muted);
 }
 
 .card-body {

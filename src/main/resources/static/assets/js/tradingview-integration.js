@@ -149,6 +149,9 @@ function initializeTradingViewWidget(container, symbol) {
   configScript.src = 'https://s3.tradingview.com/external-embedding/embed-widget-mini-symbol-overview.js';
   configScript.async = true;
 
+  // Get current theme from document (respects dark mode toggle)
+  const currentTheme = document.documentElement.getAttribute('data-theme') || 'light';
+
   // The configuration needs to be in a valid JSON format as text content
   configScript.textContent = `
   {
@@ -157,7 +160,7 @@ function initializeTradingViewWidget(container, symbol) {
     "height": "100%",
     "locale": "en",
     "dateRange": "12M",
-    "colorTheme": "light",
+    "colorTheme": "${currentTheme}",
     "isTransparent": false,
     "autosize": true,
     "largeChartUrl": ""
@@ -283,13 +286,16 @@ function initializeAdvancedChartWidget(container, symbol) {
   configScript.src = 'https://s3.tradingview.com/external-embedding/embed-widget-advanced-chart.js';
   configScript.async = true;
 
+  // Get current theme from document (respects dark mode toggle)
+  const currentTheme = document.documentElement.getAttribute('data-theme') || 'light';
+
   // Advanced Chart configuration with candlestick, SMAs (50, 100, 200), and Volume
   const config = {
     "autosize": true,
     "symbol": symbol,
     "interval": "D",
     "timezone": "Etc/UTC",
-    "theme": "light",
+    "theme": currentTheme,
     "style": "1",
     "locale": "en",
     "enable_publishing": false,
@@ -421,3 +427,40 @@ window.addEventListener('load', function() {
     console.warn('TradingView library not available, widgets may not render');
   }
 });
+
+/**
+ * Update all TradingView charts theme when dark mode is toggled
+ * TradingView widgets cannot be updated dynamically after creation,
+ * so we need to rebuild them when the theme changes
+ *
+ * @param {string} theme - 'dark' or 'light'
+ */
+function updateAdvancedChartTheme(theme) {
+  console.log(`Updating TradingView widgets to theme: ${theme}`);
+
+  // Update all mini charts on the dashboard
+  const miniChartWidgets = document.querySelectorAll('[data-tradingview-symbol]:not([data-widget-type="advanced"])');
+  miniChartWidgets.forEach(container => {
+    const ticker = container.getAttribute('data-tradingview-symbol');
+    if (ticker) {
+      // Convert ticker and rebuild mini chart with new theme
+      convertToTradingViewSymbol(ticker).then(tvSymbol => {
+        if (tvSymbol) {
+          initializeTradingViewWidget(container, tvSymbol);
+        }
+      }).catch(error => {
+        console.error(`Error updating mini chart for ${ticker}:`, error);
+      });
+    }
+  });
+
+  // Update Advanced Chart in modal (if present)
+  const advancedChartContainer = document.getElementById('tradingview_advanced_chart');
+  if (advancedChartContainer) {
+    const ticker = advancedChartContainer.getAttribute('data-tradingview-symbol');
+    if (ticker) {
+      // Use updateAdvancedChartSymbol which handles ticker-to-TradingView symbol conversion
+      updateAdvancedChartSymbol('tradingview_advanced_chart', ticker);
+    }
+  }
+}

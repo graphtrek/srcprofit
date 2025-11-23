@@ -255,7 +255,7 @@
                     },
                 },
                 markers: {
-                    size: 4
+                    size: 0
                 },
                 colors: [ '#2eca6a','#ff771d','#4154f1'],
                 fill: {
@@ -313,7 +313,7 @@
                     },
                 },
                 markers: {
-                    size: 4
+                    size: 0
                 },
                 colors: [ '#2eca6a','#ff771d','#4154f1','#f14161'],
                 fill: {

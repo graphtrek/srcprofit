@@ -73,17 +73,22 @@
    * Update TradingView widgets to match theme
    */
   function updateTradingViewTheme(theme) {
-    // TradingView uses data-theme attribute on the widget containers
+    // TradingView mini widget containers use data-theme attribute
     const tvWidgets = document.querySelectorAll('[data-tradingview-symbol]');
 
     tvWidgets.forEach(widget => {
-      // Set the theme attribute for TradingView
+      // Set the theme attribute for TradingView mini widgets
       if (theme === DARK_THEME) {
         widget.setAttribute('data-tradingview-theme', 'dark');
       } else {
         widget.setAttribute('data-tradingview-theme', 'light');
       }
     });
+
+    // Also update TradingView Advanced Charts (if function exists and chart is visible)
+    if (typeof updateAdvancedChartTheme === 'function') {
+      updateAdvancedChartTheme(theme === DARK_THEME ? 'dark' : 'light');
+    }
   }
 
   /**
