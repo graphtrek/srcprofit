@@ -2,10 +2,19 @@
 
 **Auto-generated** - Run `python scripts/update_issue_index.py` to update
 
-**Total**: 36 issues
-**Open**: 0 (0%)
-**Closed**: 35 (97%)
+**Total**: 37 issues
+**Open**: 1 (3%)
+**Closed**: 36 (97%)
 **Partial**: 0
+
+---
+
+## Open Issues
+
+### MEDIUM (1)
+
+- **[ISSUE-036](ISSUE-036-parameterize-k8s-scripts.md)** - Parameterize K8s Endpoint Scripts (Namespace as Input)
+  - Priority: MEDIUM | Status: OPEN | Category: Infrastructure | Developer Experience | Created: 2025-11-25
 
 ---
 
@@ -81,6 +90,8 @@
   - Priority: HIGH | Completed: 2025-11-21
 - **[ISSUE-034](ISSUE-034-replace-sidebar-icons.md)** - Replace Generic Sidebar Icons with Context-Appropriate Icons
   - Priority: LOW | Completed: 2025-11-22 PROGRESS
+- **[ISSUE-035](ISSUE-035-dark-mode-toggle.md)** - Add Dark Mode Toggle Button
+  - Priority: LOW | Completed: 2025-11-23
 
 ---
 
@@ -108,7 +119,7 @@
   - ISSUE-011 ✅, ISSUE-016 ✅
 
 **Feature** (11):
-  - ISSUE-001 ✅, ISSUE-005 ✅, ISSUE-009 ✅, ISSUE-010 ✅, ISSUE-014 ✅, ISSUE-017 ✅, ISSUE-018 ✅, ISSUE-019 ✅, ISSUE-028 ✅, ISSUE-032 ✅, ISSUE-035 🔴
+  - ISSUE-001 ✅, ISSUE-005 ✅, ISSUE-009 ✅, ISSUE-010 ✅, ISSUE-014 ✅, ISSUE-017 ✅, ISSUE-018 ✅, ISSUE-019 ✅, ISSUE-028 ✅, ISSUE-032 ✅, ISSUE-035 ✅
 
 **Feature / Code Quality** (1):
   - ISSUE-020 ✅
@@ -128,11 +139,14 @@
 **Infrastructure | Bug Fix** (1):
   - ISSUE-006 ✅
 
+**Infrastructure | Developer Experience** (1):
+  - ISSUE-036 🔴
+
 **Workflow / Process Improvement** (1):
   - ISSUE-002 ✅
 
 ---
 
-**Last updated**: 2025-11-22
+**Last updated**: 2025-11-25
 
 **How to update**: Run `python scripts/update_issue_index.py`
