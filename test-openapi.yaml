@@ -1,0 +1,137 @@
+openapi: 3.0.0
+info:
+  title: George Appointment Service API
+  version: 1.0.0
+  description: Auto-generated OpenAPI specification from Spring Boot actuator endpoints
+servers:
+  - url: http://localhost:8081
+paths:
+  /appointments:
+    get:
+      summary: 'hu.erste.george.appointment.web.AppointmentController#getAppointments'
+      operationId: 'get__appointments'
+      responses:
+        '200':
+          description: Success
+          content:
+            application/json:
+              schema:
+                type: object
+        '400':
+          description: Bad Request
+        '404':
+          description: Not Found
+        '500':
+          description: Internal Server Error
+  /appointments/{id}:
+    put:
+      summary: 'hu.erste.george.appointment.web.AppointmentController#putGivenAppointment'
+      operationId: 'put__appointments_{id}'
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+      responses:
+        '200':
+          description: Success
+          content:
+            application/json:
+              schema:
+                type: object
+        '400':
+          description: Bad Request
+        '404':
+          description: Not Found
+        '500':
+          description: Internal Server Error
+  /appointments/{id}:
+    delete:
+      summary: 'hu.erste.george.appointment.web.AppointmentController#deleteGivenAppointment'
+      operationId: 'delete__appointments_{id}'
+      responses:
+        '200':
+          description: Success
+          content:
+            application/json:
+              schema:
+                type: object
+        '400':
+          description: Bad Request
+        '404':
+          description: Not Found
+        '500':
+          description: Internal Server Error
+  /appointments/advisors:
+    get:
+      summary: 'hu.erste.george.appointment.web.AppointmentController#getAdvisorsAndTimeslots'
+      operationId: 'get__appointments_advisors'
+      responses:
+        '200':
+          description: Success
+          content:
+            application/json:
+              schema:
+                type: object
+        '400':
+          description: Bad Request
+        '404':
+          description: Not Found
+        '500':
+          description: Internal Server Error
+  /appointments/{id}:
+    get:
+      summary: 'hu.erste.george.appointment.web.AppointmentController#getGivenAppointment'
+      operationId: 'get__appointments_{id}'
+      responses:
+        '200':
+          description: Success
+          content:
+            application/json:
+              schema:
+                type: object
+        '400':
+          description: Bad Request
+        '404':
+          description: Not Found
+        '500':
+          description: Internal Server Error
+  /appointments/topics:
+    get:
+      summary: 'hu.erste.george.appointment.web.AppointmentController#getTopics'
+      operationId: 'get__appointments_topics'
+      responses:
+        '200':
+          description: Success
+          content:
+            application/json:
+              schema:
+                type: object
+        '400':
+          description: Bad Request
+        '404':
+          description: Not Found
+        '500':
+          description: Internal Server Error
+  /appointments:
+    post:
+      summary: 'hu.erste.george.appointment.web.AppointmentController#postAppointments'
+      operationId: 'post__appointments'
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+      responses:
+        '200':
+          description: Success
+          content:
+            application/json:
+              schema:
+                type: object
+        '400':
+          description: Bad Request
+        '404':
+          description: Not Found
+        '500':
+          description: Internal Server Error

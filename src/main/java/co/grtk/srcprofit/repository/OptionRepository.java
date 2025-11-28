@@ -1,5 +1,6 @@
 package co.grtk.srcprofit.repository;
 
+import co.grtk.srcprofit.entity.InstrumentEntity;
 import co.grtk.srcprofit.entity.OptionEntity;
 import co.grtk.srcprofit.entity.OptionStatus;
 import org.springframework.data.domain.Sort;
@@ -122,4 +123,12 @@ public interface OptionRepository extends JpaRepository<OptionEntity, Long> {
     List<OptionEntity> findOptionsBetweenDates(
             @Param("startDate") LocalDate startDate,
             @Param("endDate") LocalDate endDate);
+
+    @Query("SELECT DISTINCT i FROM InstrumentEntity i " +
+            "WHERE i.id IN (" +
+            "  SELECT DISTINCT o.instrument.id " +
+            "  FROM OptionEntity o " +
+            "  WHERE o.status = 'OPEN'" +
+            ")")
+    List<InstrumentEntity> findInstrumentsWithOpenPositions();
 }

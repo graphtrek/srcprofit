@@ -1,7 +1,10 @@
 package co.grtk.srcprofit.service;
 
 import co.grtk.srcprofit.dto.AlpacaAssetDto;
+import co.grtk.srcprofit.dto.AlpacaContractsResponseDto;
 import co.grtk.srcprofit.dto.AlpacaMarketDataDto;
+import co.grtk.srcprofit.dto.AlpacaOptionSnapshotDto;
+import co.grtk.srcprofit.dto.AlpacaOptionSnapshotsResponseDto;
 import co.grtk.srcprofit.dto.AlpacaQuotesDto;
 import co.grtk.srcprofit.dto.AlpacaSingleAssetDto;
 import co.grtk.srcprofit.entity.InstrumentEntity;
@@ -186,6 +189,118 @@ public class AlpacaService {
         log.debug("Completed Alpaca asset metadata refresh: {} of {} successful",
                 refreshedCount, staleInstruments.size());
         return refreshedCount;
+    }
+
+    /**
+     * Fetch option contracts from Alpaca Options Contracts API.
+     *
+     * Retrieves available option contracts for a specific underlying symbol
+     * with optional filtering by expiration date and strike price ranges.
+     *
+     * @param underlyingSymbol The underlying stock symbol (e.g., "AAPL")
+     * @param expirationDateGte Start of expiration date range (YYYY-MM-DD format)
+     * @param expirationDateLte End of expiration date range (YYYY-MM-DD format)
+     * @param strikePriceGte Minimum strike price (e.g., "80.00")
+     * @param strikePriceLte Maximum strike price (e.g., "110.00")
+     * @return AlpacaContractsResponseDto containing list of option contracts
+     * @throws Exception if the API call fails
+     *
+     * @see <a href="https://docs.alpaca.markets/reference/get-options-contracts-1">Alpaca Options Contracts API</a>
+     */
+    public AlpacaContractsResponseDto getOptionContracts(String underlyingSymbol,
+                                                         String expirationDateGte,
+                                                         String expirationDateLte,
+                                                         String strikePriceGte,
+                                                         String strikePriceLte) {
+        try {
+            String json = alpacaTradingRestClient.get()
+                    .uri(uriBuilder -> {
+                        var builder = uriBuilder.path("/v1beta1/options/contracts")
+                                .queryParam("underlying_symbols", underlyingSymbol)
+                                .queryParam("status", "active");
+
+                        if (expirationDateGte != null && !expirationDateGte.isEmpty()) {
+                            builder.queryParam("expiration_date_gte", expirationDateGte);
+                        }
+                        if (expirationDateLte != null && !expirationDateLte.isEmpty()) {
+                            builder.queryParam("expiration_date_lte", expirationDateLte);
+                        }
+                        if (strikePriceGte != null && !strikePriceGte.isEmpty()) {
+                            builder.queryParam("strike_price_gte", strikePriceGte);
+                        }
+                        if (strikePriceLte != null && !strikePriceLte.isEmpty()) {
+                            builder.queryParam("strike_price_lte", strikePriceLte);
+                        }
+
+                        return builder.build();
+                    })
+                    .accept(MediaType.APPLICATION_JSON)
+                    .retrieve()
+                    .body(String.class);
+
+            AlpacaContractsResponseDto response = mapper.readValue(json, AlpacaContractsResponseDto.class);
+
+            int count = (response != null && response.getOptionContracts() != null)
+                    ? response.getOptionContracts().size()
+                    : 0;
+            log.info("getOptionContracts /v1beta1/options/contracts returned {} contracts for {}",
+                    count, underlyingSymbol);
+            return response;
+        } catch (Exception e) {
+            log.error("Error fetching option contracts for symbol {}: {}", underlyingSymbol, e.getMessage(), e);
+            throw new RuntimeException("Failed to fetch option contracts for " + underlyingSymbol, e);
+        }
+    }
+
+    /**
+     * Fetch option snapshots from Alpaca Options Snapshots API (Data API).
+     *
+     * Retrieves latest trading data (prices, quotes, Greeks) for option contracts
+     * of a specific underlying symbol. Uses the Data API endpoint (no broker required).
+     *
+     * Supports filtering by option type and strike price range at API level.
+     * Note: Expiration date filtering is not supported by this endpoint,
+     * so filtering is done locally after API response.
+     *
+     * @param underlyingSymbol The underlying stock symbol (e.g., "AAPL")
+     * @param type Option type: "call" or "put"
+     * @param strikePriceGte Minimum strike price (e.g., "80.00")
+     * @param strikePriceLte Maximum strike price (e.g., "110.00")
+     * @return AlpacaOptionSnapshotsResponseDto containing map of option snapshots
+     * @throws Exception if the API call fails
+     *
+     * @see <a href="https://docs.alpaca.markets/reference/optionchain">Alpaca Options Snapshots API</a>
+     */
+    public AlpacaOptionSnapshotsResponseDto getOptionSnapshots(String underlyingSymbol,
+                                                               String type,
+                                                               String strikePriceGte,
+                                                               String strikePriceLte) {
+        try {
+            String json = alpacaRestClient.get()
+                    .uri(uriBuilder -> uriBuilder
+                            .path("/v1beta1/options/snapshots/{symbol}")
+                            .queryParam("feed", "indicative")
+                            .queryParam("type", type)
+                            .queryParam("strike_price_gte", strikePriceGte)
+                            .queryParam("strike_price_lte", strikePriceLte)
+                            .build(underlyingSymbol))
+                    .accept(MediaType.APPLICATION_JSON)
+                    .retrieve()
+                    .body(String.class);
+
+            AlpacaOptionSnapshotsResponseDto response = mapper.readValue(json, AlpacaOptionSnapshotsResponseDto.class);
+
+            int count = (response != null && response.getSnapshots() != null)
+                    ? response.getSnapshots().size()
+                    : 0;
+            log.info("getOptionSnapshots /v1beta1/options/snapshots/{} returned {} snapshots (type={})",
+                    underlyingSymbol, count, type);
+            return response;
+        } catch (Exception e) {
+            log.error("Error fetching option snapshots for symbol {} (type={}): {}",
+                    underlyingSymbol, type, e.getMessage(), e);
+            throw new RuntimeException("Failed to fetch option snapshots for " + underlyingSymbol, e);
+        }
     }
 
 }

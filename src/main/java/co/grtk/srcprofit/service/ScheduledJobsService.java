@@ -26,11 +26,14 @@ import java.util.concurrent.TimeUnit;
  * 3. refreshMarketData() - Every 5 minutes (Alpaca API - market data refresh)
  * 4. refreshAlpacaAssets() - Every 12 hours (Alpaca Assets API - metadata refresh)
  * 5. refreshEarningsData() - Every 12 hours (Alpha Vantage - earnings calendar refresh)
+ * 6. refreshOptionSnapshots() - Every 15 minutes (Alpaca Data API - option snapshots refresh)
+ * 7. cleanupExpiredOptionSnapshots() - Every 24 hours (Option snapshots cleanup)
  *
  * @see FlexReportsService for FLEX import orchestration
  * @see MarketDataService for market data refresh orchestration
  * @see AlpacaService for Alpaca assets metadata refresh orchestration
  * @see EarningService for earnings calendar refresh orchestration
+ * @see OptionSnapshotService for option snapshots refresh orchestration
  */
 @Service
 @EnableScheduling
@@ -41,15 +44,18 @@ public class ScheduledJobsService {
     private final MarketDataService marketDataService;
     private final AlpacaService alpacaService;
     private final EarningService earningService;
+    private final OptionSnapshotService optionSnapshotService;
 
     public ScheduledJobsService(FlexReportsService flexReportsService,
                                  MarketDataService marketDataService,
                                  AlpacaService alpacaService,
-                                 EarningService earningService) {
+                                 EarningService earningService,
+                                 OptionSnapshotService optionSnapshotService) {
         this.flexReportsService = flexReportsService;
         this.marketDataService = marketDataService;
         this.alpacaService = alpacaService;
         this.earningService = earningService;
+        this.optionSnapshotService = optionSnapshotService;
     }
 
     /**
@@ -207,6 +213,72 @@ public class ScheduledJobsService {
             log.error("ScheduledJobsService: refreshEarningsData() failed after {}ms - {}",
                     elapsedTime, e.getMessage(), e);
             log.debug("ScheduledJobsService: Earnings refresh will retry on next schedule");
+        }
+    }
+
+    /**
+     * Scheduled job: Refresh option snapshots for instruments with open positions.
+     *
+     * Schedule: Every 15 minutes, starting 5 minutes after application startup
+     * Delegates to: OptionSnapshotService.refreshOptionSnapshots()
+     *
+     * Fetches latest trading data (prices, quotes, Greeks) from Alpaca Data API.
+     *
+     * Filters:
+     * - Only instruments with at least one open position (status = OPEN)
+     * - Only snapshots with expiration <= 3 months from today
+     * - Only snapshots with strike price between (price * 0.90) and (price * 1.10)
+     * - Both CALL and PUT options (separate API calls)
+     *
+     * Error Handling:
+     * - Per-instrument failures don't abort the batch
+     * - Continues with next instrument on error
+     * - Returns count of successfully saved snapshots
+     *
+     * Non-critical job: Errors are logged but don't crash the application.
+     */
+    @Scheduled(fixedDelay = 15, initialDelay = 5, timeUnit = TimeUnit.MINUTES)
+    public void refreshOptionSnapshots() {
+        long startTime = System.currentTimeMillis();
+        try {
+            log.debug("ScheduledJobsService: Starting refreshOptionSnapshots() job");
+            int count = optionSnapshotService.refreshOptionSnapshots();
+            long elapsedTime = System.currentTimeMillis() - startTime;
+            log.info("ScheduledJobsService: Completed refreshOptionSnapshots() in {}ms - {} snapshots saved",
+                    elapsedTime, count);
+        } catch (Exception e) {
+            long elapsedTime = System.currentTimeMillis() - startTime;
+            log.error("ScheduledJobsService: refreshOptionSnapshots() failed after {}ms - {}",
+                    elapsedTime, e.getMessage(), e);
+            log.debug("ScheduledJobsService: Option snapshot refresh will retry on next schedule");
+        }
+    }
+
+    /**
+     * Scheduled job: Delete expired option snapshots.
+     *
+     * Schedule: Every 24 hours, starting 30 minutes after application startup
+     * Delegates to: OptionSnapshotService.deleteExpiredSnapshots()
+     *
+     * Removes:
+     * - All snapshots with expiration_date < today
+     *
+     * Non-critical job: Errors are logged but don't crash the application.
+     */
+    @Scheduled(fixedDelay = 1440, initialDelay = 30, timeUnit = TimeUnit.MINUTES)
+    public void cleanupExpiredOptionSnapshots() {
+        long startTime = System.currentTimeMillis();
+        try {
+            log.debug("ScheduledJobsService: Starting cleanupExpiredOptionSnapshots() job");
+            int count = optionSnapshotService.deleteExpiredSnapshots();
+            long elapsedTime = System.currentTimeMillis() - startTime;
+            log.info("ScheduledJobsService: Completed cleanupExpiredOptionSnapshots() in {}ms - {} snapshots deleted",
+                    elapsedTime, count);
+        } catch (Exception e) {
+            long elapsedTime = System.currentTimeMillis() - startTime;
+            log.error("ScheduledJobsService: cleanupExpiredOptionSnapshots() failed after {}ms - {}",
+                    elapsedTime, e.getMessage(), e);
+            log.debug("ScheduledJobsService: Option snapshot cleanup will retry on next schedule");
         }
     }
 }

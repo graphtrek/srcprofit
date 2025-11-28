@@ -2,18 +2,23 @@
 
 **Auto-generated** - Run `python scripts/update_issue_index.py` to update
 
-**Total**: 37 issues
-**Open**: 1 (3%)
-**Closed**: 36 (97%)
+**Total**: 39 issues
+**Open**: 2 (5%)
+**Closed**: 36 (92%)
 **Partial**: 0
 
 ---
 
 ## Open Issues
 
+### HIGH (1)
+
+- **[ISSUE-037](ISSUE-037-alpaca-option-contracts-download.md)** - Alpaca Option Contracts Download and Storage
+  - Priority: HIGH | Status: OPEN | Category: Feature | Created: 2025-11-28
+
 ### MEDIUM (1)
 
-- **[ISSUE-036](ISSUE-036-parameterize-k8s-scripts.md)** - Parameterize K8s Endpoint Scripts (Namespace as Input)
+- **[ISSUE-036](ISSUE-036-parameterize-k8s-scripts.md)** - Extract Spring Boot Actuator Endpoints from Kubernetes Namespace
   - Priority: MEDIUM | Status: OPEN | Category: Infrastructure | Developer Experience | Created: 2025-11-25
 
 ---
@@ -118,8 +123,8 @@
 **Enhancement** (2):
   - ISSUE-011 ✅, ISSUE-016 ✅
 
-**Feature** (11):
-  - ISSUE-001 ✅, ISSUE-005 ✅, ISSUE-009 ✅, ISSUE-010 ✅, ISSUE-014 ✅, ISSUE-017 ✅, ISSUE-018 ✅, ISSUE-019 ✅, ISSUE-028 ✅, ISSUE-032 ✅, ISSUE-035 ✅
+**Feature** (12):
+  - ISSUE-001 ✅, ISSUE-005 ✅, ISSUE-009 ✅, ISSUE-010 ✅, ISSUE-014 ✅, ISSUE-017 ✅, ISSUE-018 ✅, ISSUE-019 ✅, ISSUE-028 ✅, ISSUE-032 ✅, ISSUE-035 ✅, ISSUE-037 🔴
 
 **Feature / Code Quality** (1):
   - ISSUE-020 ✅
@@ -142,11 +147,14 @@
 **Infrastructure | Developer Experience** (1):
   - ISSUE-036 🔴
 
+**Uncategorized** (1):
+  - ISSUE-037 🔴
+
 **Workflow / Process Improvement** (1):
   - ISSUE-002 ✅
 
 ---
 
-**Last updated**: 2025-11-25
+**Last updated**: 2025-11-28
 
 **How to update**: Run `python scripts/update_issue_index.py`
