@@ -23,6 +23,9 @@ import java.util.Map;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
+import static co.grtk.srcprofit.mapper.PositionCalculationHelper.calculateDaysLeft;
+import static co.grtk.srcprofit.mapper.PositionCalculationHelper.calculateProbability;
+
 /**
  * Service for managing option snapshots downloaded from Alpaca Data API.
  *
@@ -130,12 +133,12 @@ public class OptionSnapshotService {
         BigDecimal upperStrike = currentPrice.multiply(BigDecimal.valueOf(MAX_STRIKE_MULTIPLIER))
                 .setScale(2, RoundingMode.UP);
 
-        // Calculate expiration date range: today to +3 months
-        LocalDate today = LocalDate.now();
-        LocalDate expirationMax = today.plusDays(EXPIRATION_DAYS);
+        // Calculate expiration date range: tomorrow to +3 months
+        LocalDate tomorrow = LocalDate.now().plusDays(1);
+        LocalDate expirationMax = tomorrow.plusDays(EXPIRATION_DAYS);
 
         log.debug("Refreshing snapshots for {} - Strike range: ${} to ${}, Expiration: {} to {}",
-                ticker, lowerStrike, upperStrike, today, expirationMax);
+                ticker, lowerStrike, upperStrike, tomorrow, expirationMax);
 
         int saved = 0;
         try {
@@ -277,6 +280,13 @@ public class OptionSnapshotService {
             snapshot.impliedVolatility = parseBigDecimal(greeks.impliedVolatility);
         }
 
+        // Calculate derived metrics (ROI, POP, daysLeft)
+        calculateDerivedMetrics(snapshot, instrument);
+
+        // Log calculated metrics
+        log.debug("Calculated metrics for {}: daysLeft={}, roiOnCollateral={}, roiOnPremium={}, pop={}",
+                snapshot.symbol, snapshot.daysLeft, snapshot.roiOnCollateral, snapshot.roiOnPremium, snapshot.pop);
+
         // Save to database (snapshotUpdatedAt will be set by Hibernate)
         optionSnapshotRepository.save(snapshot);
 
@@ -317,6 +327,113 @@ public class OptionSnapshotService {
         List<OptionSnapshotEntity> snapshots = optionSnapshotRepository.findByInstrument(instrument);
         log.debug("Found {} snapshots for {}", snapshots.size(), ticker);
         return snapshots;
+    }
+
+    /**
+     * Calculate derived metrics for an option snapshot.
+     *
+     * Calculates:
+     * - daysLeft: Days until expiration (from today to expirationDate)
+     * - roiOnCollateral: Annualized ROI on capital at risk (strike price)
+     * - roiOnPremium: Annualized ROI on premium (midPrice)
+     * - pop: Probability of Profit (two methods available)
+     *
+     * POP Calculation Strategy:
+     * 1. Primary: Delta approximation if delta available → POP = (1 - |delta|) * 100
+     * 2. Fallback: Probability method if delta unavailable but has price/daysLeft data
+     *    Uses normal distribution: calculateProbability(strikePrice, instrumentPrice, daysLeft)
+     * 3. Null: If delta unavailable AND insufficient data for probability method
+     *
+     * Null handling:
+     * - If instrument price is null: logs warning, sets ROI/POP to null
+     * - If midPrice is null (no bid/ask): sets ROI fields to null
+     * - If delta is null: attempts probability method fallback, sets POP to null if fallback fails
+     * - daysLeft is always calculated (expirationDate is always set)
+     *
+     * @param snapshot The snapshot to calculate metrics for
+     * @param instrument The underlying instrument (provides current price)
+     */
+    private void calculateDerivedMetrics(OptionSnapshotEntity snapshot, InstrumentEntity instrument) {
+        // Calculate daysLeft (always possible - expirationDate is always set)
+        snapshot.daysLeft = calculateDaysLeft(snapshot.expirationDate);
+
+        // Get midPrice for both ROI and POP calculations
+        BigDecimal midPrice = snapshot.getMidPrice();
+
+        // Check if we can calculate ROI metrics (requires instrument price)
+        boolean canCalculateRoi = instrument != null && instrument.getPrice() != null && instrument.getPrice() > 0;
+        if (!canCalculateRoi) {
+            log.debug("Cannot calculate ROI for {} - instrument price not available", snapshot.symbol);
+            snapshot.roiOnCollateral = null;
+            snapshot.roiOnPremium = null;
+        } else {
+            // Calculate ROI metrics (require midPrice, positive daysLeft, valid strike)
+            if (midPrice == null || midPrice.compareTo(BigDecimal.ZERO) <= 0) {
+                log.debug("Cannot calculate ROI for {} - midPrice not available (no bid/ask data)",
+                        snapshot.symbol);
+                snapshot.roiOnCollateral = null;
+                snapshot.roiOnPremium = null;
+            } else if (snapshot.daysLeft <= 0) {
+                // Expired or expires today - ROI not meaningful
+                log.debug("Cannot calculate ROI for {} - daysLeft is {} (expired or expires today)",
+                        snapshot.symbol, snapshot.daysLeft);
+                snapshot.roiOnCollateral = null;
+                snapshot.roiOnPremium = null;
+            } else if (snapshot.strikePrice == null || snapshot.strikePrice.compareTo(BigDecimal.ZERO) <= 0) {
+                // Invalid strike price
+                log.warn("Cannot calculate ROI for {} - invalid strike price", snapshot.symbol);
+                snapshot.roiOnCollateral = null;
+                snapshot.roiOnPremium = null;
+            } else {
+                // ROI on Collateral: (midPrice / strikePrice) * (365 / daysLeft) * 100
+                BigDecimal roiOnCollateralDecimal = midPrice
+                        .divide(snapshot.strikePrice, 6, RoundingMode.HALF_UP)
+                        .multiply(BigDecimal.valueOf(365.0 / snapshot.daysLeft))
+                        .multiply(BigDecimal.valueOf(100.0));
+                snapshot.roiOnCollateral = roiOnCollateralDecimal.setScale(0, RoundingMode.HALF_UP).intValue();
+
+                // ROI on Premium: (365 / daysLeft) * 100
+                // Simplified because premium/premium = 1
+                double roiOnPremiumDecimal = (365.0 / snapshot.daysLeft) * 100.0;
+                snapshot.roiOnPremium = (int) Math.round(roiOnPremiumDecimal);
+            }
+        }
+
+        // Calculate POP using available data
+        if (snapshot.delta != null) {
+            // Primary method: Use delta approximation (fast, TastyTrade methodology)
+            // POP = (1 - |delta|) * 100
+            // Delta ranges from -1 to 1, so |delta| is 0 to 1
+            // POP represents probability of profit for premium sellers
+            double deltaAbs = Math.abs(snapshot.delta.doubleValue());
+            double popDecimal = (1.0 - deltaAbs) * 100.0;
+            snapshot.pop = (int) Math.round(popDecimal);
+
+            // Clamp to valid range [0, 100]
+            if (snapshot.pop < 0) snapshot.pop = 0;
+            if (snapshot.pop > 100) snapshot.pop = 100;
+        } else if (canCalculateRoi && snapshot.daysLeft > 0 && midPrice != null && midPrice.compareTo(BigDecimal.ZERO) > 0) {
+            // Fallback method: Use probability calculation when delta not available
+            // Requires: instrument price, midPrice (bid/ask), and daysLeft
+            try {
+                double strikeAsDouble = snapshot.strikePrice.doubleValue();
+                double midPriceAsDouble = midPrice.doubleValue();
+                double instrumentPrice = instrument.getPrice();
+
+                // calculateProbability uses: strikePrice (position value), instrumentPrice (market value), daysLeft
+                snapshot.pop = calculateProbability(strikeAsDouble, instrumentPrice, snapshot.daysLeft);
+                log.debug("Calculated POP for {} using probability method: {}% (delta unavailable)",
+                        snapshot.symbol, snapshot.pop);
+            } catch (Exception e) {
+                log.debug("Failed to calculate POP using probability method for {}: {}",
+                        snapshot.symbol, e.getMessage());
+                snapshot.pop = null;
+            }
+        } else {
+            log.debug("Cannot calculate POP for {} - delta not available and insufficient data for probability method",
+                    snapshot.symbol);
+            snapshot.pop = null;
+        }
     }
 
     // ============ Helper Methods ============
@@ -409,6 +526,25 @@ public class OptionSnapshotService {
             return new BigDecimal(value).setScale(6, RoundingMode.HALF_UP);
         } catch (Exception e) {
             log.warn("Failed to parse BigDecimal: {}", value);
+            return null;
+        }
+    }
+
+    /**
+     * Parse double to BigDecimal safely.
+     * Converts Double from Alpaca API to BigDecimal with scale 6.
+     *
+     * @param value Double value to parse (e.g., from Greeks API response)
+     * @return BigDecimal, or null if value is null
+     */
+    private BigDecimal parseBigDecimal(Double value) {
+        if (value == null) {
+            return null;
+        }
+        try {
+            return new BigDecimal(value).setScale(6, RoundingMode.HALF_UP);
+        } catch (Exception e) {
+            log.warn("Failed to parse BigDecimal from Double: {}", value);
             return null;
         }
     }

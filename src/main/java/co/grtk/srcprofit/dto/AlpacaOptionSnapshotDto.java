@@ -138,37 +138,38 @@ public class AlpacaOptionSnapshotDto {
 
     /**
      * Option Greeks (risk sensitivities) for this contract.
+     * All values are doubles from Alpaca API.
      */
     public static class GreeksDto {
-        public String delta;     // Delta as string
-        public String gamma;     // Gamma as string
-        public String theta;     // Theta as string
-        public String vega;      // Vega as string
-        public String rho;       // Rho as string
+        public Double delta;     // Delta sensitivity to underlying price
+        public Double gamma;     // Gamma sensitivity of delta
+        public Double theta;     // Theta time decay
+        public Double vega;      // Vega sensitivity to volatility
+        public Double rho;       // Rho sensitivity to interest rates
         @JsonProperty("iv")
-        public String impliedVolatility;  // Implied volatility as string
+        public Double impliedVolatility;  // Implied volatility from API (mapped from "iv")
 
-        public void setDelta(String delta) {
+        public void setDelta(Double delta) {
             this.delta = delta;
         }
 
-        public void setGamma(String gamma) {
+        public void setGamma(Double gamma) {
             this.gamma = gamma;
         }
 
-        public void setTheta(String theta) {
+        public void setTheta(Double theta) {
             this.theta = theta;
         }
 
-        public void setVega(String vega) {
+        public void setVega(Double vega) {
             this.vega = vega;
         }
 
-        public void setRho(String rho) {
+        public void setRho(Double rho) {
             this.rho = rho;
         }
 
-        public void setImpliedVolatility(String impliedVolatility) {
+        public void setImpliedVolatility(Double impliedVolatility) {
             this.impliedVolatility = impliedVolatility;
         }
     }

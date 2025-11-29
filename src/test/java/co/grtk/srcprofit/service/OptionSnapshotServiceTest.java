@@ -280,7 +280,7 @@ class OptionSnapshotServiceTest {
 
         // Create snapshot
         AlpacaOptionSnapshotDto newSnapshot = createTestSnapshot("AAPL230120C00150000", "call");
-        newSnapshot.getGreeks().setDelta("0.50");  // Different delta
+        newSnapshot.getGreeks().setDelta(0.50);  // Different delta
         newSnapshot.getLatestQuote().setAskPrice("2.55");
 
         Map<String, AlpacaOptionSnapshotDto> snapshots = new HashMap<>();
@@ -341,12 +341,12 @@ class OptionSnapshotServiceTest {
 
         // Greeks
         AlpacaOptionSnapshotDto.GreeksDto greeks = new AlpacaOptionSnapshotDto.GreeksDto();
-        greeks.setDelta("0.45");
-        greeks.setGamma("0.03");
-        greeks.setTheta("-0.05");
-        greeks.setVega("0.15");
-        greeks.setRho("0.02");
-        greeks.setImpliedVolatility("0.25");
+        greeks.setDelta(0.45);
+        greeks.setGamma(0.03);
+        greeks.setTheta(-0.05);
+        greeks.setVega(0.15);
+        greeks.setRho(0.02);
+        greeks.setImpliedVolatility(0.25);
         dto.setGreeks(greeks);
 
         return dto;

@@ -186,6 +186,43 @@ public class OptionSnapshotEntity {
     @Column(precision = 6, scale = 4)
     public BigDecimal impliedVolatility;
 
+    // ============ Calculated Metrics ============
+
+    /**
+     * Days remaining until option expiration.
+     * Calculated from expirationDate to current date.
+     * Can be negative for expired options.
+     */
+    @Column(name = "days_left", nullable = true)
+    public Integer daysLeft;
+
+    /**
+     * Annualized ROI on collateral (capital at risk).
+     * Formula: (midPrice / strikePrice) * (365 / daysLeft) * 100
+     * Represents return on capital required for the position.
+     * Null if midPrice or instrument price not available.
+     */
+    @Column(name = "roi_on_collateral", nullable = true)
+    public Integer roiOnCollateral;
+
+    /**
+     * Annualized ROI on premium (return basis).
+     * Formula: (365 / daysLeft) * 100
+     * Represents annualized time decay rate.
+     * Null if midPrice or instrument price not available.
+     */
+    @Column(name = "roi_on_premium", nullable = true)
+    public Integer roiOnPremium;
+
+    /**
+     * Probability of Profit using delta approximation.
+     * Formula: (1 - abs(delta)) * 100
+     * For premium sellers: higher POP means higher probability of profit.
+     * Range: 0-100, or null if delta not available.
+     */
+    @Column(name = "pop", nullable = true)
+    public Integer pop;
+
     // ============ Timestamps ============
 
     /**
@@ -394,6 +431,38 @@ public class OptionSnapshotEntity {
 
     public void setImpliedVolatility(BigDecimal impliedVolatility) {
         this.impliedVolatility = impliedVolatility;
+    }
+
+    public Integer getDaysLeft() {
+        return daysLeft;
+    }
+
+    public void setDaysLeft(Integer daysLeft) {
+        this.daysLeft = daysLeft;
+    }
+
+    public Integer getRoiOnCollateral() {
+        return roiOnCollateral;
+    }
+
+    public void setRoiOnCollateral(Integer roiOnCollateral) {
+        this.roiOnCollateral = roiOnCollateral;
+    }
+
+    public Integer getRoiOnPremium() {
+        return roiOnPremium;
+    }
+
+    public void setRoiOnPremium(Integer roiOnPremium) {
+        this.roiOnPremium = roiOnPremium;
+    }
+
+    public Integer getPop() {
+        return pop;
+    }
+
+    public void setPop(Integer pop) {
+        this.pop = pop;
     }
 
     public Instant getCreatedAt() {
