@@ -3,9 +3,10 @@ package co.grtk.srcprofit.service;
 import co.grtk.srcprofit.dto.AlpacaOptionSnapshotDto;
 import co.grtk.srcprofit.dto.AlpacaOptionSnapshotsResponseDto;
 import co.grtk.srcprofit.entity.InstrumentEntity;
+import co.grtk.srcprofit.entity.OpenPositionEntity;
 import co.grtk.srcprofit.entity.OptionSnapshotEntity;
 import co.grtk.srcprofit.repository.InstrumentRepository;
-import co.grtk.srcprofit.repository.OptionRepository;
+import co.grtk.srcprofit.repository.OpenPositionRepository;
 import co.grtk.srcprofit.repository.OptionSnapshotRepository;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -18,9 +19,11 @@ import java.time.Instant;
 import java.time.LocalDate;
 import java.time.OffsetDateTime;
 import java.time.format.DateTimeFormatter;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 import static co.grtk.srcprofit.mapper.PositionCalculationHelper.calculateDaysLeft;
@@ -29,11 +32,14 @@ import static co.grtk.srcprofit.mapper.PositionCalculationHelper.calculateProbab
 /**
  * Service for managing option snapshots downloaded from Alpaca Data API.
  *
- * Orchestrates batch refresh of option snapshots with filtering based on:
- * - Instrument price < $100
- * - Expiration date < 3 months
- * - Strike price between current price -20% and +10%
- * - Both PUT and CALL options (separate API calls)
+ * Orchestrates batch refresh of option snapshots based on OpenPositionEntity records
+ * from IBKR Flex Reports (source of truth). For each underlying symbol with open positions:
+ * - Fetches snapshots for exact positions held
+ * - Fetches snapshots for ±2 nearby strike prices (trading context)
+ * - Validates all positions have valid underlyingInstrument relationships (fail-fast)
+ * - Batches by underlying to minimize API calls
+ *
+ * Both PUT and CALL options refreshed via separate API calls per underlying.
  *
  * OCC Symbol Format: AAPL230120C00150000
  * - Root: AAPL (1-6 characters)
@@ -52,32 +58,31 @@ public class OptionSnapshotService {
     private final AlpacaService alpacaService;
     private final OptionSnapshotRepository optionSnapshotRepository;
     private final InstrumentRepository instrumentRepository;
-    private final OptionRepository optionRepository;
+    private final OpenPositionRepository openPositionRepository;
 
     public OptionSnapshotService(AlpacaService alpacaService,
                                 OptionSnapshotRepository optionSnapshotRepository,
                                 InstrumentRepository instrumentRepository,
-                                OptionRepository optionRepository) {
+                                OpenPositionRepository openPositionRepository) {
         this.alpacaService = alpacaService;
         this.optionSnapshotRepository = optionSnapshotRepository;
         this.instrumentRepository = instrumentRepository;
-        this.optionRepository = optionRepository;
+        this.openPositionRepository = openPositionRepository;
     }
 
     /**
-     * Refresh option snapshots for instruments with open positions.
+     * Refresh option snapshots based on open positions from OpenPositionEntity.
      *
-     * Eligible instruments:
-     * - Have at least one open position (status = OPEN)
+     * For each underlying symbol with open option positions:
+     * 1. Validates all positions have valid underlyingInstrument relationships
+     * 2. Calculates strike range from actual positions ± 2 strikes
+     * 3. Calculates expiration range from actual positions
+     * 4. Fetches CALL snapshots from Alpaca API
+     * 5. Fetches PUT snapshots from Alpaca API
+     * 6. Filters results to only save snapshots for held + nearby positions
+     * 7. Saves/updates snapshots in database
      *
-     * For each eligible instrument:
-     * 1. Calculates strike price range: (price * 0.90) to (price * 1.10)
-     * 2. Fetches CALL snapshots from Alpaca API
-     * 3. Fetches PUT snapshots from Alpaca API
-     * 4. Filters by expiration (< 3 months)
-     * 5. Saves/updates snapshots in database
-     *
-     * Per-instrument errors do NOT abort the batch. Continues with next instrument.
+     * Per-underlying errors do NOT abort the batch. Continues with next underlying.
      *
      * @return Total number of snapshots saved/updated
      */
@@ -85,21 +90,29 @@ public class OptionSnapshotService {
     public int refreshOptionSnapshots() {
         log.debug("OptionSnapshotService: Starting refreshOptionSnapshots()");
 
-        // Find instruments with open positions
-        List<InstrumentEntity> eligibleInstruments = optionRepository.findInstrumentsWithOpenPositions();
+        // Query all option positions with underlying instruments (JOIN FETCH prevents N+1)
+        List<OpenPositionEntity> openOptions = openPositionRepository.findAllOptionsWithUnderlying();
 
-        log.info("Found {} instruments with open positions", eligibleInstruments.size());
+        log.info("Found {} open option positions", openOptions.size());
+
+        // Group positions by underlying symbol
+        Map<String, List<OpenPositionEntity>> positionsByUnderlying = groupPositionsByUnderlying(openOptions);
+
+        log.info("Processing {} underlying symbols", positionsByUnderlying.size());
 
         int totalSaved = 0;
-        for (InstrumentEntity instrument : eligibleInstruments) {
+        for (Map.Entry<String, List<OpenPositionEntity>> entry : positionsByUnderlying.entrySet()) {
             try {
-                int saved = refreshSnapshotsForInstrument(instrument);
+                String underlyingSymbol = entry.getKey();
+                List<OpenPositionEntity> positions = entry.getValue();
+
+                int saved = refreshSnapshotsForUnderlying(underlyingSymbol, positions);
                 totalSaved += saved;
-                log.info("Refreshed {} snapshots for {}", saved, instrument.getTicker());
+                log.info("Refreshed {} snapshots for {}", saved, underlyingSymbol);
             } catch (Exception e) {
-                log.warn("Failed to refresh snapshots for ticker {}: {}",
-                        instrument.getTicker(), e.getMessage());
-                // Continue with next instrument - don't abort batch
+                log.warn("Failed to refresh snapshots for {}: {}",
+                        entry.getKey(), e.getMessage());
+                // Continue with next underlying - don't abort batch
             }
         }
 
@@ -109,67 +122,92 @@ public class OptionSnapshotService {
     }
 
     /**
-     * Refresh option snapshots for a specific instrument.
+     * Refresh option snapshots for a specific underlying symbol with given positions.
      *
-     * Makes two API calls: one for CALL options, one for PUT options.
-     * Calculates dynamic strike price range based on current price.
+     * Validates all positions have valid underlyingInstrument relationships (fail-fast).
+     * Calculates strike and expiration ranges from actual positions.
+     * Fetches snapshots for held + nearby positions via two API calls (CALL and PUT).
      *
-     * @param instrument The instrument to refresh snapshots for
-     * @return Number of snapshots saved/updated for this instrument
+     * @param underlyingSymbol The underlying symbol (e.g., "SPY")
+     * @param positions The open option positions for this underlying
+     * @return Number of snapshots saved/updated for this underlying
+     * @throws IllegalStateException if any position lacks underlyingInstrument
      */
-    private int refreshSnapshotsForInstrument(InstrumentEntity instrument) {
-        if (instrument.getPrice() == null || instrument.getPrice() <= 0) {
-            log.warn("Skipping instrument {} - invalid price {}",
-                    instrument.getTicker(), instrument.getPrice());
+    private int refreshSnapshotsForUnderlying(String underlyingSymbol,
+                                              List<OpenPositionEntity> positions) {
+        // FAIL FAST: Validate all positions have underlyingInstrument
+        for (OpenPositionEntity position : positions) {
+            if (position.getUnderlyingInstrument() == null) {
+                throw new IllegalStateException(
+                    "Position missing underlyingInstrument: symbol=" +
+                    position.getSymbol() + ", conid=" + position.getConid() +
+                    ". This indicates a data quality issue.");
+            }
+        }
+
+        // Get underlying instrument from first position (all have same underlying)
+        InstrumentEntity underlyingInstrument = positions.get(0).getUnderlyingInstrument();
+
+        if (underlyingInstrument.getPrice() == null ||
+            underlyingInstrument.getPrice() <= 0) {
+            log.warn("Skipping {} - invalid underlying price {}",
+                    underlyingSymbol, underlyingInstrument.getPrice());
             return 0;
         }
 
-        String ticker = instrument.getTicker();
-        BigDecimal currentPrice = BigDecimal.valueOf(instrument.getPrice());
+        // Calculate strike range from ACTUAL positions ± 2 strikes
+        StrikeRange strikeRange = calculateStrikeRange(positions);
 
-        // Calculate strike price range: -10% to +10%
-        BigDecimal lowerStrike = currentPrice.multiply(BigDecimal.valueOf(MIN_STRIKE_MULTIPLIER))
-                .setScale(2, RoundingMode.DOWN);
-        BigDecimal upperStrike = currentPrice.multiply(BigDecimal.valueOf(MAX_STRIKE_MULTIPLIER))
-                .setScale(2, RoundingMode.UP);
+        // Calculate expiration range from ACTUAL positions
+        ExpirationRange expirationRange = calculateExpirationRange(positions);
 
-        // Calculate expiration date range: tomorrow to +3 months
-        LocalDate tomorrow = LocalDate.now().plusDays(1);
-        LocalDate expirationMax = tomorrow.plusDays(EXPIRATION_DAYS);
+        // Build set of OCC symbols to save (held + nearby strikes)
+        Set<String> symbolsToSave = buildSymbolsToSave(positions);
 
-        log.debug("Refreshing snapshots for {} - Strike range: ${} to ${}, Expiration: {} to {}",
-                ticker, lowerStrike, upperStrike, tomorrow, expirationMax);
+        log.debug("Refreshing for {} - Strike: ${}-${}, Expiration: {}-{}, {} symbols",
+                underlyingSymbol,
+                strikeRange.min, strikeRange.max,
+                expirationRange.min, expirationRange.max,
+                symbolsToSave.size());
 
-        int saved = 0;
+        // Rate limiting
         try {
-            // Wait 3 seconds before fetching API data to avoid rate limiting
             Thread.sleep(3000);
         } catch (InterruptedException e) {
             Thread.currentThread().interrupt();
-            log.warn("Snapshot fetch delay interrupted for {}", ticker);
+            log.warn("Snapshot fetch delay interrupted for {}", underlyingSymbol);
         }
 
+        int saved = 0;
         // Fetch CALL options
-        saved += fetchAndSaveSnapshots(instrument, "call", lowerStrike, upperStrike, expirationMax);
+        saved += fetchAndSaveSnapshots(
+            underlyingInstrument, "call",
+            strikeRange.min, strikeRange.max,
+            expirationRange.max, symbolsToSave);
+
         // Fetch PUT options
-        saved += fetchAndSaveSnapshots(instrument, "put", lowerStrike, upperStrike, expirationMax);
+        saved += fetchAndSaveSnapshots(
+            underlyingInstrument, "put",
+            strikeRange.min, strikeRange.max,
+            expirationRange.max, symbolsToSave);
 
         return saved;
     }
 
     /**
-     * Fetch option snapshots for a specific type (call/put) and save them.
+     * Fetch option snapshots for a specific type (call/put) and save only those in symbolsToSave.
      *
      * @param instrument The underlying instrument
      * @param type "call" or "put"
      * @param lowerStrike Minimum strike price
      * @param upperStrike Maximum strike price
      * @param maxExpiration Maximum expiration date
+     * @param symbolsToSave Set of OCC symbols to save (held + nearby positions)
      * @return Number of snapshots saved
      */
     private int fetchAndSaveSnapshots(InstrumentEntity instrument, String type,
                                       BigDecimal lowerStrike, BigDecimal upperStrike,
-                                      LocalDate maxExpiration) {
+                                      LocalDate maxExpiration, Set<String> symbolsToSave) {
         try {
             AlpacaOptionSnapshotsResponseDto response = alpacaService.getOptionSnapshots(
                     instrument.getTicker(),
@@ -189,10 +227,17 @@ public class OptionSnapshotService {
                     String symbol = entry.getKey();
                     AlpacaOptionSnapshotDto snapshotDto = entry.getValue();
 
+                    // FILTER: Only save if symbol is in our set of held/nearby positions
+                    if (!symbolsToSave.contains(symbol)) {
+                        log.trace("Skipping {} - not in held or nearby positions", symbol);
+                        continue;
+                    }
+
                     // Parse expiration from OCC symbol and filter
                     LocalDate expiration = parseExpirationFromSymbol(symbol);
                     if (expiration.isAfter(maxExpiration)) {
-                        log.debug("Skipping {} - expiration {} beyond 3 months", symbol, expiration);
+                        log.debug("Skipping {} - expiration {} beyond range",
+                                 symbol, expiration);
                         continue;
                     }
 
@@ -546,6 +591,193 @@ public class OptionSnapshotService {
         } catch (Exception e) {
             log.warn("Failed to parse BigDecimal from Double: {}", value);
             return null;
+        }
+    }
+
+    // ============ New Helper Methods for OpenPositionEntity-based Refresh ============
+
+    /**
+     * Group open positions by underlying symbol.
+     *
+     * @param positions List of open option positions
+     * @return Map of underlying symbol → list of positions for that underlying
+     */
+    private Map<String, List<OpenPositionEntity>> groupPositionsByUnderlying(
+            List<OpenPositionEntity> positions) {
+        return positions.stream()
+                .collect(Collectors.groupingBy(OpenPositionEntity::getUnderlyingSymbol));
+    }
+
+    /**
+     * Calculate strike price range from actual positions ± 2 strikes.
+     *
+     * Determines strike increment based on prices, then calculates bounds.
+     *
+     * @param positions Positions for the same underlying
+     * @return StrikeRange with min/max strike prices
+     */
+    private StrikeRange calculateStrikeRange(List<OpenPositionEntity> positions) {
+        double minStrike = positions.stream()
+                .mapToDouble(OpenPositionEntity::getStrike)
+                .min()
+                .orElse(0.0);
+
+        double maxStrike = positions.stream()
+                .mapToDouble(OpenPositionEntity::getStrike)
+                .max()
+                .orElse(0.0);
+
+        // Use average strike for increment calculation
+        double avgStrike = (minStrike + maxStrike) / 2.0;
+        double strikeIncrement = calculateStrikeIncrement(avgStrike);
+
+        // Expand by ±2 strikes
+        BigDecimal expandedMin = BigDecimal.valueOf(minStrike - (2 * strikeIncrement))
+                .setScale(2, RoundingMode.DOWN);
+        BigDecimal expandedMax = BigDecimal.valueOf(maxStrike + (2 * strikeIncrement))
+                .setScale(2, RoundingMode.UP);
+
+        return new StrikeRange(expandedMin, expandedMax);
+    }
+
+    /**
+     * Calculate strike increment based on price level (OCC standard).
+     *
+     * @param strikePrice The strike price
+     * @return Strike increment ($0.50, $1.00, $5.00, or $10.00)
+     */
+    private double calculateStrikeIncrement(double strikePrice) {
+        if (strikePrice < 3.0) {
+            return 0.50;
+        } else if (strikePrice < 100.0) {
+            return 1.00;
+        } else if (strikePrice < 200.0) {
+            return 5.00;
+        } else {
+            return 10.00;
+        }
+    }
+
+    /**
+     * Calculate expiration date range from actual positions.
+     *
+     * @param positions Positions for the same underlying
+     * @return ExpirationRange with min/max expiration dates
+     */
+    private ExpirationRange calculateExpirationRange(List<OpenPositionEntity> positions) {
+        LocalDate minExp = positions.stream()
+                .map(OpenPositionEntity::getExpirationDate)
+                .min(LocalDate::compareTo)
+                .orElse(LocalDate.now());
+
+        LocalDate maxExp = positions.stream()
+                .map(OpenPositionEntity::getExpirationDate)
+                .max(LocalDate::compareTo)
+                .orElse(LocalDate.now());
+
+        return new ExpirationRange(minExp, maxExp);
+    }
+
+    /**
+     * Build set of OCC symbols for held positions and ±2 nearby strikes.
+     *
+     * @param positions Positions for the same underlying
+     * @return Set of OCC symbols to save (held + nearby)
+     */
+    private Set<String> buildSymbolsToSave(List<OpenPositionEntity> positions) {
+        Set<String> symbols = new HashSet<>();
+
+        for (OpenPositionEntity position : positions) {
+            // Add exact position
+            symbols.add(constructOccSymbol(position));
+
+            // Add ±2 nearby strikes
+            double strikeIncrement = calculateStrikeIncrement(position.getStrike());
+            for (int i = -2; i <= 2; i++) {
+                if (i == 0) continue; // Already added
+                double nearbyStrike = position.getStrike() + (i * strikeIncrement);
+                symbols.add(constructOccSymbolForStrike(
+                    position.getUnderlyingSymbol(),
+                    position.getExpirationDate(),
+                    position.getPutCall(),
+                    nearbyStrike
+                ));
+            }
+        }
+
+        return symbols;
+    }
+
+    /**
+     * Construct OCC symbol from OpenPositionEntity.
+     *
+     * Format: {UNDERLYINGSYMBOL}{YYMMDD}{C|P}{STRIKE*1000 padded to 8 digits}
+     * Example: SPY230120C00400000 (SPY, Jan 20 2023, Call, $400.00)
+     *
+     * @param position The option position
+     * @return OCC symbol string
+     */
+    private String constructOccSymbol(OpenPositionEntity position) {
+        return constructOccSymbolForStrike(
+            position.getUnderlyingSymbol(),
+            position.getExpirationDate(),
+            position.getPutCall(),
+            position.getStrike()
+        );
+    }
+
+    /**
+     * Construct OCC symbol from individual components.
+     *
+     * @param underlyingSymbol Underlying symbol (e.g., "SPY")
+     * @param expirationDate Expiration date
+     * @param putCall "P" or "C"
+     * @param strikePrice Strike price
+     * @return OCC symbol string
+     */
+    private String constructOccSymbolForStrike(String underlyingSymbol, LocalDate expirationDate,
+                                               String putCall, double strikePrice) {
+        // Format expiration as YYMMDD
+        String expStr = String.format("%02d%02d%02d",
+                expirationDate.getYear() % 100,
+                expirationDate.getMonthValue(),
+                expirationDate.getDayOfMonth());
+
+        // Format strike as 8 digits (strike * 1000)
+        long strikeInt = Math.round(strikePrice * 1000);
+        String strikeStr = String.format("%08d", strikeInt);
+
+        // Get put/call character
+        char typeChar = "P".equalsIgnoreCase(putCall) ? 'P' : 'C';
+
+        return underlyingSymbol + expStr + typeChar + strikeStr;
+    }
+
+    // ============ Helper Classes ============
+
+    /**
+     * Helper class for strike price range.
+     */
+    private static class StrikeRange {
+        final BigDecimal min;
+        final BigDecimal max;
+
+        StrikeRange(BigDecimal min, BigDecimal max) {
+            this.min = min;
+            this.max = max;
+        }
+    }
+
+    /**
+     * Helper class for expiration date range.
+     */
+    private static class ExpirationRange {
+        final LocalDate min;
+        final LocalDate max;
+
+        ExpirationRange(LocalDate min, LocalDate max) {
+            this.min = min;
+            this.max = max;
         }
     }
 
