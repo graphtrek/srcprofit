@@ -3,6 +3,7 @@ package co.grtk.srcprofit.service;
 import co.grtk.srcprofit.dto.CsvImportResult;
 import co.grtk.srcprofit.entity.FlexStatementResponseEntity;
 import co.grtk.srcprofit.repository.FlexStatementResponseRepository;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -44,6 +45,12 @@ class FlexReportsServiceTest {
 
     @Mock
     private FlexStatementResponseRepository flexStatementResponseRepository;
+
+    @Mock
+    private OpenPositionService openPositionService;
+
+    @Mock
+    private ObjectMapper objectMapper;
 
     @InjectMocks
     private FlexReportsService flexReportsService;
@@ -208,7 +215,7 @@ class FlexReportsServiceTest {
         perfectResult.setFailedRecords(0);
         perfectResult.setSkippedRecords(0);
 
-        when(environment.getRequiredProperty("IBKR_FLEX_TRADES_ID")).thenReturn("TEST_QUERY_ID");
+        when(environment.getProperty("IBKR_FLEX_TRADES_ID")).thenReturn("TEST_QUERY_ID");
         when(ibkrService.getFlexWebServiceSendRequest("TEST_QUERY_ID"))
                 .thenReturn(createMockFlexResponse("TEST-REF-002"));
         when(ibkrService.getFlexWebServiceGetStatement(anyString(), eq("TEST-REF-002")))
@@ -287,7 +294,7 @@ class FlexReportsServiceTest {
         poorResult.setFailedRecords(60);
         poorResult.setSkippedRecords(30);
 
-        when(environment.getRequiredProperty("IBKR_FLEX_TRADES_ID")).thenReturn("TEST_QUERY_ID");
+        when(environment.getProperty("IBKR_FLEX_TRADES_ID")).thenReturn("TEST_QUERY_ID");
         when(ibkrService.getFlexWebServiceSendRequest("TEST_QUERY_ID"))
                 .thenReturn(createMockFlexResponse("TEST-REF-003"));
         when(ibkrService.getFlexWebServiceGetStatement(anyString(), eq("TEST-REF-003")))
@@ -317,7 +324,7 @@ class FlexReportsServiceTest {
     @DisplayName("importFlexTrades handles null entity from repository")
     void testImportFlexTradesHandlesNullEntity() throws InterruptedException {
         // Setup: Repository returns null (entity not found)
-        when(environment.getRequiredProperty("IBKR_FLEX_TRADES_ID")).thenReturn("TEST_QUERY_ID");
+        when(environment.getProperty("IBKR_FLEX_TRADES_ID")).thenReturn("TEST_QUERY_ID");
         when(ibkrService.getFlexWebServiceSendRequest("TEST_QUERY_ID"))
                 .thenReturn(createMockFlexResponse("TEST-REF-004"));
         when(ibkrService.getFlexWebServiceGetStatement(anyString(), eq("TEST-REF-004")))

@@ -89,24 +89,25 @@ public interface OpenPositionRepository extends JpaRepository<OpenPositionEntity
 
     /**
      * Find all option positions with their underlying instruments eagerly loaded.
-     * Uses JOIN FETCH to avoid N+1 query problem.
+     * Uses regular LEFT JOIN (not FETCH) to handle missing referenced entities gracefully.
+     * Fetches are done automatically by accessing the relationship.
      *
      * @return List of option positions with underlying instruments
      */
-    @Query("SELECT op FROM OpenPositionEntity op " +
-           "LEFT JOIN FETCH op.underlyingInstrument " +
+    @Query("SELECT DISTINCT op FROM OpenPositionEntity op " +
+           "LEFT JOIN op.underlyingInstrument " +
            "WHERE op.assetClass = 'OPT' " +
            "ORDER BY op.symbol ASC, op.expirationDate ASC")
     List<OpenPositionEntity> findAllOptionsWithUnderlying();
 
     /**
      * Find all stock positions with their instruments eagerly loaded.
-     * Uses JOIN FETCH to avoid N+1 query problem.
+     * Uses regular LEFT JOIN (not FETCH) to handle missing referenced entities gracefully.
      *
      * @return List of stock positions with instruments
      */
-    @Query("SELECT op FROM OpenPositionEntity op " +
-           "LEFT JOIN FETCH op.instrument " +
+    @Query("SELECT DISTINCT op FROM OpenPositionEntity op " +
+           "LEFT JOIN op.instrument " +
            "WHERE op.assetClass = 'STK' " +
            "ORDER BY op.symbol ASC")
     List<OpenPositionEntity> findAllStocksWithInstrument();
@@ -118,21 +119,21 @@ public interface OpenPositionRepository extends JpaRepository<OpenPositionEntity
      * @param ticker Underlying instrument ticker
      * @return List of option positions for that underlying
      */
-    @Query("SELECT op FROM OpenPositionEntity op " +
-           "LEFT JOIN FETCH op.underlyingInstrument i " +
+    @Query("SELECT DISTINCT op FROM OpenPositionEntity op " +
+           "LEFT JOIN op.underlyingInstrument i " +
            "WHERE op.assetClass = 'OPT' AND i.ticker = :ticker " +
            "ORDER BY op.expirationDate ASC, op.strike ASC, op.putCall ASC")
     List<OpenPositionEntity> findOptionsByUnderlyingTicker(@Param("ticker") String ticker);
 
     /**
      * Find all positions (any asset class) with their related instruments eagerly loaded.
-     * Fetches both instrument and underlyingInstrument relationships.
+     * Uses regular LEFT JOIN (not FETCH) to handle missing referenced entities gracefully.
      *
      * @return List of all positions with instruments
      */
-    @Query("SELECT op FROM OpenPositionEntity op " +
-           "LEFT JOIN FETCH op.instrument " +
-           "LEFT JOIN FETCH op.underlyingInstrument " +
+    @Query("SELECT DISTINCT op FROM OpenPositionEntity op " +
+           "LEFT JOIN op.instrument " +
+           "LEFT JOIN op.underlyingInstrument " +
            "ORDER BY op.assetClass ASC, op.symbol ASC")
     List<OpenPositionEntity> findAllWithInstruments();
 }
