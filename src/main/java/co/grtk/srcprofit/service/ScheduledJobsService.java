@@ -23,7 +23,8 @@ import java.util.concurrent.TimeUnit;
  * Scheduled Jobs:
  * 1. importFlexTrades() - Every 6 hours (FLEX API - trades report)
  * 2. importFlexNetAssetValue() - Every 6 hours (FLEX API - NAV report)
- * 3. refreshMarketData() - Every 5 minutes (Alpaca API - market data refresh)
+ * 3. importFlexOpenPositions() - Every 6 hours (FLEX API - open positions report)
+ * 4. refreshMarketData() - Every 5 minutes (Alpaca API - market data refresh)
  * 4. refreshAlpacaAssets() - Every 12 hours (Alpaca Assets API - metadata refresh)
  * 5. refreshEarningsData() - Every 12 hours (Alpha Vantage - earnings calendar refresh)
  * 6. refreshOptionSnapshots() - Every 15 minutes (Alpaca Data API - option snapshots refresh)
@@ -115,6 +116,36 @@ public class ScheduledJobsService {
             long elapsedTime = System.currentTimeMillis() - startTime;
             log.error("ScheduledJobsService: importFlexNetAssetValue() failed after {}ms - {}", elapsedTime, e.getMessage(), e);
             throw new RuntimeException("importFlexNetAssetValue job failed", e);
+        }
+    }
+
+    /**
+     * Scheduled job: Import FLEX Open Positions report from Interactive Brokers.
+     *
+     * Schedule: Every 6 hours, starting 1 minute after application startup
+     * Delegates to: FlexReportsService.importFlexOpenPositions()
+     *
+     * Snapshot Data:
+     * - Downloads current open positions snapshot from IBKR
+     * - Upserts positions into database (update if exists, insert if new)
+     * - Validates portfolio positions against broker data
+     *
+     * @return Status string: "{records}/0" on success
+     *         or "WAITING_FOR REPORT /{counter}" if still waiting for API response
+     */
+    @Scheduled(fixedDelay = 360, initialDelay = 1, timeUnit = TimeUnit.MINUTES)
+    public String importFlexOpenPositions() {
+        long startTime = System.currentTimeMillis();
+        try {
+            log.debug("ScheduledJobsService: Starting importFlexOpenPositions() job");
+            String result = flexReportsService.importFlexOpenPositions();
+            long elapsedTime = System.currentTimeMillis() - startTime;
+            log.info("ScheduledJobsService: Completed importFlexOpenPositions() in {}ms with result: {}", elapsedTime, result);
+            return result;
+        } catch (Exception e) {
+            long elapsedTime = System.currentTimeMillis() - startTime;
+            log.error("ScheduledJobsService: importFlexOpenPositions() failed after {}ms - {}", elapsedTime, e.getMessage(), e);
+            throw new RuntimeException("importFlexOpenPositions job failed", e);
         }
     }
 

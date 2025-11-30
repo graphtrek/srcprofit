@@ -31,7 +31,8 @@
       "Bash(java -version:*)",
       "Bash(timeout 120 ./mvnw clean test:*)",
       "Bash(echo:*)",
-      "WebFetch(domain:datatables.net)"
+      "WebFetch(domain:datatables.net)",
+      "WebFetch(domain:www.ibkrguides.com)"
     ],
     "deny": [],
     "ask": []

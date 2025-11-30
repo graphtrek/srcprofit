@@ -2,9 +2,9 @@
 
 **Auto-generated** - Run `python scripts/update_issue_index.py` to update
 
-**Total**: 39 issues
-**Open**: 2 (5%)
-**Closed**: 36 (92%)
+**Total**: 41 issues
+**Open**: 3 (7%)
+**Closed**: 36 (88%)
 **Partial**: 0
 
 ---
@@ -16,10 +16,12 @@
 - **[ISSUE-037](ISSUE-037-alpaca-option-contracts-download.md)** - Alpaca Option Contracts Download and Storage
   - Priority: HIGH | Status: OPEN | Category: Feature | Created: 2025-11-28
 
-### MEDIUM (1)
+### MEDIUM (2)
 
 - **[ISSUE-036](ISSUE-036-parameterize-k8s-scripts.md)** - Extract Spring Boot Actuator Endpoints from Kubernetes Namespace
   - Priority: MEDIUM | Status: OPEN | Category: Infrastructure | Developer Experience | Created: 2025-11-25
+- **[ISSUE-039](ISSUE-039-ibkr-flex-open-positions-import.md)** - IBKR Flex Open Positions Import
+  - Priority: MEDIUM | Status: OPEN | Category: Feature | Created: 2025-11-30
 
 ---
 
@@ -123,8 +125,8 @@
 **Enhancement** (2):
   - ISSUE-011 ✅, ISSUE-016 ✅
 
-**Feature** (12):
-  - ISSUE-001 ✅, ISSUE-005 ✅, ISSUE-009 ✅, ISSUE-010 ✅, ISSUE-014 ✅, ISSUE-017 ✅, ISSUE-018 ✅, ISSUE-019 ✅, ISSUE-028 ✅, ISSUE-032 ✅, ISSUE-035 ✅, ISSUE-037 🔴
+**Feature** (14):
+  - ISSUE-001 ✅, ISSUE-005 ✅, ISSUE-009 ✅, ISSUE-010 ✅, ISSUE-014 ✅, ISSUE-017 ✅, ISSUE-018 ✅, ISSUE-019 ✅, ISSUE-028 ✅, ISSUE-032 ✅, ISSUE-035 ✅, ISSUE-037 🔴, ISSUE-038 🔴, ISSUE-039 🔴
 
 **Feature / Code Quality** (1):
   - ISSUE-020 ✅
@@ -155,6 +157,6 @@
 
 ---
 
-**Last updated**: 2025-11-28
+**Last updated**: 2025-11-30
 
 **How to update**: Run `python scripts/update_issue_index.py`

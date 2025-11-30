@@ -56,6 +56,7 @@ public class FlexReportsService {
     private final IbkrService ibkrService;
     private final OptionService optionService;
     private final NetAssetValueService netAssetValueService;
+    private final OpenPositionService openPositionService;
     private final Environment environment;
     private final FlexStatementResponseRepository flexStatementResponseRepository;
     private final ObjectMapper objectMapper;
@@ -64,12 +65,14 @@ public class FlexReportsService {
     public FlexReportsService(IbkrService ibkrService,
                               OptionService optionService,
                               NetAssetValueService netAssetValueService,
+                              OpenPositionService openPositionService,
                               Environment environment,
                               FlexStatementResponseRepository flexStatementResponseRepository,
                               ObjectMapper objectMapper) {
         this.ibkrService = ibkrService;
         this.optionService = optionService;
         this.netAssetValueService = netAssetValueService;
+        this.openPositionService = openPositionService;
         this.environment = environment;
         this.flexStatementResponseRepository = flexStatementResponseRepository;
         this.objectMapper = objectMapper;
@@ -230,6 +233,75 @@ public class FlexReportsService {
             throw new RuntimeException("Interrupted while waiting for FLEX report", e);
         } catch (Exception e) {
             throw new RuntimeException("Failed to import FLEX Net Asset Value", e);
+        }
+    }
+
+    /**
+     * Imports FLEX Open Positions report from IBKR.
+     *
+     * Workflow:
+     * 1. Calls FLEX SendRequest API to initiate report generation
+     * 2. Saves response metadata to database
+     * 3. Waits 15 seconds for report generation
+     * 4. Calls FLEX GetStatement API to retrieve CSV
+     * 5. Writes CSV to file: ~/FLEX_OPEN_POSITIONS_{referenceCode}.csv
+     * 6. Parses CSV and saves open positions to database (OpenPositionService)
+     *
+     * Transactional:
+     * - Entire workflow is atomic (API call + metadata + CSV parsing)
+     * - Rollback occurs if any step fails
+     *
+     * Environment Variables Required:
+     * - IBKR_FLEX_OPEN_POSITIONS_ID: Query ID for open positions report
+     *
+     * @return Success: "{records}/0" (e.g., "42/0")
+     * @throws RuntimeException if API call fails or CSV parsing fails
+     */
+    @Transactional
+    public String importFlexOpenPositions() {
+        long start = System.currentTimeMillis();
+        try {
+            // Check if IBKR_FLEX_OPEN_POSITIONS_ID is configured
+            String flexOpenPositionsId = environment.getProperty("IBKR_FLEX_OPEN_POSITIONS_ID");
+            if (flexOpenPositionsId == null || flexOpenPositionsId.isEmpty()) {
+                log.warn("IBKR_FLEX_OPEN_POSITIONS_ID not configured - skipping open positions import");
+                return "SKIPPED/0";
+            }
+
+            FlexStatementResponse flexResponse = ibkrService.getFlexWebServiceSendRequest(flexOpenPositionsId);
+
+            // Save FLEX statement response metadata to database
+            saveFlexStatementResponse(flexResponse, "OPEN_POSITIONS");
+
+            log.debug("importFlexOpenPositions flexResponse {}", flexResponse);
+            Thread.sleep(WAIT_FOR_REPORT_MS);
+
+            String csvData = ibkrService.getFlexWebServiceGetStatement(flexResponse.getUrl(), flexResponse.getReferenceCode());
+            File file = new File(userHome + "/FLEX_OPEN_POSITIONS_" + flexResponse.getReferenceCode() + ".csv");
+            FileUtils.write(file, csvData, CharsetNames.CS_UTF8);
+            int records = openPositionService.saveCSV(csvData);
+
+            // Update entity with monitoring fields
+            FlexStatementResponseEntity entity = flexStatementResponseRepository.findByReferenceCode(flexResponse.getReferenceCode());
+            if (entity != null) {
+                entity.setCsvFilePath(file.getAbsolutePath());
+                entity.setCsvRecordsCount(records);
+                entity.setCsvFailedRecordsCount(0);  // Simple error handling
+                entity.setCsvSkippedRecordsCount(0);
+                entity.setDataFixRecordsCount(null);  // Not applicable to snapshots
+                flexStatementResponseRepository.save(entity);
+                log.debug("Updated FlexStatementResponse with monitoring fields: csvRecords={}, csvFilePath={}",
+                        records, file.getAbsolutePath());
+            }
+
+            long elapsed = System.currentTimeMillis() - start;
+            log.debug("importFlexOpenPositions file {} written elapsed:{}", file.getAbsolutePath(), elapsed);
+            return String.valueOf(records) + "/0";
+        } catch (InterruptedException e) {
+            Thread.currentThread().interrupt();
+            throw new RuntimeException("Interrupted while waiting for FLEX report", e);
+        } catch (Exception e) {
+            throw new RuntimeException("Failed to import FLEX Open Positions", e);
         }
     }
 

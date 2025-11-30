@@ -35,6 +35,11 @@ public class IbkrRestController {
         return flexReportsService.importFlexNetAssetValue();
     }
 
+    @GetMapping(value = "/ibkrFlexOpenPositionsImport", produces = MediaType.APPLICATION_XML_VALUE)
+    public String ibkrFlexOpenPositionsImport() {
+        return flexReportsService.importFlexOpenPositions();
+    }
+
     @GetMapping(value = "/ibkrLatestTrades", produces = MediaType.APPLICATION_JSON_VALUE)
     public List<IbkrTradeExecutionDto> getLatestTrades() {
         List<IbkrTradeExecutionDto> ibkrTradeExecutionDtoList = ibkrService.getLatestTrades();
