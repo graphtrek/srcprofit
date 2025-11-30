@@ -86,4 +86,53 @@ public interface OpenPositionRepository extends JpaRepository<OpenPositionEntity
      */
     @Query("SELECT COUNT(o) FROM OpenPositionEntity o WHERE o.assetClass = :assetClass")
     long countByAssetClass(@Param("assetClass") String assetClass);
+
+    /**
+     * Find all option positions with their underlying instruments eagerly loaded.
+     * Uses JOIN FETCH to avoid N+1 query problem.
+     *
+     * @return List of option positions with underlying instruments
+     */
+    @Query("SELECT op FROM OpenPositionEntity op " +
+           "LEFT JOIN FETCH op.underlyingInstrument " +
+           "WHERE op.assetClass = 'OPT' " +
+           "ORDER BY op.symbol ASC, op.expirationDate ASC")
+    List<OpenPositionEntity> findAllOptionsWithUnderlying();
+
+    /**
+     * Find all stock positions with their instruments eagerly loaded.
+     * Uses JOIN FETCH to avoid N+1 query problem.
+     *
+     * @return List of stock positions with instruments
+     */
+    @Query("SELECT op FROM OpenPositionEntity op " +
+           "LEFT JOIN FETCH op.instrument " +
+           "WHERE op.assetClass = 'STK' " +
+           "ORDER BY op.symbol ASC")
+    List<OpenPositionEntity> findAllStocksWithInstrument();
+
+    /**
+     * Find option positions by underlying ticker symbol.
+     * Example: Find all SPY option positions.
+     *
+     * @param ticker Underlying instrument ticker
+     * @return List of option positions for that underlying
+     */
+    @Query("SELECT op FROM OpenPositionEntity op " +
+           "LEFT JOIN FETCH op.underlyingInstrument i " +
+           "WHERE op.assetClass = 'OPT' AND i.ticker = :ticker " +
+           "ORDER BY op.expirationDate ASC, op.strike ASC, op.putCall ASC")
+    List<OpenPositionEntity> findOptionsByUnderlyingTicker(@Param("ticker") String ticker);
+
+    /**
+     * Find all positions (any asset class) with their related instruments eagerly loaded.
+     * Fetches both instrument and underlyingInstrument relationships.
+     *
+     * @return List of all positions with instruments
+     */
+    @Query("SELECT op FROM OpenPositionEntity op " +
+           "LEFT JOIN FETCH op.instrument " +
+           "LEFT JOIN FETCH op.underlyingInstrument " +
+           "ORDER BY op.assetClass ASC, op.symbol ASC")
+    List<OpenPositionEntity> findAllWithInstruments();
 }

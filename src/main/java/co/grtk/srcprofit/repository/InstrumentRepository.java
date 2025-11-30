@@ -23,6 +23,15 @@ public interface InstrumentRepository extends JpaRepository<InstrumentEntity, Lo
     InstrumentEntity findByTicker(@Param("ticker") String ticker);
 
     /**
+     * Find instrument by IBKR contract ID.
+     * Used for JPA relationship resolution in OpenPositionEntity.
+     *
+     * @param conid IBKR contract ID
+     * @return InstrumentEntity or null if not found
+     */
+    InstrumentEntity findByConid(Long conid);
+
+    /**
      * Find all instruments with stale Alpaca metadata.
      *
      * Returns instruments where metadata was last updated before the given threshold

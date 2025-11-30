@@ -55,6 +55,22 @@ public class InstrumentEntity {
     @OneToMany(mappedBy = "instrument", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     private List<OptionEntity> options;
 
+    /**
+     * Open positions where this instrument is the direct holding.
+     * For stocks: positions where this instrument is the direct holding.
+     */
+    @JsonIgnore
+    @OneToMany(mappedBy = "instrument", fetch = FetchType.LAZY)
+    private List<OpenPositionEntity> directPositions;
+
+    /**
+     * Open positions where this instrument is the underlying for options.
+     * For stocks used as option underlyings: option positions referencing this as underlying.
+     */
+    @JsonIgnore
+    @OneToMany(mappedBy = "underlyingInstrument", fetch = FetchType.LAZY)
+    private List<OpenPositionEntity> underlyingPositions;
+
     @Column
     private Double price;
 
@@ -147,6 +163,39 @@ public class InstrumentEntity {
     }
 
     public void setOptions(List<OptionEntity> options) {
+    }
+
+    public List<OpenPositionEntity> getDirectPositions() {
+        return directPositions;
+    }
+
+    public void setDirectPositions(List<OpenPositionEntity> directPositions) {
+        this.directPositions = directPositions;
+    }
+
+    public List<OpenPositionEntity> getUnderlyingPositions() {
+        return underlyingPositions;
+    }
+
+    public void setUnderlyingPositions(List<OpenPositionEntity> underlyingPositions) {
+        this.underlyingPositions = underlyingPositions;
+    }
+
+    /**
+     * Get all open positions related to this instrument.
+     * Combines both direct positions (stocks) and underlying positions (options).
+     *
+     * @return Combined list of all related positions
+     */
+    public java.util.List<OpenPositionEntity> getAllRelatedPositions() {
+        java.util.List<OpenPositionEntity> all = new java.util.ArrayList<>();
+        if (directPositions != null) {
+            all.addAll(directPositions);
+        }
+        if (underlyingPositions != null) {
+            all.addAll(underlyingPositions);
+        }
+        return all;
     }
 
     public Instant getCreatedAt() {

@@ -1,13 +1,17 @@
 package co.grtk.srcprofit.entity;
 
 import com.fasterxml.jackson.annotation.JsonIdentityInfo;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.ObjectIdGenerators;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
+import jakarta.persistence.FetchType;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.Index;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
 
 import java.time.LocalDate;
@@ -441,6 +445,52 @@ public class OpenPositionEntity {
     @Column
     private LocalDateTime openDateTime;
 
+    // --- JPA RELATIONSHIPS ---
+
+    /**
+     * For OPTIONS: Reference to underlying instrument (e.g., SPY for SPY options).
+     * Joins via underlyingConid → InstrumentEntity.conid
+     * NULL for non-option positions (STK, CASH, etc.)
+     *
+     * Note: foreignKey = @ForeignKey(ConstraintMode.NO_CONSTRAINT) because this is a read-only
+     * mapping and not all positions have corresponding instruments in the database.
+     */
+    @JsonIgnore
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "underlyingConid", referencedColumnName = "conid",
+                insertable = false, updatable = false, nullable = true,
+                foreignKey = @jakarta.persistence.ForeignKey(value = jakarta.persistence.ConstraintMode.NO_CONSTRAINT))
+    private InstrumentEntity underlyingInstrument;
+
+    /**
+     * For STOCKS: Reference to the instrument itself.
+     * Joins via conid → InstrumentEntity.conid
+     * NULL for options (use underlyingInstrument instead) and other asset classes.
+     *
+     * Note: foreignKey = @ForeignKey(ConstraintMode.NO_CONSTRAINT) because this is a read-only
+     * mapping and not all positions have corresponding instruments in the database.
+     */
+    @JsonIgnore
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "conid", referencedColumnName = "conid",
+                insertable = false, updatable = false, nullable = true,
+                foreignKey = @jakarta.persistence.ForeignKey(value = jakarta.persistence.ConstraintMode.NO_CONSTRAINT))
+    private InstrumentEntity instrument;
+
+    /**
+     * Helper method to get the appropriate instrument based on asset class.
+     *
+     * @return underlyingInstrument for OPTIONS, instrument for STOCKS, null for others
+     */
+    public InstrumentEntity getRelatedInstrument() {
+        if ("OPT".equals(assetClass)) {
+            return underlyingInstrument;
+        } else if ("STK".equals(assetClass)) {
+            return instrument;
+        }
+        return null;  // CASH, BOND, FOP, etc. don't have instrument relationships
+    }
+
     // --- GETTERS AND SETTERS ---
 
     public Long getId() {
@@ -865,6 +915,22 @@ public class OpenPositionEntity {
 
     public void setOpenDateTime(LocalDateTime openDateTime) {
         this.openDateTime = openDateTime;
+    }
+
+    public InstrumentEntity getUnderlyingInstrument() {
+        return underlyingInstrument;
+    }
+
+    public void setUnderlyingInstrument(InstrumentEntity underlyingInstrument) {
+        this.underlyingInstrument = underlyingInstrument;
+    }
+
+    public InstrumentEntity getInstrument() {
+        return instrument;
+    }
+
+    public void setInstrument(InstrumentEntity instrument) {
+        this.instrument = instrument;
     }
 
     @Override
