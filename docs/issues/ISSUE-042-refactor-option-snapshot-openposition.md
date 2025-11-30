@@ -1,7 +1,7 @@
 # ISSUE-042: Refactor OptionSnapshotService to Use OpenPositionEntity
 
 ## Status
-OPEN
+CLOSED
 
 ## Description
 
@@ -107,7 +107,7 @@ Claude Code
 
 ## Completed Date
 
-(TBD)
+2025-11-30
 
 ## Notes
 
