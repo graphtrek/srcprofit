@@ -80,7 +80,7 @@ class FlexReportsServiceTest {
     @DisplayName("importFlexTrades persists successful record count")
     void testImportFlexTradesPersistsSuccessfulRecordCount() throws InterruptedException {
         // Setup: Mock the IBKR and OptionService responses
-        when(environment.getRequiredProperty("IBKR_FLEX_TRADES_ID")).thenReturn("TEST_QUERY_ID");
+        when(environment.getProperty("IBKR_FLEX_TRADES_ID")).thenReturn("TEST_QUERY_ID");
         when(ibkrService.getFlexWebServiceSendRequest("TEST_QUERY_ID"))
                 .thenReturn(createMockFlexResponse("TEST-REF-001"));
         when(ibkrService.getFlexWebServiceGetStatement(anyString(), eq("TEST-REF-001")))
@@ -111,7 +111,7 @@ class FlexReportsServiceTest {
     @DisplayName("importFlexTrades persists failed record count")
     void testImportFlexTradesPersistsFailedRecordCount() throws InterruptedException {
         // Setup
-        when(environment.getRequiredProperty("IBKR_FLEX_TRADES_ID")).thenReturn("TEST_QUERY_ID");
+        when(environment.getProperty("IBKR_FLEX_TRADES_ID")).thenReturn("TEST_QUERY_ID");
         when(ibkrService.getFlexWebServiceSendRequest("TEST_QUERY_ID"))
                 .thenReturn(createMockFlexResponse("TEST-REF-001"));
         when(ibkrService.getFlexWebServiceGetStatement(anyString(), eq("TEST-REF-001")))
@@ -141,7 +141,7 @@ class FlexReportsServiceTest {
     @DisplayName("importFlexTrades persists skipped record count")
     void testImportFlexTradesPersistsSkippedRecordCount() throws InterruptedException {
         // Setup
-        when(environment.getRequiredProperty("IBKR_FLEX_TRADES_ID")).thenReturn("TEST_QUERY_ID");
+        when(environment.getProperty("IBKR_FLEX_TRADES_ID")).thenReturn("TEST_QUERY_ID");
         when(ibkrService.getFlexWebServiceSendRequest("TEST_QUERY_ID"))
                 .thenReturn(createMockFlexResponse("TEST-REF-001"));
         when(ibkrService.getFlexWebServiceGetStatement(anyString(), eq("TEST-REF-001")))
@@ -171,7 +171,7 @@ class FlexReportsServiceTest {
     @DisplayName("importFlexTrades persists all counts together")
     void testImportFlexTradesPersistsAllCountsTogether() throws InterruptedException {
         // Setup
-        when(environment.getRequiredProperty("IBKR_FLEX_TRADES_ID")).thenReturn("TEST_QUERY_ID");
+        when(environment.getProperty("IBKR_FLEX_TRADES_ID")).thenReturn("TEST_QUERY_ID");
         when(ibkrService.getFlexWebServiceSendRequest("TEST_QUERY_ID"))
                 .thenReturn(createMockFlexResponse("TEST-REF-001"));
         when(ibkrService.getFlexWebServiceGetStatement(anyString(), eq("TEST-REF-001")))
@@ -245,7 +245,7 @@ class FlexReportsServiceTest {
         navEntity.setUrl("https://ibkr.example.com/flex/nav");
         navEntity.setReportType("NAV");
 
-        when(environment.getRequiredProperty("IBKR_FLEX_NET_ASSET_VALUE_ID")).thenReturn("TEST_NAV_ID");
+        when(environment.getProperty("IBKR_FLEX_NET_ASSET_VALUE_ID")).thenReturn("TEST_NAV_ID");
         when(ibkrService.getFlexWebServiceSendRequest("TEST_NAV_ID"))
                 .thenReturn(createMockFlexResponse("TEST-REF-NAV-001"));
         when(ibkrService.getFlexWebServiceGetStatement(anyString(), eq("TEST-REF-NAV-001")))
@@ -347,7 +347,7 @@ class FlexReportsServiceTest {
     @DisplayName("importFlexTrades preserves data fix records count")
     void testImportFlexTradesPreservesDataFixCount() throws InterruptedException {
         // Setup
-        when(environment.getRequiredProperty("IBKR_FLEX_TRADES_ID")).thenReturn("TEST_QUERY_ID");
+        when(environment.getProperty("IBKR_FLEX_TRADES_ID")).thenReturn("TEST_QUERY_ID");
         when(ibkrService.getFlexWebServiceSendRequest("TEST_QUERY_ID"))
                 .thenReturn(createMockFlexResponse("TEST-REF-005"));
         when(ibkrService.getFlexWebServiceGetStatement(anyString(), eq("TEST-REF-005")))

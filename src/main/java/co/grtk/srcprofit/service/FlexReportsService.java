@@ -133,8 +133,14 @@ public class FlexReportsService {
     public String importFlexTrades() {
         long start = System.currentTimeMillis();
         try {
-            final String IBKR_FLEX_TRADES_ID = environment.getRequiredProperty("IBKR_FLEX_TRADES_ID");
-            FlexStatementResponse flexTradesResponse = ibkrService.getFlexWebServiceSendRequest(IBKR_FLEX_TRADES_ID);
+            // Check if IBKR_FLEX_TRADES_ID is configured
+            String flexTradesId = environment.getProperty("IBKR_FLEX_TRADES_ID");
+            if (flexTradesId == null || flexTradesId.isEmpty()) {
+                log.warn("IBKR_FLEX_TRADES_ID not configured - skipping trades import");
+                return "SKIPPED/0";
+            }
+
+            FlexStatementResponse flexTradesResponse = ibkrService.getFlexWebServiceSendRequest(flexTradesId);
 
             // Save FLEX statement response metadata to database
             saveFlexStatementResponse(flexTradesResponse, "TRADES");
@@ -198,8 +204,14 @@ public class FlexReportsService {
     public String importFlexNetAssetValue() {
         long start = System.currentTimeMillis();
         try {
-            final String IBKR_FLEX_NET_ASSET_VALUE_ID = environment.getRequiredProperty("IBKR_FLEX_NET_ASSET_VALUE_ID");
-            FlexStatementResponse flexNetAssetValueResponse = ibkrService.getFlexWebServiceSendRequest(IBKR_FLEX_NET_ASSET_VALUE_ID);
+            // Check if IBKR_FLEX_NET_ASSET_VALUE_ID is configured
+            String flexNetAssetValueId = environment.getProperty("IBKR_FLEX_NET_ASSET_VALUE_ID");
+            if (flexNetAssetValueId == null || flexNetAssetValueId.isEmpty()) {
+                log.warn("IBKR_FLEX_NET_ASSET_VALUE_ID not configured - skipping NAV import");
+                return "SKIPPED/0";
+            }
+
+            FlexStatementResponse flexNetAssetValueResponse = ibkrService.getFlexWebServiceSendRequest(flexNetAssetValueId);
 
             // Save FLEX statement response metadata to database
             saveFlexStatementResponse(flexNetAssetValueResponse, "NAV");
