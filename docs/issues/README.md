@@ -2,9 +2,9 @@
 
 **Auto-generated** - Run `python scripts/update_issue_index.py` to update
 
-**Total**: 44 issues
-**Open**: 2 (5%)
-**Closed**: 39 (89%)
+**Total**: 45 issues
+**Open**: 2 (4%)
+**Closed**: 40 (89%)
 **Partial**: 0
 
 ---
@@ -103,6 +103,8 @@
   - Priority: MEDIUM | Completed: 2025-11-30
 - **[ISSUE-041](ISSUE-041-jpa-relationships-openposition-instrument.md)** - JPA Relationships Between OpenPositionEntity and InstrumentEntity
   - Priority: MEDIUM | Completed: 2025-11-30
+- **[ISSUE-043](ISSUE-043-openposition-instrument-sync.md)** - OpenPositionService saveCSV Should Synchronize Instruments
+  - Priority: HIGH | Completed: 2025-12-01
 
 ---
 
@@ -135,6 +137,9 @@
 **Feature / Code Quality** (1):
   - ISSUE-020 ✅
 
+**Feature / Data Quality** (1):
+  - ISSUE-043 ✅
+
 **Feature / Enhancement** (2):
   - ISSUE-025 ✅, ISSUE-026 ✅
 
@@ -161,6 +166,6 @@
 
 ---
 
-**Last updated**: 2025-11-30
+**Last updated**: 2025-12-01
 
 **How to update**: Run `python scripts/update_issue_index.py`

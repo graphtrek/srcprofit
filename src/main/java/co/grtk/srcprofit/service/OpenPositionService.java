@@ -1,6 +1,8 @@
 package co.grtk.srcprofit.service;
 
+import co.grtk.srcprofit.entity.InstrumentEntity;
 import co.grtk.srcprofit.entity.OpenPositionEntity;
+import co.grtk.srcprofit.repository.InstrumentRepository;
 import co.grtk.srcprofit.repository.OpenPositionRepository;
 import org.apache.commons.csv.CSVFormat;
 import org.apache.commons.csv.CSVParser;
@@ -22,10 +24,19 @@ import static org.apache.commons.csv.CSVParser.parse;
  *
  * Implements the CSV parsing and upsert workflow for open positions snapshots:
  * 1. Parse CSV using Apache Commons CSV
- * 2. For each row, check if position exists by conid
- * 3. If exists: update all fields (upsert behavior)
- * 4. If new: create and insert new position
- * 5. Return count of successful records
+ * 2. Upsert corresponding InstrumentEntity (ground truth sync)
+ * 3. For each row, check if position exists by conid
+ * 4. If exists: update all fields (upsert behavior)
+ * 5. If new: create and insert new position
+ * 6. Return count of successful records
+ *
+ * Instrument Synchronization:
+ * - Before position upsert, ensures corresponding InstrumentEntity exists
+ * - Maps: conid→conid, symbol→ticker, description→name
+ * - IBKR Flex Report is ground truth for instrument identification
+ * - Creates instrument if missing, updates name/ticker if exists
+ * - Fallback: uses symbol as name if description is empty
+ * - Preserves existing instrument data (price, Alpaca metadata, etc.)
  *
  * Error Handling:
  * - Simple pattern (like NetAssetValueService): Exceptions propagate, transaction rolls back
@@ -34,11 +45,13 @@ import static org.apache.commons.csv.CSVParser.parse;
  *
  * Transaction Management:
  * - @Transactional ensures all-or-nothing semantics
+ * - Both instrument and position are saved/rolled back atomically
  * - Any parsing error causes entire import to fail and rollback
  * - No partial imports or partial updates
  *
  * @see OpenPositionEntity for entity structure
  * @see OpenPositionRepository for persistence methods
+ * @see InstrumentRepository for instrument persistence
  * @see FlexReportsService for orchestration
  */
 @Service
@@ -46,9 +59,13 @@ public class OpenPositionService {
     private static final Logger log = LoggerFactory.getLogger(OpenPositionService.class);
 
     private final OpenPositionRepository openPositionRepository;
+    private final InstrumentRepository instrumentRepository;
 
-    public OpenPositionService(OpenPositionRepository openPositionRepository) {
+    public OpenPositionService(
+            OpenPositionRepository openPositionRepository,
+            InstrumentRepository instrumentRepository) {
         this.openPositionRepository = openPositionRepository;
+        this.instrumentRepository = instrumentRepository;
     }
 
     /**
@@ -73,11 +90,19 @@ public class OpenPositionService {
      * - FIFO PNL Unrealized, Side
      * - For options: Strike, Expiry, Put/Call, Underlying Symbol, Underlying Conid
      *
-     * Upsert Logic:
+     * Position Upsert Logic:
      * - Check if position with same conid already exists via findByConid()
      * - If yes: update all fields on existing entity
      * - If no: create new entity and insert
      * - Natural key: conid (unique constraint enforced at database level)
+     *
+     * Instrument Upsert (NEW):
+     * - Before position upsert, ensures InstrumentEntity exists via findByConid()
+     * - If new: creates instrument with conid, ticker, and name from CSV
+     * - If exists: updates name/ticker from CSV (IBKR is ground truth)
+     * - Falls back to symbol if description is empty
+     * - Preserves existing price/metadata fields
+     * - Same transaction boundary: instrument + position = atomic
      *
      * @param csv the CSV data as a string (complete file content)
      * @return count of records successfully processed (inserted or updated)
@@ -106,6 +131,60 @@ public class OpenPositionService {
                     LocalDate reportDate = LocalDate.parse(csvRecord.get("ReportDate"));
                     Integer quantity = parseInt(csvRecord.get("Quantity"));
                     String currency = csvRecord.get("CurrencyPrimary");
+                    String description = getStringOrNull(csvRecord, "Description");
+
+                    // INSTRUMENT UPSERT: Ensure instrument exists for this position
+                    // IBKR Flex Report is ground truth for instrument identification
+                    // For stocks: use conid (the stock's own contract ID)
+                    // For options: use underlyingConid (the underlying stock's contract ID)
+                    Long instrumentConid = "OPT".equals(assetClass)
+                            ? parseLongOrNull(csvRecord, "UnderlyingConid")
+                            : conid;
+                    String underlyingSymbol = "OPT".equals(assetClass)
+                            ? getStringOrNull(csvRecord, "UnderlyingSymbol")
+                            : symbol;
+
+                    // Only sync instruments for STK and OPT (stocks and options)
+                    // Skip other asset classes (CASH, BOND, FOP, etc.)
+                    if (instrumentConid != null && underlyingSymbol != null) {
+                        // Check by conid first (primary key), then by ticker (unique constraint)
+                        InstrumentEntity instrument = instrumentRepository.findByConid(instrumentConid);
+                        if (instrument == null) {
+                            // conid not found - check if ticker already exists
+                            // (can happen if same symbol has different conid in CSV)
+                            instrument = instrumentRepository.findByTicker(underlyingSymbol);
+                            if (instrument == null) {
+                                // Neither conid nor ticker exists - create new
+                                log.debug("Creating new instrument for conid={}, symbol={}", instrumentConid, underlyingSymbol);
+                                instrument = new InstrumentEntity();
+                                instrument.setConid(instrumentConid);
+                                instrument.setTicker(underlyingSymbol);
+                            } else {
+                                // Ticker exists but conid differs - update ticker's conid
+                                log.debug("Updating conid for existing ticker: symbol={}, old_conid={}, new_conid={}",
+                                        underlyingSymbol, instrument.getConid(), instrumentConid);
+                                instrument.setConid(instrumentConid);
+                            }
+                        } else {
+                            log.debug("Updating existing instrument for conid={}", instrumentConid);
+                        }
+
+                        // Update instrument name from CSV description (IBKR ground truth)
+                        // Fallback to symbol if description is empty
+                        String instrumentName = (description != null && !description.isEmpty())
+                                ? description
+                                : underlyingSymbol;
+                        instrument.setName(instrumentName);
+
+                        // Save instrument (upsert)
+                        // Note: Don't touch other fields (price, Alpaca metadata, etc.)
+                        instrumentRepository.save(instrument);
+                        log.debug("Saved instrument: conid={}, ticker={}, name={}",
+                                instrument.getConid(), instrument.getTicker(), instrument.getName());
+                    } else if ("OPT".equals(assetClass)) {
+                        // Options without underlying info - log warning but don't fail
+                        log.warn("Option position missing underlying info: conid={}, symbol={}", conid, symbol);
+                    }
 
                     // UPSERT LOGIC: Check if position already exists
                     OpenPositionEntity entity = openPositionRepository.findByConid(conid);
