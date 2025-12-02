@@ -1,7 +1,8 @@
 # ISSUE-037: Alpaca Option Contracts Download and Storage
 
 **Created**: 2025-11-28
-**Status**: OPEN
+**Completed**: 2025-12-02
+**Status**: CLOSED
 **Priority**: HIGH
 **Category**: Feature
 **Blocking**: None

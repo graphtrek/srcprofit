@@ -1,7 +1,8 @@
 # ISSUE-036: Extract Spring Boot Actuator Endpoints from Kubernetes Namespace
 
 **Created**: 2025-11-25
-**Status**: OPEN
+**Completed**: 2025-12-02
+**Status**: CLOSED
 **Priority**: MEDIUM
 **Category**: Infrastructure | Developer Experience
 **Blocking**: None

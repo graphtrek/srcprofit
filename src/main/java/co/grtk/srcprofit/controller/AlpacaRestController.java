@@ -39,7 +39,7 @@ public class AlpacaRestController {
 
     @GetMapping(value = "/alpacaOptionsQuotes", produces = MediaType.APPLICATION_JSON_VALUE)
     public AlpacaQuotesDto getOptionsQuotes() throws JsonProcessingException {
-        List<PositionDto>  openOptions = optionService.getAllOpenPositions(null);
+        List<PositionDto>  openOptions = optionService.getAllOpenOptionDtos(null);
         String symbols = openOptions.stream().map(dto -> dto.getCode().replaceAll("\\s","")).collect(Collectors.joining(","));
         return alpacaService.getOptionsLatestQuotes(symbols);
     }

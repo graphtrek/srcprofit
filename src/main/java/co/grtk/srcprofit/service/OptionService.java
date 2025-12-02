@@ -23,8 +23,6 @@ import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
 import java.math.RoundingMode;
-import java.nio.charset.StandardCharsets;
-import java.nio.file.Path;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.temporal.ChronoUnit;
@@ -96,7 +94,7 @@ public class OptionService {
         return optionEntities;
     }
 
-    public List<PositionDto> getAllOpenPositions(LocalDate startDate) {
+    public List<PositionDto> getAllOpenOptionDtos(LocalDate startDate) {
         List<OptionEntity> optionEntities = getAllOpenOptions(startDate);
         return getPositionDtos(optionEntities);
     }
@@ -143,7 +141,7 @@ public class OptionService {
         return getClosedPositionDtos(optionEntities);
     }
 
-    public List<PositionDto> getWeeklyOpenPositions(List<PositionDto> openPositions) {
+    public List<PositionDto> getWeeklyOpenOptionDtos(List<PositionDto> openPositions) {
         Map<LocalDate, List<PositionDto>> grouped = openPositions.stream()
                 .filter(optionEntity -> optionEntity.getType().equals(OptionType.PUT))
                 .collect(Collectors.groupingBy(PositionDto::getExpirationDate));

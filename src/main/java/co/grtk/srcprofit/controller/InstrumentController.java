@@ -30,7 +30,7 @@ public class InstrumentController {
     public String getInstruments(Model model) {
         List<InstrumentDto> instruments = instrumentService.loadAllInstruments();
         List<PositionDto> optionHistory = optionService.getAllClosedOptions(null);
-        List<PositionDto> openOptions = optionService.getAllOpenPositions(null);
+        List<PositionDto> openOptions = optionService.getAllOpenOptionDtos(null);
         for (InstrumentDto instrument : instruments) {
             PositionDto positionDto = new PositionDto();
             positionDto.setTicker(instrument.getTicker());

@@ -3,23 +3,9 @@
 **Auto-generated** - Run `python scripts/update_issue_index.py` to update
 
 **Total**: 45 issues
-**Open**: 2 (4%)
-**Closed**: 40 (89%)
+**Open**: 0 (0%)
+**Closed**: 42 (93%)
 **Partial**: 0
-
----
-
-## Open Issues
-
-### HIGH (1)
-
-- **[ISSUE-037](ISSUE-037-alpaca-option-contracts-download.md)** - Alpaca Option Contracts Download and Storage
-  - Priority: HIGH | Status: OPEN | Category: Feature | Created: 2025-11-28
-
-### MEDIUM (1)
-
-- **[ISSUE-036](ISSUE-036-parameterize-k8s-scripts.md)** - Extract Spring Boot Actuator Endpoints from Kubernetes Namespace
-  - Priority: MEDIUM | Status: OPEN | Category: Infrastructure | Developer Experience | Created: 2025-11-25
 
 ---
 
@@ -97,6 +83,10 @@
   - Priority: LOW | Completed: 2025-11-22 PROGRESS
 - **[ISSUE-035](ISSUE-035-dark-mode-toggle.md)** - Add Dark Mode Toggle Button
   - Priority: LOW | Completed: 2025-11-23
+- **[ISSUE-036](ISSUE-036-parameterize-k8s-scripts.md)** - Extract Spring Boot Actuator Endpoints from Kubernetes Namespace
+  - Priority: MEDIUM | Completed: 2025-12-02
+- **[ISSUE-037](ISSUE-037-alpaca-option-contracts-download.md)** - Alpaca Option Contracts Download and Storage
+  - Priority: HIGH | Completed: 2025-12-02
 - **[ISSUE-039](ISSUE-039-ibkr-flex-open-positions-import.md)** - IBKR Flex Open Positions Import
   - Priority: MEDIUM | Completed: 2025-11-30
 - **[ISSUE-040](ISSUE-040-graceful-flex-config-handling.md)** - Graceful FLEX Report Configuration Handling
@@ -132,7 +122,7 @@
   - ISSUE-011 ✅, ISSUE-016 ✅, ISSUE-040 ✅, ISSUE-041 ✅
 
 **Feature** (14):
-  - ISSUE-001 ✅, ISSUE-005 ✅, ISSUE-009 ✅, ISSUE-010 ✅, ISSUE-014 ✅, ISSUE-017 ✅, ISSUE-018 ✅, ISSUE-019 ✅, ISSUE-028 ✅, ISSUE-032 ✅, ISSUE-035 ✅, ISSUE-037 🔴, ISSUE-038 🔴, ISSUE-039 ✅
+  - ISSUE-001 ✅, ISSUE-005 ✅, ISSUE-009 ✅, ISSUE-010 ✅, ISSUE-014 ✅, ISSUE-017 ✅, ISSUE-018 ✅, ISSUE-019 ✅, ISSUE-028 ✅, ISSUE-032 ✅, ISSUE-035 ✅, ISSUE-037 ✅, ISSUE-038 🔴, ISSUE-039 ✅
 
 **Feature / Code Quality** (1):
   - ISSUE-020 ✅
@@ -156,7 +146,7 @@
   - ISSUE-006 ✅
 
 **Infrastructure | Developer Experience** (1):
-  - ISSUE-036 🔴
+  - ISSUE-036 ✅
 
 **Uncategorized** (2):
   - ISSUE-037 🔴, ISSUE-042 🔴
@@ -166,6 +156,6 @@
 
 ---
 
-**Last updated**: 2025-12-01
+**Last updated**: 2025-12-02
 
 **How to update**: Run `python scripts/update_issue_index.py`

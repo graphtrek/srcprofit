@@ -56,7 +56,7 @@ public class TradeLogController {
     }
 
     private void fillTradeLogPage(PositionDto positionDto, Model model) {
-        List<PositionDto> openOptions = optionService.getAllOpenPositions(positionDto.getPositionsFromDate());
+        List<PositionDto> openOptions = optionService.getAllOpenOptionDtos(positionDto.getPositionsFromDate());
         model.addAttribute(MODEL_ATTRIBUTE_OPTION_OPEN, openOptions);
         optionService.calculatePosition(positionDto, openOptions, List.of());
         NetAssetValueDto netAssetValueDto = netAssetValueService.loadLatestNetAssetValue();
@@ -65,7 +65,7 @@ public class TradeLogController {
         positionDto.setCash(netAssetValueDto.getCash());
         positionDto.setStock(netAssetValueDto.getStock());
         model.addAttribute(MODEL_ATTRIBUTE_DTO, positionDto);
-        List<PositionDto> weeklyOpenPositions = optionService.getWeeklyOpenPositions(openOptions);
+        List<PositionDto> weeklyOpenPositions = optionService.getWeeklyOpenOptionDtos(openOptions);
         model.addAttribute(MODEL_ATTRIBUTE_WEEKLY_OPTION_OPEN, weeklyOpenPositions);
     }
 }
