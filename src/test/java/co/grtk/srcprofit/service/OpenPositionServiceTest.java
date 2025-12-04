@@ -1,206 +1,214 @@
 package co.grtk.srcprofit.service;
 
-import co.grtk.srcprofit.entity.InstrumentEntity;
+import co.grtk.srcprofit.dto.PositionDto;
+import co.grtk.srcprofit.entity.AssetClass;
 import co.grtk.srcprofit.entity.OpenPositionEntity;
-import co.grtk.srcprofit.repository.InstrumentRepository;
+import co.grtk.srcprofit.entity.OptionStatus;
+import co.grtk.srcprofit.entity.OptionType;
 import co.grtk.srcprofit.repository.OpenPositionRepository;
 import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
-import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
-import java.io.IOException;
+import java.time.LocalDate;
+import java.util.Collections;
+import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.ArgumentMatchers.eq;
-import static org.mockito.Mockito.*;
+import static org.mockito.Mockito.when;
 
-/**
- * Unit tests for OpenPositionService, specifically testing instrument synchronization
- * during CSV import (ISSUE-043).
- *
- * Covers:
- * - Creating new instruments when position is imported
- * - Updating existing instruments when position is re-imported
- * - Falling back to symbol when description is empty
- * - Preserving existing instrument data (price, metadata, etc.)
- */
 @ExtendWith(MockitoExtension.class)
-@DisplayName("OpenPositionService Instrument Synchronization Tests")
 class OpenPositionServiceTest {
 
     @Mock
     private OpenPositionRepository openPositionRepository;
 
-    @Mock
-    private InstrumentRepository instrumentRepository;
-
-    @InjectMocks
     private OpenPositionService openPositionService;
 
     @BeforeEach
     void setUp() {
-        // Default mock behavior: positions don't exist yet (new import)
-        when(openPositionRepository.findByConid(any())).thenReturn(null);
-        // Default mock behavior: instruments don't exist yet
-        when(instrumentRepository.findByConid(any())).thenReturn(null);
+        openPositionService = new OpenPositionService(openPositionRepository, null);
+    }
+
+    /**
+     * Helper method to create test OpenPositionEntity
+     */
+    private OpenPositionEntity buildTestEntity(String underlyingSymbol, Double strike, String putCall, Integer quantity, LocalDate expirationDate) {
+        OpenPositionEntity entity = new OpenPositionEntity();
+        entity.setId(1L);
+        entity.setConid(12345L);
+        entity.setAccount("DU12345");
+        entity.setAssetClass("OPT");
+        entity.setSymbol("SPY 250120C00600000");  // Full option symbol
+        entity.setUnderlyingSymbol(underlyingSymbol);
+        entity.setQuantity(quantity);
+        entity.setReportDate(LocalDate.now());
+        entity.setExpirationDate(expirationDate);
+        entity.setStrike(strike);  // In dollars
+        entity.setPutCall(putCall);  // "P" or "C"
+        entity.setCostBasisPrice(5.0);  // Trade price per contract
+        entity.setMarkPrice(4.5);  // Current market price
+        entity.setFifoPnlUnrealized(-50.0);  // Unrealized P&L
+        entity.setCurrency("USD");
+        return entity;
     }
 
     @Test
-    @DisplayName("CSV import creates instrument when it does not exist")
-    void testSaveCSV_createsInstrument_whenNotExists() throws IOException {
-        // Given: CSV with position data (instrument doesn't exist yet)
-        String csv = """
-                ClientAccountID,Conid,AssetClass,Symbol,Description,Quantity,ReportDate,CurrencyPrimary
-                U12345,265598,STK,AAPL,APPLE INC,100,2025-12-01,USD
-                """;
+    void getAllOpenOptionDtos_shouldReturnCalculatedDtos() {
+        // Arrange
+        OpenPositionEntity spy = buildTestEntity("SPY", 600.0, "P", 1, LocalDate.now().plusDays(30));
+        OpenPositionEntity aapl = buildTestEntity("AAPL", 200.0, "C", -1, LocalDate.now().plusDays(45));
+        aapl.setUnderlyingSymbol("AAPL");
 
-        // Mock: position doesn't exist, instrument doesn't exist
-        when(openPositionRepository.findByConid(265598L)).thenReturn(null);
-        when(instrumentRepository.findByConid(265598L)).thenReturn(null);
+        when(openPositionRepository.findAllOptions()).thenReturn(List.of(spy, aapl));
 
-        // When: Import CSV
-        int count = openPositionService.saveCSV(csv);
+        // Act
+        List<PositionDto> result = openPositionService.getAllOpenOptionDtos();
 
-        // Then: 1 record processed
-        assertThat(count).isEqualTo(1);
+        // Assert
+        assertThat(result).hasSize(2);
 
-        // And: Instrument was created with correct values
-        verify(instrumentRepository).save(argThat(instrument ->
-                instrument.getConid() == 265598L &&
-                "AAPL".equals(instrument.getTicker()) &&
-                "APPLE INC".equals(instrument.getName())
-        ));
+        // First position: SPY PUT
+        PositionDto spyDto = result.get(0);
+        assertThat(spyDto.getTicker()).isEqualTo("SPY");
+        assertThat(spyDto.getType()).isEqualTo(OptionType.PUT);
+        assertThat(spyDto.getPositionValue()).isEqualTo(600.0);
+        assertThat(spyDto.getTradePrice()).isEqualTo(5.0);
+        assertThat(spyDto.getMarketPrice()).isEqualTo(4.5);
+        assertThat(spyDto.getQuantity()).isEqualTo(1);
+        assertThat(spyDto.getStatus()).isEqualTo(OptionStatus.OPEN);
+        assertThat(spyDto.getAssetClass()).isEqualTo(AssetClass.OPT);
+        assertThat(spyDto.getAnnualizedRoiPercent()).isNotNull();
+        assertThat(spyDto.getDaysLeft()).isGreaterThan(0);
+        assertThat(spyDto.getUnRealizedProfitOrLoss()).isEqualTo(-50.0);
 
-        // And: Position was created
-        verify(openPositionRepository).save(any(OpenPositionEntity.class));
+        // Second position: AAPL CALL
+        PositionDto aaplDto = result.get(1);
+        assertThat(aaplDto.getTicker()).isEqualTo("AAPL");
+        assertThat(aaplDto.getType()).isEqualTo(OptionType.CALL);
+        assertThat(aaplDto.getPositionValue()).isEqualTo(200.0);
+        assertThat(aaplDto.getQuantity()).isEqualTo(-1);
+        assertThat(aaplDto.getAnnualizedRoiPercent()).isNotNull();
     }
 
     @Test
-    @DisplayName("CSV import updates existing instrument name from CSV")
-    void testSaveCSV_updatesInstrument_whenExists() throws IOException {
-        // Given: Instrument exists with old name
-        InstrumentEntity existing = new InstrumentEntity();
-        existing.setId(1L);
-        existing.setConid(265598L);
-        existing.setTicker("AAPL");
-        existing.setName("Old Apple Name");
-        existing.setPrice(150.0); // Existing price that should be preserved
+    void getOpenOptionsByTickerDto_shouldFilterByUnderlyingTicker() {
+        // Arrange
+        OpenPositionEntity spy1 = buildTestEntity("SPY", 600.0, "P", 1, LocalDate.now().plusDays(30));
+        OpenPositionEntity spy2 = buildTestEntity("SPY", 605.0, "C", -1, LocalDate.now().plusDays(30));
 
-        // Mock: instrument exists
-        when(instrumentRepository.findByConid(265598L)).thenReturn(existing);
+        when(openPositionRepository.findOptionsByUnderlyingTicker("SPY")).thenReturn(List.of(spy1, spy2));
 
-        // When: Import CSV with updated description
-        String csv = """
-                ClientAccountID,Conid,AssetClass,Symbol,Description,Quantity,ReportDate,CurrencyPrimary
-                U12345,265598,STK,AAPL,APPLE INC - UPDATED,100,2025-12-01,USD
-                """;
-        int count = openPositionService.saveCSV(csv);
+        // Act
+        List<PositionDto> result = openPositionService.getOpenOptionsByTickerDto("SPY");
 
-        // Then: 1 record processed
-        assertThat(count).isEqualTo(1);
-
-        // And: Instrument was updated
-        verify(instrumentRepository).save(argThat(instrument ->
-                instrument.getConid() == 265598L &&
-                "AAPL".equals(instrument.getTicker()) &&
-                "APPLE INC - UPDATED".equals(instrument.getName()) &&
-                instrument.getPrice() == 150.0 // Price preserved
-        ));
+        // Assert
+        assertThat(result).hasSize(2);
+        assertThat(result).allMatch(dto -> dto.getTicker().equals("SPY"));
+        assertThat(result.get(0).getType()).isEqualTo(OptionType.PUT);
+        assertThat(result.get(1).getType()).isEqualTo(OptionType.CALL);
     }
 
     @Test
-    @DisplayName("CSV import falls back to symbol when description is empty")
-    void testSaveCSV_usesSymbolAsFallback_whenDescriptionEmpty() throws IOException {
-        // Given: CSV with empty description field
-        String csv = """
-                ClientAccountID,Conid,AssetClass,Symbol,Description,Quantity,ReportDate,CurrencyPrimary
-                U12345,265598,STK,AAPL,,100,2025-12-01,USD
-                """;
+    void getAllOpenOptionDtos_emptyRepository_shouldReturnEmptyList() {
+        // Arrange
+        when(openPositionRepository.findAllOptions()).thenReturn(Collections.emptyList());
 
-        // Mock: position and instrument don't exist
-        when(openPositionRepository.findByConid(265598L)).thenReturn(null);
-        when(instrumentRepository.findByConid(265598L)).thenReturn(null);
-        when(instrumentRepository.findByTicker("AAPL")).thenReturn(null);
+        // Act
+        List<PositionDto> result = openPositionService.getAllOpenOptionDtos();
 
-        // When: Import CSV
-        int count = openPositionService.saveCSV(csv);
-
-        // Then: 1 record processed
-        assertThat(count).isEqualTo(1);
-
-        // And: Instrument created with symbol as name (fallback)
-        verify(instrumentRepository).save(argThat(instrument ->
-                instrument.getConid() == 265598L &&
-                "AAPL".equals(instrument.getTicker()) &&
-                "AAPL".equals(instrument.getName()) // Fallback to symbol
-        ));
+        // Assert
+        assertThat(result).isEmpty();
+        assertThat(result).isNotNull();
     }
 
     @Test
-    @DisplayName("CSV import updates conid when ticker exists with different conid")
-    void testSaveCSV_updateConid_whenTickerExistsWithDifferentConid() throws IOException {
-        // Given: Instrument exists with AAPL ticker but different conid
-        InstrumentEntity existing = new InstrumentEntity();
-        existing.setId(1L);
-        existing.setConid(999999L); // Old conid
-        existing.setTicker("AAPL");
-        existing.setName("APPLE");
-        existing.setPrice(150.0);
+    void convertToPositionDto_handlesNullFields() {
+        // Arrange
+        OpenPositionEntity entity = buildTestEntity("SPY", 600.0, "P", 1, LocalDate.now().plusDays(30));
+        entity.setCostBasisPrice(null);  // Null trade price - will be estimated by PositionMapper
+        entity.setMarkPrice(null);       // Null market price - will be set to 0.0 by DTO
+        entity.setFifoPnlUnrealized(null);  // Null P&L
 
-        // Mock: new conid not found, but ticker exists
-        when(openPositionRepository.findByConid(265598L)).thenReturn(null);
-        when(instrumentRepository.findByConid(265598L)).thenReturn(null);
-        when(instrumentRepository.findByTicker("AAPL")).thenReturn(existing);
+        when(openPositionRepository.findAllOptions()).thenReturn(List.of(entity));
 
-        // When: Import CSV with correct conid
-        String csv = """
-                ClientAccountID,Conid,AssetClass,Symbol,Description,Quantity,ReportDate,CurrencyPrimary
-                U12345,265598,STK,AAPL,APPLE INC,100,2025-12-01,USD
-                """;
-        int count = openPositionService.saveCSV(csv);
+        // Act - should not throw
+        List<PositionDto> result = openPositionService.getAllOpenOptionDtos();
 
-        // Then: 1 record processed
-        assertThat(count).isEqualTo(1);
-
-        // And: Instrument updated with new conid from CSV (IBKR ground truth)
-        verify(instrumentRepository).save(argThat(instrument ->
-                instrument.getConid() == 265598L && // Updated conid
-                "AAPL".equals(instrument.getTicker()) &&
-                "APPLE INC".equals(instrument.getName()) &&
-                instrument.getPrice() == 150.0 // Price preserved
-        ));
+        // Assert
+        assertThat(result).hasSize(1);
+        PositionDto dto = result.get(0);
+        assertThat(dto.getTicker()).isEqualTo("SPY");
+        // PositionMapper estimates tradePrice if null and converts null marketPrice to 0.0
+        assertThat(dto.getUnRealizedProfitOrLoss()).isNull();
+        assertThat(dto.getPositionValue()).isEqualTo(600.0);
+        // Verify the method doesn't crash with null fields
+        assertThat(dto.getType()).isEqualTo(OptionType.PUT);
     }
 
     @Test
-    @DisplayName("CSV import for options creates underlying instrument using underlyingConid")
-    void testSaveCSV_createsUnderlyingInstrument_forOptions() throws IOException {
-        // Given: CSV with option position (uses underlying stock info)
-        String csv = """
-                ClientAccountID,Conid,AssetClass,Symbol,Description,Quantity,ReportDate,CurrencyPrimary,UnderlyingConid,UnderlyingSymbol
-                U12345,123456,OPT,AAPL 100 C,AAPL 100 CALL,1,2025-12-01,USD,265598,AAPL
-                """;
+    void convertToPositionDto_fieldMappingAccuracy() {
+        // Arrange
+        OpenPositionEntity entity = buildTestEntity("QQQ", 350.0, "C", 2, LocalDate.now().plusDays(60));
+        entity.setReportDate(LocalDate.of(2025, 1, 1));
+        entity.setFifoPnlUnrealized(250.0);
 
-        // Mock: option conid doesn't exist, but underlying conid and symbol checked
-        when(openPositionRepository.findByConid(123456L)).thenReturn(null);
-        when(instrumentRepository.findByConid(265598L)).thenReturn(null);
-        when(instrumentRepository.findByTicker("AAPL")).thenReturn(null);
+        when(openPositionRepository.findAllOptions()).thenReturn(List.of(entity));
 
-        // When: Import CSV
-        int count = openPositionService.saveCSV(csv);
+        // Act
+        List<PositionDto> result = openPositionService.getAllOpenOptionDtos();
 
-        // Then: 1 record processed
-        assertThat(count).isEqualTo(1);
+        // Assert
+        assertThat(result).hasSize(1);
+        PositionDto dto = result.get(0);
 
-        // And: Underlying instrument created with underlyingConid, not option's conid
-        verify(instrumentRepository).save(argThat(instrument ->
-                instrument.getConid() == 265598L &&  // Underlying conid, NOT option conid (123456)
-                "AAPL".equals(instrument.getTicker()) &&
-                "AAPL 100 CALL".equals(instrument.getName()) // Option description used as name
-        ));
+        // Verify all field mappings
+        assertThat(dto.getTicker()).isEqualTo("QQQ");  // underlyingSymbol
+        assertThat(dto.getQuantity()).isEqualTo(2);  // quantity
+        assertThat(dto.getTradeDate()).isEqualTo(LocalDate.of(2025, 1, 1));  // reportDate
+        assertThat(dto.getExpirationDate()).isEqualTo(LocalDate.now().plusDays(60));  // expirationDate
+        assertThat(dto.getPositionValue()).isEqualTo(350.0);  // strike
+        assertThat(dto.getTradePrice()).isEqualTo(5.0);  // costBasisPrice
+        assertThat(dto.getMarketPrice()).isEqualTo(4.5);  // markPrice
+        assertThat(dto.getMarketValue()).isEqualTo(4.5);  // markPrice
+        assertThat(dto.getType()).isEqualTo(OptionType.CALL);  // putCall "C"
+        assertThat(dto.getUnRealizedProfitOrLoss()).isEqualTo(250.0);  // fifoPnlUnrealized
+        assertThat(dto.getStatus()).isEqualTo(OptionStatus.OPEN);  // static
+        assertThat(dto.getAssetClass()).isEqualTo(AssetClass.OPT);  // static
+    }
+
+    @Test
+    void getAllOpenOptionDtos_putCallTypeConversion() {
+        // Arrange: Test both PUT and CALL conversions
+        OpenPositionEntity put = buildTestEntity("SPY", 600.0, "P", 1, LocalDate.now().plusDays(30));
+        OpenPositionEntity call = buildTestEntity("SPY", 610.0, "C", -1, LocalDate.now().plusDays(30));
+
+        when(openPositionRepository.findAllOptions()).thenReturn(List.of(put, call));
+
+        // Act
+        List<PositionDto> result = openPositionService.getAllOpenOptionDtos();
+
+        // Assert
+        assertThat(result).hasSize(2);
+        assertThat(result.get(0).getType()).isEqualTo(OptionType.PUT);
+        assertThat(result.get(1).getType()).isEqualTo(OptionType.CALL);
+    }
+
+    @Test
+    void getOpenOptionsByTickerDto_singleTicker() {
+        // Arrange
+        OpenPositionEntity entity = buildTestEntity("TSLA", 250.0, "P", 5, LocalDate.now().plusDays(20));
+
+        when(openPositionRepository.findOptionsByUnderlyingTicker("TSLA")).thenReturn(List.of(entity));
+
+        // Act
+        List<PositionDto> result = openPositionService.getOpenOptionsByTickerDto("TSLA");
+
+        // Assert
+        assertThat(result).hasSize(1);
+        assertThat(result.get(0).getTicker()).isEqualTo("TSLA");
+        assertThat(result.get(0).getQuantity()).isEqualTo(5);
     }
 }

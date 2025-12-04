@@ -2,10 +2,19 @@
 
 **Auto-generated** - Run `python scripts/update_issue_index.py` to update
 
-**Total**: 45 issues
-**Open**: 0 (0%)
-**Closed**: 42 (93%)
+**Total**: 46 issues
+**Open**: 1 (2%)
+**Closed**: 42 (91%)
 **Partial**: 0
+
+---
+
+## Open Issues
+
+### MEDIUM (1)
+
+- **[ISSUE-044](ISSUE-044-openposition-getallopen-options-dtos.md)** - Add getAllOpenOptionDtos() method to OpenPositionService
+  - Priority: MEDIUM | Status: OPEN | Category: Feature | Created: 2025-12-04 (Session N/A)
 
 ---
 
@@ -121,8 +130,8 @@
 **Enhancement** (4):
   - ISSUE-011 ✅, ISSUE-016 ✅, ISSUE-040 ✅, ISSUE-041 ✅
 
-**Feature** (14):
-  - ISSUE-001 ✅, ISSUE-005 ✅, ISSUE-009 ✅, ISSUE-010 ✅, ISSUE-014 ✅, ISSUE-017 ✅, ISSUE-018 ✅, ISSUE-019 ✅, ISSUE-028 ✅, ISSUE-032 ✅, ISSUE-035 ✅, ISSUE-037 ✅, ISSUE-038 🔴, ISSUE-039 ✅
+**Feature** (15):
+  - ISSUE-001 ✅, ISSUE-005 ✅, ISSUE-009 ✅, ISSUE-010 ✅, ISSUE-014 ✅, ISSUE-017 ✅, ISSUE-018 ✅, ISSUE-019 ✅, ISSUE-028 ✅, ISSUE-032 ✅, ISSUE-035 ✅, ISSUE-037 ✅, ISSUE-038 🔴, ISSUE-039 ✅, ISSUE-044 🔴
 
 **Feature / Code Quality** (1):
   - ISSUE-020 ✅
@@ -156,6 +165,6 @@
 
 ---
 
-**Last updated**: 2025-12-02
+**Last updated**: 2025-12-04
 
 **How to update**: Run `python scripts/update_issue_index.py`

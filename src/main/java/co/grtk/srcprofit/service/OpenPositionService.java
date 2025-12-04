@@ -1,7 +1,12 @@
 package co.grtk.srcprofit.service;
 
+import co.grtk.srcprofit.dto.PositionDto;
+import co.grtk.srcprofit.entity.AssetClass;
 import co.grtk.srcprofit.entity.InstrumentEntity;
 import co.grtk.srcprofit.entity.OpenPositionEntity;
+import co.grtk.srcprofit.entity.OptionStatus;
+import co.grtk.srcprofit.entity.OptionType;
+import co.grtk.srcprofit.mapper.PositionMapper;
 import co.grtk.srcprofit.repository.InstrumentRepository;
 import co.grtk.srcprofit.repository.OpenPositionRepository;
 import org.apache.commons.csv.CSVFormat;
@@ -16,7 +21,9 @@ import java.io.IOException;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
+import java.util.List;
 
+import static co.grtk.srcprofit.mapper.PositionMapper.calculateAndSetAnnualizedRoi;
 import static org.apache.commons.csv.CSVParser.parse;
 
 /**
@@ -440,5 +447,110 @@ public class OpenPositionService {
             log.warn("Failed to parse LocalDateTime from field '{}': {}", fieldName, e.getMessage());
             return null;
         }
+    }
+
+    /**
+     * Get all open option positions with calculated financial metrics.
+     *
+     * Returns all OPT (option) positions from the latest IBKR Flex Report snapshot.
+     * Each position includes calculated metrics: daysBetween, daysLeft, breakEven,
+     * annualizedRoiPercent, and probability of profit.
+     *
+     * @return List of open option positions as DTOs with calculations applied
+     */
+    public List<PositionDto> getAllOpenOptionDtos() {
+        List<OpenPositionEntity> openOptions = openPositionRepository.findAllOptions();
+        return convertToPositionDtos(openOptions);
+    }
+
+    /**
+     * Get open option positions for a specific underlying ticker.
+     *
+     * Returns all OPT positions where the underlying instrument matches the ticker.
+     * Each position includes calculated metrics.
+     *
+     * Example: getOpenOptionsByTickerDto("SPY") returns all SPY options
+     *
+     * @param ticker the underlying instrument ticker (e.g., "SPY", "AAPL")
+     * @return List of open options for the specified ticker
+     */
+    public List<PositionDto> getOpenOptionsByTickerDto(String ticker) {
+        List<OpenPositionEntity> openOptions = openPositionRepository.findOptionsByUnderlyingTicker(ticker);
+        return convertToPositionDtos(openOptions);
+    }
+
+    /**
+     * Convert list of OpenPositionEntity to list of PositionDto.
+     * Applies field mapping and calculates financial metrics for each position.
+     *
+     * @param entities list of open position entities from database
+     * @return list of position DTOs with calculated metrics
+     */
+    private List<PositionDto> convertToPositionDtos(List<OpenPositionEntity> entities) {
+        return entities.stream()
+                .map(this::convertToPositionDto)
+                .toList();
+    }
+
+    /**
+     * Convert single OpenPositionEntity to PositionDto.
+     *
+     * Field Mappings:
+     * - underlyingSymbol → ticker (underlying stock, not option symbol)
+     * - quantity → quantity
+     * - reportDate → tradeDate (snapshot date for calculations)
+     * - expirationDate → expirationDate
+     * - strike → positionValue (already in dollars)
+     * - costBasisPrice → tradePrice (acquisition cost per unit)
+     * - markPrice → marketPrice + marketValue
+     * - fifoPnlUnrealized → unRealizedProfitOrLoss
+     * - putCall ("P"/"C") → type (OptionType enum)
+     *
+     * Calculated Fields (via PositionMapper.calculateAndSetAnnualizedRoi):
+     * - daysBetween
+     * - daysLeft
+     * - breakEven
+     * - annualizedRoiPercent
+     * - probability
+     *
+     * @param entity the open position entity from database
+     * @return position DTO with field mapping and calculations applied
+     */
+    private PositionDto convertToPositionDto(OpenPositionEntity entity) {
+        PositionDto dto = new PositionDto();
+
+        // Basic identification
+        dto.setTicker(entity.getUnderlyingSymbol());  // Use underlying, not option symbol!
+        dto.setQuantity(entity.getQuantity());
+
+        // Dates
+        dto.setTradeDate(entity.getReportDate());           // Report date as "trade date" for calculations
+        dto.setExpirationDate(entity.getExpirationDate());
+
+        // Pricing (strike already in dollars, not cents)
+        dto.setPositionValue(entity.getStrike());           // Strike price = position value
+        dto.setTradePrice(entity.getCostBasisPrice());      // Cost basis = trade price
+        dto.setMarketPrice(entity.getMarkPrice());          // Mark price = market price
+        dto.setMarketValue(entity.getMarkPrice());          // Also set marketValue for probability calc
+
+        // Option type mapping: "P" or "C" string → OptionType enum
+        if ("P".equals(entity.getPutCall())) {
+            dto.setType(OptionType.PUT);
+        } else if ("C".equals(entity.getPutCall())) {
+            dto.setType(OptionType.CALL);
+        }
+
+        // P&L fields from IBKR
+        dto.setUnRealizedProfitOrLoss(entity.getFifoPnlUnrealized());
+
+        // Status (open positions are always OPEN)
+        dto.setStatus(OptionStatus.OPEN);
+        dto.setAssetClass(AssetClass.OPT);
+
+        // CALCULATE derived fields: daysBetween, daysLeft, breakEven, ROI, probability
+        // This matches OptionService.getPositionDtos() pattern
+        calculateAndSetAnnualizedRoi(dto);
+
+        return dto;
     }
 }
