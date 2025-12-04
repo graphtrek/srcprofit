@@ -32,7 +32,8 @@
       "Bash(timeout 120 ./mvnw clean test:*)",
       "Bash(echo:*)",
       "WebFetch(domain:datatables.net)",
-      "WebFetch(domain:www.ibkrguides.com)"
+      "WebFetch(domain:www.ibkrguides.com)",
+      "Bash(ls:*)"
     ],
     "deny": [],
     "ask": []

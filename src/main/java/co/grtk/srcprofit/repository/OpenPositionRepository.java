@@ -149,4 +149,15 @@ public interface OpenPositionRepository extends JpaRepository<OpenPositionEntity
            "LEFT JOIN op.underlyingInstrument " +
            "ORDER BY op.assetClass ASC, op.symbol ASC")
     List<OpenPositionEntity> findAllWithInstruments();
+
+    /**
+     * Find all positions for a specific account.
+     *
+     * Used by saveCSV() deletion logic to scope cleanup to positions from specific accounts.
+     * Enables account-scoped deletion: only positions from accounts present in CSV are deleted.
+     *
+     * @param account the client account ID (e.g., "DU12345")
+     * @return list of all positions for that account
+     */
+    List<OpenPositionEntity> findByAccount(String account);
 }

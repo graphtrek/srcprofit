@@ -291,24 +291,28 @@ public class FlexReportsService {
             String csvData = ibkrService.getFlexWebServiceGetStatement(flexResponse.getUrl(), flexResponse.getReferenceCode());
             File file = new File(userHome + "/FLEX_OPEN_POSITIONS_" + flexResponse.getReferenceCode() + ".csv");
             FileUtils.write(file, csvData, CharsetNames.CS_UTF8);
-            int records = openPositionService.saveCSV(csvData);
+
+            // ISSUE-046: saveCSV now returns "saved/deleted" format
+            String result = openPositionService.saveCSV(csvData);
+            int savedCount = Integer.parseInt(result.split("/")[0]);
+            int deletedCount = Integer.parseInt(result.split("/")[1]);
 
             // Update entity with monitoring fields
             FlexStatementResponseEntity entity = flexStatementResponseRepository.findByReferenceCode(flexResponse.getReferenceCode());
             if (entity != null) {
                 entity.setCsvFilePath(file.getAbsolutePath());
-                entity.setCsvRecordsCount(records);
+                entity.setCsvRecordsCount(savedCount);
                 entity.setCsvFailedRecordsCount(0);  // Simple error handling
                 entity.setCsvSkippedRecordsCount(0);
-                entity.setDataFixRecordsCount(null);  // Not applicable to snapshots
+                entity.setDataFixRecordsCount(deletedCount);  // Track deleted positions
                 flexStatementResponseRepository.save(entity);
-                log.debug("Updated FlexStatementResponse with monitoring fields: csvRecords={}, csvFilePath={}",
-                        records, file.getAbsolutePath());
+                log.debug("Updated FlexStatementResponse with monitoring fields: csvRecords={}, deletedRecords={}, csvFilePath={}",
+                        savedCount, deletedCount, file.getAbsolutePath());
             }
 
             long elapsed = System.currentTimeMillis() - start;
             log.debug("importFlexOpenPositions file {} written elapsed:{}", file.getAbsolutePath(), elapsed);
-            return String.valueOf(records) + "/0";
+            return result;
         } catch (InterruptedException e) {
             Thread.currentThread().interrupt();
             throw new RuntimeException("Interrupted while waiting for FLEX report", e);

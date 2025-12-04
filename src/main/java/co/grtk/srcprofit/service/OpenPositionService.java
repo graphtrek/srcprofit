@@ -21,7 +21,10 @@ import java.io.IOException;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
+import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 import static co.grtk.srcprofit.mapper.PositionMapper.calculateAndSetAnnualizedRoi;
 import static org.apache.commons.csv.CSVParser.parse;
@@ -112,13 +115,15 @@ public class OpenPositionService {
      * - Same transaction boundary: instrument + position = atomic
      *
      * @param csv the CSV data as a string (complete file content)
-     * @return count of records successfully processed (inserted or updated)
+     * @return count in format "saved/deleted" (e.g., "50/10" = 50 saved, 10 deleted)
      * @throws IOException if CSV parsing fails
      * @throws RuntimeException if any field parsing fails (will cause transaction rollback)
      */
     @Transactional
-    public int saveCSV(String csv) throws IOException {
-        int rowCount = 0;
+    public String saveCSV(String csv) throws IOException {
+        Set<Long> processedConids = new HashSet<>();
+        Set<String> csvAccounts = new HashSet<>();
+        int savedCount = 0;
 
         try (CSVParser csvRecords = parse(csv,
                 CSVFormat.Builder.create()
@@ -134,6 +139,10 @@ public class OpenPositionService {
                     String account = csvRecord.get("ClientAccountID");
                     Long conid = parseLong(csvRecord.get("Conid"));
                     String assetClass = csvRecord.get("AssetClass");
+
+                    // ISSUE-046: Track for deletion logic (account-scoped)
+                    csvAccounts.add(account);
+                    processedConids.add(conid);
                     String symbol = csvRecord.get("Symbol");
                     LocalDate reportDate = LocalDate.parse(csvRecord.get("ReportDate"));
                     Integer quantity = parseInt(csvRecord.get("Quantity"));
@@ -277,7 +286,7 @@ public class OpenPositionService {
 
                     // Save or update
                     openPositionRepository.save(entity);
-                    rowCount++;
+                    savedCount++;
 
                 } catch (Exception e) {
                     log.error("Error processing CSV record #{}: {}", csvRecord.getRecordNumber(), e.getMessage(), e);
@@ -285,8 +294,33 @@ public class OpenPositionService {
                 }
             }
 
-            log.info("OpenPositionService.saveCSV() completed: {} records processed", rowCount);
-            return rowCount;
+            // ISSUE-046: DELETE POSITIONS NOT IN CSV (account-scoped)
+            int deletedCount = 0;
+            if (!csvAccounts.isEmpty()) {
+                // Query positions from CSV accounts
+                List<OpenPositionEntity> accountPositions = new ArrayList<>();
+                for (String account : csvAccounts) {
+                    accountPositions.addAll(openPositionRepository.findByAccount(account));
+                }
+
+                // Filter to positions not processed (closed in IBKR)
+                List<OpenPositionEntity> toDelete = accountPositions.stream()
+                        .filter(entity -> !processedConids.contains(entity.getConid()))
+                        .toList();
+
+                if (!toDelete.isEmpty()) {
+                    openPositionRepository.deleteAll(toDelete);
+                    deletedCount = toDelete.size();
+                    log.info("Deleted {} closed positions not in CSV from accounts: {}",
+                            deletedCount, csvAccounts);
+                }
+            }
+
+            log.info("OpenPositionService.saveCSV() completed: {} saved, {} deleted",
+                    savedCount, deletedCount);
+
+            // Return in format "saved/deleted"
+            return savedCount + "/" + deletedCount;
 
         } catch (IOException e) {
             log.error("CSV parsing error: {}", e.getMessage(), e);

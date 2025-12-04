@@ -14,7 +14,9 @@ import org.mockito.junit.jupiter.MockitoExtension;
 
 import java.time.LocalDate;
 import java.util.Collections;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.ArgumentMatchers.any;
@@ -334,5 +336,137 @@ class OpenPositionServiceTest {
         // Verify code field is set (critical for AlpacaRestController)
         assertThat(dto.getCode()).isNotNull();
         assertThat(dto.getCode()).isEqualTo("SPY 250120C00600000");
+    }
+
+    // ===== saveCSV Deletion Tests (ISSUE-046) =====
+
+    @Test
+    void saveCSV_returnFormat_shouldBeSavedSlashDeleted() throws IOException {
+        // Arrange: 2 existing positions, CSV has 1 (1 will be deleted)
+        OpenPositionEntity pos1 = buildTestEntity("SPY", 600.0, "P", 1, LocalDate.now().plusDays(30));
+        pos1.setConid(100L);
+        pos1.setAccount("DU12345");
+
+        OpenPositionEntity pos2 = buildTestEntity("AAPL", 200.0, "C", -1, LocalDate.now().plusDays(45));
+        pos2.setConid(200L);
+        pos2.setAccount("DU12345");
+
+        when(openPositionRepository.findByConid(100L)).thenReturn(pos1);  // Update
+        when(openPositionRepository.findByConid(999L)).thenReturn(null);  // Insert
+        when(openPositionRepository.findByAccount("DU12345")).thenReturn(List.of(pos1, pos2));
+
+        String csv = "ClientAccountID,Conid,AssetClass,Symbol,ReportDate,Quantity,CurrencyPrimary,UnderlyingConid,UnderlyingSymbol\n" +
+                "DU12345,100,OPT,SPY 250120P00600000,2025-12-04,1,USD,100,SPY\n" +
+                "DU12345,999,OPT,AAPL 250120C00200000,2025-12-04,1,USD,20,AAPL";
+
+        // When
+        String result = openPositionService.saveCSV(csv);
+
+        // Then: Should have 2 saved (1 update + 1 insert) and 1 deleted
+        assertThat(result).isEqualTo("2/1");
+        verify(openPositionRepository).deleteAll(any(List.class));
+    }
+
+    @Test
+    void saveCSV_accountScoped_shouldPreserveOtherAccounts() throws IOException {
+        // Arrange: Positions from two accounts, CSV only has one account
+        OpenPositionEntity du12345_pos1 = buildTestEntity("SPY", 600.0, "P", 1, LocalDate.now().plusDays(30));
+        du12345_pos1.setConid(100L);
+        du12345_pos1.setAccount("DU12345");
+
+        OpenPositionEntity du12345_pos2 = buildTestEntity("AAPL", 200.0, "C", -1, LocalDate.now().plusDays(45));
+        du12345_pos2.setConid(200L);
+        du12345_pos2.setAccount("DU12345");
+
+        OpenPositionEntity du99999_pos1 = buildTestEntity("TSLA", 250.0, "P", 2, LocalDate.now().plusDays(20));
+        du99999_pos1.setConid(300L);
+        du99999_pos1.setAccount("DU99999");
+
+        when(openPositionRepository.findByConid(100L)).thenReturn(du12345_pos1);
+        when(openPositionRepository.findByAccount("DU12345")).thenReturn(List.of(du12345_pos1, du12345_pos2));
+
+        // CSV only contains DU12345 account
+        String csv = "ClientAccountID,Conid,AssetClass,Symbol,ReportDate,Quantity,CurrencyPrimary,UnderlyingConid,UnderlyingSymbol\n" +
+                "DU12345,100,OPT,SPY 250120P00600000,2025-12-04,1,USD,100,SPY";
+
+        // When
+        String result = openPositionService.saveCSV(csv);
+
+        // Then: DU12345 pos2 deleted (1 deleted), but DU99999 positions never queried
+        assertThat(result).isEqualTo("1/1");
+        verify(openPositionRepository).findByAccount("DU12345");
+        verify(openPositionRepository, never()).findByAccount("DU99999");
+    }
+
+    @Test
+    void saveCSV_emptyData_shouldReturnZeroZero() throws IOException {
+        // Arrange: CSV header only, no data rows
+        String csv = "ClientAccountID,Conid,AssetClass,Symbol,ReportDate,Quantity,CurrencyPrimary,UnderlyingConid,UnderlyingSymbol";
+
+        // When
+        String result = openPositionService.saveCSV(csv);
+
+        // Then: No rows processed, no deletions
+        assertThat(result).isEqualTo("0/0");
+        verify(openPositionRepository, never()).findByAccount(any());
+        verify(openPositionRepository, never()).deleteAll(any());
+    }
+
+    @Test
+    void saveCSV_allPositionsStillOpen_shouldReturnZeroDeleted() throws IOException {
+        // Arrange: All positions in CSV still exist, nothing to delete
+        OpenPositionEntity pos1 = buildTestEntity("SPY", 600.0, "P", 1, LocalDate.now().plusDays(30));
+        pos1.setConid(100L);
+        pos1.setAccount("DU12345");
+
+        when(openPositionRepository.findByConid(100L)).thenReturn(pos1);  // Update
+        when(openPositionRepository.findByAccount("DU12345")).thenReturn(List.of(pos1));
+
+        String csv = "ClientAccountID,Conid,AssetClass,Symbol,ReportDate,Quantity,CurrencyPrimary,UnderlyingConid,UnderlyingSymbol\n" +
+                "DU12345,100,OPT,SPY 250120P00600000,2025-12-04,1,USD,100,SPY";
+
+        // When
+        String result = openPositionService.saveCSV(csv);
+
+        // Then: 1 saved, 0 deleted
+        assertThat(result).isEqualTo("1/0");
+        verify(openPositionRepository, never()).deleteAll(any());
+    }
+
+    @Test
+    void saveCSV_multipleAccounts_shouldDeleteFromAllCsvAccounts() throws IOException {
+        // Arrange: CSV has two accounts with 2 positions total, but 4 exist in DB (2 per account)
+        OpenPositionEntity du11111_pos1 = buildTestEntity("SPY", 600.0, "P", 1, LocalDate.now().plusDays(30));
+        du11111_pos1.setConid(1L);
+        du11111_pos1.setAccount("DU11111");
+
+        OpenPositionEntity du11111_pos2 = buildTestEntity("AAPL", 200.0, "C", -1, LocalDate.now().plusDays(45));
+        du11111_pos2.setConid(2L);
+        du11111_pos2.setAccount("DU11111");
+
+        OpenPositionEntity du22222_pos1 = buildTestEntity("TSLA", 250.0, "P", 2, LocalDate.now().plusDays(20));
+        du22222_pos1.setConid(3L);
+        du22222_pos1.setAccount("DU22222");
+
+        OpenPositionEntity du22222_pos2 = buildTestEntity("QQQ", 350.0, "C", -2, LocalDate.now().plusDays(50));
+        du22222_pos2.setConid(4L);
+        du22222_pos2.setAccount("DU22222");
+
+        when(openPositionRepository.findByConid(1L)).thenReturn(du11111_pos1);  // Update
+        when(openPositionRepository.findByConid(3L)).thenReturn(du22222_pos1);  // Update
+        when(openPositionRepository.findByAccount("DU11111")).thenReturn(List.of(du11111_pos1, du11111_pos2));
+        when(openPositionRepository.findByAccount("DU22222")).thenReturn(List.of(du22222_pos1, du22222_pos2));
+
+        String csv = "ClientAccountID,Conid,AssetClass,Symbol,ReportDate,Quantity,CurrencyPrimary,UnderlyingConid,UnderlyingSymbol\n" +
+                "DU11111,1,OPT,SPY 250120P00600000,2025-12-04,1,USD,100,SPY\n" +
+                "DU22222,3,OPT,TSLA 250120P00250000,2025-12-04,2,USD,175,TSLA";
+
+        // When
+        String result = openPositionService.saveCSV(csv);
+
+        // Then: 2 saved, 2 deleted (pos2 from each account)
+        assertThat(result).isEqualTo("2/2");
+        verify(openPositionRepository).findByAccount("DU11111");
+        verify(openPositionRepository).findByAccount("DU22222");
     }
 }
