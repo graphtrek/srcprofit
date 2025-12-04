@@ -456,10 +456,16 @@ public class OpenPositionService {
      * Each position includes calculated metrics: daysBetween, daysLeft, breakEven,
      * annualizedRoiPercent, and probability of profit.
      *
+     * Optional date filtering: If startDate is provided, only positions with
+     * reportDate >= startDate are returned. If null, all positions are returned.
+     *
+     * @param startDate optional filter for earliest report date (null = all positions)
      * @return List of open option positions as DTOs with calculations applied
      */
-    public List<PositionDto> getAllOpenOptionDtos() {
-        List<OpenPositionEntity> openOptions = openPositionRepository.findAllOptions();
+    public List<PositionDto> getAllOpenOptionDtos(LocalDate startDate) {
+        List<OpenPositionEntity> openOptions = (startDate != null)
+                ? openPositionRepository.findAllOptionsByDate(startDate)
+                : openPositionRepository.findAllOptions();
         return convertToPositionDtos(openOptions);
     }
 
@@ -521,6 +527,7 @@ public class OpenPositionService {
 
         // Basic identification
         dto.setTicker(entity.getUnderlyingSymbol());  // Use underlying, not option symbol!
+        dto.setCode(entity.getSymbol());               // Option symbol code for Alpaca API
         dto.setQuantity(entity.getQuantity());
 
         // Dates

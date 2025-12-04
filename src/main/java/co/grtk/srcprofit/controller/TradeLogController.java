@@ -3,6 +3,7 @@ package co.grtk.srcprofit.controller;
 import co.grtk.srcprofit.dto.NetAssetValueDto;
 import co.grtk.srcprofit.dto.PositionDto;
 import co.grtk.srcprofit.service.NetAssetValueService;
+import co.grtk.srcprofit.service.OpenPositionService;
 import co.grtk.srcprofit.service.OptionService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -30,12 +31,15 @@ public class TradeLogController {
 
     private final OptionService optionService;
     private final NetAssetValueService netAssetValueService;
+    private final OpenPositionService openPositionService;
 
     public TradeLogController(
             OptionService optionService,
-            NetAssetValueService netAssetValueService) {
+            NetAssetValueService netAssetValueService,
+            OpenPositionService openPositionService) {
         this.optionService = optionService;
         this.netAssetValueService = netAssetValueService;
+        this.openPositionService = openPositionService;
     }
 
     @GetMapping("/tradelog")
@@ -56,7 +60,7 @@ public class TradeLogController {
     }
 
     private void fillTradeLogPage(PositionDto positionDto, Model model) {
-        List<PositionDto> openOptions = optionService.getAllOpenOptionDtos(positionDto.getPositionsFromDate());
+        List<PositionDto> openOptions = openPositionService.getAllOpenOptionDtos(positionDto.getPositionsFromDate());
         model.addAttribute(MODEL_ATTRIBUTE_OPTION_OPEN, openOptions);
         optionService.calculatePosition(positionDto, openOptions, List.of());
         NetAssetValueDto netAssetValueDto = netAssetValueService.loadLatestNetAssetValue();

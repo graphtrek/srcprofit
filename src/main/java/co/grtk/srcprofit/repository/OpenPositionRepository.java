@@ -77,6 +77,19 @@ public interface OpenPositionRepository extends JpaRepository<OpenPositionEntity
     List<OpenPositionEntity> findAllOptions();
 
     /**
+     * Find all option positions with reportDate on or after the specified start date.
+     *
+     * Useful for filtering options by snapshot date: getAllOpenOptionDtos(startDate)
+     * supports date-filtered queries in controllers.
+     *
+     * @param startDate the earliest report date to include (inclusive)
+     * @return list of option positions with reportDate >= startDate, ordered by reportDate DESC
+     */
+    @Query("SELECT o FROM OpenPositionEntity o WHERE o.assetClass = 'OPT' " +
+           "AND o.reportDate >= :startDate ORDER BY o.reportDate DESC")
+    List<OpenPositionEntity> findAllOptionsByDate(@Param("startDate") LocalDate startDate);
+
+    /**
      * Count positions by asset class.
      *
      * Useful for portfolio summary: How many option vs stock positions?

@@ -6,6 +6,7 @@ import co.grtk.srcprofit.dto.InstrumentDto;
 import co.grtk.srcprofit.dto.PositionDto;
 import co.grtk.srcprofit.service.AlpacaService;
 import co.grtk.srcprofit.service.InstrumentService;
+import co.grtk.srcprofit.service.OpenPositionService;
 import co.grtk.srcprofit.service.OptionService;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import org.slf4j.Logger;
@@ -24,11 +25,13 @@ public class AlpacaRestController {
     private final AlpacaService alpacaService;
     private final OptionService optionService;
     private final InstrumentService instrumentService;
+    private final OpenPositionService openPositionService;
 
-    public AlpacaRestController(AlpacaService alpacaService, OptionService optionService, InstrumentService instrumentService) {
+    public AlpacaRestController(AlpacaService alpacaService, OptionService optionService, InstrumentService instrumentService, OpenPositionService openPositionService) {
         this.alpacaService = alpacaService;
         this.optionService = optionService;
         this.instrumentService = instrumentService;
+        this.openPositionService = openPositionService;
     }
 
     @GetMapping(value = "/alpacaStocksQuotes", produces = MediaType.APPLICATION_JSON_VALUE)
@@ -39,7 +42,7 @@ public class AlpacaRestController {
 
     @GetMapping(value = "/alpacaOptionsQuotes", produces = MediaType.APPLICATION_JSON_VALUE)
     public AlpacaQuotesDto getOptionsQuotes() throws JsonProcessingException {
-        List<PositionDto>  openOptions = optionService.getAllOpenOptionDtos(null);
+        List<PositionDto>  openOptions = openPositionService.getAllOpenOptionDtos(null);
         String symbols = openOptions.stream().map(dto -> dto.getCode().replaceAll("\\s","")).collect(Collectors.joining(","));
         return alpacaService.getOptionsLatestQuotes(symbols);
     }

@@ -17,7 +17,8 @@ import java.util.Collections;
 import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.mockito.Mockito.when;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.Mockito.*;
 
 @ExtendWith(MockitoExtension.class)
 class OpenPositionServiceTest {
@@ -65,7 +66,7 @@ class OpenPositionServiceTest {
         when(openPositionRepository.findAllOptions()).thenReturn(List.of(spy, aapl));
 
         // Act
-        List<PositionDto> result = openPositionService.getAllOpenOptionDtos();
+        List<PositionDto> result = openPositionService.getAllOpenOptionDtos(null);
 
         // Assert
         assertThat(result).hasSize(2);
@@ -117,7 +118,7 @@ class OpenPositionServiceTest {
         when(openPositionRepository.findAllOptions()).thenReturn(Collections.emptyList());
 
         // Act
-        List<PositionDto> result = openPositionService.getAllOpenOptionDtos();
+        List<PositionDto> result = openPositionService.getAllOpenOptionDtos(null);
 
         // Assert
         assertThat(result).isEmpty();
@@ -135,7 +136,7 @@ class OpenPositionServiceTest {
         when(openPositionRepository.findAllOptions()).thenReturn(List.of(entity));
 
         // Act - should not throw
-        List<PositionDto> result = openPositionService.getAllOpenOptionDtos();
+        List<PositionDto> result = openPositionService.getAllOpenOptionDtos(null);
 
         // Assert
         assertThat(result).hasSize(1);
@@ -158,7 +159,7 @@ class OpenPositionServiceTest {
         when(openPositionRepository.findAllOptions()).thenReturn(List.of(entity));
 
         // Act
-        List<PositionDto> result = openPositionService.getAllOpenOptionDtos();
+        List<PositionDto> result = openPositionService.getAllOpenOptionDtos(null);
 
         // Assert
         assertThat(result).hasSize(1);
@@ -188,7 +189,7 @@ class OpenPositionServiceTest {
         when(openPositionRepository.findAllOptions()).thenReturn(List.of(put, call));
 
         // Act
-        List<PositionDto> result = openPositionService.getAllOpenOptionDtos();
+        List<PositionDto> result = openPositionService.getAllOpenOptionDtos(null);
 
         // Assert
         assertThat(result).hasSize(2);
@@ -210,5 +211,128 @@ class OpenPositionServiceTest {
         assertThat(result).hasSize(1);
         assertThat(result.get(0).getTicker()).isEqualTo("TSLA");
         assertThat(result.get(0).getQuantity()).isEqualTo(5);
+    }
+
+    // ===== Date Filtering Tests (ISSUE-045) =====
+
+    @Test
+    void getAllOpenOptionDtos_withStartDate_shouldFilterByReportDate() {
+        // Arrange: Create positions with different report dates
+        LocalDate cutoffDate = LocalDate.of(2025, 12, 1);
+
+        OpenPositionEntity recentPosition = buildTestEntity("SPY", 600.0, "P", 1, LocalDate.now().plusDays(30));
+        recentPosition.setReportDate(LocalDate.of(2025, 12, 3));
+
+        OpenPositionEntity olderPosition = buildTestEntity("AAPL", 200.0, "C", -1, LocalDate.now().plusDays(45));
+        olderPosition.setReportDate(LocalDate.of(2025, 11, 20));
+
+        when(openPositionRepository.findAllOptionsByDate(cutoffDate))
+            .thenReturn(List.of(recentPosition));
+
+        // Act
+        List<PositionDto> result = openPositionService.getAllOpenOptionDtos(cutoffDate);
+
+        // Assert
+        assertThat(result).hasSize(1);
+        assertThat(result.get(0).getTicker()).isEqualTo("SPY");
+        assertThat(result.get(0).getTradeDate()).isEqualTo(LocalDate.of(2025, 12, 3));
+
+        // Verify the correct repository method was called
+        verify(openPositionRepository).findAllOptionsByDate(cutoffDate);
+        verify(openPositionRepository, never()).findAllOptions();
+    }
+
+    @Test
+    void getAllOpenOptionDtos_withNullDate_shouldReturnAllPositions() {
+        // Arrange
+        OpenPositionEntity position1 = buildTestEntity("SPY", 600.0, "P", 1, LocalDate.now().plusDays(30));
+        position1.setReportDate(LocalDate.of(2025, 12, 3));
+
+        OpenPositionEntity position2 = buildTestEntity("AAPL", 200.0, "C", -1, LocalDate.now().plusDays(45));
+        position2.setReportDate(LocalDate.of(2025, 11, 20));
+
+        when(openPositionRepository.findAllOptions()).thenReturn(List.of(position1, position2));
+
+        // Act
+        List<PositionDto> result = openPositionService.getAllOpenOptionDtos(null);
+
+        // Assert
+        assertThat(result).hasSize(2);
+
+        // Verify the correct repository method was called
+        verify(openPositionRepository).findAllOptions();
+        verify(openPositionRepository, never()).findAllOptionsByDate(any());
+    }
+
+    @Test
+    void getAllOpenOptionDtos_withFutureStartDate_shouldReturnEmptyList() {
+        // Arrange: Start date in the future, so no positions match
+        LocalDate futureDate = LocalDate.now().plusDays(30);
+
+        when(openPositionRepository.findAllOptionsByDate(futureDate))
+            .thenReturn(Collections.emptyList());
+
+        // Act
+        List<PositionDto> result = openPositionService.getAllOpenOptionDtos(futureDate);
+
+        // Assert
+        assertThat(result).isEmpty();
+        assertThat(result).isNotNull();
+        verify(openPositionRepository).findAllOptionsByDate(futureDate);
+    }
+
+    @Test
+    void getAllOpenOptionDtos_withPastStartDate_shouldReturnMultiplePositions() {
+        // Arrange: Past date should return all recent positions
+        LocalDate pastDate = LocalDate.of(2025, 1, 1);
+
+        OpenPositionEntity position1 = buildTestEntity("SPY", 600.0, "P", 1, LocalDate.now().plusDays(30));
+        position1.setReportDate(LocalDate.of(2025, 12, 3));
+
+        OpenPositionEntity position2 = buildTestEntity("QQQ", 350.0, "C", 2, LocalDate.now().plusDays(45));
+        position2.setReportDate(LocalDate.of(2025, 11, 15));
+
+        OpenPositionEntity position3 = buildTestEntity("TSLA", 250.0, "P", -1, LocalDate.now().plusDays(20));
+        position3.setReportDate(LocalDate.of(2025, 10, 1));
+
+        when(openPositionRepository.findAllOptionsByDate(pastDate))
+            .thenReturn(List.of(position1, position2, position3));
+
+        // Act
+        List<PositionDto> result = openPositionService.getAllOpenOptionDtos(pastDate);
+
+        // Assert
+        assertThat(result).hasSize(3);
+        assertThat(result).extracting(PositionDto::getTicker)
+            .containsExactly("SPY", "QQQ", "TSLA");
+        verify(openPositionRepository).findAllOptionsByDate(pastDate);
+    }
+
+    @Test
+    void getAllOpenOptionDtos_dateFiltering_calculatesMetricsCorrectly() {
+        // Arrange: Verify that calculated fields work with date filtering
+        LocalDate filterDate = LocalDate.of(2025, 12, 1);
+
+        OpenPositionEntity position = buildTestEntity("SPY", 600.0, "P", 1, LocalDate.now().plusDays(30));
+        position.setReportDate(LocalDate.of(2025, 12, 3));
+
+        when(openPositionRepository.findAllOptionsByDate(filterDate))
+            .thenReturn(List.of(position));
+
+        // Act
+        List<PositionDto> result = openPositionService.getAllOpenOptionDtos(filterDate);
+
+        // Assert
+        assertThat(result).hasSize(1);
+        PositionDto dto = result.get(0);
+
+        // Verify calculated fields are populated
+        assertThat(dto.getAnnualizedRoiPercent()).isNotNull();
+        assertThat(dto.getDaysLeft()).isGreaterThan(0);
+        assertThat(dto.getBreakEven()).isNotNull();
+
+        // Verify code field is set (critical for AlpacaRestController)
+        assertThat(dto.getCode()).isNotNull();
+        assertThat(dto.getCode()).isEqualTo("SPY 250120C00600000");
     }
 }

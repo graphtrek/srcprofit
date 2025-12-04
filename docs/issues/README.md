@@ -2,14 +2,19 @@
 
 **Auto-generated** - Run `python scripts/update_issue_index.py` to update
 
-**Total**: 46 issues
-**Open**: 1 (2%)
-**Closed**: 42 (91%)
+**Total**: 47 issues
+**Open**: 2 (4%)
+**Closed**: 42 (89%)
 **Partial**: 0
 
 ---
 
 ## Open Issues
+
+### HIGH (1)
+
+- **[ISSUE-045](ISSUE-045-migrate-controllers-openposition-service.md)** - Migrate Controllers to OpenPositionService.getAllOpenOptionDtos()
+  - Priority: HIGH | Status: OPEN | Category: Code Quality / Technical Debt | Created: 2025-12-04 | Blocks: Future deprecation of OptionService.getAllOpenOptionDtos()
 
 ### MEDIUM (1)
 
@@ -118,8 +123,8 @@
 **Bug Fix / UX Enhancement** (1):
   - ISSUE-029 ✅
 
-**Code Quality / Technical Debt** (7):
-  - ISSUE-004 ✅, ISSUE-007 ✅, ISSUE-008 ✅, ISSUE-015 ✅, ISSUE-023 ✅, ISSUE-024 ✅, ISSUE-031 ✅
+**Code Quality / Technical Debt** (8):
+  - ISSUE-004 ✅, ISSUE-007 ✅, ISSUE-008 ✅, ISSUE-015 ✅, ISSUE-023 ✅, ISSUE-024 ✅, ISSUE-031 ✅, ISSUE-045 🔴
 
 **Developer Experience** (1):
   - ISSUE-034 ✅

@@ -4,6 +4,7 @@ import co.grtk.srcprofit.dto.InstrumentDto;
 import co.grtk.srcprofit.dto.PositionDto;
 import co.grtk.srcprofit.service.InstrumentService;
 import co.grtk.srcprofit.service.MarketDataService;
+import co.grtk.srcprofit.service.OpenPositionService;
 import co.grtk.srcprofit.service.OptionService;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import org.springframework.stereotype.Controller;
@@ -19,18 +20,20 @@ public class InstrumentController {
     private final InstrumentService instrumentService;
     private final MarketDataService marketDataService;
     private final OptionService optionService;
+    private final OpenPositionService openPositionService;
 
-    public InstrumentController(InstrumentService instrumentService, MarketDataService marketDataService, OptionService optionService) {
+    public InstrumentController(InstrumentService instrumentService, MarketDataService marketDataService, OptionService optionService, OpenPositionService openPositionService) {
         this.instrumentService = instrumentService;
         this.marketDataService = marketDataService;
         this.optionService = optionService;
+        this.openPositionService = openPositionService;
     }
 
     @GetMapping("/instruments")
     public String getInstruments(Model model) {
         List<InstrumentDto> instruments = instrumentService.loadAllInstruments();
         List<PositionDto> optionHistory = optionService.getAllClosedOptions(null);
-        List<PositionDto> openOptions = optionService.getAllOpenOptionDtos(null);
+        List<PositionDto> openOptions = openPositionService.getAllOpenOptionDtos(null);
         for (InstrumentDto instrument : instruments) {
             PositionDto positionDto = new PositionDto();
             positionDto.setTicker(instrument.getTicker());
