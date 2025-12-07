@@ -5,13 +5,16 @@ import co.grtk.srcprofit.entity.AssetClass;
 import co.grtk.srcprofit.entity.OpenPositionEntity;
 import co.grtk.srcprofit.entity.OptionStatus;
 import co.grtk.srcprofit.entity.OptionType;
+import co.grtk.srcprofit.repository.InstrumentRepository;
 import co.grtk.srcprofit.repository.OpenPositionRepository;
+import co.grtk.srcprofit.repository.OptionRepository;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
+import java.io.IOException;
 import java.time.LocalDate;
 import java.util.Collections;
 import java.util.HashSet;
@@ -28,11 +31,17 @@ class OpenPositionServiceTest {
     @Mock
     private OpenPositionRepository openPositionRepository;
 
+    @Mock
+    private InstrumentRepository instrumentRepository;
+
+    @Mock
+    private OptionRepository optionRepository;
+
     private OpenPositionService openPositionService;
 
     @BeforeEach
     void setUp() {
-        openPositionService = new OpenPositionService(openPositionRepository, null);
+        openPositionService = new OpenPositionService(openPositionRepository, instrumentRepository, optionRepository);
     }
 
     /**
@@ -355,9 +364,9 @@ class OpenPositionServiceTest {
         when(openPositionRepository.findByConid(999L)).thenReturn(null);  // Insert
         when(openPositionRepository.findByAccount("DU12345")).thenReturn(List.of(pos1, pos2));
 
-        String csv = "ClientAccountID,Conid,AssetClass,Symbol,ReportDate,Quantity,CurrencyPrimary,UnderlyingConid,UnderlyingSymbol\n" +
-                "DU12345,100,OPT,SPY 250120P00600000,2025-12-04,1,USD,100,SPY\n" +
-                "DU12345,999,OPT,AAPL 250120C00200000,2025-12-04,1,USD,20,AAPL";
+        String csv = "ClientAccountID,Conid,AssetClass,Symbol,ReportDate,Quantity,CurrencyPrimary,UnderlyingConid,UnderlyingSymbol,Code\n" +
+                "DU12345,100,OPT,SPY 250120P00600000,2025-12-04,1,USD,100,SPY,SPY 250120P00600000\n" +
+                "DU12345,999,OPT,AAPL 250120C00200000,2025-12-04,1,USD,20,AAPL,AAPL 250120C00200000";
 
         // When
         String result = openPositionService.saveCSV(csv);
@@ -386,8 +395,8 @@ class OpenPositionServiceTest {
         when(openPositionRepository.findByAccount("DU12345")).thenReturn(List.of(du12345_pos1, du12345_pos2));
 
         // CSV only contains DU12345 account
-        String csv = "ClientAccountID,Conid,AssetClass,Symbol,ReportDate,Quantity,CurrencyPrimary,UnderlyingConid,UnderlyingSymbol\n" +
-                "DU12345,100,OPT,SPY 250120P00600000,2025-12-04,1,USD,100,SPY";
+        String csv = "ClientAccountID,Conid,AssetClass,Symbol,ReportDate,Quantity,CurrencyPrimary,UnderlyingConid,UnderlyingSymbol,Code\n" +
+                "DU12345,100,OPT,SPY 250120P00600000,2025-12-04,1,USD,100,SPY,SPY 250120P00600000";
 
         // When
         String result = openPositionService.saveCSV(csv);
@@ -422,8 +431,8 @@ class OpenPositionServiceTest {
         when(openPositionRepository.findByConid(100L)).thenReturn(pos1);  // Update
         when(openPositionRepository.findByAccount("DU12345")).thenReturn(List.of(pos1));
 
-        String csv = "ClientAccountID,Conid,AssetClass,Symbol,ReportDate,Quantity,CurrencyPrimary,UnderlyingConid,UnderlyingSymbol\n" +
-                "DU12345,100,OPT,SPY 250120P00600000,2025-12-04,1,USD,100,SPY";
+        String csv = "ClientAccountID,Conid,AssetClass,Symbol,ReportDate,Quantity,CurrencyPrimary,UnderlyingConid,UnderlyingSymbol,Code\n" +
+                "DU12345,100,OPT,SPY 250120P00600000,2025-12-04,1,USD,100,SPY,SPY 250120P00600000";
 
         // When
         String result = openPositionService.saveCSV(csv);
@@ -457,9 +466,9 @@ class OpenPositionServiceTest {
         when(openPositionRepository.findByAccount("DU11111")).thenReturn(List.of(du11111_pos1, du11111_pos2));
         when(openPositionRepository.findByAccount("DU22222")).thenReturn(List.of(du22222_pos1, du22222_pos2));
 
-        String csv = "ClientAccountID,Conid,AssetClass,Symbol,ReportDate,Quantity,CurrencyPrimary,UnderlyingConid,UnderlyingSymbol\n" +
-                "DU11111,1,OPT,SPY 250120P00600000,2025-12-04,1,USD,100,SPY\n" +
-                "DU22222,3,OPT,TSLA 250120P00250000,2025-12-04,2,USD,175,TSLA";
+        String csv = "ClientAccountID,Conid,AssetClass,Symbol,ReportDate,Quantity,CurrencyPrimary,UnderlyingConid,UnderlyingSymbol,Code\n" +
+                "DU11111,1,OPT,SPY 250120P00600000,2025-12-04,1,USD,100,SPY,SPY 250120P00600000\n" +
+                "DU22222,3,OPT,TSLA 250120P00250000,2025-12-04,2,USD,175,TSLA,TSLA 250120P00250000";
 
         // When
         String result = openPositionService.saveCSV(csv);

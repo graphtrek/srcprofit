@@ -104,6 +104,18 @@
         <li class="nav-item">
             <a class="nav-link collapsed" href="#"
                hx-indicator="#spinner"
+               hx-get="/openpositions"
+               hx-trigger="click"
+               hx-target="#main"
+               hx-swap="innerHTML"
+               hx-on::afterRequest="console.log('GET /openpositions')">
+              <i class="bi bi-folder2-open"></i>
+              <span>Open Positions</span>
+            </a>
+        </li><!-- End Open Positions -->
+        <li class="nav-item">
+            <a class="nav-link collapsed" href="#"
+               hx-indicator="#spinner"
                hx-get="/tradelog"
                hx-trigger="click"
                hx-target="#main"

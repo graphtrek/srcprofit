@@ -136,6 +136,37 @@ public class PositionCalculationHelper {
     }
 
     /**
+     * Calculates the annualized ROI percentage for a position using daysBetween (trade to expiration).
+     *
+     * Process:
+     * 1. Calculate daily ROI: abs(costBasisPrice) / daysBetween
+     * 2. Annualize: dailyROI × DAYS_PER_YEAR
+     * 3. Convert to percentage: (annualizedROI / strikePrice) × PERCENT_MULTIPLIER
+     *
+     * This variant is used for open positions where daysBetween (original trade duration from
+     * trade date to expiration) provides the actual time horizon of the trade.
+     *
+     * @param strikePrice the option strike price (position value)
+     * @param costBasisPrice the premium collected or paid (acquisition cost per unit)
+     * @param daysBetween the number of days from trade date to expiration
+     * @return annualized ROI as a percentage (rounded to nearest integer)
+     */
+    public static int calculateAnnualizedRoiPercent(double strikePrice, double costBasisPrice, int daysBetween) {
+        if (daysBetween <= 0 || strikePrice <= 0) {
+            return 0;
+        }
+
+        // Calculate daily and annualized ROI based on original trade duration
+        float roiPerDay = abs((float) costBasisPrice) / daysBetween;
+        float annualizedRoi = roiPerDay * DAYS_PER_YEAR;
+
+        // Convert to percentage
+        double roiPercent = (annualizedRoi / strikePrice) * PERCENT_MULTIPLIER;
+
+        return (int) Math.round(roiPercent);
+    }
+
+    /**
      * Calculates the probability that the market value will exceed the trade value at expiration.
      *
      * Uses normal distribution with volatility adjusted by square root of time.

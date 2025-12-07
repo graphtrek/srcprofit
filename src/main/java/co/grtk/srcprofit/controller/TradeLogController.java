@@ -60,7 +60,7 @@ public class TradeLogController {
     }
 
     private void fillTradeLogPage(PositionDto positionDto, Model model) {
-        List<PositionDto> openOptions = openPositionService.getAllOpenOptionDtos(positionDto.getPositionsFromDate());
+        List<PositionDto> openOptions = optionService.getAllOpenOptionDtos(positionDto.getPositionsFromDate());
         model.addAttribute(MODEL_ATTRIBUTE_OPTION_OPEN, openOptions);
         optionService.calculatePosition(positionDto, openOptions, List.of());
         NetAssetValueDto netAssetValueDto = netAssetValueService.loadLatestNetAssetValue();

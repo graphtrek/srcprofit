@@ -2,9 +2,9 @@
 
 **Auto-generated** - Run `python scripts/update_issue_index.py` to update
 
-**Total**: 48 issues
-**Open**: 3 (6%)
-**Closed**: 42 (88%)
+**Total**: 49 issues
+**Open**: 4 (8%)
+**Closed**: 42 (86%)
 **Partial**: 0
 
 ---
@@ -18,10 +18,12 @@
 - **[ISSUE-046](ISSUE-046-openposition-savecsv-delete-orphans.md)** - OpenPositionService.saveCSV Should Delete Positions Not in CSV
   - Priority: HIGH | Status: OPEN | Category: Code Quality / Technical Debt | Created: 2025-12-04
 
-### MEDIUM (1)
+### MEDIUM (2)
 
 - **[ISSUE-044](ISSUE-044-openposition-getallopen-options-dtos.md)** - Add getAllOpenOptionDtos() method to OpenPositionService
   - Priority: MEDIUM | Status: OPEN | Category: Feature | Created: 2025-12-04 (Session N/A)
+- **[ISSUE-047](ISSUE-047-openpositions-menu-page.md)** - New OpenPositions Menu Page
+  - Priority: MEDIUM | Status: OPEN | Category: Feature | Created: 2025-12-07
 
 ---
 
@@ -137,8 +139,8 @@
 **Enhancement** (4):
   - ISSUE-011 ✅, ISSUE-016 ✅, ISSUE-040 ✅, ISSUE-041 ✅
 
-**Feature** (15):
-  - ISSUE-001 ✅, ISSUE-005 ✅, ISSUE-009 ✅, ISSUE-010 ✅, ISSUE-014 ✅, ISSUE-017 ✅, ISSUE-018 ✅, ISSUE-019 ✅, ISSUE-028 ✅, ISSUE-032 ✅, ISSUE-035 ✅, ISSUE-037 ✅, ISSUE-038 🔴, ISSUE-039 ✅, ISSUE-044 🔴
+**Feature** (16):
+  - ISSUE-001 ✅, ISSUE-005 ✅, ISSUE-009 ✅, ISSUE-010 ✅, ISSUE-014 ✅, ISSUE-017 ✅, ISSUE-018 ✅, ISSUE-019 ✅, ISSUE-028 ✅, ISSUE-032 ✅, ISSUE-035 ✅, ISSUE-037 ✅, ISSUE-038 🔴, ISSUE-039 ✅, ISSUE-044 🔴, ISSUE-047 🔴
 
 **Feature / Code Quality** (1):
   - ISSUE-020 ✅
@@ -172,6 +174,6 @@
 
 ---
 
-**Last updated**: 2025-12-04
+**Last updated**: 2025-12-07
 
 **How to update**: Run `python scripts/update_issue_index.py`

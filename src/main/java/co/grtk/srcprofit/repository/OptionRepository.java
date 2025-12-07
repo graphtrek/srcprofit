@@ -131,4 +131,10 @@ public interface OptionRepository extends JpaRepository<OptionEntity, Long> {
             "  WHERE o.status = 'OPEN'" +
             ")")
     List<InstrumentEntity> findInstrumentsWithOpenPositions();
+
+    @Query("SELECT o " +
+            "FROM OptionEntity o " +
+            "WHERE o.conid = :conid " +
+            "ORDER BY o.tradeDate ASC")
+    List<OptionEntity> findByConid(@Param("conid") Long conid);
 }

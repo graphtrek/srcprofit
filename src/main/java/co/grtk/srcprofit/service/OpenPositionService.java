@@ -1,14 +1,18 @@
 package co.grtk.srcprofit.service;
 
+import co.grtk.srcprofit.dto.OpenPositionViewDto;
 import co.grtk.srcprofit.dto.PositionDto;
 import co.grtk.srcprofit.entity.AssetClass;
 import co.grtk.srcprofit.entity.InstrumentEntity;
 import co.grtk.srcprofit.entity.OpenPositionEntity;
+import co.grtk.srcprofit.entity.OptionEntity;
 import co.grtk.srcprofit.entity.OptionStatus;
 import co.grtk.srcprofit.entity.OptionType;
+import co.grtk.srcprofit.mapper.PositionCalculationHelper;
 import co.grtk.srcprofit.mapper.PositionMapper;
 import co.grtk.srcprofit.repository.InstrumentRepository;
 import co.grtk.srcprofit.repository.OpenPositionRepository;
+import co.grtk.srcprofit.repository.OptionRepository;
 import org.apache.commons.csv.CSVFormat;
 import org.apache.commons.csv.CSVParser;
 import org.apache.commons.csv.CSVRecord;
@@ -70,12 +74,15 @@ public class OpenPositionService {
 
     private final OpenPositionRepository openPositionRepository;
     private final InstrumentRepository instrumentRepository;
+    private final OptionRepository optionRepository;
 
     public OpenPositionService(
             OpenPositionRepository openPositionRepository,
-            InstrumentRepository instrumentRepository) {
+            InstrumentRepository instrumentRepository,
+            OptionRepository optionRepository) {
         this.openPositionRepository = openPositionRepository;
         this.instrumentRepository = instrumentRepository;
+        this.optionRepository = optionRepository;
     }
 
     /**
@@ -593,5 +600,104 @@ public class OpenPositionService {
         calculateAndSetAnnualizedRoi(dto);
 
         return dto;
+    }
+
+    /**
+     * Get all open option positions as view DTOs with essential fields only.
+     *
+     * Returns all OPT (option) positions as OpenPositionViewDto with the following fields:
+     * id, symbol, tradeDate, expirationDate, daysLeft, qty, strikePrice, underlyingPrice,
+     * pnl, roi, pop, and type.
+     *
+     * The underlyingPrice is fetched from the related InstrumentEntity via the
+     * underlyingInstrument relationship.
+     *
+     * @return List of open option positions as view DTOs
+     */
+    public List<OpenPositionViewDto> getAllOpenPositionViewDtos() {
+        List<OpenPositionEntity> openOptions = openPositionRepository.findAllOptionsWithUnderlying();
+        return openOptions.stream()
+                .map(this::convertToOpenPositionViewDto)
+                .toList();
+    }
+
+    /**
+     * Convert single OpenPositionEntity to OpenPositionViewDto.
+     *
+     * Maps the essential fields for the Open Positions view, including calculating
+     * daysLeft, ROI, and probability of profit using PositionCalculationHelper.
+     *
+     * Looks up the trade price from OptionEntity by conid (earliest trade by trade_date).
+     *
+     * @param entity the open position entity with underlying instrument loaded
+     * @return view DTO with essential fields
+     */
+    private OpenPositionViewDto convertToOpenPositionViewDto(OpenPositionEntity entity) {
+        // Get underlying price from InstrumentEntity
+        Double underlyingPrice = null;
+        InstrumentEntity underlyingInstrument = entity.getUnderlyingInstrument();
+        if (underlyingInstrument != null) {
+            underlyingPrice = underlyingInstrument.getPrice();
+        }
+
+        // Calculate days left until expiration
+        int daysLeft = PositionCalculationHelper.calculateDaysLeft(entity.getExpirationDate());
+
+        // Lookup the actual trade price and trade date from OptionEntity by conid
+        // Query returns results ordered by tradeDate ASC, so first record is earliest trade
+        Double tradePrice = entity.getCostBasisPrice();  // fallback to cost basis
+        LocalDate tradeDate = entity.getReportDate();    // fallback to report date
+
+        if (entity.getConid() != null) {
+            List<OptionEntity> optionEntities = optionRepository.findByConid(entity.getConid());
+            if (!optionEntities.isEmpty()) {
+                // First record is earliest trade (ordered by tradeDate ASC)
+                OptionEntity tradedOption = optionEntities.get(0);
+                if (tradedOption.getTradePrice() != null) {
+                    tradePrice = tradedOption.getTradePrice();
+                }
+                if (tradedOption.getTradeDate() != null) {
+                    tradeDate = tradedOption.getTradeDate();
+                }
+                log.debug("Found trade for conid {}: price={}, date={}",
+                        entity.getConid(), tradePrice, tradeDate);
+            }
+        }
+
+        // Calculate days between trade date and expiration
+        int daysBetween = PositionCalculationHelper.calculateDaysBetween(tradeDate, entity.getExpirationDate());
+
+        // Calculate annualized ROI percentage using daysBetween (original trade duration)
+        int roi = PositionCalculationHelper.calculateAnnualizedRoiPercent(
+                entity.getStrike() != null ? entity.getStrike() : 0.0,
+                entity.getCostBasisPrice() != null ? entity.getCostBasisPrice() : 0.0,
+                daysBetween > 0 ? daysBetween : 1
+        );
+
+        // Calculate probability of profit using mark price as market value
+        int pop = PositionCalculationHelper.calculateProbability(
+                entity.getStrike() != null ? entity.getStrike() : 0.0,
+                entity.getMarkPrice() != null ? entity.getMarkPrice() : 0.0,
+                daysLeft > 0 ? daysLeft : 1
+        );
+
+        // Determine type string
+        String typeString = "P".equals(entity.getPutCall()) ? "PUT" : "CALL";
+
+        // Map to view DTO
+        return new OpenPositionViewDto(
+                entity.getId(),
+                entity.getUnderlyingSymbol(),
+                entity.getReportDate(),
+                entity.getExpirationDate(),
+                daysLeft,
+                entity.getQuantity(),
+                entity.getStrike(),
+                underlyingPrice,
+                entity.getFifoPnlUnrealized(),
+                roi,
+                pop,
+                typeString
+        );
     }
 }
