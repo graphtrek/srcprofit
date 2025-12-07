@@ -121,6 +121,14 @@ public class OpenPositionService {
      * - Preserves existing price/metadata fields
      * - Same transaction boundary: instrument + position = atomic
      *
+     * Financial Metrics Calculation (ISSUE-048):
+     * - For OPT assets with valid expiration date:
+     *   - Calculates tradeDate from OptionEntity (earliest trade by tradeDate)
+     *   - Calculates daysBetween (trade to expiration)
+     *   - Calculates roi (annualized ROI percentage)
+     * - Persists these values to eliminate N+1 query problem in views
+     * - Non-OPT assets skip this calculation
+     *
      * @param csv the CSV data as a string (complete file content)
      * @return count in format "saved/deleted" (e.g., "50/10" = 50 saved, 10 deleted)
      * @throws IOException if CSV parsing fails
@@ -290,6 +298,48 @@ public class OpenPositionService {
                     // Metadata fields
                     entity.setModel(getStringOrNull(csvRecord, "Model"));
                     entity.setOpenDateTime(parseLocalDateTimeOrNull(csvRecord, "OpenDateTime"));
+
+                    // ISSUE-048: Calculate and persist tradeDate, daysBetween, roi for OPTIONS
+                    // Only for OPT asset class with valid expiration date
+                    if ("OPT".equals(assetClass) && entity.getExpirationDate() != null) {
+                        // Lookup trade date from OptionEntity (earliest trade by tradeDate)
+                        LocalDate calculatedTradeDate = entity.getReportDate();  // fallback
+
+                        if (entity.getConid() != null) {
+                            List<OptionEntity> optionEntities = optionRepository.findByConid(entity.getConid());
+                            if (!optionEntities.isEmpty()) {
+                                // First record is earliest trade (ordered by tradeDate ASC)
+                                OptionEntity tradedOption = optionEntities.get(0);
+                                if (tradedOption.getTradeDate() != null) {
+                                    calculatedTradeDate = tradedOption.getTradeDate();
+                                }
+                            }
+                        }
+
+                        entity.setTradeDate(calculatedTradeDate);
+
+                        // Calculate days between trade and expiration
+                        int calculatedDaysBetween = PositionCalculationHelper.calculateDaysBetween(
+                            calculatedTradeDate,
+                            entity.getExpirationDate()
+                        );
+                        entity.setDaysBetween(calculatedDaysBetween > 0 ? calculatedDaysBetween : null);
+
+                        // Calculate annualized ROI percentage
+                        if (entity.getStrike() != null && entity.getCostBasisPrice() != null && calculatedDaysBetween > 0) {
+                            int calculatedRoi = PositionCalculationHelper.calculateAnnualizedRoiPercent(
+                                entity.getStrike(),
+                                entity.getCostBasisPrice(),
+                                calculatedDaysBetween
+                            );
+                            entity.setRoi(calculatedRoi);
+                        } else {
+                            entity.setRoi(null);
+                        }
+
+                        log.debug("Calculated for conid {}: tradeDate={}, daysBetween={}, roi={}",
+                            entity.getConid(), calculatedTradeDate, calculatedDaysBetween, entity.getRoi());
+                    }
 
                     // Save or update
                     openPositionRepository.save(entity);
@@ -624,10 +674,13 @@ public class OpenPositionService {
     /**
      * Convert single OpenPositionEntity to OpenPositionViewDto.
      *
-     * Maps the essential fields for the Open Positions view, including calculating
-     * daysLeft, ROI, and probability of profit using PositionCalculationHelper.
+     * Maps the essential fields for the Open Positions view, including reading
+     * persisted tradeDate, daysBetween, and roi from entity (ISSUE-048).
+     * Falls back to calculation for positions imported before ISSUE-048.
      *
-     * Looks up the trade price from OptionEntity by conid (earliest trade by trade_date).
+     * Performance:
+     * - New data (post-ISSUE-048): No database queries, reads persisted values
+     * - Old data (pre-ISSUE-048): Queries OptionEntity by conid for backwards compatibility
      *
      * @param entity the open position entity with underlying instrument loaded
      * @return view DTO with essential fields
@@ -643,36 +696,51 @@ public class OpenPositionService {
         // Calculate days left until expiration
         int daysLeft = PositionCalculationHelper.calculateDaysLeft(entity.getExpirationDate());
 
-        // Lookup the actual trade price and trade date from OptionEntity by conid
-        // Query returns results ordered by tradeDate ASC, so first record is earliest trade
-        Double tradePrice = entity.getCostBasisPrice();  // fallback to cost basis
-        LocalDate tradeDate = entity.getReportDate();    // fallback to report date
+        // ISSUE-048: Use persisted values if available, fallback to calculation for old data
+        LocalDate tradeDate;
+        int daysBetween;
+        int roi;
 
-        if (entity.getConid() != null) {
-            List<OptionEntity> optionEntities = optionRepository.findByConid(entity.getConid());
-            if (!optionEntities.isEmpty()) {
-                // First record is earliest trade (ordered by tradeDate ASC)
-                OptionEntity tradedOption = optionEntities.get(0);
-                if (tradedOption.getTradePrice() != null) {
-                    tradePrice = tradedOption.getTradePrice();
+        if (entity.getTradeDate() != null && entity.getDaysBetween() != null && entity.getRoi() != null) {
+            // Fast path: read persisted values (no database queries)
+            tradeDate = entity.getTradeDate();
+            daysBetween = entity.getDaysBetween();
+            roi = entity.getRoi();
+            log.debug("Using persisted values for conid {}: tradeDate={}, daysBetween={}, roi={}",
+                    entity.getConid(), tradeDate, daysBetween, roi);
+        } else {
+            // Backwards compatibility: calculate for old data (NULL fields, imported before ISSUE-048)
+            tradeDate = entity.getReportDate();  // fallback
+            Double tradePrice = entity.getCostBasisPrice();  // fallback to cost basis
+
+            if (entity.getConid() != null) {
+                List<OptionEntity> optionEntities = optionRepository.findByConid(entity.getConid());
+                if (!optionEntities.isEmpty()) {
+                    // First record is earliest trade (ordered by tradeDate ASC)
+                    OptionEntity tradedOption = optionEntities.get(0);
+                    if (tradedOption.getTradePrice() != null) {
+                        tradePrice = tradedOption.getTradePrice();
+                    }
+                    if (tradedOption.getTradeDate() != null) {
+                        tradeDate = tradedOption.getTradeDate();
+                    }
+                    log.debug("Found trade for conid {}: price={}, date={} (fallback calculation)",
+                            entity.getConid(), tradePrice, tradeDate);
                 }
-                if (tradedOption.getTradeDate() != null) {
-                    tradeDate = tradedOption.getTradeDate();
-                }
-                log.debug("Found trade for conid {}: price={}, date={}",
-                        entity.getConid(), tradePrice, tradeDate);
             }
+
+            // Calculate days between trade date and expiration
+            daysBetween = PositionCalculationHelper.calculateDaysBetween(tradeDate, entity.getExpirationDate());
+
+            // Calculate annualized ROI percentage using daysBetween (original trade duration)
+            roi = PositionCalculationHelper.calculateAnnualizedRoiPercent(
+                    entity.getStrike() != null ? entity.getStrike() : 0.0,
+                    entity.getCostBasisPrice() != null ? entity.getCostBasisPrice() : 0.0,
+                    daysBetween > 0 ? daysBetween : 1
+            );
+            log.debug("Calculated fallback for conid {} (old data): tradeDate={}, daysBetween={}, roi={}",
+                    entity.getConid(), tradeDate, daysBetween, roi);
         }
-
-        // Calculate days between trade date and expiration
-        int daysBetween = PositionCalculationHelper.calculateDaysBetween(tradeDate, entity.getExpirationDate());
-
-        // Calculate annualized ROI percentage using daysBetween (original trade duration)
-        int roi = PositionCalculationHelper.calculateAnnualizedRoiPercent(
-                entity.getStrike() != null ? entity.getStrike() : 0.0,
-                entity.getCostBasisPrice() != null ? entity.getCostBasisPrice() : 0.0,
-                daysBetween > 0 ? daysBetween : 1
-        );
 
         // Calculate probability of profit using mark price as market value
         int pop = PositionCalculationHelper.calculateProbability(

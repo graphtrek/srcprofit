@@ -303,6 +303,34 @@ public class OpenPositionEntity {
     private String putCall;
 
     /**
+     * Trade date for this position (earliest trade by tradeDate from OptionEntity).
+     * Calculated during CSV import from OptionEntity.findByConid() results.
+     * Fallback: reportDate if no OptionEntity found.
+     * ISSUE-048: Persisted to eliminate N+1 query problem.
+     * NULL for positions imported before ISSUE-048.
+     */
+    @Column
+    private LocalDate tradeDate;
+
+    /**
+     * Days between trade date and expiration date.
+     * Calculated during CSV import using PositionCalculationHelper.calculateDaysBetween().
+     * ISSUE-048: Persisted to eliminate redundant calculations.
+     * NULL for positions imported before ISSUE-048.
+     */
+    @Column
+    private Integer daysBetween;
+
+    /**
+     * Annualized ROI percentage based on strike price, cost basis, and daysBetween.
+     * Calculated during CSV import using PositionCalculationHelper.calculateAnnualizedRoiPercent().
+     * ISSUE-048: Persisted to eliminate redundant calculations.
+     * NULL for positions imported before ISSUE-048.
+     */
+    @Column
+    private Integer roi;
+
+    /**
      * Underlying contract ID for derivatives.
      * For options: the underlying stock's conid
      * Populated from CSV column: Underlying CONID
@@ -763,6 +791,30 @@ public class OpenPositionEntity {
 
     public void setPutCall(String putCall) {
         this.putCall = putCall;
+    }
+
+    public LocalDate getTradeDate() {
+        return tradeDate;
+    }
+
+    public void setTradeDate(LocalDate tradeDate) {
+        this.tradeDate = tradeDate;
+    }
+
+    public Integer getDaysBetween() {
+        return daysBetween;
+    }
+
+    public void setDaysBetween(Integer daysBetween) {
+        this.daysBetween = daysBetween;
+    }
+
+    public Integer getRoi() {
+        return roi;
+    }
+
+    public void setRoi(Integer roi) {
+        this.roi = roi;
     }
 
     public Long getUnderlyingConid() {

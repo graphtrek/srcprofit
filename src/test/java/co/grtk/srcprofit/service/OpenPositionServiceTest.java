@@ -11,6 +11,7 @@ import co.grtk.srcprofit.repository.OptionRepository;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.ArgumentCaptor;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
@@ -477,5 +478,72 @@ class OpenPositionServiceTest {
         assertThat(result).isEqualTo("2/2");
         verify(openPositionRepository).findByAccount("DU11111");
         verify(openPositionRepository).findByAccount("DU22222");
+    }
+
+    @Test
+    void saveCSV_shouldCalculateAndPersistFieldsForOptions() throws IOException {
+        // Arrange: OptionEntity with trade data exists
+        co.grtk.srcprofit.entity.OptionEntity optionEntity = new co.grtk.srcprofit.entity.OptionEntity();
+        optionEntity.setConid(12345L);
+        optionEntity.setTradeDate(LocalDate.of(2025, 11, 1));
+        optionEntity.setTradePrice(5.0);
+
+        when(optionRepository.findByConid(12345L)).thenReturn(List.of(optionEntity));
+        when(openPositionRepository.findByConid(12345L)).thenReturn(null);  // New position
+        when(openPositionRepository.findByAccount("DU12345")).thenReturn(Collections.emptyList());
+
+        String csv = "ClientAccountID,Conid,AssetClass,Symbol,ReportDate,Quantity,CurrencyPrimary," +
+                    "Strike,Expiry,Put/Call,UnderlyingConid,UnderlyingSymbol\n" +
+                    "DU12345,12345,OPT,SPY 251220P00600000,2025-12-04,1,USD," +
+                    "600.0,2025-12-20,P,100,SPY";
+
+        // Act
+        String result = openPositionService.saveCSV(csv);
+
+        // Assert - verify OptionEntity was queried for trade data (proof of calculation)
+        assertThat(result).isEqualTo("1/0");
+        verify(optionRepository).findByConid(12345L);
+        verify(openPositionRepository).save(any(OpenPositionEntity.class));
+    }
+
+    @Test
+    void saveCSV_shouldFallbackToReportDateWhenNoOptionEntityFound() throws IOException {
+        // Arrange: No OptionEntity exists
+        when(optionRepository.findByConid(12345L)).thenReturn(Collections.emptyList());
+        when(openPositionRepository.findByConid(12345L)).thenReturn(null);
+        when(openPositionRepository.findByAccount("DU12345")).thenReturn(Collections.emptyList());
+
+        String csv = "ClientAccountID,Conid,AssetClass,Symbol,ReportDate,Quantity,CurrencyPrimary," +
+                    "Strike,Expiry,Put/Call,UnderlyingConid,UnderlyingSymbol\n" +
+                    "DU12345,12345,OPT,SPY 251220P00600000,2025-12-04,1,USD," +
+                    "600.0,2025-12-20,P,100,SPY";
+
+        // Act
+        openPositionService.saveCSV(csv);
+
+        // Assert - verify OptionEntity was queried even when empty (proof of calculation logic)
+        verify(optionRepository).findByConid(12345L);
+        verify(openPositionRepository).save(any(OpenPositionEntity.class));
+    }
+
+    @Test
+    void saveCSV_shouldNotCalculateFieldsForNonOptionAssets() throws IOException {
+        // Arrange: STK (stock) asset class
+        when(openPositionRepository.findByConid(12345L)).thenReturn(null);
+        when(openPositionRepository.findByAccount("DU12345")).thenReturn(Collections.emptyList());
+
+        String csv = "ClientAccountID,Conid,AssetClass,Symbol,ReportDate,Quantity,CurrencyPrimary\n" +
+                    "DU12345,12345,STK,SPY,2025-12-04,100,USD";
+
+        // Act
+        openPositionService.saveCSV(csv);
+
+        // Assert
+        ArgumentCaptor<OpenPositionEntity> captor = ArgumentCaptor.forClass(OpenPositionEntity.class);
+        verify(openPositionRepository).save(captor.capture());
+        OpenPositionEntity saved = captor.getValue();
+        assertThat(saved.getTradeDate()).isNull();  // Not calculated for STK
+        assertThat(saved.getDaysBetween()).isNull();
+        assertThat(saved.getRoi()).isNull();
     }
 }
