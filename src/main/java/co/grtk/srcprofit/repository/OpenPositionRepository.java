@@ -108,7 +108,7 @@ public interface OpenPositionRepository extends JpaRepository<OpenPositionEntity
      * @return List of option positions with underlying instruments
      */
     @Query("SELECT DISTINCT op FROM OpenPositionEntity op " +
-           "LEFT JOIN op.underlyingInstrument " +
+           "LEFT JOIN FETCH op.underlyingInstrument " +
            "WHERE op.assetClass = 'OPT' " +
            "ORDER BY op.symbol ASC, op.expirationDate ASC")
     List<OpenPositionEntity> findAllOptionsWithUnderlying();

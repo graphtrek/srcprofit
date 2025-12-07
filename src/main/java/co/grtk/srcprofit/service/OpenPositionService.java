@@ -677,7 +677,7 @@ public class OpenPositionService {
         // Calculate probability of profit using mark price as market value
         int pop = PositionCalculationHelper.calculateProbability(
                 entity.getStrike() != null ? entity.getStrike() : 0.0,
-                entity.getMarkPrice() != null ? entity.getMarkPrice() : 0.0,
+                entity.getUnderlyingInstrument() != null ? entity.getUnderlyingInstrument().getPrice() : 0.0,
                 daysLeft > 0 ? daysLeft : 1
         );
 
