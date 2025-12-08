@@ -305,4 +305,72 @@ class PositionCalculationHelperTest {
         assertNotEquals(prob30, prob90, "Probability should differ with different DTE");
     }
 
+    // ISSUE-049: Dynamic P&L Calculation Tests
+
+    @Test
+    @DisplayName("calculateUnrealizedPnl: Short PUT profit scenario")
+    void testCalculateUnrealizedPnl_ShortPutProfit() {
+        // Sold 1 PUT at $5.00, now worth $4.50 (profit)
+        Double pnl = PositionCalculationHelper.calculateUnrealizedPnl(-1, 4.5, 5.0, 100.0);
+        assertEquals(50.0, pnl, "P&L should be 50 for profitable short PUT");
+    }
+
+    @Test
+    @DisplayName("calculateUnrealizedPnl: Short PUT loss scenario")
+    void testCalculateUnrealizedPnl_ShortPutLoss() {
+        // Sold 1 PUT at $5.00, now worth $6.00 (loss)
+        Double pnl = PositionCalculationHelper.calculateUnrealizedPnl(-1, 6.0, 5.0, 100.0);
+        assertEquals(-100.0, pnl, "P&L should be -100 for loss on short PUT");
+    }
+
+    @Test
+    @DisplayName("calculateUnrealizedPnl: Long CALL profit scenario")
+    void testCalculateUnrealizedPnl_LongCallProfit() {
+        // Bought 2 CALLs at $3.00, now worth $5.00
+        Double pnl = PositionCalculationHelper.calculateUnrealizedPnl(2, 5.0, 3.0, 100.0);
+        assertEquals(400.0, pnl, "P&L should be 400 for profitable long CALL");
+    }
+
+    @Test
+    @DisplayName("calculateUnrealizedPnl: Null quantity returns null")
+    void testCalculateUnrealizedPnl_NullQuantity() {
+        Double pnl = PositionCalculationHelper.calculateUnrealizedPnl(null, 5.0, 4.5, 100.0);
+        assertNull(pnl, "P&L should be null when quantity is null");
+    }
+
+    @Test
+    @DisplayName("calculateUnrealizedPnl: Null markPrice returns null")
+    void testCalculateUnrealizedPnl_NullMarkPrice() {
+        Double pnl = PositionCalculationHelper.calculateUnrealizedPnl(-1, null, 4.5, 100.0);
+        assertNull(pnl, "P&L should be null when markPrice is null");
+    }
+
+    @Test
+    @DisplayName("calculateUnrealizedPnl: Null costBasisPrice returns null")
+    void testCalculateUnrealizedPnl_NullCostBasisPrice() {
+        Double pnl = PositionCalculationHelper.calculateUnrealizedPnl(-1, 5.0, null, 100.0);
+        assertNull(pnl, "P&L should be null when costBasisPrice is null");
+    }
+
+    @Test
+    @DisplayName("calculateUnrealizedPnl: Null multiplier returns null")
+    void testCalculateUnrealizedPnl_NullMultiplier() {
+        Double pnl = PositionCalculationHelper.calculateUnrealizedPnl(-1, 5.0, 4.5, null);
+        assertNull(pnl, "P&L should be null when multiplier is null");
+    }
+
+    @Test
+    @DisplayName("calculateUnrealizedPnl: Rounds to 2 decimal places")
+    void testCalculateUnrealizedPnl_RoundingTo2Decimals() {
+        Double pnl = PositionCalculationHelper.calculateUnrealizedPnl(-1, 4.557, 5.0, 100.0);
+        assertEquals(44.3, pnl, "P&L should be rounded to 2 decimal places");
+    }
+
+    @Test
+    @DisplayName("calculateUnrealizedPnl: Zero quantity returns zero")
+    void testCalculateUnrealizedPnl_ZeroQuantity() {
+        Double pnl = PositionCalculationHelper.calculateUnrealizedPnl(0, 5.0, 4.5, 100.0);
+        assertEquals(0.0, pnl, "P&L should be 0 for zero quantity (closed position)");
+    }
+
 }

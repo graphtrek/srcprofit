@@ -73,6 +73,7 @@ class OpenPositionsControllerTest {
                 420.0,
                 415.0,
                 -125.0,
+                -130.0,      // calculatedPnl
                 15,
                 75,
                 "PUT"
@@ -87,6 +88,7 @@ class OpenPositionsControllerTest {
                 210.0,
                 208.0,
                 250.0,
+                255.0,       // calculatedPnl
                 22,
                 80,
                 "CALL"
@@ -131,6 +133,7 @@ class OpenPositionsControllerTest {
                 420.0,
                 415.0,
                 -125.0,
+                -130.0,      // calculatedPnl
                 15,
                 75,
                 "PUT"
@@ -146,6 +149,7 @@ class OpenPositionsControllerTest {
         assertEquals(420.0, dto.strikePrice());
         assertEquals(415.0, dto.underlyingPrice());
         assertEquals(-125.0, dto.pnl());
+        assertEquals(-130.0, dto.calculatedPnl());  // New field assertion
         assertEquals(15, dto.roi());
         assertEquals(75, dto.pop());
         assertEquals("PUT", dto.type());

@@ -188,4 +188,40 @@ public class PositionCalculationHelper {
         return PositionMapper.probabilityMarketExceedsTradeValue(tradeValue, marketValue, dailyStdDev, daysBetween);
     }
 
+    /**
+     * Calculates unrealized profit/loss for an option position.
+     *
+     * Formula: Market Value - Cost Basis
+     *          = (quantity × markPrice × multiplier) - (quantity × costBasisPrice × multiplier)
+     *
+     * Note: For short positions (negative quantity), a negative P&L indicates profit,
+     *       while positive P&L indicates loss (sold premium vs current buyback cost).
+     *
+     * @param quantity position size (positive for long, negative for short)
+     * @param markPrice current market price per contract
+     * @param costBasisPrice average acquisition cost per contract
+     * @param multiplier contract multiplier (typically 100 for equity options)
+     * @return calculated P&L rounded to 2 decimals, or null if required data is missing
+     */
+    public static Double calculateUnrealizedPnl(
+            Integer quantity,
+            Double markPrice,
+            Double costBasisPrice,
+            Double multiplier) {
+
+        // Validate required parameters
+        if (quantity == null || markPrice == null || costBasisPrice == null || multiplier == null) {
+            return null;
+        }
+
+        // Calculate market value and cost basis
+        double marketValue = quantity * markPrice * multiplier;
+        double costBasis = quantity * costBasisPrice * multiplier;
+
+        // P&L = Market Value - Cost Basis
+        double pnl = marketValue - costBasis;
+
+        return round2Digits(pnl);
+    }
+
 }

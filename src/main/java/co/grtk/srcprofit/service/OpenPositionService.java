@@ -749,6 +749,14 @@ public class OpenPositionService {
                 daysLeft > 0 ? daysLeft : 1
         );
 
+        // ISSUE-049: Calculate real-time P&L based on current market prices
+        Double calculatedPnl = PositionCalculationHelper.calculateUnrealizedPnl(
+                entity.getQuantity(),
+                entity.getMarkPrice(),
+                entity.getCostBasisPrice(),
+                entity.getMultiplier()
+        );
+
         // Determine type string
         String typeString = "P".equals(entity.getPutCall()) ? "PUT" : "CALL";
 
@@ -763,6 +771,7 @@ public class OpenPositionService {
                 entity.getStrike(),
                 underlyingPrice,
                 entity.getFifoPnlUnrealized(),
+                calculatedPnl,
                 roi,
                 pop,
                 typeString

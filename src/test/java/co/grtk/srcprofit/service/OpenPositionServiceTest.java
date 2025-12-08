@@ -546,4 +546,115 @@ class OpenPositionServiceTest {
         assertThat(saved.getDaysBetween()).isNull();
         assertThat(saved.getRoi()).isNull();
     }
+
+    // ===== Dynamic P&L Calculation Tests (ISSUE-049) =====
+
+    @Test
+    void convertToOpenPositionViewDto_calculatesRealTimePnl() {
+        // Arrange: Short PUT position (sold at 5.0, now worth 4.5)
+        OpenPositionEntity entity = buildTestEntity("SPY", 600.0, "P", -1, LocalDate.now().plusDays(30));
+        entity.setMarkPrice(4.5);  // Current market price
+        entity.setCostBasisPrice(5.0);  // Sold at this price
+        entity.setMultiplier(100.0);  // Standard option multiplier
+        entity.setFifoPnlUnrealized(50.0);  // IBKR's FIFO P&L
+        entity.setTradeDate(LocalDate.now().minusDays(10));  // ISSUE-048 persisted field
+        entity.setDaysBetween(40);  // ISSUE-048 persisted field
+        entity.setRoi(25);  // ISSUE-048 persisted field
+
+        when(openPositionRepository.findAllOptionsWithUnderlying()).thenReturn(List.of(entity));
+
+        // Act
+        List<co.grtk.srcprofit.dto.OpenPositionViewDto> result = openPositionService.getAllOpenPositionViewDtos();
+
+        // Assert
+        assertThat(result).hasSize(1);
+        co.grtk.srcprofit.dto.OpenPositionViewDto dto = result.get(0);
+
+        // Verify static P&L (from IBKR) is unchanged
+        assertThat(dto.pnl()).isEqualTo(50.0);
+
+        // Verify calculated P&L = Market Value - Cost Basis
+        // Market Value = -1 × 4.5 × 100 = -450
+        // Cost Basis = -1 × 5.0 × 100 = -500
+        // P&L = -450 - (-500) = 50
+        assertThat(dto.calculatedPnl()).isEqualTo(50.0);
+    }
+
+    @Test
+    void convertToOpenPositionViewDto_handlesNullPnlFields() {
+        // Arrange: Position with null P&L related fields
+        OpenPositionEntity entity = buildTestEntity("SPY", 600.0, "P", 1, LocalDate.now().plusDays(30));
+        entity.setMarkPrice(null);  // Missing market price
+        entity.setCostBasisPrice(5.0);
+        entity.setMultiplier(100.0);
+        entity.setTradeDate(LocalDate.now().minusDays(10));  // ISSUE-048 persisted field
+        entity.setDaysBetween(40);  // ISSUE-048 persisted field
+        entity.setRoi(25);  // ISSUE-048 persisted field
+
+        when(openPositionRepository.findAllOptionsWithUnderlying()).thenReturn(List.of(entity));
+
+        // Act - should not throw NPE
+        List<co.grtk.srcprofit.dto.OpenPositionViewDto> result = openPositionService.getAllOpenPositionViewDtos();
+
+        // Assert
+        assertThat(result).hasSize(1);
+        co.grtk.srcprofit.dto.OpenPositionViewDto dto = result.get(0);
+
+        // Calculated P&L should be null when markPrice is missing
+        assertThat(dto.calculatedPnl()).isNull();
+    }
+
+    @Test
+    void convertToOpenPositionViewDto_multiplePositionsPnlVariations() {
+        // Arrange: Multiple positions with mixed data completeness
+        // Position 1: Short PUT with complete data
+        OpenPositionEntity shortPut = buildTestEntity("SPY", 600.0, "P", -1, LocalDate.now().plusDays(30));
+        shortPut.setMarkPrice(4.5);
+        shortPut.setCostBasisPrice(5.0);
+        shortPut.setMultiplier(100.0);
+        shortPut.setTradeDate(LocalDate.now().minusDays(10));
+        shortPut.setDaysBetween(40);
+        shortPut.setRoi(25);
+
+        // Position 2: Long CALL with complete data
+        OpenPositionEntity longCall = buildTestEntity("AAPL", 200.0, "C", 2, LocalDate.now().plusDays(45));
+        longCall.setMarkPrice(5.0);
+        longCall.setCostBasisPrice(3.0);
+        longCall.setMultiplier(100.0);
+        longCall.setTradeDate(LocalDate.now().minusDays(15));
+        longCall.setDaysBetween(60);
+        longCall.setRoi(30);
+
+        // Position 3: Missing multiplier (can't calculate)
+        OpenPositionEntity noMultiplier = buildTestEntity("QQQ", 350.0, "C", 1, LocalDate.now().plusDays(60));
+        noMultiplier.setMarkPrice(8.0);
+        noMultiplier.setCostBasisPrice(6.0);
+        noMultiplier.setMultiplier(null);
+        noMultiplier.setTradeDate(LocalDate.now().minusDays(5));
+        noMultiplier.setDaysBetween(65);
+        noMultiplier.setRoi(20);
+
+        when(openPositionRepository.findAllOptionsWithUnderlying()).thenReturn(List.of(shortPut, longCall, noMultiplier));
+
+        // Act
+        List<co.grtk.srcprofit.dto.OpenPositionViewDto> result = openPositionService.getAllOpenPositionViewDtos();
+
+        // Assert
+        assertThat(result).hasSize(3);
+
+        // Position 1: Short PUT profit
+        // Market Value = -1 × 4.5 × 100 = -450
+        // Cost Basis = -1 × 5.0 × 100 = -500
+        // P&L = 50.0
+        assertThat(result.get(0).calculatedPnl()).isEqualTo(50.0);
+
+        // Position 2: Long CALL profit
+        // Market Value = 2 × 5.0 × 100 = 1000
+        // Cost Basis = 2 × 3.0 × 100 = 600
+        // P&L = 400.0
+        assertThat(result.get(1).calculatedPnl()).isEqualTo(400.0);
+
+        // Position 3: Missing multiplier
+        assertThat(result.get(2).calculatedPnl()).isNull();
+    }
 }

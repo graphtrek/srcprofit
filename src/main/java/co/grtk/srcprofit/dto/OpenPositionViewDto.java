@@ -11,7 +11,8 @@ public record OpenPositionViewDto(
     Integer qty,
     Double strikePrice,
     Double underlyingPrice,
-    Double pnl,
+    Double pnl,              // Static P&L from IBKR
+    Double calculatedPnl,    // Dynamic calculated P&L (ISSUE-049)
     Integer roi,
     Integer pop,
     String type

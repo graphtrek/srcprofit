@@ -41,10 +41,10 @@
                             <th scope="col">D.Left</th>
                             <th scope="col">Qty</th>
                             <th scope="col">Strike</th>
-                            <th scope="col">UnderlPrice</th>
+                            <th scope="col">Price</th>
+                            <th scope="col">P.O.P</th>
                             <th scope="col">P&L</th>
                             <th scope="col">R.O.I</th>
-                            <th scope="col">P.O.P</th>
                             <th scope="col">Type</th>
                         </tr>
                         </thead>
@@ -63,9 +63,9 @@
                                 <td>${position.qty()}</td>
                                 <td class="currency-usd">${position.strikePrice()}</td>
                                 <td class="currency-usd">${position.underlyingPrice()}</td>
+                                <td>${position.pop()}%</td>
                                 <td class="currency-usd">${position.pnl()}</td>
                                 <td>${position.roi()}%</td>
-                                <td>${position.pop()}%</td>
                                 <td>${position.type()}</td>
                             </tr>
                         @endfor
