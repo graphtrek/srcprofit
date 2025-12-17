@@ -7,6 +7,7 @@ import co.grtk.srcprofit.dto.PositionDto;
 import co.grtk.srcprofit.mapper.Interval;
 import co.grtk.srcprofit.service.InstrumentService;
 import co.grtk.srcprofit.service.NetAssetValueService;
+import co.grtk.srcprofit.service.OpenPositionService;
 import co.grtk.srcprofit.service.OptionService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -16,6 +17,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 
 @Controller
@@ -39,11 +41,13 @@ public class HomeController {
     private final OptionService optionService;
     private final InstrumentService instrumentService;
     private final NetAssetValueService netAssetValueService;
+    private final OpenPositionService openPositionService;
 
-    public HomeController(OptionService optionService, InstrumentService instrumentService, NetAssetValueService netAssetValueService) {
+    public HomeController(OptionService optionService, InstrumentService instrumentService, NetAssetValueService netAssetValueService, OpenPositionService openPositionService) {
         this.optionService = optionService;
         this.instrumentService = instrumentService;
         this.netAssetValueService = netAssetValueService;
+        this.openPositionService = openPositionService;
     }
 
     @GetMapping("/")
@@ -89,10 +93,27 @@ public class HomeController {
         }
         model.addAttribute(MODEL_ATTRIBUTE_DASHBOARD_DTO, dashboardDto);
 
+        // Get open positions and calculate aggregated metrics
+        List<PositionDto> openOptions = optionService.getAllOpenOptionDtos(java.time.LocalDate.now());
+
+        // Calculate position summary (buy/sell obligations, premiums)
         PositionDto positionDto = new PositionDto();
+        optionService.calculatePosition(positionDto, openOptions, Collections.emptyList());
+
+        // Get weekly positions (expiring within 7 days)
+        List<PositionDto> weeklyOpenPositions = optionService.getWeeklyOpenOptionDtos(openOptions);
+
+        // Load latest NAV for cash and stock values
+        var latestNav = netAssetValueService.loadLatestNetAssetValue();
+        if (latestNav != null) {
+            positionDto.setCash(latestNav.getCash());
+            positionDto.setStock(latestNav.getStock());
+        }
 
         positionDto.setCollectedPremium(chartDataDto.getLastDailyPremium());
         model.addAttribute(MODEL_ATTRIBUTE_POSITION_DTO, positionDto);
+        model.addAttribute("weeklyOpenPositions", weeklyOpenPositions);
+        model.addAttribute("openOptions", openOptions);
         return DASHBOARD_PAGE_PATH;
     }
 }
