@@ -43,6 +43,7 @@
                             <th scope="col">Strike</th>
                             <th scope="col">Price</th>
                             <th scope="col">P.O.P</th>
+                            <th scope="col">CostBase</th>
                             <th scope="col">P&L</th>
                             <th scope="col">R.O.I</th>
                             <th scope="col">Type</th>
@@ -64,7 +65,8 @@
                                 <td class="currency-usd">${position.strikePrice()}</td>
                                 <td class="currency-usd">${position.underlyingPrice()}</td>
                                 <td>${position.pop()}%</td>
-                                <td class="currency-usd">${position.pnl()}</td>
+                                <td class="currency-usd">${position.costBasisMoney()}</td>
+                                <td class="currency-usd">${position.calculatedPnl()}</td>
                                 <td>${position.roi()}%</td>
                                 <td>${position.type()}</td>
                             </tr>
@@ -88,7 +90,7 @@
             var i = new Intl.NumberFormat('en-US', {
                 style: 'currency',
                 currency: 'USD',
-                maximumFractionDigits: 0
+                maximumFractionDigits: 2
             }).format(monetary_value);
             $(this).text(i);
         });

@@ -76,7 +76,8 @@ class OpenPositionsControllerTest {
                 -130.0,      // calculatedPnl
                 15,
                 75,
-                "PUT"
+                "PUT",
+                500.0        // costBasisMoney
         ));
         mockPositions.add(new OpenPositionViewDto(
                 2L,
@@ -91,7 +92,8 @@ class OpenPositionsControllerTest {
                 255.0,       // calculatedPnl
                 22,
                 80,
-                "CALL"
+                "CALL",
+                2100.0       // costBasisMoney
         ));
 
         when(openPositionService.getAllOpenPositionViewDtos()).thenReturn(mockPositions);
@@ -136,7 +138,8 @@ class OpenPositionsControllerTest {
                 -130.0,      // calculatedPnl
                 15,
                 75,
-                "PUT"
+                "PUT",
+                500.0        // costBasisMoney
         );
 
         // Assert all fields are accessible
@@ -153,6 +156,7 @@ class OpenPositionsControllerTest {
         assertEquals(15, dto.roi());
         assertEquals(75, dto.pop());
         assertEquals("PUT", dto.type());
+        assertEquals(500.0, dto.costBasisMoney());  // New field assertion
     }
 
     @Test

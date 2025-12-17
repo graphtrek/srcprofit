@@ -700,6 +700,8 @@ public class OpenPositionService {
         LocalDate tradeDate;
         int daysBetween;
         int roi;
+        Double tradePrice = entity.getCostBasisPrice();  // fallback to cost basis
+        Double marketPrice = entity.getMarkPrice();      // fallback to entity markPrice
 
         if (entity.getTradeDate() != null && entity.getDaysBetween() != null && entity.getRoi() != null) {
             // Fast path: read persisted values (no database queries)
@@ -711,7 +713,7 @@ public class OpenPositionService {
         } else {
             // Backwards compatibility: calculate for old data (NULL fields, imported before ISSUE-048)
             tradeDate = entity.getReportDate();  // fallback
-            Double tradePrice = entity.getCostBasisPrice();  // fallback to cost basis
+
 
             if (entity.getConid() != null) {
                 List<OptionEntity> optionEntities = optionRepository.findByConid(entity.getConid());
@@ -721,11 +723,14 @@ public class OpenPositionService {
                     if (tradedOption.getTradePrice() != null) {
                         tradePrice = tradedOption.getTradePrice();
                     }
+                    if (tradedOption.getMarketPrice() != null) {
+                        marketPrice = tradedOption.getMarketPrice();
+                    }
                     if (tradedOption.getTradeDate() != null) {
                         tradeDate = tradedOption.getTradeDate();
                     }
-                    log.debug("Found trade for conid {}: price={}, date={} (fallback calculation)",
-                            entity.getConid(), tradePrice, tradeDate);
+                    log.debug("Found trade for conid {}: tradePrice={}, marketPrice={}, date={} (fallback calculation)",
+                            entity.getConid(), tradePrice, marketPrice, tradeDate);
                 }
             }
 
@@ -745,16 +750,25 @@ public class OpenPositionService {
         // Calculate probability of profit using mark price as market value
         int pop = PositionCalculationHelper.calculateProbability(
                 entity.getStrike() != null ? entity.getStrike() : 0.0,
-                entity.getUnderlyingInstrument() != null ? entity.getUnderlyingInstrument().getPrice() : 0.0,
+                underlyingPrice != null ? underlyingPrice : 0.0,
                 daysLeft > 0 ? daysLeft : 1
         );
 
         // ISSUE-049: Calculate real-time P&L based on current market prices
-        Double calculatedPnl = PositionCalculationHelper.calculateUnrealizedPnl(
-                entity.getQuantity(),
-                entity.getMarkPrice(),
-                entity.getCostBasisPrice(),
-                entity.getMultiplier()
+        // Uses TastyTrade methodology: (entry - current) for short, (current - entry) for long
+        // Convert per-share prices to per-contract prices by multiplying by multiplier
+        Double tradePricePerContract = null;
+        Double marketPricePerContract = null;
+
+        if (tradePrice != null && marketPrice != null && entity.getMultiplier() != null) {
+            tradePricePerContract = tradePrice * entity.getMultiplier();
+            marketPricePerContract = marketPrice * entity.getMultiplier();
+        }
+
+        double calculatedPnl = PositionCalculationHelper.calculateUnrealizedPnl(
+                tradePricePerContract,
+                marketPricePerContract,
+                entity.getQuantity()
         );
 
         // Determine type string
@@ -774,7 +788,8 @@ public class OpenPositionService {
                 calculatedPnl,
                 roi,
                 pop,
-                typeString
+                typeString,
+                entity.getCostBasisMoney()
         );
     }
 }

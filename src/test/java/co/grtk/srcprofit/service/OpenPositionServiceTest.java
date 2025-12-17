@@ -555,6 +555,7 @@ class OpenPositionServiceTest {
         OpenPositionEntity entity = buildTestEntity("SPY", 600.0, "P", -1, LocalDate.now().plusDays(30));
         entity.setMarkPrice(4.5);  // Current market price
         entity.setCostBasisPrice(5.0);  // Sold at this price
+        entity.setCostBasisMoney(-500.0);  // Received $500 when sold (negative for short)
         entity.setMultiplier(100.0);  // Standard option multiplier
         entity.setFifoPnlUnrealized(50.0);  // IBKR's FIFO P&L
         entity.setTradeDate(LocalDate.now().minusDays(10));  // ISSUE-048 persisted field
@@ -573,19 +574,18 @@ class OpenPositionServiceTest {
         // Verify static P&L (from IBKR) is unchanged
         assertThat(dto.pnl()).isEqualTo(50.0);
 
-        // Verify calculated P&L = Market Value - Cost Basis
-        // Market Value = -1 × 4.5 × 100 = -450
-        // Cost Basis = -1 × 5.0 × 100 = -500
-        // P&L = -450 - (-500) = 50
+        // Verify calculated P&L using TastyTrade methodology
+        // tradePrice = 5.0 × 100 = 500, marketPrice = 4.5 × 100 = 450
+        // Short position (qty < 0): P&L = (500 - 450) × 1 = 50
         assertThat(dto.calculatedPnl()).isEqualTo(50.0);
     }
 
     @Test
     void convertToOpenPositionViewDto_handlesNullPnlFields() {
-        // Arrange: Position with null P&L related fields
+        // Arrange: Position with null marketPrice (required for P&L calculation)
         OpenPositionEntity entity = buildTestEntity("SPY", 600.0, "P", 1, LocalDate.now().plusDays(30));
-        entity.setMarkPrice(null);  // Missing market price
         entity.setCostBasisPrice(5.0);
+        entity.setMarkPrice(null);  // Missing marketPrice - cannot calculate P&L
         entity.setMultiplier(100.0);
         entity.setTradeDate(LocalDate.now().minusDays(10));  // ISSUE-048 persisted field
         entity.setDaysBetween(40);  // ISSUE-048 persisted field
@@ -600,8 +600,8 @@ class OpenPositionServiceTest {
         assertThat(result).hasSize(1);
         co.grtk.srcprofit.dto.OpenPositionViewDto dto = result.get(0);
 
-        // Calculated P&L should be null when markPrice is missing
-        assertThat(dto.calculatedPnl()).isNull();
+        // Calculated P&L should be 0 when marketPrice is missing
+        assertThat(dto.calculatedPnl()).isEqualTo(0.0);
     }
 
     @Test
@@ -611,6 +611,7 @@ class OpenPositionServiceTest {
         OpenPositionEntity shortPut = buildTestEntity("SPY", 600.0, "P", -1, LocalDate.now().plusDays(30));
         shortPut.setMarkPrice(4.5);
         shortPut.setCostBasisPrice(5.0);
+        shortPut.setCostBasisMoney(-500.0);  // Received $500 when sold (negative for short)
         shortPut.setMultiplier(100.0);
         shortPut.setTradeDate(LocalDate.now().minusDays(10));
         shortPut.setDaysBetween(40);
@@ -620,6 +621,7 @@ class OpenPositionServiceTest {
         OpenPositionEntity longCall = buildTestEntity("AAPL", 200.0, "C", 2, LocalDate.now().plusDays(45));
         longCall.setMarkPrice(5.0);
         longCall.setCostBasisPrice(3.0);
+        longCall.setCostBasisMoney(600.0);  // Paid $600 for 2 contracts (positive for long)
         longCall.setMultiplier(100.0);
         longCall.setTradeDate(LocalDate.now().minusDays(15));
         longCall.setDaysBetween(60);
@@ -629,6 +631,7 @@ class OpenPositionServiceTest {
         OpenPositionEntity noMultiplier = buildTestEntity("QQQ", 350.0, "C", 1, LocalDate.now().plusDays(60));
         noMultiplier.setMarkPrice(8.0);
         noMultiplier.setCostBasisPrice(6.0);
+        noMultiplier.setCostBasisMoney(600.0);  // Has costBasisMoney but no multiplier
         noMultiplier.setMultiplier(null);
         noMultiplier.setTradeDate(LocalDate.now().minusDays(5));
         noMultiplier.setDaysBetween(65);
@@ -643,18 +646,16 @@ class OpenPositionServiceTest {
         assertThat(result).hasSize(3);
 
         // Position 1: Short PUT profit
-        // Market Value = -1 × 4.5 × 100 = -450
-        // Cost Basis = -1 × 5.0 × 100 = -500
-        // P&L = 50.0
+        // tradePrice = 5.0 × 100 = 500, marketPrice = 4.5 × 100 = 450
+        // P&L = (500 - 450) × 1 = 50.0
         assertThat(result.get(0).calculatedPnl()).isEqualTo(50.0);
 
         // Position 2: Long CALL profit
-        // Market Value = 2 × 5.0 × 100 = 1000
-        // Cost Basis = 2 × 3.0 × 100 = 600
-        // P&L = 400.0
+        // tradePrice = 3.0 × 100 = 300, marketPrice = 5.0 × 100 = 500
+        // P&L = (500 - 300) × 2 = 400.0
         assertThat(result.get(1).calculatedPnl()).isEqualTo(400.0);
 
-        // Position 3: Missing multiplier
-        assertThat(result.get(2).calculatedPnl()).isNull();
+        // Position 3: Missing multiplier - cannot calculate, returns 0
+        assertThat(result.get(2).calculatedPnl()).isEqualTo(0.0);
     }
 }

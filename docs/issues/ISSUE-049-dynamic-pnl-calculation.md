@@ -1,9 +1,10 @@
 # ISSUE-049: Add Dynamic P&L Calculation to OpenPositionViewDto
 
-## Status: OPEN
+## Status: CLOSED
 ## Priority: Medium
 ## Type: Feature Enhancement
 ## Created: 2025-12-07
+## Completed: 2025-12-17
 
 ---
 

@@ -10,6 +10,7 @@ import co.grtk.srcprofit.entity.OptionStatus;
 import co.grtk.srcprofit.entity.OptionType;
 import co.grtk.srcprofit.mapper.Interval;
 import co.grtk.srcprofit.mapper.MapperUtils;
+import co.grtk.srcprofit.mapper.PositionCalculationHelper;
 import co.grtk.srcprofit.repository.InstrumentRepository;
 import co.grtk.srcprofit.repository.OptionRepository;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -455,10 +456,12 @@ public class OptionService {
             // ISSUE-033: Calculate unrealized P&L using both trade price and market price (TastyTrade methodology)
             // Unrealized P&L = (Entry Price - Current Market Price) * Quantity
 
-            if(dto.getQuantity() < 0)
-                dto.setUnRealizedProfitOrLoss((abs(dto.getTradePrice()) - abs(dto.getMarketPrice())) * qty);
-            else
-                dto.setUnRealizedProfitOrLoss((abs(dto.getMarketPrice()) - abs(dto.getTradePrice())) * qty);
+            double unrealizedPnl = PositionCalculationHelper.calculateUnrealizedPnl(
+                    dto.getTradePrice(),
+                    dto.getMarketPrice(),
+                    dto.getQuantity()
+            );
+            dto.setUnRealizedProfitOrLoss(unrealizedPnl);
 
             unRealizedProfitOrLoss += dto.getUnRealizedProfitOrLoss();
 

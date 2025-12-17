@@ -190,36 +190,38 @@ public class PositionCalculationHelper {
 
     /**
      * Calculates unrealized profit/loss for an option position.
+     * Uses TastyTrade methodology: position direction determines P&L calculation.
      *
-     * Formula: Market Value - Cost Basis
-     *          = (quantity × markPrice × multiplier) - (quantity × costBasisPrice × multiplier)
+     * Formula for short positions (qty < 0): P&L = (tradePrice - marketPrice) × |qty|
+     * Formula for long positions (qty > 0): P&L = (marketPrice - tradePrice) × qty
      *
-     * Note: For short positions (negative quantity), a negative P&L indicates profit,
-     *       while positive P&L indicates loss (sold premium vs current buyback cost).
+     * Result: Positive = profit, Negative = loss
      *
+     * @param tradePrice the option entry price (premium collected for short, paid for long)
+     * @param marketPrice the current market price of the option
      * @param quantity position size (positive for long, negative for short)
-     * @param markPrice current market price per contract
-     * @param costBasisPrice average acquisition cost per contract
-     * @param multiplier contract multiplier (typically 100 for equity options)
-     * @return calculated P&L rounded to 2 decimals, or null if required data is missing
+     * @return calculated P&L rounded to 2 decimals, or 0 if required data is missing
      */
-    public static Double calculateUnrealizedPnl(
-            Integer quantity,
-            Double markPrice,
-            Double costBasisPrice,
-            Double multiplier) {
+    public static double calculateUnrealizedPnl(
+            Double tradePrice,
+            Double marketPrice,
+            Integer quantity) {
 
         // Validate required parameters
-        if (quantity == null || markPrice == null || costBasisPrice == null || multiplier == null) {
-            return null;
+        if (tradePrice == null || marketPrice == null || quantity == null) {
+            return 0;
         }
 
-        // Calculate market value and cost basis
-        double marketValue = quantity * markPrice * multiplier;
-        double costBasis = quantity * costBasisPrice * multiplier;
+        int qty = abs(quantity);
+        double pnl;
 
-        // P&L = Market Value - Cost Basis
-        double pnl = marketValue - costBasis;
+        if (quantity < 0) {
+            // Short position: profit when market price falls below entry price
+            pnl = (abs(tradePrice) - abs(marketPrice)) * qty;
+        } else {
+            // Long position: profit when market price rises above entry price
+            pnl = (abs(marketPrice) - abs(tradePrice)) * qty;
+        }
 
         return round2Digits(pnl);
     }

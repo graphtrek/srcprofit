@@ -166,6 +166,9 @@ public class OpenPositionEntity {
     @Column
     private Double costBasisMoney;
 
+    @Column
+    private Double tradePrice;
+
     /**
      * Current market price (closing mark as of report date).
      * Populated from CSV column: Mark Price
@@ -983,6 +986,14 @@ public class OpenPositionEntity {
 
     public void setInstrument(InstrumentEntity instrument) {
         this.instrument = instrument;
+    }
+
+    public Double getTradePrice() {
+        return tradePrice;
+    }
+
+    public void setTradePrice(Double tradePrice) {
+        this.tradePrice = tradePrice;
     }
 
     @Override

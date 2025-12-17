@@ -15,5 +15,6 @@ public record OpenPositionViewDto(
     Double calculatedPnl,    // Dynamic calculated P&L (ISSUE-049)
     Integer roi,
     Integer pop,
-    String type
+    String type,
+    Double costBasisMoney
 ) {}
