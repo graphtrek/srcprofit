@@ -33,7 +33,9 @@
       "Bash(echo:*)",
       "WebFetch(domain:datatables.net)",
       "WebFetch(domain:www.ibkrguides.com)",
-      "Bash(ls:*)"
+      "Bash(ls:*)",
+      "Bash(find:*)",
+      "Bash(grep:*)"
     ],
     "deny": [],
     "ask": []

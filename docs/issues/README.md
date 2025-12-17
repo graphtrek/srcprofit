@@ -2,9 +2,9 @@
 
 **Auto-generated** - Run `python scripts/update_issue_index.py` to update
 
-**Total**: 52 issues
+**Total**: 53 issues
 **Open**: 4 (8%)
-**Closed**: 43 (83%)
+**Closed**: 44 (83%)
 **Partial**: 0
 
 ---
@@ -115,13 +115,15 @@
   - Priority: HIGH | Completed: 2025-12-01
 - **[ISSUE-047](ISSUE-047-openpositions-menu-page.md)** - New OpenPositions Menu Page
   - Priority: MEDIUM | Completed: 2025-12-07
+- **[ISSUE-051](ISSUE-051-fix-dashboard-weekly-table-data.md)** - Fix Dashboard Weekly Buy Obligations Table and Sell Cards Missing Data
+  - Priority: HIGH | Completed: 2025-12-17
 
 ---
 
 ## By Category
 
-**Bug** (2):
-  - ISSUE-008 ✅, ISSUE-033 ✅
+**Bug** (3):
+  - ISSUE-008 ✅, ISSUE-033 ✅, ISSUE-051 ✅
 
 **Bug Fix / Resilience Enhancement** (1):
   - ISSUE-030 ✅

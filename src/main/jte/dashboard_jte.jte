@@ -145,133 +145,149 @@
                     <div class="row">
 
                         <!-- Buy Obligation Market Value Card -->
+
                         <div class="col-xxl-4 col-md-6">
                             <div class="card info-card sales-card">
                                 <div class="card-body">
                                     <h5 class="card-title">Buy Obligation Market Value</h5>
+
                                     <div class="d-flex align-items-center">
                                         <div class="card-icon rounded-circle d-flex align-items-center justify-content-center">
                                             <i class="bi bi-inbox"></i>
                                         </div>
                                         <div class="ps-3">
-                                            <h6>${String.format("%.0f", positionDto.getMarketValue() != null ? positionDto.getMarketValue() : 0.0)}</h6>
+                                            <h6 class="currency-usd">${positionDto.getMarketValue()}</h6>
                                         </div>
                                     </div>
                                 </div>
+
                             </div>
                         </div>
 
-                        <!-- Buy Obligation Card with Cash/Stock -->
+                        <!-- EndBuy Obligation Market Value -->
+
+                        <!-- Buy Obligation Card -->
+
                         <div class="col-xxl-4 col-xl-12">
+
                             <div class="card info-card customers-card">
                                 <div class="card-body">
                                     <h5 class="card-title">Buy Obligation</h5>
+
                                     <div class="d-flex align-items-center">
                                         <div class="card-icon rounded-circle d-flex align-items-center justify-content-center">
                                             <i class="bi bi-bookmark-check"></i>
                                         </div>
                                         <div class="ps-3">
-                                            <h6>${String.format("%.0f", positionDto.getPositionValue() != null ? positionDto.getPositionValue() : 0.0)}</h6>
-                                            <span class="text-muted small pt-2 ps-1">
-                                                Cash: ${String.format("%.0f", positionDto.getCash() != null ? positionDto.getCash() : 0.0)}
-                                            </span>
-                                            <br/>
-                                            <span class="text-muted small pt-2 ps-1">
-                                                Stock: ${String.format("%.0f", positionDto.getStock() != null ? positionDto.getStock() : 0.0)}
-                                            </span>
+                                            <h6 class="currency-usd">${positionDto.getPositionValue()}</h6>
+                                            <span class="text-success small pt-1 fw-bold currency-usd">${positionDto.getCash()}</span>
+                                            <span class="text-muted small pt-2 ps-1">Cash</span>
+
                                         </div>
                                     </div>
+
                                 </div>
                             </div>
+
                         </div>
+                        <!-- End Buy Obligation Card -->
 
                         <!-- PUT Premium Card -->
+
                         <div class="col-xxl-4 col-md-6">
                             <div class="card info-card revenue-card">
                                 <div class="card-body">
                                     <h5 class="card-title">PUT Premium</h5>
+
                                     <div class="d-flex align-items-center">
                                         <div class="card-icon rounded-circle d-flex align-items-center justify-content-center">
                                             <i class="bi bi-currency-dollar"></i>
                                         </div>
                                         <div class="ps-3">
-                                            <h6>${String.format("%.0f", positionDto.getPut() != null ? positionDto.getPut() : 0.0)}</h6>
-                                            @if(positionDto.getPutMarketPrice() != null && positionDto.getPut() != null && positionDto.getPutMarketPrice() > positionDto.getPut())
-                                                <span class="text-danger small pt-1 fw-bold">
-                                                    ${String.format("%.0f", positionDto.getPutMarketPrice())}
-                                                </span>
-                                            @elseif(positionDto.getPutMarketPrice() != null && positionDto.getPut() != null)
-                                                <span class="text-success small pt-1 fw-bold">
-                                                    ${String.format("%.0f", positionDto.getPutMarketPrice())}
-                                                </span>
+                                            <h6 class="currency-usd">${positionDto.getPut()}</h6>
+                                            @if(positionDto.getPut() < positionDto.getPutMarketPrice())
+                                                <span class="text-danger small pt-1 fw-bold currency-usd">${positionDto.getPutMarketPrice()}</span>
+                                            @else
+                                                <span class="text-success small pt-1 fw-bold currency-usd">${positionDto.getPutMarketPrice()}</span>
                                             @endif
-                                            <span class="text-muted small pt-2 ps-1">Trade/Market</span>
+                                            <span class="text-muted small pt-2 ps-1">Market Value</span>
                                         </div>
                                     </div>
                                 </div>
+
                             </div>
                         </div>
+                        <!-- End PUT Premium Card -->
 
-                        <!-- Sell Obligation Market Value Card -->
+                        <!-- Sell Obligation Market Value Card (CALL) -->
                         <div class="col-xxl-4 col-md-6">
                             <div class="card info-card sales-card">
                                 <div class="card-body">
                                     <h5 class="card-title">Sell Obligation Market Value</h5>
+
                                     <div class="d-flex align-items-center">
                                         <div class="card-icon rounded-circle d-flex align-items-center justify-content-center">
                                             <i class="bi bi-arrow-bar-up"></i>
                                         </div>
                                         <div class="ps-3">
-                                            <h6>${String.format("%.0f", positionDto.getCallObligationMarketValue() != null ? positionDto.getCallObligationMarketValue() : 0.0)}</h6>
+                                            <h6 class="currency-usd">${positionDto.getCallObligationMarketValue()}</h6>
                                         </div>
                                     </div>
                                 </div>
+
                             </div>
                         </div>
+                        <!-- End Sell Obligation Market Value Card -->
 
-                        <!-- Sell Obligation Card -->
+                        <!-- Sell Obligation Card (CALL) -->
                         <div class="col-xxl-4 col-xl-12">
                             <div class="card info-card customers-card">
                                 <div class="card-body">
                                     <h5 class="card-title">Sell Obligation</h5>
+
                                     <div class="d-flex align-items-center">
                                         <div class="card-icon rounded-circle d-flex align-items-center justify-content-center">
                                             <i class="bi bi-hand-thumbs-up"></i>
                                         </div>
                                         <div class="ps-3">
-                                            <h6>${String.format("%.0f", positionDto.getCallObligationValue() != null ? positionDto.getCallObligationValue() : 0.0)}</h6>
+                                            <h6 class="currency-usd">${positionDto.getCallObligationValue()}</h6>
+                                            <span class="text-success small pt-1 fw-bold currency-usd">${positionDto.getStock()}</span>
+                                            <span class="text-muted small pt-2 ps-1">Stock</span>
                                         </div>
                                     </div>
+
                                 </div>
                             </div>
+
                         </div>
+                        <!-- End Sell Obligation Card -->
 
                         <!-- CALL Premium Card -->
                         <div class="col-xxl-4 col-md-6">
                             <div class="card info-card revenue-card">
                                 <div class="card-body">
                                     <h5 class="card-title">CALL Premium</h5>
+
                                     <div class="d-flex align-items-center">
                                         <div class="card-icon rounded-circle d-flex align-items-center justify-content-center">
                                             <i class="bi bi-currency-dollar"></i>
                                         </div>
                                         <div class="ps-3">
-                                            <h6>${String.format("%.0f", positionDto.getCall() != null ? positionDto.getCall() : 0.0)}</h6>
-                                            @if(positionDto.getCallMarketPrice() != null && positionDto.getCall() != null && positionDto.getCallMarketPrice() < positionDto.getCall())
-                                                <span class="text-success small pt-1 fw-bold">
-                                                    ${String.format("%.0f", positionDto.getCallMarketPrice())}
-                                                </span>
-                                            @elseif(positionDto.getCallMarketPrice() != null && positionDto.getCall() != null)
-                                                <span class="text-danger small pt-1 fw-bold">
-                                                    ${String.format("%.0f", positionDto.getCallMarketPrice())}
-                                                </span>
+                                            <h6 class="currency-usd">${positionDto.getCall()}</h6>
+                                            @if(positionDto.getCall() > positionDto.getCallMarketPrice())
+                                                <span class="text-success small pt-1 fw-bold currency-usd">${positionDto.getCallMarketPrice()}</span>
+                                            @else
+                                                <span class="text-danger small pt-1 fw-bold currency-usd">${positionDto.getCallMarketPrice()}</span>
                                             @endif
-                                            <span class="text-muted small pt-2 ps-1">Trade/Market</span>
+                                            <span class="text-muted small pt-2 ps-1">Market Value</span>
                                         </div>
                                     </div>
                                 </div>
+
                             </div>
                         </div>
+                        <!-- End CALL Premium Card -->
+
 
                     </div>
                 </div>
@@ -297,17 +313,17 @@
                                     </tr>
                                 </thead>
                                 <tbody>
-                                @for(var option : weeklyOpenPositions)
-                                    <tr>
+                                @for(var option : weeklyOpenPositions )
+                                    <tr style="cursor: pointer;">
                                         <td>${option.getExpirationDateString()}</td>
                                         <td>${option.getDaysLeft()}</td>
-                                        <td>${String.format("%.0f", option.getPositionValue() != null ? option.getPositionValue() : 0.0)}</td>
-                                        <td>${String.format("%.0f", option.getMarketValue() != null ? option.getMarketValue() : 0.0)}</td>
-                                        <td>${String.format("%.2f", option.getTradePrice() != null ? option.getTradePrice() : 0.0)}</td>
-                                        <td>${String.format("%.2f", option.getMarketPrice() != null ? option.getMarketPrice() : 0.0)}</td>
-                                        <td>${String.format("%.2f", option.getUnRealizedProfitOrLoss() != null ? option.getUnRealizedProfitOrLoss() : 0.0)}</td>
-                                        <td>${option.getAnnualizedRoiPercent() != null ? String.valueOf(option.getAnnualizedRoiPercent()) : "-"}</td>
-                                        <td>${option.getProbability() != null ? String.valueOf(option.getProbability()) : "-"}</td>
+                                        <td class="currency-usd">${option.getPositionValue()}</td>
+                                        <td class="currency-usd">${option.getMarketValue()}</td>
+                                        <td class="currency-usd">${option.getTradePrice()}</td>
+                                        <td class="currency-usd">${option.getMarketPrice()}</td>
+                                        <td class="currency-usd">${option.getUnRealizedProfitOrLoss()}</td>
+                                        <td>${option.getAnnualizedRoiPercent()}%</td>
+                                        <td>${option.getProbability()}%</td>
                                     </tr>
                                 @endfor
                                 </tbody>
@@ -524,27 +540,6 @@
 
         }
 
-        // Initialize Weekly Obligations DataTable
-        const weeklyTable = new DataTable('#datatableWeeklyOpenPositions', {
-            order: [[1, 'asc']],  // Sort by DaysLeft ascending
-            pageLength: 10,
-            columnDefs: [
-                {
-                    targets: [2, 3, 4, 5, 6],  // Value, MrktValue, Price, MrktPrice, P&L columns
-                    render: function(data, type, row) {
-                        if (type === 'display') {
-                            return new Intl.NumberFormat('en-US', {
-                                style: 'currency',
-                                currency: 'USD',
-                                minimumFractionDigits: 0,
-                                maximumFractionDigits: 2
-                            }).format(data);
-                        }
-                        return data;
-                    }
-                }
-            ]
-        });
 
         $("#chartCard").show();
         chart();

@@ -94,12 +94,13 @@ public class HomeController {
         model.addAttribute(MODEL_ATTRIBUTE_DASHBOARD_DTO, dashboardDto);
 
         // Get open positions and calculate aggregated metrics
-        List<PositionDto> openOptions = optionService.getAllOpenOptionDtos(java.time.LocalDate.now());
+        // ISSUE-051: Use OpenPositionService for authoritative IBKR snapshot data instead of OptionService trading history
+        List<PositionDto> openOptions = optionService.getAllOpenOptionDtos(null);
 
         // Calculate position summary (buy/sell obligations, premiums)
         PositionDto positionDto = new PositionDto();
-        optionService.calculatePosition(positionDto, openOptions, Collections.emptyList());
 
+        optionService.calculatePosition(positionDto, openOptions, List.of());
         // Get weekly positions (expiring within 7 days)
         List<PositionDto> weeklyOpenPositions = optionService.getWeeklyOpenOptionDtos(openOptions);
 
