@@ -3,6 +3,7 @@ package co.grtk.srcprofit.repository;
 import co.grtk.srcprofit.entity.InstrumentEntity;
 import co.grtk.srcprofit.entity.OptionSnapshotEntity;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
@@ -52,6 +53,7 @@ public interface OptionSnapshotRepository extends JpaRepository<OptionSnapshotEn
      * @param expirationDate The cutoff date
      * @return Number of deleted snapshots
      */
+    @Modifying
     int deleteByExpirationDateBefore(LocalDate expirationDate);
 
     /**
