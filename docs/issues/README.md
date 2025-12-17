@@ -2,9 +2,9 @@
 
 **Auto-generated** - Run `python scripts/update_issue_index.py` to update
 
-**Total**: 49 issues
+**Total**: 51 issues
 **Open**: 3 (6%)
-**Closed**: 43 (88%)
+**Closed**: 43 (84%)
 **Partial**: 0
 
 ---
@@ -166,14 +166,14 @@
 **Infrastructure | Developer Experience** (1):
   - ISSUE-036 ✅
 
-**Uncategorized** (2):
-  - ISSUE-037 🔴, ISSUE-042 🔴
+**Uncategorized** (4):
+  - ISSUE-037 🔴, ISSUE-042 🔴, ISSUE-048 🔴, ISSUE-049 🔴
 
 **Workflow / Process Improvement** (1):
   - ISSUE-002 ✅
 
 ---
 
-**Last updated**: 2025-12-07
+**Last updated**: 2025-12-17
 
 **How to update**: Run `python scripts/update_issue_index.py`
