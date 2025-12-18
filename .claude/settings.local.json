@@ -35,7 +35,8 @@
       "WebFetch(domain:www.ibkrguides.com)",
       "Bash(ls:*)",
       "Bash(find:*)",
-      "Bash(grep:*)"
+      "Bash(grep:*)",
+      "Bash(xargs ls:*)"
     ],
     "deny": [],
     "ask": []

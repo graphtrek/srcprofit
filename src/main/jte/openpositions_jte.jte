@@ -52,7 +52,7 @@
                         <tbody>
                         @for(var position : openPositions)
                             <tr style="cursor: pointer;">
-                                @if(position.pnl() != null && position.pnl() < 0)
+                                @if(position.pnl() != null && position.pnl() < 0 && "PUT".equals(position.type()))
                                     <td style="background-color:rgb(220 53 69)">${position.id()}</td>
                                 @else
                                     <td>${position.id()}</td>

@@ -2,9 +2,9 @@
 
 **Auto-generated** - Run `python scripts/update_issue_index.py` to update
 
-**Total**: 53 issues
-**Open**: 4 (8%)
-**Closed**: 44 (83%)
+**Total**: 54 issues
+**Open**: 5 (9%)
+**Closed**: 44 (81%)
 **Partial**: 0
 
 ---
@@ -18,12 +18,14 @@
 - **[ISSUE-046](ISSUE-046-openposition-savecsv-delete-orphans.md)** - OpenPositionService.saveCSV Should Delete Positions Not in CSV
   - Priority: HIGH | Status: OPEN | Category: Code Quality / Technical Debt | Created: 2025-12-04
 
-### MEDIUM (2)
+### MEDIUM (3)
 
 - **[ISSUE-044](ISSUE-044-openposition-getallopen-options-dtos.md)** - Add getAllOpenOptionDtos() method to OpenPositionService
   - Priority: MEDIUM | Status: OPEN | Category: Feature | Created: 2025-12-04 (Session N/A)
 - **[ISSUE-050](ISSUE-050-dashboard-reorganization.md)** - Move Buy/Sell Cards and Weekly Obligations from TradeLog to Dashboard
   - Priority: MEDIUM | Status: OPEN | Category: Feature / UI Enhancement | Created: 2025-12-17
+- **[ISSUE-052](ISSUE-052-spring-boot-4-upgrade-research.md)** - Spring Boot 4.0 Upgrade Research
+  - Priority: MEDIUM | Status: OPEN | Category: Infrastructure / Technical Debt | Created: 2025-12-18
 
 ---
 
@@ -167,6 +169,9 @@
 **Infrastructure** (1):
   - ISSUE-003 ✅
 
+**Infrastructure / Technical Debt** (1):
+  - ISSUE-052 🔴
+
 **Infrastructure | Bug Fix** (1):
   - ISSUE-006 ✅
 
@@ -181,6 +186,6 @@
 
 ---
 
-**Last updated**: 2025-12-17
+**Last updated**: 2025-12-18
 
 **How to update**: Run `python scripts/update_issue_index.py`

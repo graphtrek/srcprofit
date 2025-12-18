@@ -384,7 +384,7 @@
                         </div>
 
                         <div class="card-body">
-                            <h5 class="card-title">Collected Premium <span class="fs-5">${positionDto.getCollectedPremium()} $</span></h5>
+                            <h5 class="card-title">Collected Premium <span class="fs-5 currency-usd">${positionDto.getCollectedPremium()}</span></h5>
 
                             <!-- Premium Chart -->
                             <div id="reportsChart"></div>

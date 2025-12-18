@@ -697,55 +697,38 @@ public class OpenPositionService {
         int daysLeft = PositionCalculationHelper.calculateDaysLeft(entity.getExpirationDate());
 
         // ISSUE-048: Use persisted values if available, fallback to calculation for old data
-        LocalDate tradeDate;
+        LocalDate tradeDate = entity.getTradeDate();
         int daysBetween;
         int roi;
         Double tradePrice = entity.getCostBasisPrice();  // fallback to cost basis
         Double marketPrice = entity.getMarkPrice();      // fallback to entity markPrice
 
-        if (entity.getTradeDate() != null && entity.getDaysBetween() != null && entity.getRoi() != null) {
-            // Fast path: read persisted values (no database queries)
-            tradeDate = entity.getTradeDate();
-            daysBetween = entity.getDaysBetween();
-            roi = entity.getRoi();
-            log.debug("Using persisted values for conid {}: tradeDate={}, daysBetween={}, roi={}",
-                    entity.getConid(), tradeDate, daysBetween, roi);
-        } else {
-            // Backwards compatibility: calculate for old data (NULL fields, imported before ISSUE-048)
-            tradeDate = entity.getReportDate();  // fallback
-
-
-            if (entity.getConid() != null) {
-                List<OptionEntity> optionEntities = optionRepository.findByConid(entity.getConid());
-                if (!optionEntities.isEmpty()) {
-                    // First record is earliest trade (ordered by tradeDate ASC)
-                    OptionEntity tradedOption = optionEntities.get(0);
-                    if (tradedOption.getTradePrice() != null) {
-                        tradePrice = tradedOption.getTradePrice();
-                    }
-                    if (tradedOption.getMarketPrice() != null) {
-                        marketPrice = tradedOption.getMarketPrice();
-                    }
-                    if (tradedOption.getTradeDate() != null) {
-                        tradeDate = tradedOption.getTradeDate();
-                    }
-                    log.debug("Found trade for conid {}: tradePrice={}, marketPrice={}, date={} (fallback calculation)",
-                            entity.getConid(), tradePrice, marketPrice, tradeDate);
-                }
+        List<OptionEntity> optionEntities = optionRepository.findByConid(entity.getConid());
+        if (!optionEntities.isEmpty()) {
+            // First record is earliest trade (ordered by tradeDate ASC)
+            OptionEntity tradedOption = optionEntities.getFirst();
+            if (tradedOption.getMarketPrice() != null) {
+                marketPrice = tradedOption.getMarketPrice() / entity.getMultiplier();
             }
-
-            // Calculate days between trade date and expiration
-            daysBetween = PositionCalculationHelper.calculateDaysBetween(tradeDate, entity.getExpirationDate());
-
-            // Calculate annualized ROI percentage using daysBetween (original trade duration)
-            roi = PositionCalculationHelper.calculateAnnualizedRoiPercent(
-                    entity.getStrike() != null ? entity.getStrike() : 0.0,
-                    entity.getCostBasisPrice() != null ? entity.getCostBasisPrice() : 0.0,
-                    daysBetween > 0 ? daysBetween : 1
-            );
-            log.debug("Calculated fallback for conid {} (old data): tradeDate={}, daysBetween={}, roi={}",
-                    entity.getConid(), tradeDate, daysBetween, roi);
+            if (tradedOption.getTradeDate() != null) {
+                tradeDate = tradedOption.getTradeDate();
+            }
+            log.debug("Found trade for conid {}: tradePrice={}, marketPrice={}, date={} (fallback calculation)",
+                    entity.getConid(), tradePrice, marketPrice, tradeDate);
         }
+
+        // Calculate days between trade date and expiration
+        daysBetween = PositionCalculationHelper.calculateDaysBetween(tradeDate, entity.getExpirationDate());
+
+        // Calculate annualized ROI percentage using daysBetween (original trade duration)
+        roi = PositionCalculationHelper.calculateAnnualizedRoiPercent(
+                entity.getStrike() != null ? entity.getStrike() : 0.0,
+                entity.getCostBasisPrice() != null ? entity.getCostBasisPrice() : 0.0,
+                daysBetween > 0 ? daysBetween : 1
+        );
+        log.debug("Calculated fallback for conid {} (old data): tradeDate={}, daysBetween={}, roi={}",
+                entity.getConid(), tradeDate, daysBetween, roi);
+
 
         // Calculate probability of profit using mark price as market value
         int pop = PositionCalculationHelper.calculateProbability(
