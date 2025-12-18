@@ -2,9 +2,9 @@
 
 **Auto-generated** - Run `python scripts/update_issue_index.py` to update
 
-**Total**: 54 issues
+**Total**: 55 issues
 **Open**: 5 (9%)
-**Closed**: 44 (81%)
+**Closed**: 45 (82%)
 **Partial**: 0
 
 ---
@@ -119,6 +119,8 @@
   - Priority: MEDIUM | Completed: 2025-12-07
 - **[ISSUE-051](ISSUE-051-fix-dashboard-weekly-table-data.md)** - Fix Dashboard Weekly Buy Obligations Table and Sell Cards Missing Data
   - Priority: HIGH | Completed: 2025-12-17
+- **[ISSUE-053](ISSUE-053-spring-boot-4-upgrade-implementation.md)** - Spring Boot 4.0 Upgrade Implementation
+  - Priority: HIGH | Completed: 2025-12-18
 
 ---
 
@@ -169,8 +171,8 @@
 **Infrastructure** (1):
   - ISSUE-003 ✅
 
-**Infrastructure / Technical Debt** (1):
-  - ISSUE-052 🔴
+**Infrastructure / Technical Debt** (2):
+  - ISSUE-052 🔴, ISSUE-053 ✅
 
 **Infrastructure | Bug Fix** (1):
   - ISSUE-006 ✅

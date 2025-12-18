@@ -257,7 +257,7 @@
                                 <tbody>
                                 @for(var option : openOptions )
                                     <tr style="cursor: pointer;">
-                                        @if(option.getMarketValue() < option.getPositionValue())
+                                        @if(option.getUnRealizedProfitOrLoss() != null && option.getUnRealizedProfitOrLoss() < 0)
                                             <td style="background-color:rgb(220 53 69)">${option.getId()}</td>
                                         @else
                                             <td>${option.getId()}</td>

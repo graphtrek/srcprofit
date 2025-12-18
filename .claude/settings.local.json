@@ -36,7 +36,9 @@
       "Bash(ls:*)",
       "Bash(find:*)",
       "Bash(grep:*)",
-      "Bash(xargs ls:*)"
+      "Bash(xargs ls:*)",
+      "Bash(./mvnw dependency:tree:*)",
+      "Bash(./mvnw clean package:*)"
     ],
     "deny": [],
     "ask": []
