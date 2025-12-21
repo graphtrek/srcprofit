@@ -17,7 +17,6 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 
 import java.util.Arrays;
-import java.util.Collections;
 import java.util.List;
 
 @Controller
@@ -102,7 +101,7 @@ public class HomeController {
 
         optionService.calculatePosition(positionDto, openOptions, List.of());
         // Get weekly positions (expiring within 7 days)
-        List<PositionDto> weeklyOpenPositions = optionService.getWeeklyOpenOptionDtos(openOptions);
+        List<PositionDto> weeklyOpenPositions = optionService.getWeeklySummaryOpenOptionDtos(openOptions);
 
         // Load latest NAV for cash and stock values
         var latestNav = netAssetValueService.loadLatestNetAssetValue();

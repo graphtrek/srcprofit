@@ -65,7 +65,7 @@ class TradeLogControllerTest {
 
         when(optionService.getAllOpenOptionDtos(null)).thenReturn(mockOpenPositions);
         when(netAssetValueService.loadLatestNetAssetValue()).thenReturn(mockNav);
-        when(optionService.getWeeklyOpenOptionDtos(mockOpenPositions)).thenReturn(mockOpenPositions);
+        when(optionService.getWeeklySummaryOpenOptionDtos(mockOpenPositions)).thenReturn(mockOpenPositions);
         doNothing().when(optionService).calculatePosition(any(PositionDto.class), anyList(), anyList());
 
         // Execute and verify
@@ -79,7 +79,7 @@ class TradeLogControllerTest {
         // Should NOT call getAllClosedOptions - closed positions moved to TradeHistory
         verify(optionService, never()).getAllClosedOptions(any());
         verify(netAssetValueService).loadLatestNetAssetValue();
-        verify(optionService).getWeeklyOpenOptionDtos(mockOpenPositions);
+        verify(optionService).getWeeklySummaryOpenOptionDtos(mockOpenPositions);
     }
 
     @Test
@@ -89,7 +89,7 @@ class TradeLogControllerTest {
 
         when(optionService.getAllOpenOptionDtos(null)).thenReturn(mockOpenPositions);
         when(netAssetValueService.loadLatestNetAssetValue()).thenReturn(null);
-        when(optionService.getWeeklyOpenOptionDtos(mockOpenPositions)).thenReturn(mockOpenPositions);
+        when(optionService.getWeeklySummaryOpenOptionDtos(mockOpenPositions)).thenReturn(mockOpenPositions);
         doNothing().when(optionService).calculatePosition(any(PositionDto.class), anyList(), anyList());
 
         // Execute and verify - should create default NetAssetValueDto
@@ -112,7 +112,7 @@ class TradeLogControllerTest {
 
         when(optionService.getAllOpenOptionDtos(fromDate)).thenReturn(mockOpenPositions);
         when(netAssetValueService.loadLatestNetAssetValue()).thenReturn(mockNav);
-        when(optionService.getWeeklyOpenOptionDtos(mockOpenPositions)).thenReturn(mockOpenPositions);
+        when(optionService.getWeeklySummaryOpenOptionDtos(mockOpenPositions)).thenReturn(mockOpenPositions);
         doNothing().when(optionService).calculatePosition(any(PositionDto.class), anyList(), anyList());
 
         // Execute and verify
@@ -143,7 +143,7 @@ class TradeLogControllerTest {
 
         when(optionService.getAllOpenOptionDtos(null)).thenReturn(mockOpenPositions);
         when(netAssetValueService.loadLatestNetAssetValue()).thenReturn(mockNav);
-        when(optionService.getWeeklyOpenOptionDtos(mockOpenPositions)).thenReturn(new ArrayList<>());
+        when(optionService.getWeeklySummaryOpenOptionDtos(mockOpenPositions)).thenReturn(new ArrayList<>());
         doNothing().when(optionService).calculatePosition(any(PositionDto.class), anyList(), anyList());
 
         // Execute and verify model attributes
@@ -161,7 +161,7 @@ class TradeLogControllerTest {
         // Setup
         when(optionService.getAllOpenOptionDtos(null)).thenReturn(new ArrayList<>());
         when(netAssetValueService.loadLatestNetAssetValue()).thenReturn(null);
-        when(optionService.getWeeklyOpenOptionDtos(new ArrayList<>())).thenReturn(new ArrayList<>());
+        when(optionService.getWeeklySummaryOpenOptionDtos(new ArrayList<>())).thenReturn(new ArrayList<>());
         doNothing().when(optionService).calculatePosition(any(PositionDto.class), anyList(), anyList());
 
         // Execute
@@ -173,7 +173,7 @@ class TradeLogControllerTest {
         verify(optionService, never()).getAllClosedOptions(any());
         verify(optionService, times(1)).calculatePosition(any(PositionDto.class), anyList(), anyList());
         verify(netAssetValueService, times(1)).loadLatestNetAssetValue();
-        verify(optionService, times(1)).getWeeklyOpenOptionDtos(anyList());
+        verify(optionService, times(1)).getWeeklySummaryOpenOptionDtos(anyList());
     }
 
     @Test

@@ -166,13 +166,13 @@
                 </div>
                 <!-- End CALL Premium Card -->
 
-                <!-- DataTable Weekly Buy Obligations -->
+                <!-- DataTable Weekly Options Summary -->
                 <div class="col-12">
                     <div class="card recent-sales overflow-auto">
 
 
                         <div class="card-body">
-                            <h5 class="card-title">Weekly Buy Obligations <span></span></h5>
+                            <h5 class="card-title">Weekly Options Summary <span></span></h5>
 
                             <table id="datatableWeeklyOpenPositions" class="table table-striped">
                                 <thead>
@@ -210,7 +210,7 @@
 
                     </div>
                 </div>
-                <!-- End DataTable weekly Open Positions -->
+                <!-- End DataTable Weekly Options Summary -->
 
 
                 <!-- DataTable Open Positions-->

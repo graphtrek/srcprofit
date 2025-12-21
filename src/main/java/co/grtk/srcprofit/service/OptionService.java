@@ -142,9 +142,9 @@ public class OptionService {
         return getClosedPositionDtos(optionEntities);
     }
 
-    public List<PositionDto> getWeeklyOpenOptionDtos(List<PositionDto> openPositions) {
+    public List<PositionDto> getWeeklySummaryOpenOptionDtos(List<PositionDto> openPositions) {
         Map<LocalDate, List<PositionDto>> grouped = openPositions.stream()
-                .filter(optionEntity -> optionEntity.getType().equals(OptionType.PUT))
+                //.filter(optionEntity -> optionEntity.getType().equals(OptionType.PUT))
                 .collect(Collectors.groupingBy(PositionDto::getExpirationDate));
 
         List<PositionDto> weeklyOpenPositions = new ArrayList<>();

@@ -293,11 +293,11 @@
                 </div>
                 <!-- End Summary Cards Section -->
 
-                <!-- Weekly Buy Obligations Table -->
+                <!-- Weekly Options Summary Table -->
                 <div class="col-12">
                     <div class="card recent-sales overflow-auto">
                         <div class="card-body">
-                            <h5 class="card-title">Weekly Buy Obligations</h5>
+                            <h5 class="card-title">Weekly Options Summary</h5>
                             <table class="table table-borderless datatable" id="datatableWeeklyOpenPositions">
                                 <thead>
                                     <tr>
@@ -331,7 +331,7 @@
                         </div>
                     </div>
                 </div>
-                <!-- End Weekly Buy Obligations -->
+                <!-- Weekly Options Summary Table -->
 
                 <!-- Reports -->
                 <div id="chartCard" class="col-12">

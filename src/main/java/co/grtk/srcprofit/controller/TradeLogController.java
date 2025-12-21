@@ -69,7 +69,7 @@ public class TradeLogController {
         positionDto.setCash(netAssetValueDto.getCash());
         positionDto.setStock(netAssetValueDto.getStock());
         model.addAttribute(MODEL_ATTRIBUTE_DTO, positionDto);
-        List<PositionDto> weeklyOpenPositions = optionService.getWeeklyOpenOptionDtos(openOptions);
+        List<PositionDto> weeklyOpenPositions = optionService.getWeeklySummaryOpenOptionDtos(openOptions);
         model.addAttribute(MODEL_ATTRIBUTE_WEEKLY_OPTION_OPEN, weeklyOpenPositions);
     }
 }
