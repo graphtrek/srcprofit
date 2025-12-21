@@ -1,6 +1,7 @@
 package co.grtk.srcprofit.controller;
 
 import co.grtk.srcprofit.dto.OpenPositionViewDto;
+import co.grtk.srcprofit.dto.StockPositionViewDto;
 import co.grtk.srcprofit.service.OpenPositionService;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -163,5 +164,109 @@ class OpenPositionsControllerTest {
     void testConstructor_InjectsOpenPositionService() {
         assertNotNull(openPositionsController);
         // The fact that all tests pass proves the service was properly injected
+    }
+
+    @Test
+    void testOpenPositionsEndpoint_LoadsStockData() throws Exception {
+        // Setup
+        List<OpenPositionViewDto> mockOptions = new ArrayList<>();
+        List<StockPositionViewDto> mockStocks = new ArrayList<>();
+        mockStocks.add(new StockPositionViewDto(
+                1L, "AAPL", LocalDate.of(2025, 1, 15), 100,
+                15000.0, 155.50, 15550.0, 550.0, 5.2
+        ));
+
+        when(openPositionService.getAllOpenPositionViewDtos()).thenReturn(mockOptions);
+        when(openPositionService.getAllStockPositionViewDtos()).thenReturn(mockStocks);
+
+        // Execute and verify
+        mockMvc.perform(get("/openpositions"))
+                .andExpect(status().isOk())
+                .andExpect(view().name("openpositions_jte"))
+                .andExpect(model().attributeExists("stockPositions"))
+                .andExpect(model().attribute("stockPositions", mockStocks));
+
+        // Verify service calls
+        verify(openPositionService).getAllStockPositionViewDtos();
+    }
+
+    @Test
+    void testOpenPositionsEndpoint_WithEmptyStockList() throws Exception {
+        // Setup
+        when(openPositionService.getAllOpenPositionViewDtos()).thenReturn(new ArrayList<>());
+        when(openPositionService.getAllStockPositionViewDtos()).thenReturn(new ArrayList<>());
+
+        // Execute and verify
+        mockMvc.perform(get("/openpositions"))
+                .andExpect(status().isOk())
+                .andExpect(view().name("openpositions_jte"))
+                .andExpect(model().attributeExists("stockPositions"));
+
+        // Verify service was called
+        verify(openPositionService).getAllStockPositionViewDtos();
+    }
+
+    @Test
+    void testStockPositionViewDto_HasAllRequiredFields() {
+        // Verify that the DTO record can be constructed with all fields
+        StockPositionViewDto dto = new StockPositionViewDto(
+                1L, "AAPL", LocalDate.of(2025, 1, 15), 100,
+                15000.0, 155.50, 15550.0, 550.0, 5.2
+        );
+
+        // Assert all fields are accessible
+        assertEquals(1L, dto.id());
+        assertEquals("AAPL", dto.symbol());
+        assertEquals(LocalDate.of(2025, 1, 15), dto.tradeDate());
+        assertEquals(100, dto.quantity());
+        assertEquals(15000.0, dto.costBasisMoney());
+        assertEquals(155.50, dto.markPrice());
+        assertEquals(15550.0, dto.positionValue());
+        assertEquals(550.0, dto.pnl());
+        assertEquals(5.2, dto.percentOfNAV());
+    }
+
+    @Test
+    void testStockPositionViewDto_HandlesNullFields() {
+        // Verify that the DTO can handle null P&L and percentOfNAV
+        StockPositionViewDto dto = new StockPositionViewDto(
+                1L, "TSLA", LocalDate.of(2025, 3, 1), 10,
+                2500.0, 250.0, 2500.0, null, null
+        );
+
+        assertNotNull(dto);
+        assertNull(dto.pnl());
+        assertNull(dto.percentOfNAV());
+    }
+
+    @Test
+    void testOpenPositionsEndpoint_LoadsBothOptionsAndStocks() throws Exception {
+        // Setup - both options and stocks
+        List<OpenPositionViewDto> mockOptions = new ArrayList<>();
+        mockOptions.add(new OpenPositionViewDto(
+                1L, "SPY", LocalDate.of(2025, 1, 1), LocalDate.of(2025, 2, 1),
+                15, 10, 450.0, 451.0, 100.0, 150.0, 5, 50, "PUT", 4500.0
+        ));
+
+        List<StockPositionViewDto> mockStocks = new ArrayList<>();
+        mockStocks.add(new StockPositionViewDto(
+                2L, "AAPL", LocalDate.of(2025, 1, 15), 100,
+                15000.0, 155.50, 15550.0, 550.0, 5.2
+        ));
+
+        when(openPositionService.getAllOpenPositionViewDtos()).thenReturn(mockOptions);
+        when(openPositionService.getAllStockPositionViewDtos()).thenReturn(mockStocks);
+
+        // Execute and verify
+        mockMvc.perform(get("/openpositions"))
+                .andExpect(status().isOk())
+                .andExpect(view().name("openpositions_jte"))
+                .andExpect(model().attributeExists("openPositions", "stockPositions"))
+                .andExpect(model().attribute("openPositions", mockOptions))
+                .andExpect(model().attribute("stockPositions", mockStocks));
+
+        // Verify both services were called
+        verify(openPositionService).getAllOpenPositionViewDtos();
+        verify(openPositionService).getAllStockPositionViewDtos();
     }
 }

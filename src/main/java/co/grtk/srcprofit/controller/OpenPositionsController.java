@@ -1,6 +1,7 @@
 package co.grtk.srcprofit.controller;
 
 import co.grtk.srcprofit.dto.OpenPositionViewDto;
+import co.grtk.srcprofit.dto.StockPositionViewDto;
 import co.grtk.srcprofit.service.OpenPositionService;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -34,6 +35,10 @@ public class OpenPositionsController {
     public String openPositions(Model model) {
         List<OpenPositionViewDto> openPositions = openPositionService.getAllOpenPositionViewDtos();
         model.addAttribute("openPositions", openPositions);
+
+        List<StockPositionViewDto> stockPositions = openPositionService.getAllStockPositionViewDtos();
+        model.addAttribute("stockPositions", stockPositions);
+
         return "openpositions_jte";
     }
 }

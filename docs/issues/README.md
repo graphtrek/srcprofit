@@ -2,9 +2,9 @@
 
 **Auto-generated** - Run `python scripts/update_issue_index.py` to update
 
-**Total**: 55 issues
+**Total**: 56 issues
 **Open**: 5 (9%)
-**Closed**: 45 (82%)
+**Closed**: 46 (82%)
 **Partial**: 0
 
 ---
@@ -121,6 +121,8 @@
   - Priority: HIGH | Completed: 2025-12-17
 - **[ISSUE-053](ISSUE-053-spring-boot-4-upgrade-implementation.md)** - Spring Boot 4.0 Upgrade Implementation
   - Priority: HIGH | Completed: 2025-12-18
+- **[ISSUE-054](ISSUE-054-add-stocks-datatable-openpositions.md)** - Add Stocks DataTable to Open Positions Page
+  - Priority: MEDIUM | Completed: 2025-12-21
 
 ---
 
@@ -159,8 +161,8 @@
 **Feature / Enhancement** (2):
   - ISSUE-025 ✅, ISSUE-026 ✅
 
-**Feature / UI Enhancement** (1):
-  - ISSUE-050 🔴
+**Feature / UI Enhancement** (2):
+  - ISSUE-050 🔴, ISSUE-054 ✅
 
 **Feature / UX Enhancement** (3):
   - ISSUE-021 ✅, ISSUE-022 ✅, ISSUE-027 ✅
@@ -188,6 +190,6 @@
 
 ---
 
-**Last updated**: 2025-12-18
+**Last updated**: 2025-12-21
 
 **How to update**: Run `python scripts/update_issue_index.py`

@@ -1,7 +1,9 @@
 @import co.grtk.srcprofit.dto.OpenPositionViewDto
+@import co.grtk.srcprofit.dto.StockPositionViewDto
 
 @import java.util.List
 @param List<OpenPositionViewDto> openPositions
+@param List<StockPositionViewDto> stockPositions
 
 <div class="pagetitle">
     <h1>Open Positions</h1>
@@ -81,6 +83,56 @@
     </div>
 </section>
 
+<!-- Stocks DataTable Section -->
+<section class="section dashboard">
+    <div class="row">
+        <div class="col-lg-12">
+            <div class="card recent-sales overflow-auto">
+                <div class="card-body">
+                    <h5 class="card-title">Stock Positions</h5>
+
+                    <table id="datatableStockPositions" class="table table-striped">
+                        <thead>
+                        <tr>
+                            <th scope="col">ID</th>
+                            <th scope="col">Symbol</th>
+                            <th scope="col">TradeDate</th>
+                            <th scope="col">Qty</th>
+                            <th scope="col">CostBasis</th>
+                            <th scope="col">Price</th>
+                            <th scope="col">Value</th>
+                            <th scope="col">P&L</th>
+                            <th scope="col">% NAV</th>
+                        </tr>
+                        </thead>
+                        <tbody>
+                        @for(var stock : stockPositions)
+                            <tr style="cursor: pointer;">
+                                @if(stock.pnl() != null && stock.pnl() < 0)
+                                    <td style="background-color:rgb(220 53 69)">${stock.id()}</td>
+                                @else
+                                    <td>${stock.id()}</td>
+                                @endif
+                                <td class="text-uppercase">${stock.symbol()}</td>
+                                <td>${stock.tradeDate() != null ? stock.tradeDate().toString() : ""}</td>
+                                <td>${stock.quantity()}</td>
+                                <td class="currency-usd">${stock.costBasisMoney()}</td>
+                                <td class="currency-usd">${stock.markPrice()}</td>
+                                <td class="currency-usd">${stock.positionValue()}</td>
+                                <td class="currency-usd">${stock.pnl()}</td>
+                                <td>${stock.percentOfNAV() != null ? String.format("%.2f%%", stock.percentOfNAV()) : ""}</td>
+                            </tr>
+                        @endfor
+                        </tbody>
+                    </table>
+
+                </div>
+
+            </div>
+        </div>
+    </div>
+</section>
+
 <script>
     $( document ).ready(function() {
         console.log( "ready!" );
@@ -142,6 +194,21 @@
             });
         }
         datatable();
+
+        // Initialize Stocks DataTable
+        const tableStocks = new DataTable('#datatableStockPositions', {
+            pageLength: -1,
+            perPageSelect: [5, 10, 15, ["All", -1]],
+            order: [[1, 'asc']]  // Sort by Symbol (column 1)
+        });
+
+        // Row click handler for stocks
+        $('#datatableStockPositions tbody').on('click', 'tr', function() {
+            const symbol = tableStocks.row(this).data()[1];
+            console.log('GET  /getPosition/' + symbol);
+            htmx.ajax('GET', '/getPosition/' + symbol, '#main');
+        });
+
         totalSeconds = 0;
     });
 </script>

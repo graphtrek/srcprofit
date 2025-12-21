@@ -2,6 +2,7 @@ package co.grtk.srcprofit.service;
 
 import co.grtk.srcprofit.dto.OpenPositionViewDto;
 import co.grtk.srcprofit.dto.PositionDto;
+import co.grtk.srcprofit.dto.StockPositionViewDto;
 import co.grtk.srcprofit.entity.AssetClass;
 import co.grtk.srcprofit.entity.InstrumentEntity;
 import co.grtk.srcprofit.entity.OpenPositionEntity;
@@ -773,6 +774,27 @@ public class OpenPositionService {
                 pop,
                 typeString,
                 entity.getCostBasisMoney()
+        );
+    }
+
+    public List<StockPositionViewDto> getAllStockPositionViewDtos() {
+        List<OpenPositionEntity> stocks = openPositionRepository.findAllStocksWithInstrument();
+        return stocks.stream()
+                .map(this::convertToStockPositionViewDto)
+                .toList();
+    }
+
+    private StockPositionViewDto convertToStockPositionViewDto(OpenPositionEntity entity) {
+        return new StockPositionViewDto(
+                entity.getId(),
+                entity.getSymbol(),
+                entity.getTradeDate(),
+                entity.getQuantity(),
+                entity.getCostBasisMoney(),
+                entity.getMarkPrice(),
+                entity.getPositionValue(),
+                entity.getFifoPnlUnrealized(),
+                entity.getPercentOfNAV()
         );
     }
 }
