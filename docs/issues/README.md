@@ -2,9 +2,9 @@
 
 **Auto-generated** - Run `python scripts/update_issue_index.py` to update
 
-**Total**: 56 issues
+**Total**: 57 issues
 **Open**: 5 (9%)
-**Closed**: 46 (82%)
+**Closed**: 47 (82%)
 **Partial**: 0
 
 ---
@@ -123,6 +123,8 @@
   - Priority: HIGH | Completed: 2025-12-18
 - **[ISSUE-054](ISSUE-054-add-stocks-datatable-openpositions.md)** - Add Stocks DataTable to Open Positions Page
   - Priority: MEDIUM | Completed: 2025-12-21
+- **[ISSUE-055](ISSUE-055-tradelog-obligation-card-alignment.md)** - Trade Log Obligation Card Layout Alignment
+  - Priority: MEDIUM | Completed: 2025-12-22
 
 ---
 
@@ -182,6 +184,9 @@
 **Infrastructure | Developer Experience** (1):
   - ISSUE-036 ✅
 
+**UI Enhancement / Code Quality** (1):
+  - ISSUE-055 ✅
+
 **Uncategorized** (4):
   - ISSUE-037 🔴, ISSUE-042 🔴, ISSUE-048 🔴, ISSUE-049 🔴
 
@@ -190,6 +195,6 @@
 
 ---
 
-**Last updated**: 2025-12-21
+**Last updated**: 2025-12-22
 
 **How to update**: Run `python scripts/update_issue_index.py`
