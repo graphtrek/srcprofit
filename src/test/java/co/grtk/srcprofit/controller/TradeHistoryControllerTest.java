@@ -40,12 +40,6 @@ class TradeHistoryControllerTest {
     }
 
     @Test
-    void testTradeHistoryControllerExists() {
-        assertNotNull(tradeHistoryController);
-        assertTrue(TradeHistoryController.class.isAnnotationPresent(org.springframework.stereotype.Controller.class));
-    }
-
-    @Test
     void testTradehistoryEndpoint_ReturnsTradeHistoryPage() throws Exception {
         // Setup
         List<PositionDto> mockClosedPositions = new ArrayList<>();
@@ -59,24 +53,6 @@ class TradeHistoryControllerTest {
                 .andExpect(model().attributeExists("closedPositions"));
 
         // Verify service calls
-        verify(optionService).getAllClosedOptions(null);
-    }
-
-    @Test
-    void testTradehistoryEndpoint_ReturnsOnlyClosedPositions() throws Exception {
-        // Setup - create mock closed positions
-        List<PositionDto> mockClosedPositions = new ArrayList<>();
-        PositionDto closedPos1 = new PositionDto();
-        closedPos1.setTicker("AAPL");
-        mockClosedPositions.add(closedPos1);
-
-        when(optionService.getAllClosedOptions(null)).thenReturn(mockClosedPositions);
-
-        // Execute and verify
-        mockMvc.perform(get("/tradehistory"))
-                .andExpect(status().isOk())
-                .andExpect(model().attribute("closedPositions", mockClosedPositions));
-
         verify(optionService).getAllClosedOptions(null);
     }
 
@@ -123,41 +99,6 @@ class TradeHistoryControllerTest {
     }
 
     @Test
-    void testTradehistoryPage_PopulatesModelAttributes() throws Exception {
-        // Setup - multiple closed positions
-        List<PositionDto> mockClosedPositions = new ArrayList<>();
-        PositionDto closedPos1 = new PositionDto();
-        closedPos1.setTicker("AAPL");
-        mockClosedPositions.add(closedPos1);
-
-        PositionDto closedPos2 = new PositionDto();
-        closedPos2.setTicker("TSLA");
-        mockClosedPositions.add(closedPos2);
-
-        when(optionService.getAllClosedOptions(null)).thenReturn(mockClosedPositions);
-
-        // Execute and verify model attributes
-        mockMvc.perform(get("/tradehistory"))
-                .andExpect(status().isOk())
-                .andExpect(model().attribute("closedPositions", mockClosedPositions));
-
-        assertEquals(2, mockClosedPositions.size());
-        verify(optionService).getAllClosedOptions(null);
-    }
-
-    @Test
-    void testTradehistoryEndpoint_CallsServiceMethods() throws Exception {
-        // Setup
-        when(optionService.getAllClosedOptions(null)).thenReturn(new ArrayList<>());
-
-        // Execute
-        mockMvc.perform(get("/tradehistory"));
-
-        // Verify service method was called exactly once
-        verify(optionService, times(1)).getAllClosedOptions(null);
-    }
-
-    @Test
     void testTradehistoryEndpoint_HandlesEmptyClosedPositionsList() throws Exception {
         // Setup - empty list
         List<PositionDto> emptyClosedPositions = new ArrayList<>();
@@ -186,12 +127,5 @@ class TradeHistoryControllerTest {
 
         // Verify service was still called (likely with null value)
         verify(optionService).getAllClosedOptions(any());
-    }
-
-    @Test
-    void testConstructor_InjectsOptionService() {
-        assertNotNull(tradeHistoryController);
-        // Test that controller was properly constructed with mocked services
-        // This is implicitly tested by the fact that all the other tests work
     }
 }

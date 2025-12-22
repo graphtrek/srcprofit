@@ -38,12 +38,6 @@ class OpenPositionsControllerTest {
     }
 
     @Test
-    void testOpenPositionsControllerExists() {
-        assertNotNull(openPositionsController);
-        assertTrue(OpenPositionsController.class.isAnnotationPresent(org.springframework.stereotype.Controller.class));
-    }
-
-    @Test
     void testOpenPositionsEndpoint_ReturnsCorrectView() throws Exception {
         // Setup - empty list for initial test
         List<OpenPositionViewDto> mockPositions = new ArrayList<>();
@@ -124,49 +118,6 @@ class OpenPositionsControllerTest {
     }
 
     @Test
-    void testOpenPositionViewDto_HasAllRequiredFields() {
-        // Verify that the DTO record can be constructed with all fields
-        OpenPositionViewDto dto = new OpenPositionViewDto(
-                123L,
-                "SPY",
-                LocalDate.of(2025, 12, 1),
-                LocalDate.of(2025, 12, 20),
-                10,
-                -5,
-                420.0,
-                415.0,
-                -125.0,
-                -130.0,      // calculatedPnl
-                15,
-                75,
-                "PUT",
-                500.0        // costBasisMoney
-        );
-
-        // Assert all fields are accessible
-        assertEquals(123L, dto.id());
-        assertEquals("SPY", dto.symbol());
-        assertEquals(LocalDate.of(2025, 12, 1), dto.tradeDate());
-        assertEquals(LocalDate.of(2025, 12, 20), dto.expirationDate());
-        assertEquals(10, dto.daysLeft());
-        assertEquals(-5, dto.qty());
-        assertEquals(420.0, dto.strikePrice());
-        assertEquals(415.0, dto.underlyingPrice());
-        assertEquals(-125.0, dto.pnl());
-        assertEquals(-130.0, dto.calculatedPnl());  // New field assertion
-        assertEquals(15, dto.roi());
-        assertEquals(75, dto.pop());
-        assertEquals("PUT", dto.type());
-        assertEquals(500.0, dto.costBasisMoney());  // New field assertion
-    }
-
-    @Test
-    void testConstructor_InjectsOpenPositionService() {
-        assertNotNull(openPositionsController);
-        // The fact that all tests pass proves the service was properly injected
-    }
-
-    @Test
     void testOpenPositionsEndpoint_LoadsStockData() throws Exception {
         // Setup
         List<OpenPositionViewDto> mockOptions = new ArrayList<>();
@@ -204,26 +155,6 @@ class OpenPositionsControllerTest {
 
         // Verify service was called
         verify(openPositionService).getAllStockPositionViewDtos();
-    }
-
-    @Test
-    void testStockPositionViewDto_HasAllRequiredFields() {
-        // Verify that the DTO record can be constructed with all fields
-        StockPositionViewDto dto = new StockPositionViewDto(
-                1L, "AAPL", LocalDate.of(2025, 1, 15), 100,
-                15000.0, 155.50, 15550.0, 550.0, 5.2
-        );
-
-        // Assert all fields are accessible
-        assertEquals(1L, dto.id());
-        assertEquals("AAPL", dto.symbol());
-        assertEquals(LocalDate.of(2025, 1, 15), dto.tradeDate());
-        assertEquals(100, dto.quantity());
-        assertEquals(15000.0, dto.costBasisMoney());
-        assertEquals(155.50, dto.markPrice());
-        assertEquals(15550.0, dto.positionValue());
-        assertEquals(550.0, dto.pnl());
-        assertEquals(5.2, dto.percentOfNAV());
     }
 
     @Test

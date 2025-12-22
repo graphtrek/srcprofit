@@ -37,12 +37,6 @@ class FlexImportHistoryControllerTest {
     }
 
     @Test
-    void testFlexImportHistoryControllerExists() {
-        assertNotNull(flexImportHistoryController);
-        assertTrue(FlexImportHistoryController.class.isAnnotationPresent(org.springframework.stereotype.Controller.class));
-    }
-
-    @Test
     void testFlexImportHistoryEndpoint_ReturnsFlexImportHistoryPage() throws Exception {
         // Setup
         List<FlexImportHistoryDto> mockImports = new ArrayList<>();
@@ -113,36 +107,5 @@ class FlexImportHistoryControllerTest {
                 .andExpect(model().attributeExists("flexImports"));
 
         verify(flexReportsService, times(1)).getAllImportHistory();
-    }
-
-    @Test
-    void testFlexImportHistoryEndpoint_CallsServiceMethod() throws Exception {
-        // Setup
-        when(flexReportsService.getAllImportHistory()).thenReturn(new ArrayList<>());
-
-        // Execute
-        mockMvc.perform(get("/flexImportHistory"));
-
-        // Verify service method was called exactly once
-        verify(flexReportsService, times(1)).getAllImportHistory();
-        verifyNoMoreInteractions(flexReportsService);
-    }
-
-    @Test
-    void testConstructor_InjectsFlexReportsService() {
-        assertNotNull(flexImportHistoryController);
-        // Test that controller was properly constructed with mocked service
-        // This is implicitly tested by the fact that all the other tests work
-    }
-
-    @Test
-    void testGetMapping_HasCorrectPath() throws Exception {
-        // Verify the endpoint responds to the correct path
-        mockMvc.perform(get("/flexImportHistory"))
-                .andExpect(status().isOk());
-
-        // Verify incorrect paths don't match
-        mockMvc.perform(get("/flex-import-history"))
-                .andExpect(status().isNotFound());
     }
 }

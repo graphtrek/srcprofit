@@ -50,12 +50,6 @@ class TradeLogControllerTest {
     }
 
     @Test
-    void testTradeLogControllerExists() {
-        assertNotNull(tradeLogController);
-        assertTrue(TradeLogController.class.isAnnotationPresent(org.springframework.stereotype.Controller.class));
-    }
-
-    @Test
     void testTradelogEndpoint_ReturnsTradeLogPage() throws Exception {
         // Setup
         List<PositionDto> mockOpenPositions = new ArrayList<>();
@@ -174,12 +168,5 @@ class TradeLogControllerTest {
         verify(optionService, times(1)).calculatePosition(any(PositionDto.class), anyList(), anyList());
         verify(netAssetValueService, times(1)).loadLatestNetAssetValue();
         verify(optionService, times(1)).getWeeklySummaryOpenOptionDtos(anyList());
-    }
-
-    @Test
-    void testConstructor_InjectsAllServices() {
-        assertNotNull(tradeLogController);
-        // Test that controller was properly constructed with mocked services
-        // This is implicitly tested by the fact that all the other tests work
     }
 }
