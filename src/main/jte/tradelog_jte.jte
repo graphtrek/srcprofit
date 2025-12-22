@@ -61,8 +61,6 @@
                                     <h6 class="currency-usd">${positionDto.getPositionValue()}</h6>
                                     <span class="text-success small pt-1 fw-bold currency-usd">${positionDto.getCash()}</span>
                                     <span class="text-muted small pt-2 ps-1">Cash</span>
-                                    <span class="text-success small pt-1 fw-bold currency-usd">${positionDto.getStock()}</span>
-                                    <span class="text-muted small pt-2 ps-1">Stock</span>
                                 </div>
                             </div>
 
@@ -131,6 +129,8 @@
                                 </div>
                                 <div class="ps-3">
                                     <h6 class="currency-usd">${positionDto.getCallObligationValue()}</h6>
+                                    <span class="text-success small pt-1 fw-bold currency-usd">${positionDto.getStock()}</span>
+                                    <span class="text-muted small pt-2 ps-1">Stock</span>
                                 </div>
                             </div>
 

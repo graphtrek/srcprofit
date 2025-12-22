@@ -453,17 +453,12 @@ public class OptionService {
             int qty = abs(dto.getQuantity());
             collectedPremium += dto.getTradePrice() * qty;
             openPositionsTradePrice += dto.getTradePrice() * qty;
-            // ISSUE-033: Calculate unrealized P&L using both trade price and market price (TastyTrade methodology)
-            // Unrealized P&L = (Entry Price - Current Market Price) * Quantity
 
-            double unrealizedPnl = PositionCalculationHelper.calculateUnrealizedPnl(
-                    dto.getTradePrice(),
-                    dto.getMarketPrice(),
-                    dto.getQuantity()
-            );
-            dto.setUnRealizedProfitOrLoss(unrealizedPnl);
-
-            unRealizedProfitOrLoss += dto.getUnRealizedProfitOrLoss();
+            // ISSUE-054: Use IBKR's fifoPnlUnrealized value (already set in PositionDto)
+            // instead of recalculating, as it includes the correct multiplier
+            if (dto.getUnRealizedProfitOrLoss() != null) {
+                unRealizedProfitOrLoss += dto.getUnRealizedProfitOrLoss();
+            }
 
             if (OptionType.PUT.equals(dto.getType())) {
                 put += dto.getTradePrice() * qty;
