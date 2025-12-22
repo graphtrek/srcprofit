@@ -384,7 +384,14 @@
                         </div>
 
                         <div class="card-body">
-                            <h5 class="card-title">Collected Premium <span class="fs-5 currency-usd">${positionDto.getCollectedPremium()}</span></h5>
+                            <h5 class="card-title">Net Asset Values</h5>
+                            <div class="mb-3">
+                                <span class="badge" style="background-color: #ffcc00; color: #000;">Premium: <span class="currency-usd">${positionDto.getCollectedPremium()}</span></span>
+                                <span class="badge" style="background-color: #2eca6a; color: #fff;">Total: <span class="currency-usd">${positionDto.getTotal()}</span></span>
+                                <span class="badge" style="background-color: #ff771d; color: #fff;">Cash: <span class="currency-usd">${positionDto.getCash()}</span></span>
+                                <span class="badge" style="background-color: #4154f1; color: #fff;">Stock: <span class="currency-usd">${positionDto.getStock()}</span></span>
+                                <span class="badge" style="background-color: #f14161; color: #fff;">Options: <span class="currency-usd">${positionDto.getOptions()}</span></span>
+                            </div>
 
                             <!-- Premium Chart -->
                             <div id="reportsChart"></div>
@@ -451,7 +458,7 @@
                 markers: {
                     size: 0
                 },
-                colors: [ '#2eca6a','#ff771d','#4154f1'],
+                colors: [ '#ffcc00'],
                 fill: {
                     type: "gradient",
                     gradient: {

@@ -47,6 +47,8 @@ public class PositionDto {
     Double put;
     Double call;
     Double stock;
+    Double total; // Latest daily total NAV
+    Double options; // Latest daily options NAV
     Double marketPrice;
     Double putMarketPrice;
     Double callMarketPrice;
@@ -330,6 +332,22 @@ public class PositionDto {
 
     public void setStock(Double stock) {
         this.stock = stock;
+    }
+
+    public Double getTotal() {
+        return total;
+    }
+
+    public void setTotal(Double total) {
+        this.total = total;
+    }
+
+    public Double getOptions() {
+        return options;
+    }
+
+    public void setOptions(Double options) {
+        this.options = options;
     }
 
     public Double getPutMarketPrice() {

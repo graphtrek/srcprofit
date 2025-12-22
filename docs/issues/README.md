@@ -2,9 +2,9 @@
 
 **Auto-generated** - Run `python scripts/update_issue_index.py` to update
 
-**Total**: 57 issues
-**Open**: 5 (9%)
-**Closed**: 47 (82%)
+**Total**: 58 issues
+**Open**: 6 (10%)
+**Closed**: 47 (81%)
 **Partial**: 0
 
 ---
@@ -18,7 +18,7 @@
 - **[ISSUE-046](ISSUE-046-openposition-savecsv-delete-orphans.md)** - OpenPositionService.saveCSV Should Delete Positions Not in CSV
   - Priority: HIGH | Status: OPEN | Category: Code Quality / Technical Debt | Created: 2025-12-04
 
-### MEDIUM (3)
+### MEDIUM (4)
 
 - **[ISSUE-044](ISSUE-044-openposition-getallopen-options-dtos.md)** - Add getAllOpenOptionDtos() method to OpenPositionService
   - Priority: MEDIUM | Status: OPEN | Category: Feature | Created: 2025-12-04 (Session N/A)
@@ -26,6 +26,8 @@
   - Priority: MEDIUM | Status: OPEN | Category: Feature / UI Enhancement | Created: 2025-12-17
 - **[ISSUE-052](ISSUE-052-spring-boot-4-upgrade-research.md)** - Spring Boot 4.0 Upgrade Research
   - Priority: MEDIUM | Status: OPEN | Category: Infrastructure / Technical Debt | Created: 2025-12-18
+- **[ISSUE-056](ISSUE-056-dashboard-nav-fields-display.md)** - Add Latest Net Asset Value Fields to Dashboard Chart Section
+  - Priority: MEDIUM | Status: OPEN | Category: Feature / UI Enhancement | Created: 2025-12-22 (Session N/A)
 
 ---
 
@@ -163,8 +165,8 @@
 **Feature / Enhancement** (2):
   - ISSUE-025 ✅, ISSUE-026 ✅
 
-**Feature / UI Enhancement** (2):
-  - ISSUE-050 🔴, ISSUE-054 ✅
+**Feature / UI Enhancement** (3):
+  - ISSUE-050 🔴, ISSUE-054 ✅, ISSUE-056 🔴
 
 **Feature / UX Enhancement** (3):
   - ISSUE-021 ✅, ISSUE-022 ✅, ISSUE-027 ✅

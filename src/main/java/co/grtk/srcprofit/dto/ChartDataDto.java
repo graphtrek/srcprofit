@@ -158,6 +158,38 @@ public class ChartDataDto {
         return lastDailyPremium == null ? 0 : lastDailyPremium;
     }
 
+    public double getLastDailyTotal() {
+        if (dailyTotalCsv == null || dailyTotalCsv.isEmpty()) {
+            return 0.0;
+        }
+        String[] values = dailyTotalCsv.split(",");
+        return parseDouble(values[values.length - 1], 0.0);
+    }
+
+    public double getLastDailyCash() {
+        if (dailyCashCsv == null || dailyCashCsv.isEmpty()) {
+            return 0.0;
+        }
+        String[] values = dailyCashCsv.split(",");
+        return parseDouble(values[values.length - 1], 0.0);
+    }
+
+    public double getLastDailyStock() {
+        if (dailyStockCsv == null || dailyStockCsv.isEmpty()) {
+            return 0.0;
+        }
+        String[] values = dailyStockCsv.split(",");
+        return parseDouble(values[values.length - 1], 0.0);
+    }
+
+    public double getLastDailyOptions() {
+        if (dailyOptionsCsv == null || dailyOptionsCsv.isEmpty()) {
+            return 0.0;
+        }
+        String[] values = dailyOptionsCsv.split(",");
+        return parseDouble(values[values.length - 1], 0.0);
+    }
+
     public String getNavDatesCsv() {
         return navDatesCsv;
     }

@@ -31,7 +31,7 @@
                 </div>
 
                 <div class="card-body">
-                    <h5 class="card-title">Open Positions <span></span></h5>
+                    <h5 class="card-title">Options <span></span></h5>
 
                     <table id="datatableOpenPositions" class="table table-striped">
                         <thead>
@@ -89,14 +89,13 @@
         <div class="col-lg-12">
             <div class="card recent-sales overflow-auto">
                 <div class="card-body">
-                    <h5 class="card-title">Stock Positions</h5>
+                    <h5 class="card-title">Stocks</h5>
 
                     <table id="datatableStockPositions" class="table table-striped">
                         <thead>
                         <tr>
                             <th scope="col">ID</th>
                             <th scope="col">Symbol</th>
-                            <th scope="col">TradeDate</th>
                             <th scope="col">Qty</th>
                             <th scope="col">CostBasis</th>
                             <th scope="col">Price</th>
@@ -114,7 +113,6 @@
                                     <td>${stock.id()}</td>
                                 @endif
                                 <td class="text-uppercase">${stock.symbol()}</td>
-                                <td>${stock.tradeDate() != null ? stock.tradeDate().toString() : ""}</td>
                                 <td>${stock.quantity()}</td>
                                 <td class="currency-usd">${stock.costBasisMoney()}</td>
                                 <td class="currency-usd">${stock.markPrice()}</td>

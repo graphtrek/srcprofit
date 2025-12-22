@@ -110,7 +110,11 @@ public class HomeController {
             positionDto.setStock(latestNav.getStock());
         }
 
+        // Set latest daily NAV values for dashboard display
         positionDto.setCollectedPremium(chartDataDto.getLastDailyPremium());
+        positionDto.setTotal(chartDataDto.getLastDailyTotal());
+        positionDto.setOptions(chartDataDto.getLastDailyOptions());
+
         model.addAttribute(MODEL_ATTRIBUTE_POSITION_DTO, positionDto);
         model.addAttribute("weeklyOpenPositions", weeklyOpenPositions);
         model.addAttribute("openOptions", openOptions);
