@@ -29,7 +29,7 @@ import static co.grtk.srcprofit.mapper.MapperUtils.toLocalDateTime;
 public class InstrumentService {
     private final InstrumentRepository instrumentRepository;
     private final ObjectMapper objectMapper;
-    Logger log = LoggerFactory.getLogger(InstrumentService.class);
+    private static final Logger log = LoggerFactory.getLogger(InstrumentService.class);
 
     public InstrumentService(InstrumentRepository instrumentRepository, ObjectMapper objectMapper) {
         this.instrumentRepository = instrumentRepository;
@@ -40,7 +40,6 @@ public class InstrumentService {
         InstrumentEntity instrumentEntity;
         if (result.isPresent()) {
             instrumentEntity = result.get();
-            instrumentEntity.setPrice(alpacaMarketDataDtoEntry.getValue().getLatestTrade().getPrice());
         } else {
             instrumentEntity = new InstrumentEntity();
             instrumentEntity.setTicker(alpacaMarketDataDtoEntry.getKey());

@@ -48,7 +48,7 @@ public class OptionService {
     private final InstrumentRepository instrumentRepository;
     private final ObjectMapper objectMapper;
     private final VirtualPositionService virtualPositionService;
-    Logger log = LoggerFactory.getLogger(OptionService.class);
+    private static final Logger log = LoggerFactory.getLogger(OptionService.class);
 
     public OptionService(OptionRepository optionRepository, InstrumentRepository instrumentRepository, ObjectMapper objectMapper, VirtualPositionService virtualPositionService) {
         this.optionRepository = optionRepository;
@@ -153,11 +153,6 @@ public class OptionService {
             PositionDto positionDto = new PositionDto();
             calculatePosition(positionDto,posList, Collections.emptyList());
             weeklyOpenPositions.add(positionDto);
-//            posList.forEach(o -> {
-//                log.info("  Value: {}", o.getPositionValue());
-//                positionDto.setPositionValue(positionDto.getPositionValue() + o.getPositionValue());
-//                positionDto.setPut(positionDto.getPut() + o.getPositionValue());
-//            });
         });
         weeklyOpenPositions.sort(Comparator.comparing(PositionDto::getExpirationDate));
         return weeklyOpenPositions;
@@ -424,19 +419,10 @@ public class OptionService {
 
         for (PositionDto dto : closedPositions) {
             int qty = abs(dto.getQuantity());
-//            if (dto.getTradeDate().isBefore(startDate)) {
-//                startDate = dto.getTradeDate();
-//            }
-//            if (dto.getExpirationDate().isAfter(endDate)) {
-//                endDate = dto.getExpirationDate();
-//            }
             collectedPremium += dto.getTradePrice() * qty;
             realizedProfitOrLoss += dto.getTradePrice() * qty;
         }
         positionDto.setRealizedProfitOrLoss(round2Digits(realizedProfitOrLoss));
-
-//        if(!openPositions.isEmpty())
-//            endDate = LocalDate.now();
 
         for (PositionDto dto : openPositions) {
             if (dto.getTradeDate().isBefore(startDate)

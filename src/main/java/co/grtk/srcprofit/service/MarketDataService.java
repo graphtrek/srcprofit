@@ -32,7 +32,7 @@ public class MarketDataService {
     private final InstrumentService instrumentService;
     private final IbkrService ibkrService;
     private final OptionService optionService;
-    Logger log = LoggerFactory.getLogger(MarketDataService.class);
+    private static final Logger log = LoggerFactory.getLogger(MarketDataService.class);
 
     public MarketDataService(InstrumentService instrumentService, AlpacaService alpacaService, IbkrService ibkrService, OptionService optionService) {
         this.instrumentService = instrumentService;
