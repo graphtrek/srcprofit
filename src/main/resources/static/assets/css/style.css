@@ -1661,3 +1661,18 @@ tr.group td {
     color: var(--text-primary) !important;
     font-weight: bold;
 }
+
+/* DataTables footer styles */
+#datatableOpenPositions tfoot th {
+    background-color: #f8f9fa;
+    border-top: 2px solid #dee2e6;
+    font-weight: bold;
+    padding: 12px;
+    color: #444444;
+}
+
+[data-bs-theme="dark"] #datatableOpenPositions tfoot th {
+    background-color: #212529;
+    border-top: 2px solid #495057;
+    color: #f8f9fa;
+}

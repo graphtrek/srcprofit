@@ -2,9 +2,9 @@
 
 **Auto-generated** - Run `python scripts/update_issue_index.py` to update
 
-**Total**: 58 issues
-**Open**: 6 (10%)
-**Closed**: 47 (81%)
+**Total**: 59 issues
+**Open**: 7 (12%)
+**Closed**: 47 (80%)
 **Partial**: 0
 
 ---
@@ -18,7 +18,7 @@
 - **[ISSUE-046](ISSUE-046-openposition-savecsv-delete-orphans.md)** - OpenPositionService.saveCSV Should Delete Positions Not in CSV
   - Priority: HIGH | Status: OPEN | Category: Code Quality / Technical Debt | Created: 2025-12-04
 
-### MEDIUM (4)
+### MEDIUM (5)
 
 - **[ISSUE-044](ISSUE-044-openposition-getallopen-options-dtos.md)** - Add getAllOpenOptionDtos() method to OpenPositionService
   - Priority: MEDIUM | Status: OPEN | Category: Feature | Created: 2025-12-04 (Session N/A)
@@ -28,6 +28,8 @@
   - Priority: MEDIUM | Status: OPEN | Category: Infrastructure / Technical Debt | Created: 2025-12-18
 - **[ISSUE-056](ISSUE-056-dashboard-nav-fields-display.md)** - Add Latest Net Asset Value Fields to Dashboard Chart Section
   - Priority: MEDIUM | Status: OPEN | Category: Feature / UI Enhancement | Created: 2025-12-22 (Session N/A)
+- **[ISSUE-057](ISSUE-057-options-datatable-summary-footer.md)** - Add summary footer to Options datatable on OpenPositions page
+  - Priority: MEDIUM | Status: OPEN | Category: Feature | Created: 2025-12-23
 
 ---
 
@@ -153,8 +155,8 @@
 **Enhancement** (4):
   - ISSUE-011 ✅, ISSUE-016 ✅, ISSUE-040 ✅, ISSUE-041 ✅
 
-**Feature** (16):
-  - ISSUE-001 ✅, ISSUE-005 ✅, ISSUE-009 ✅, ISSUE-010 ✅, ISSUE-014 ✅, ISSUE-017 ✅, ISSUE-018 ✅, ISSUE-019 ✅, ISSUE-028 ✅, ISSUE-032 ✅, ISSUE-035 ✅, ISSUE-037 ✅, ISSUE-038 🔴, ISSUE-039 ✅, ISSUE-044 🔴, ISSUE-047 ✅
+**Feature** (17):
+  - ISSUE-001 ✅, ISSUE-005 ✅, ISSUE-009 ✅, ISSUE-010 ✅, ISSUE-014 ✅, ISSUE-017 ✅, ISSUE-018 ✅, ISSUE-019 ✅, ISSUE-028 ✅, ISSUE-032 ✅, ISSUE-035 ✅, ISSUE-037 ✅, ISSUE-038 🔴, ISSUE-039 ✅, ISSUE-044 🔴, ISSUE-047 ✅, ISSUE-057 🔴
 
 **Feature / Code Quality** (1):
   - ISSUE-020 ✅
@@ -197,6 +199,6 @@
 
 ---
 
-**Last updated**: 2025-12-22
+**Last updated**: 2025-12-23
 
 **How to update**: Run `python scripts/update_issue_index.py`

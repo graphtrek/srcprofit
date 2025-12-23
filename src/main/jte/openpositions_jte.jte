@@ -74,6 +74,23 @@
                             </tr>
                         @endfor
                         </tbody>
+                        <tfoot>
+                        <tr>
+                            <th></th>
+                            <th></th>
+                            <th></th>
+                            <th></th>
+                            <th class="text-end">Total:</th>
+                            <th></th>
+                            <th></th>
+                            <th></th>
+                            <th></th>
+                            <th></th>
+                            <th></th>
+                            <th></th>
+                            <th></th>
+                        </tr>
+                        </tfoot>
                     </table>
 
                 </div>
@@ -154,6 +171,84 @@
                 perPageSelect: [5, 10, 15, ["All", -1]],
                 columnDefs: [{target: 3, visible: false, searchable: false}], // expiration hidden for grouping
                 order: [[groupColumnOpen, 'asc'], [1, 'asc']], // Expiration first, then Symbol
+                footerCallback: function (row, data, start, end, display) {
+                    var api = this.api();
+
+                    // Helper function to parse numeric values
+                    var floatVal = function (i) {
+                        if (typeof i === 'string') {
+                            // Remove currency symbols, commas, percentage signs, and convert to float
+                            return parseFloat(i.replace(/[$,%]/g, '')) || 0;
+                        }
+                        return typeof i === 'number' ? i : 0;
+                    };
+
+                    // Sum Qty (column 5) - only visible rows
+                    var qtyTotal = api.column(5, {page: 'current', search: 'applied'})
+                        .data()
+                        .reduce(function (a, b) {
+                            return floatVal(a) + floatVal(b);
+                        }, 0);
+
+                    // Average Strike (column 6) - only visible rows
+                    var strikeData = api.column(6, {page: 'current', search: 'applied'}).data();
+                    var strikeSum = 0;
+                    var strikeCount = 0;
+                    strikeData.each(function(value) {
+                        strikeSum += floatVal(value);
+                        strikeCount++;
+                    });
+                    var strikeAvg = strikeCount > 0 ? strikeSum / strikeCount : 0;
+
+                    // Average Price (column 7) - only visible rows
+                    var priceData = api.column(7, {page: 'current', search: 'applied'}).data();
+                    var priceSum = 0;
+                    var priceCount = 0;
+                    priceData.each(function(value) {
+                        priceSum += floatVal(value);
+                        priceCount++;
+                    });
+                    var priceAvg = priceCount > 0 ? priceSum / priceCount : 0;
+
+                    // Sum CostBase (column 9) - only visible rows
+                    var costBaseTotal = api.column(9, {page: 'current', search: 'applied'})
+                        .data()
+                        .reduce(function (a, b) {
+                            return floatVal(a) + floatVal(b);
+                        }, 0);
+
+                    // Sum P&L (column 10) - only visible rows
+                    var pnlTotal = api.column(10, {page: 'current', search: 'applied'})
+                        .data()
+                        .reduce(function (a, b) {
+                            return floatVal(a) + floatVal(b);
+                        }, 0);
+
+                    // Format currency values with 2 decimals (for Strike and Price)
+                    var formatCurrency = function(value) {
+                        return new Intl.NumberFormat('en-US', {
+                            style: 'currency',
+                            currency: 'USD',
+                            maximumFractionDigits: 2
+                        }).format(value);
+                    };
+
+                    // Format currency values as integers (for CostBase and P&L)
+                    var formatCurrencyInt = function(value) {
+                        return new Intl.NumberFormat('en-US', {
+                            style: 'currency',
+                            currency: 'USD',
+                            maximumFractionDigits: 0
+                        }).format(value);
+                    };
+
+                    // Update footer cells
+                    $(api.column(5).footer()).html('<strong>' + qtyTotal + '</strong>');
+                    $(api.column(6).footer()).html('<strong>' + formatCurrency(strikeAvg) + '</strong>');
+                    $(api.column(7).footer()).html('<strong>' + formatCurrency(priceAvg) + '</strong>');
+                    $(api.column(9).footer()).html('<strong>' + formatCurrencyInt(costBaseTotal) + '</strong>');
+                    $(api.column(10).footer()).html('<strong>' + formatCurrencyInt(pnlTotal) + '</strong>');
+                },
                 drawCallback: function (settings) {
                     var api = this.api();
                     var rows = api.rows({ page: 'current' }).nodes();
