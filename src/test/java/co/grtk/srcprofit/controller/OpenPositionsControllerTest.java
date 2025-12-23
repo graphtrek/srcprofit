@@ -1,7 +1,9 @@
 package co.grtk.srcprofit.controller;
 
+import co.grtk.srcprofit.dto.NetAssetValueDto;
 import co.grtk.srcprofit.dto.OpenPositionViewDto;
 import co.grtk.srcprofit.dto.StockPositionViewDto;
+import co.grtk.srcprofit.service.NetAssetValueService;
 import co.grtk.srcprofit.service.OpenPositionService;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -29,12 +31,20 @@ class OpenPositionsControllerTest {
     @Mock
     private OpenPositionService openPositionService;
 
+    @Mock
+    private NetAssetValueService netAssetValueService;
+
     @InjectMocks
     private OpenPositionsController openPositionsController;
 
     @BeforeEach
     void setUp() {
         mockMvc = MockMvcBuilders.standaloneSetup(openPositionsController).build();
+
+        // Setup default NAV with report date (lenient to avoid unnecessary stubbing errors)
+        NetAssetValueDto mockNav = new NetAssetValueDto();
+        mockNav.setReportDate(LocalDate.of(2025, 12, 22));
+        lenient().when(netAssetValueService.loadLatestNetAssetValue()).thenReturn(mockNav);
     }
 
     @Test

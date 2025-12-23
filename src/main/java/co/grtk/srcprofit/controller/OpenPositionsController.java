@@ -2,6 +2,7 @@ package co.grtk.srcprofit.controller;
 
 import co.grtk.srcprofit.dto.OpenPositionViewDto;
 import co.grtk.srcprofit.dto.StockPositionViewDto;
+import co.grtk.srcprofit.service.NetAssetValueService;
 import co.grtk.srcprofit.service.OpenPositionService;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -21,9 +22,11 @@ import java.util.List;
 public class OpenPositionsController {
 
     private final OpenPositionService openPositionService;
+    private final NetAssetValueService netAssetValueService;
 
-    public OpenPositionsController(OpenPositionService openPositionService) {
+    public OpenPositionsController(OpenPositionService openPositionService, NetAssetValueService netAssetValueService) {
         this.openPositionService = openPositionService;
+        this.netAssetValueService = netAssetValueService;
     }
 
     /**
@@ -40,7 +43,14 @@ public class OpenPositionsController {
         List<StockPositionViewDto> stockPositions = openPositionService.getAllStockPositionViewDtos();
         model.addAttribute("stockPositions", stockPositions);
 
-        model.addAttribute("reportDate", LocalDate.now());
+        // Get report date from latest NAV (same pattern as HomeController)
+        // Falls back to today's date if no NAV exists
+        LocalDate reportDate = LocalDate.now();
+        var latestNav = netAssetValueService.loadLatestNetAssetValue();
+        if (latestNav != null) {
+            reportDate = latestNav.getReportDate();
+        }
+        model.addAttribute("reportDate", reportDate);
 
         return "openpositions_jte";
     }
