@@ -48,7 +48,8 @@ class OpenPositionsControllerTest {
         mockMvc.perform(get("/openpositions"))
                 .andExpect(status().isOk())
                 .andExpect(view().name("openpositions_jte"))
-                .andExpect(model().attributeExists("openPositions"));
+                .andExpect(model().attributeExists("openPositions"))
+                .andExpect(model().attributeExists("reportDate"));
 
         // Verify service was called
         verify(openPositionService).getAllOpenPositionViewDtos();
@@ -192,7 +193,7 @@ class OpenPositionsControllerTest {
         mockMvc.perform(get("/openpositions"))
                 .andExpect(status().isOk())
                 .andExpect(view().name("openpositions_jte"))
-                .andExpect(model().attributeExists("openPositions", "stockPositions"))
+                .andExpect(model().attributeExists("openPositions", "stockPositions", "reportDate"))
                 .andExpect(model().attribute("openPositions", mockOptions))
                 .andExpect(model().attribute("stockPositions", mockStocks));
 

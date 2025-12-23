@@ -7,6 +7,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 
+import java.time.LocalDate;
 import java.util.List;
 
 /**
@@ -38,6 +39,8 @@ public class OpenPositionsController {
 
         List<StockPositionViewDto> stockPositions = openPositionService.getAllStockPositionViewDtos();
         model.addAttribute("stockPositions", stockPositions);
+
+        model.addAttribute("reportDate", LocalDate.now());
 
         return "openpositions_jte";
     }

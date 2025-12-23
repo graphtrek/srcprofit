@@ -16,6 +16,7 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 
+import java.time.LocalDate;
 import java.util.Arrays;
 import java.util.List;
 
@@ -105,9 +106,11 @@ public class HomeController {
 
         // Load latest NAV for cash and stock values
         var latestNav = netAssetValueService.loadLatestNetAssetValue();
+        LocalDate reportDate = LocalDate.now();
         if (latestNav != null) {
             positionDto.setCash(latestNav.getCash());
             positionDto.setStock(latestNav.getStock());
+            reportDate = latestNav.getReportDate();
         }
 
         // Set latest daily NAV values for dashboard display
@@ -118,6 +121,7 @@ public class HomeController {
         model.addAttribute(MODEL_ATTRIBUTE_POSITION_DTO, positionDto);
         model.addAttribute("weeklyOpenPositions", weeklyOpenPositions);
         model.addAttribute("openOptions", openOptions);
+        model.addAttribute("reportDate", reportDate);
         return DASHBOARD_PAGE_PATH;
     }
 }

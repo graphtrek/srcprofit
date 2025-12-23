@@ -1,6 +1,7 @@
 @import co.grtk.srcprofit.dto.PositionDto
 
 @import java.util.List
+@import java.time.LocalDate
 @param co.grtk.srcprofit.dto.PositionDto positionDto
 @param co.grtk.srcprofit.dto.DashboardDto dashboardDto
 @param List<PositionDto> optionHistory
@@ -13,6 +14,7 @@
 @param String cashCsv
 @param String stockCsv
 @param String optionsCsv
+@param LocalDate reportDate
 
 <div class="pagetitle">
     <h1>Dashboard</h1>
@@ -297,7 +299,7 @@
                 <div class="col-12">
                     <div class="card recent-sales overflow-auto">
                         <div class="card-body">
-                            <h5 class="card-title">Weekly Options Summary</h5>
+                            <h5 class="card-title">Weekly Options Summary <span>| Report Date: ${reportDate.toString()}</span></h5>
                             <table class="table table-borderless datatable" id="datatableWeeklyOpenPositions">
                                 <thead>
                                     <tr>
@@ -384,7 +386,7 @@
                         </div>
 
                         <div class="card-body">
-                            <h5 class="card-title">Net Asset Values</h5>
+                            <h5 class="card-title">Net Asset Values <span>| Report Date: ${reportDate.toString()}</span></h5>
                             <div class="mb-3">
                                 <span class="badge" style="background-color: #ffcc00; color: #000;">Premium: <span class="currency-usd">${positionDto.getCollectedPremium()}</span></span>
                                 <span class="badge" style="background-color: #2eca6a; color: #fff;">Total: <span class="currency-usd">${positionDto.getTotal()}</span></span>

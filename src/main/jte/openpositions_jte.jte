@@ -2,8 +2,10 @@
 @import co.grtk.srcprofit.dto.StockPositionViewDto
 
 @import java.util.List
+@import java.time.LocalDate
 @param List<OpenPositionViewDto> openPositions
 @param List<StockPositionViewDto> stockPositions
+@param LocalDate reportDate
 
 <div class="pagetitle">
     <h1>Open Positions</h1>
@@ -31,14 +33,13 @@
                 </div>
 
                 <div class="card-body">
-                    <h5 class="card-title">Options <span></span></h5>
+                    <h5 class="card-title">Options <span>| Report Date: ${reportDate.toString()}</span></h5>
 
                     <table id="datatableOpenPositions" class="table table-striped">
                         <thead>
                         <tr>
                             <th scope="col">ID</th>
                             <th scope="col">Symbol</th>
-                            <th scope="col">TradeDate</th>
                             <th scope="col">Expiration</th>
                             <th scope="col">D.Left</th>
                             <th scope="col">Qty</th>
@@ -60,7 +61,6 @@
                                     <td>${position.id()}</td>
                                 @endif
                                 <td class="text-uppercase">${position.symbol()}</td>
-                                <td>${position.tradeDate().toString()}</td>
                                 <td>${position.expirationDate().toString()}</td>
                                 <td>${position.daysLeft()}</td>
                                 <td>${position.qty()}</td>
@@ -76,7 +76,6 @@
                         </tbody>
                         <tfoot>
                         <tr>
-                            <th></th>
                             <th></th>
                             <th></th>
                             <th></th>
@@ -106,7 +105,7 @@
         <div class="col-lg-12">
             <div class="card recent-sales overflow-auto">
                 <div class="card-body">
-                    <h5 class="card-title">Stocks</h5>
+                    <h5 class="card-title">Stocks <span>| Report Date: ${reportDate.toString()}</span></h5>
 
                     <table id="datatableStockPositions" class="table table-striped">
                         <thead>
@@ -164,12 +163,12 @@
 
         function datatable() {
             console.log('datatable init');
-            var groupColumnOpen = 3; // Expiration date column (0-indexed)
+            var groupColumnOpen = 2; // Expiration date column (0-indexed)
 
             const tableOpen = new DataTable('#datatableOpenPositions', {
                 pageLength: -1,
                 perPageSelect: [5, 10, 15, ["All", -1]],
-                columnDefs: [{target: 3, visible: false, searchable: false}], // expiration hidden for grouping
+                columnDefs: [{target: 2, visible: false, searchable: false}], // expiration hidden for grouping
                 order: [[groupColumnOpen, 'asc'], [1, 'asc']], // Expiration first, then Symbol
                 footerCallback: function (row, data, start, end, display) {
                     var api = this.api();
@@ -183,15 +182,15 @@
                         return typeof i === 'number' ? i : 0;
                     };
 
-                    // Sum Qty (column 5) - only visible rows
-                    var qtyTotal = api.column(5, {page: 'current', search: 'applied'})
+                    // Sum Qty (column 4) - only visible rows
+                    var qtyTotal = api.column(4, {page: 'current', search: 'applied'})
                         .data()
                         .reduce(function (a, b) {
                             return floatVal(a) + floatVal(b);
                         }, 0);
 
-                    // Average Strike (column 6) - only visible rows
-                    var strikeData = api.column(6, {page: 'current', search: 'applied'}).data();
+                    // Average Strike (column 5) - only visible rows
+                    var strikeData = api.column(5, {page: 'current', search: 'applied'}).data();
                     var strikeSum = 0;
                     var strikeCount = 0;
                     strikeData.each(function(value) {
@@ -200,8 +199,8 @@
                     });
                     var strikeAvg = strikeCount > 0 ? strikeSum / strikeCount : 0;
 
-                    // Average Price (column 7) - only visible rows
-                    var priceData = api.column(7, {page: 'current', search: 'applied'}).data();
+                    // Average Price (column 6) - only visible rows
+                    var priceData = api.column(6, {page: 'current', search: 'applied'}).data();
                     var priceSum = 0;
                     var priceCount = 0;
                     priceData.each(function(value) {
@@ -210,15 +209,15 @@
                     });
                     var priceAvg = priceCount > 0 ? priceSum / priceCount : 0;
 
-                    // Sum CostBase (column 9) - only visible rows
-                    var costBaseTotal = api.column(9, {page: 'current', search: 'applied'})
+                    // Sum CostBase (column 8) - only visible rows
+                    var costBaseTotal = api.column(8, {page: 'current', search: 'applied'})
                         .data()
                         .reduce(function (a, b) {
                             return floatVal(a) + floatVal(b);
                         }, 0);
 
-                    // Sum P&L (column 10) - only visible rows
-                    var pnlTotal = api.column(10, {page: 'current', search: 'applied'})
+                    // Sum P&L (column 9) - only visible rows
+                    var pnlTotal = api.column(9, {page: 'current', search: 'applied'})
                         .data()
                         .reduce(function (a, b) {
                             return floatVal(a) + floatVal(b);
@@ -243,11 +242,11 @@
                     };
 
                     // Update footer cells
-                    $(api.column(5).footer()).html('<strong>' + qtyTotal + '</strong>');
-                    $(api.column(6).footer()).html('<strong>' + formatCurrency(strikeAvg) + '</strong>');
-                    $(api.column(7).footer()).html('<strong>' + formatCurrency(priceAvg) + '</strong>');
-                    $(api.column(9).footer()).html('<strong>' + formatCurrencyInt(costBaseTotal) + '</strong>');
-                    $(api.column(10).footer()).html('<strong>' + formatCurrencyInt(pnlTotal) + '</strong>');
+                    $(api.column(4).footer()).html('<strong>' + qtyTotal + '</strong>');
+                    $(api.column(5).footer()).html('<strong>' + formatCurrency(strikeAvg) + '</strong>');
+                    $(api.column(6).footer()).html('<strong>' + formatCurrency(priceAvg) + '</strong>');
+                    $(api.column(8).footer()).html('<strong>' + formatCurrencyInt(costBaseTotal) + '</strong>');
+                    $(api.column(9).footer()).html('<strong>' + formatCurrencyInt(pnlTotal) + '</strong>');
                 },
                 drawCallback: function (settings) {
                     var api = this.api();
@@ -259,7 +258,7 @@
                         .each(function (group, i) {
                             if (last !== group) {
                                 $(rows).eq(i).before(
-                                    '<tr class="group"><td colspan="12" style="font-weight:bold; background-color:#d7deea; color:#4154f1; padding:12px 8px; border-top:2px solid #4154f1; border-bottom:2px solid #4154f1;">' +
+                                    '<tr class="group"><td colspan="11" style="font-weight:bold; background-color:#d7deea; color:#4154f1; padding:12px 8px; border-top:2px solid #4154f1; border-bottom:2px solid #4154f1;">' +
                                     group +
                                     '</td></tr>'
                                 );
