@@ -1,9 +1,11 @@
 package co.grtk.srcprofit.controller;
 
 import co.grtk.srcprofit.dto.OpenPositionViewDto;
+import co.grtk.srcprofit.dto.PositionDto;
 import co.grtk.srcprofit.dto.StockPositionViewDto;
 import co.grtk.srcprofit.service.NetAssetValueService;
 import co.grtk.srcprofit.service.OpenPositionService;
+import co.grtk.srcprofit.service.OptionService;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -23,10 +25,13 @@ public class OpenPositionsController {
 
     private final OpenPositionService openPositionService;
     private final NetAssetValueService netAssetValueService;
-
-    public OpenPositionsController(OpenPositionService openPositionService, NetAssetValueService netAssetValueService) {
+    private final OptionService optionService;
+    public OpenPositionsController(OpenPositionService openPositionService,
+                                   OptionService optionService,
+                                   NetAssetValueService netAssetValueService) {
         this.openPositionService = openPositionService;
         this.netAssetValueService = netAssetValueService;
+        this.optionService = optionService;
     }
 
     /**
@@ -51,6 +56,18 @@ public class OpenPositionsController {
             reportDate = latestNav.getReportDate();
         }
         model.addAttribute("reportDate", reportDate);
+
+        // Calculate position summary (buy/sell obligations, premiums)
+        PositionDto positionDto = new PositionDto();
+        List<PositionDto> openOptions = openPositionService.getAllOpenOptionDtos(null);
+        optionService.calculatePosition(positionDto, openOptions, List.of());
+
+        // Get weekly positions (expiring within 7 days)
+        List<PositionDto> weeklyOpenPositions = optionService.getWeeklySummaryOpenOptionDtos(openOptions);
+
+        model.addAttribute("positionDto", positionDto);
+        model.addAttribute("weeklyOpenPositions", weeklyOpenPositions);
+        model.addAttribute("openOptions", openOptions);
 
         return "openpositions_jte";
     }

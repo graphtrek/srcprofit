@@ -27,7 +27,7 @@ public interface OptionRepository extends JpaRepository<OptionEntity, Long> {
             "LEFT JOIN OptionEntity o2 " +
             "ON o1.conid = o2.conid AND o2.status = 'CLOSED' " +
             "WHERE o1.status = 'OPEN' AND o1.expirationDate >= :expirationDate AND o2.conid is NULL " +
-            "ORDER BY o1.conid DESC, o1.status ASC, o1.tradeDate DESC")
+            "ORDER BY o1.ticker")
     List<OptionEntity> findAllOpen(@Param("expirationDate") LocalDate expirationDate);
 
     @Query("SELECT o1 " +

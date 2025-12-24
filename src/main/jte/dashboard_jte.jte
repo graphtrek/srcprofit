@@ -34,7 +34,6 @@
             <div class="row">
 
                 <!-- Unrealized P&L Card -->
-
                 <div class="col-xxl-4 col-md-6">
                     <div class="card info-card sales-card">
                         <div class="card-body">
@@ -65,11 +64,9 @@
 
                     </div>
                 </div>
-
                 <!-- End Unrealized P&L -->
 
                 <!-- Realized P&L Card -->
-
                 <div class="col-xxl-4 col-md-6">
                     <div class="card info-card revenue-card">
                       <div class="card-body">
@@ -100,12 +97,9 @@
 
                     </div>
                 </div>
-
                 <!-- End Realized P&L Card -->
 
                 <!-- Positions Value Card -->
-
-
                 <div class="col-xxl-4 col-xl-12">
 
                     <div class="card info-card customers-card">
@@ -138,8 +132,6 @@
                     </div>
 
                 </div>
-
-
                 <!-- End Positions Value Card -->
 
                 <!-- Summary Cards Section -->
@@ -147,7 +139,6 @@
                     <div class="row">
 
                         <!-- Buy Obligation Market Value Card -->
-
                         <div class="col-xxl-4 col-md-6">
                             <div class="card info-card sales-card">
                                 <div class="card-body">
@@ -165,11 +156,9 @@
 
                             </div>
                         </div>
-
                         <!-- EndBuy Obligation Market Value -->
 
                         <!-- Buy Obligation Card -->
-
                         <div class="col-xxl-4 col-xl-12">
 
                             <div class="card info-card customers-card">
@@ -195,7 +184,6 @@
                         <!-- End Buy Obligation Card -->
 
                         <!-- PUT Premium Card -->
-
                         <div class="col-xxl-4 col-md-6">
                             <div class="card info-card revenue-card">
                                 <div class="card-body">
@@ -409,11 +397,9 @@
                 </div>
                 <!-- End Reports -->
 
-
-
             </div>
-        </div><!-- End Left side columns -->
-
+        </div>
+        <!-- End Left side columns -->
 
     </div>
 </section>

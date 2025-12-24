@@ -5,6 +5,7 @@ import co.grtk.srcprofit.dto.OpenPositionViewDto;
 import co.grtk.srcprofit.dto.StockPositionViewDto;
 import co.grtk.srcprofit.service.NetAssetValueService;
 import co.grtk.srcprofit.service.OpenPositionService;
+import co.grtk.srcprofit.service.OptionService;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -34,6 +35,9 @@ class OpenPositionsControllerTest {
     @Mock
     private NetAssetValueService netAssetValueService;
 
+    @Mock
+    private OptionService optionService;
+
     @InjectMocks
     private OpenPositionsController openPositionsController;
 
@@ -45,6 +49,10 @@ class OpenPositionsControllerTest {
         NetAssetValueDto mockNav = new NetAssetValueDto();
         mockNav.setReportDate(LocalDate.of(2025, 12, 22));
         lenient().when(netAssetValueService.loadLatestNetAssetValue()).thenReturn(mockNav);
+
+        // Setup default option service calls (lenient to avoid unnecessary stubbing errors)
+        lenient().when(openPositionService.getAllOpenOptionDtos(null)).thenReturn(new ArrayList<>());
+        lenient().when(optionService.getWeeklySummaryOpenOptionDtos(any())).thenReturn(new ArrayList<>());
     }
 
     @Test

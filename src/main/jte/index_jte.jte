@@ -113,7 +113,8 @@
               <span>Open Positions</span>
             </a>
         </li><!-- End Open Positions -->
-        <li class="nav-item">
+
+<%--        <li class="nav-item">
             <a class="nav-link collapsed" href="#"
                hx-indicator="#spinner"
                hx-get="/tradelog"
@@ -124,7 +125,7 @@
               <i class="bi bi-journal-text"></i>
               <span>Trade Log</span>
             </a>
-        </li><!-- End Trade Log -->
+        </li>--%><!-- End Trade Log -->
         <li class="nav-item">
             <a class="nav-link collapsed" href="#"
                hx-indicator="#spinner"

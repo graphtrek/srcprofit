@@ -95,12 +95,13 @@ public class HomeController {
 
         // Get open positions and calculate aggregated metrics
         // ISSUE-051: Use OpenPositionService for authoritative IBKR snapshot data instead of OptionService trading history
-        List<PositionDto> openOptions = optionService.getAllOpenOptionDtos(null);
+        List<PositionDto> openOptions = openPositionService.getAllOpenOptionDtos(null);
 
         // Calculate position summary (buy/sell obligations, premiums)
         PositionDto positionDto = new PositionDto();
 
         optionService.calculatePosition(positionDto, openOptions, List.of());
+
         // Get weekly positions (expiring within 7 days)
         List<PositionDto> weeklyOpenPositions = optionService.getWeeklySummaryOpenOptionDtos(openOptions);
 

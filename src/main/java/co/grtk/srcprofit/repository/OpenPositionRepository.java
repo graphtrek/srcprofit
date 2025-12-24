@@ -1,6 +1,7 @@
 package co.grtk.srcprofit.repository;
 
 import co.grtk.srcprofit.entity.OpenPositionEntity;
+import co.grtk.srcprofit.service.OpenPositionService;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
@@ -73,7 +74,10 @@ public interface OpenPositionRepository extends JpaRepository<OpenPositionEntity
      *
      * @return list of all option positions
      */
-    @Query("SELECT o FROM OpenPositionEntity o WHERE o.assetClass = 'OPT' ORDER BY o.symbol ASC")
+    @Query("SELECT o FROM OpenPositionEntity o " +
+            "LEFT JOIN FETCH o.underlyingInstrument " +
+            "WHERE o.assetClass = 'OPT' " +
+            "ORDER BY o.symbol ASC")
     List<OpenPositionEntity> findAllOptions();
 
     /**
@@ -85,8 +89,11 @@ public interface OpenPositionRepository extends JpaRepository<OpenPositionEntity
      * @param startDate the earliest report date to include (inclusive)
      * @return list of option positions with reportDate >= startDate, ordered by reportDate DESC
      */
-    @Query("SELECT o FROM OpenPositionEntity o WHERE o.assetClass = 'OPT' " +
-           "AND o.reportDate >= :startDate ORDER BY o.reportDate DESC")
+    @Query("SELECT o FROM OpenPositionEntity o " +
+            "LEFT JOIN FETCH o.underlyingInstrument " +
+            "WHERE o.assetClass = 'OPT' " +
+            "AND o.reportDate >= :startDate " +
+            "ORDER BY o.reportDate DESC")
     List<OpenPositionEntity> findAllOptionsByDate(@Param("startDate") LocalDate startDate);
 
     /**

@@ -149,7 +149,7 @@ public class OptionService {
 
         List<PositionDto> weeklyOpenPositions = new ArrayList<>();
         grouped.forEach((date, posList) -> {
-            log.info("Expiration: {}", date);
+            log.debug("Expiration: {}", date);
             PositionDto positionDto = new PositionDto();
             calculatePosition(positionDto,posList, Collections.emptyList());
             weeklyOpenPositions.add(positionDto);
@@ -199,7 +199,7 @@ public class OptionService {
             cumulativePremiumPerDay.put(date, runningTotal);
         }
 
-        log.info("getDailyPremium options:{}, runningTotal:{}, cumulativePremiumPerDay {}",
+        log.debug("getDailyPremium options:{}, runningTotal:{}, cumulativePremiumPerDay {}",
                 options.size(),
                 runningTotal,
                 cumulativePremiumPerDay);
@@ -395,18 +395,18 @@ public class OptionService {
     }
 
     public void calculatePosition(PositionDto positionDto, List<PositionDto> openPositions, List<PositionDto> closedPositions) {
-
+        log.info("calculatePosition openPositions:{}, closedPositions:{}",openPositions.size(), closedPositions.size());
         double realizedProfitOrLoss = 0.0;
         double collectedPremium = 0.0;
         double openPositionsTradePrice = 0.0;
-        double marketValue = 0.0;
+        double putObligationMarketValue = 0.0;
 
         double unRealizedProfitOrLoss = 0.0;
         double put = 0.0;
         double call = 0.0;
         LocalDate startDate = LocalDate.now();
         LocalDate endDate = LocalDate.now();
-        double positionValue = 0.0;
+        double putObligationValue = 0.0;
 
         double marketPrice = 0.0;
         double putMarketPrice = 0.0;
@@ -449,16 +449,25 @@ public class OptionService {
             if (OptionType.PUT.equals(dto.getType())) {
                 put += dto.getTradePrice() * qty;
                 putMarketPrice += dto.getMarketPrice();
-                if (dto.getTradePrice() >= 0) { //PUT SELL
-                    marketValue += dto.getMarketValue() * qty;
-                    positionValue += dto.getPositionValue() * qty;
+                log.debug("ticker:{}, qty:{}, tradePrice:{}, put:{}, marketPrice:{}, putMarketPrice:{}",
+                        dto.getTicker(), qty,dto.getTradePrice(), put,  dto.getMarketPrice(), putMarketPrice) ;
+
+                if (dto.getQuantity() < 0) { //PUT SELL
+                    putObligationMarketValue += dto.getMarketValue() * qty;
+                    putObligationValue += dto.getPositionValue() * qty;
+                    log.debug("ticker:{}, qty:{}, positionValue:{}, putObligationValue:{}, putObligationMarketValue:{}",
+                            dto.getTicker(), dto.getQuantity(), dto.getPositionValue(), putObligationValue, putObligationMarketValue);
+
                 }
             } else {
                 call += dto.getTradePrice() * qty;
                 callMarketPrice += dto.getMarketPrice();
-                if (dto.getTradePrice() >= 0) { //CALL SELL
-                    callObligationMarketValue += dto.getMarketValue() * qty;
-                    callObligationValue += dto.getPositionValue() * qty;
+                if (dto.getQuantity() < 0) { //CALL SELL
+                    callObligationMarketValue += (dto.getMarketValue() * qty);
+                    callObligationValue += (dto.getPositionValue() * qty);
+
+                    log.debug("ticker:{}, qty:{}, positionValue:{}, callObligationValue:{}, callObligationMarketValue:{}",
+                            dto.getTicker(), dto.getQuantity(), dto.getPositionValue(), callObligationValue, callObligationMarketValue);
                 }
             }
 
@@ -489,14 +498,14 @@ public class OptionService {
             positionDto.setTradeDate(startDate);
 
         if (positionDto.getMarketValue() == null)
-            positionDto.setMarketValue(marketValue);
+            positionDto.setMarketValue(putObligationMarketValue);
 
         positionDto.setCollectedPremium(round2Digits(collectedPremium));
-        if(positionValue == 0 && openPositionsSize == 1)
-            positionValue = openPositions.getFirst().getPositionValue();
+        if(putObligationValue == 0 && openPositionsSize == 1)
+            putObligationValue = openPositions.getFirst().getPositionValue();
 
         if (positionDto.getPositionValue() == null)
-            positionDto.setPositionValue(round2Digits(positionValue));
+            positionDto.setPositionValue(round2Digits(putObligationValue));
 
         calculateAndSetAnnualizedRoi(positionDto);
 
@@ -533,7 +542,7 @@ public class OptionService {
         }
         positionDto.setProfitOrLoss(round2Digits(totalProfitOrLoss));
 
-        double marketVsPositionsPercentage = positionValue > 0 ? ((marketValue / positionValue) * 100) - 100 : 0.0;
+        double marketVsPositionsPercentage = putObligationValue > 0 ? ((putObligationMarketValue / putObligationValue) * 100) - 100 : 0.0;
         positionDto.setMarketVsPositionsPercentage(round2Digits(marketVsPositionsPercentage));
 
         // Calculate CALL coverage percentage (similar to PUT)
@@ -543,7 +552,7 @@ public class OptionService {
         }
         positionDto.setCallMarketVsObligationsPercentage(round2Digits(callMarketVsObligationsPercentage));
 
-        log.info("positionDto: {}", positionDto);
+        //log.info("positionDto: {}", positionDto);
     }
 
     /**

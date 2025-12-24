@@ -558,6 +558,7 @@ public class OpenPositionService {
         List<OpenPositionEntity> openOptions = (startDate != null)
                 ? openPositionRepository.findAllOptionsByDate(startDate)
                 : openPositionRepository.findAllOptions();
+
         return convertToPositionDtos(openOptions);
     }
 
@@ -627,10 +628,15 @@ public class OpenPositionService {
         dto.setExpirationDate(entity.getExpirationDate());
 
         // Pricing (strike already in dollars, not cents)
-        dto.setPositionValue(entity.getStrike());           // Strike price = position value
-        dto.setTradePrice(entity.getCostBasisPrice());      // Cost basis = trade price
-        dto.setMarketPrice(entity.getMarkPrice());          // Mark price = market price
-        dto.setMarketValue(entity.getMarkPrice());          // Also set marketValue for probability calc
+        dto.setPositionValue(entity.getStrike() * entity.getMultiplier());           // Strike price = position value
+
+        if(entity.getQuantity() < 0)
+            dto.setTradePrice(entity.getCostBasisPrice() * entity.getMultiplier());      // Cost basis = trade price
+        else
+            dto.setTradePrice(entity.getCostBasisPrice() * entity.getMultiplier() * -1);      // Cost basis = trade price
+
+        dto.setMarketPrice(entity.getMarkPrice() * entity.getMultiplier());          // Mark price = market price
+        dto.setMarketValue(entity.getUnderlyingInstrument().getPrice() * entity.getMultiplier());          // Also set marketValue for probability calc
 
         // Option type mapping: "P" or "C" string → OptionType enum
         if ("P".equals(entity.getPutCall())) {

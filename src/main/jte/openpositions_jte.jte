@@ -1,12 +1,14 @@
 @import co.grtk.srcprofit.dto.OpenPositionViewDto
 @import co.grtk.srcprofit.dto.StockPositionViewDto
-
+@import co.grtk.srcprofit.dto.PositionDto
 @import java.util.List
 @import java.time.LocalDate
+
 @param List<OpenPositionViewDto> openPositions
 @param List<StockPositionViewDto> stockPositions
 @param LocalDate reportDate
-
+@param co.grtk.srcprofit.dto.PositionDto positionDto
+@param List<PositionDto> weeklyOpenPositions
 <div class="pagetitle">
     <h1>Open Positions</h1>
     <nav>
@@ -16,6 +18,205 @@
         </ol>
     </nav>
 </div><!-- End Page Title -->
+
+<section class="section dashboard">
+    <div class="row">
+        <div class="col-lg-12">
+            <div class="row">
+
+                <!-- Summary Cards Section -->
+                <div class="col-12">
+                    <div class="row">
+
+                        <!-- Buy Obligation Market Value Card -->
+                        <div class="col-xxl-4 col-md-6">
+                            <div class="card info-card sales-card">
+                                <div class="card-body">
+                                    <h5 class="card-title">Buy Obligation Market Value</h5>
+
+                                    <div class="d-flex align-items-center">
+                                        <div class="card-icon rounded-circle d-flex align-items-center justify-content-center">
+                                            <i class="bi bi-inbox"></i>
+                                        </div>
+                                        <div class="ps-3">
+                                            <h6 class="currency-usd-int">${positionDto.getMarketValue()}</h6>
+                                        </div>
+                                    </div>
+                                </div>
+
+                            </div>
+                        </div>
+                        <!-- EndBuy Obligation Market Value -->
+
+                        <!-- Buy Obligation Card -->
+                        <div class="col-xxl-4 col-xl-12">
+
+                            <div class="card info-card customers-card">
+                                <div class="card-body">
+                                    <h5 class="card-title">Buy Obligation</h5>
+
+                                    <div class="d-flex align-items-center">
+                                        <div class="card-icon rounded-circle d-flex align-items-center justify-content-center">
+                                            <i class="bi bi-bookmark-check"></i>
+                                        </div>
+                                        <div class="ps-3">
+                                            <h6 class="currency-usd-int">${positionDto.getPositionValue()}</h6>
+                                            <span class="text-success small pt-1 fw-bold currency-usd-int">${positionDto.getCash()}</span>
+                                            <span class="text-muted small pt-2 ps-1">Cash</span>
+
+                                        </div>
+                                    </div>
+
+                                </div>
+                            </div>
+
+                        </div>
+                        <!-- End Buy Obligation Card -->
+
+                        <!-- PUT Premium Card -->
+                        <div class="col-xxl-4 col-md-6">
+                            <div class="card info-card revenue-card">
+                                <div class="card-body">
+                                    <h5 class="card-title">PUT Premium</h5>
+
+                                    <div class="d-flex align-items-center">
+                                        <div class="card-icon rounded-circle d-flex align-items-center justify-content-center">
+                                            <i class="bi bi-currency-dollar"></i>
+                                        </div>
+                                        <div class="ps-3">
+                                            <h6 class="currency-usd-int">${positionDto.getPut()}</h6>
+                                            @if(positionDto.getPut() < positionDto.getPutMarketPrice())
+                                                <span class="text-danger small pt-1 fw-bold currency-usd-int">${positionDto.getPutMarketPrice()}</span>
+                                            @else
+                                                <span class="text-success small pt-1 fw-bold currency-usd-int">${positionDto.getPutMarketPrice()}</span>
+                                            @endif
+                                            <span class="text-muted small pt-2 ps-1">Market Value</span>
+                                        </div>
+                                    </div>
+                                </div>
+
+                            </div>
+                        </div>
+                        <!-- End PUT Premium Card -->
+
+                        <!-- Sell Obligation Market Value Card (CALL) -->
+                        <div class="col-xxl-4 col-md-6">
+                            <div class="card info-card sales-card">
+                                <div class="card-body">
+                                    <h5 class="card-title">Sell Obligation Market Value</h5>
+
+                                    <div class="d-flex align-items-center">
+                                        <div class="card-icon rounded-circle d-flex align-items-center justify-content-center">
+                                            <i class="bi bi-arrow-bar-up"></i>
+                                        </div>
+                                        <div class="ps-3">
+                                            <h6 class="currency-usd-int">${positionDto.getCallObligationMarketValue()}</h6>
+                                        </div>
+                                    </div>
+                                </div>
+
+                            </div>
+                        </div>
+                        <!-- End Sell Obligation Market Value Card -->
+
+                        <!-- Sell Obligation Card (CALL) -->
+                        <div class="col-xxl-4 col-xl-12">
+                            <div class="card info-card customers-card">
+                                <div class="card-body">
+                                    <h5 class="card-title">Sell Obligation</h5>
+
+                                    <div class="d-flex align-items-center">
+                                        <div class="card-icon rounded-circle d-flex align-items-center justify-content-center">
+                                            <i class="bi bi-hand-thumbs-up"></i>
+                                        </div>
+                                        <div class="ps-3">
+                                            <h6 class="currency-usd-int">${positionDto.getCallObligationValue()}</h6>
+                                            <span class="text-success small pt-1 fw-bold currency-usd-int">${positionDto.getStock()}</span>
+                                            <span class="text-muted small pt-2 ps-1">Stock</span>
+                                        </div>
+                                    </div>
+
+                                </div>
+                            </div>
+
+                        </div>
+                        <!-- End Sell Obligation Card -->
+
+                        <!-- CALL Premium Card -->
+                        <div class="col-xxl-4 col-md-6">
+                            <div class="card info-card revenue-card">
+                                <div class="card-body">
+                                    <h5 class="card-title">CALL Premium</h5>
+
+                                    <div class="d-flex align-items-center">
+                                        <div class="card-icon rounded-circle d-flex align-items-center justify-content-center">
+                                            <i class="bi bi-currency-dollar"></i>
+                                        </div>
+                                        <div class="ps-3">
+                                            <h6 class="currency-usd-int">${positionDto.getCall()}</h6>
+                                            @if(positionDto.getCall() > positionDto.getCallMarketPrice())
+                                                <span class="text-success small pt-1 fw-bold currency-usd-int">${positionDto.getCallMarketPrice()}</span>
+                                            @else
+                                                <span class="text-danger small pt-1 fw-bold currency-usd-int">${positionDto.getCallMarketPrice()}</span>
+                                            @endif
+                                            <span class="text-muted small pt-2 ps-1">Market Value</span>
+                                        </div>
+                                    </div>
+                                </div>
+
+                            </div>
+                        </div>
+                        <!-- End CALL Premium Card -->
+
+
+                    </div>
+                </div>
+                <!-- End Summary Cards Section -->
+
+                <!-- Weekly Options Summary Table -->
+                <div class="col-12">
+                    <div class="card recent-sales overflow-auto">
+                        <div class="card-body">
+                            <h5 class="card-title">Weekly Options Summary <span>| Report Date: ${reportDate.toString()}</span></h5>
+                            <table class="table table-borderless datatable" id="datatableWeeklyOpenPositions">
+                                <thead>
+                                <tr>
+                                    <th scope="col">Expiration</th>
+                                    <th scope="col">DaysLeft</th>
+                                    <th scope="col">Value</th>
+                                    <th scope="col">MrktValue</th>
+                                    <th scope="col">Price</th>
+                                    <th scope="col">MrktPrice</th>
+                                    <th scope="col">P&L</th>
+                                    <th scope="col">R.O.I</th>
+                                    <th scope="col">P.O.P</th>
+                                </tr>
+                                </thead>
+                                <tbody>
+                                @for(var option : weeklyOpenPositions )
+                                    <tr style="cursor: pointer;">
+                                        <td>${option.getExpirationDateString()}</td>
+                                        <td>${option.getDaysLeft()}</td>
+                                        <td class="currency-usd-int">${option.getPositionValue()}</td>
+                                        <td class="currency-usd-int">${option.getMarketValue()}</td>
+                                        <td class="currency-usd-int">${option.getTradePrice()}</td>
+                                        <td class="currency-usd-int">${option.getMarketPrice()}</td>
+                                        <td class="currency-usd-int">${option.getUnRealizedProfitOrLoss()}</td>
+                                        <td>${option.getAnnualizedRoiPercent()}%</td>
+                                        <td>${option.getProbability()}%</td>
+                                    </tr>
+                                @endfor
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+                <!-- Weekly Options Summary Table -->
+
+            </div>
+        </div>
+    </div>
+</section>
 
 <section class="section dashboard">
     <div class="row">
@@ -70,7 +271,11 @@
                                 <td class="currency-usd">${position.costBasisMoney()}</td>
                                 <td class="currency-usd">${position.calculatedPnl()}</td>
                                 <td>${position.roi()}%</td>
-                                <td>${position.type()}</td>
+                                @if(position.qty() < 0)
+                                    <td>${position.type()} SELL</td>
+                                @else
+                                    <td>${position.type()} BUY</td>
+                                @endif
                             </tr>
                         @endfor
                         </tbody>
@@ -151,14 +356,25 @@
     $( document ).ready(function() {
         console.log( "ready!" );
 
+        // Create formatters once and reuse them for better performance
+        const currencyFormatter2 = new Intl.NumberFormat('en-US', {
+            style: 'currency',
+            currency: 'USD',
+            maximumFractionDigits: 2
+        });
+
+        const currencyFormatter0 = new Intl.NumberFormat('en-US', {
+            style: 'currency',
+            currency: 'USD',
+            maximumFractionDigits: 0
+        });
+
         $('.currency-usd').each(function () {
-            var monetary_value = $(this).text();
-            var i = new Intl.NumberFormat('en-US', {
-                style: 'currency',
-                currency: 'USD',
-                maximumFractionDigits: 2
-            }).format(monetary_value);
-            $(this).text(i);
+            $(this).text(currencyFormatter2.format($(this).text()));
+        });
+
+        $('.currency-usd-int').each(function () {
+            $(this).text(currencyFormatter0.format($(this).text()));
         });
 
         function datatable() {
@@ -243,8 +459,8 @@
 
                     // Update footer cells
                     $(api.column(4).footer()).html('<strong>' + qtyTotal + '</strong>');
-                    $(api.column(5).footer()).html('<strong>' + formatCurrency(strikeAvg) + '</strong>');
-                    $(api.column(6).footer()).html('<strong>' + formatCurrency(priceAvg) + '</strong>');
+                    $(api.column(5).footer()).html('<strong>' + formatCurrency(strikeSum) + '</strong>');
+                    $(api.column(6).footer()).html('<strong>' + formatCurrency(priceSum) + '</strong>');
                     $(api.column(8).footer()).html('<strong>' + formatCurrencyInt(costBaseTotal) + '</strong>');
                     $(api.column(9).footer()).html('<strong>' + formatCurrencyInt(pnlTotal) + '</strong>');
                 },
