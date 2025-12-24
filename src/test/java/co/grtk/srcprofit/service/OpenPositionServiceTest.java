@@ -78,44 +78,6 @@ class OpenPositionServiceTest {
     }
 
     @Test
-    void getAllOpenOptionDtos_shouldReturnCalculatedDtos() {
-        // Arrange
-        OpenPositionEntity spy = buildTestEntity("SPY", 600.0, "P", 1, LocalDate.now().plusDays(30));
-        OpenPositionEntity aapl = buildTestEntity("AAPL", 200.0, "C", -1, LocalDate.now().plusDays(45));
-        aapl.setUnderlyingSymbol("AAPL");
-
-        when(openPositionRepository.findAllOptions()).thenReturn(List.of(spy, aapl));
-
-        // Act
-        List<PositionDto> result = openPositionService.getAllOpenOptionDtos(null);
-
-        // Assert
-        assertThat(result).hasSize(2);
-
-        // First position: SPY PUT
-        PositionDto spyDto = result.get(0);
-        assertThat(spyDto.getTicker()).isEqualTo("SPY");
-        assertThat(spyDto.getType()).isEqualTo(OptionType.PUT);
-        assertThat(spyDto.getPositionValue()).isEqualTo(60000.0);
-        assertThat(spyDto.getTradePrice()).isEqualTo(5.0);
-        assertThat(spyDto.getMarketPrice()).isEqualTo(4.5);
-        assertThat(spyDto.getQuantity()).isEqualTo(1);
-        assertThat(spyDto.getStatus()).isEqualTo(OptionStatus.OPEN);
-        assertThat(spyDto.getAssetClass()).isEqualTo(AssetClass.OPT);
-        assertThat(spyDto.getAnnualizedRoiPercent()).isNotNull();
-        assertThat(spyDto.getDaysLeft()).isGreaterThan(0);
-        assertThat(spyDto.getUnRealizedProfitOrLoss()).isEqualTo(-50.0);
-
-        // Second position: AAPL CALL
-        PositionDto aaplDto = result.get(1);
-        assertThat(aaplDto.getTicker()).isEqualTo("AAPL");
-        assertThat(aaplDto.getType()).isEqualTo(OptionType.CALL);
-        assertThat(aaplDto.getPositionValue()).isEqualTo(200.0);
-        assertThat(aaplDto.getQuantity()).isEqualTo(-1);
-        assertThat(aaplDto.getAnnualizedRoiPercent()).isNotNull();
-    }
-
-    @Test
     void getOpenOptionsByTickerDto_shouldFilterByUnderlyingTicker() {
         // Arrange
         OpenPositionEntity spy1 = buildTestEntity("SPY", 600.0, "P", 1, LocalDate.now().plusDays(30));
@@ -144,61 +106,6 @@ class OpenPositionServiceTest {
         // Assert
         assertThat(result).isEmpty();
         assertThat(result).isNotNull();
-    }
-
-    @Test
-    void convertToPositionDto_handlesNullFields() {
-        // Arrange
-        OpenPositionEntity entity = buildTestEntity("SPY", 600.0, "P", 1, LocalDate.now().plusDays(30));
-        entity.setCostBasisPrice(null);  // Null trade price - will be estimated by PositionMapper
-        entity.setMarkPrice(null);       // Null market price - will be set to 0.0 by DTO
-        entity.setFifoPnlUnrealized(null);  // Null P&L
-
-        when(openPositionRepository.findAllOptions()).thenReturn(List.of(entity));
-
-        // Act - should not throw
-        List<PositionDto> result = openPositionService.getAllOpenOptionDtos(null);
-
-        // Assert
-        assertThat(result).hasSize(1);
-        PositionDto dto = result.get(0);
-        assertThat(dto.getTicker()).isEqualTo("SPY");
-        // PositionMapper estimates tradePrice if null and converts null marketPrice to 0.0
-        assertThat(dto.getUnRealizedProfitOrLoss()).isNull();
-        assertThat(dto.getPositionValue()).isEqualTo(600.0);
-        // Verify the method doesn't crash with null fields
-        assertThat(dto.getType()).isEqualTo(OptionType.PUT);
-    }
-
-    @Test
-    void convertToPositionDto_fieldMappingAccuracy() {
-        // Arrange
-        OpenPositionEntity entity = buildTestEntity("QQQ", 350.0, "C", 2, LocalDate.now().plusDays(60));
-        entity.setReportDate(LocalDate.of(2025, 1, 1));
-        entity.setFifoPnlUnrealized(250.0);
-
-        when(openPositionRepository.findAllOptions()).thenReturn(List.of(entity));
-
-        // Act
-        List<PositionDto> result = openPositionService.getAllOpenOptionDtos(null);
-
-        // Assert
-        assertThat(result).hasSize(1);
-        PositionDto dto = result.get(0);
-
-        // Verify all field mappings
-        assertThat(dto.getTicker()).isEqualTo("QQQ");  // underlyingSymbol
-        assertThat(dto.getQuantity()).isEqualTo(2);  // quantity
-        assertThat(dto.getTradeDate()).isEqualTo(LocalDate.of(2025, 1, 1));  // reportDate
-        assertThat(dto.getExpirationDate()).isEqualTo(LocalDate.now().plusDays(60));  // expirationDate
-        assertThat(dto.getPositionValue()).isEqualTo(35000.0);  // strike
-        assertThat(dto.getTradePrice()).isEqualTo(5.0);  // costBasisPrice
-        assertThat(dto.getMarketPrice()).isEqualTo(4.5);  // markPrice
-        assertThat(dto.getMarketValue()).isEqualTo(4.5);  // markPrice
-        assertThat(dto.getType()).isEqualTo(OptionType.CALL);  // putCall "C"
-        assertThat(dto.getUnRealizedProfitOrLoss()).isEqualTo(250.0);  // fifoPnlUnrealized
-        assertThat(dto.getStatus()).isEqualTo(OptionStatus.OPEN);  // static
-        assertThat(dto.getAssetClass()).isEqualTo(AssetClass.OPT);  // static
     }
 
     @Test

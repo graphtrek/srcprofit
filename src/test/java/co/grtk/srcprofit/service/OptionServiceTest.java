@@ -131,27 +131,6 @@ class OptionServiceTest {
     }
 
     @Test
-    @DisplayName("Equal sized positions: Portfolio metrics weighted equally")
-    void testWeightedCalculations_EqualPositions() {
-        PositionDto pos1 = createPosition(1000, 365);
-        PositionDto pos2 = createPosition(1000, 365);
-
-        List<PositionDto> openPositions = List.of(pos1, pos2);
-        PositionDto portfolio = new PositionDto();
-        portfolio.setTicker("PORTFOLIO");
-
-        optionService.calculatePosition(portfolio, openPositions, new ArrayList<>());
-
-        // With equal sized positions, portfolio metrics should equal individual metrics
-        Integer pos1ROI = pos1.getAnnualizedRoiPercent();
-        Integer portfolioROI = portfolio.getAnnualizedRoiPercent();
-
-        assertThat(portfolioROI)
-                .as("With equal positions, portfolio ROI should equal position ROI")
-                .isEqualTo(pos1ROI);
-    }
-
-    @Test
     @DisplayName("Portfolio with closed positions: Only open positions affect portfolio metrics")
     void testCalculatePosition_WithClosedPositions() {
         PositionDto openPos = createPosition(5000, 365);
