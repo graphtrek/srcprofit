@@ -2,9 +2,9 @@
 
 **Auto-generated** - Run `python scripts/update_issue_index.py` to update
 
-**Total**: 60 issues
-**Open**: 7 (12%)
-**Closed**: 48 (80%)
+**Total**: 61 issues
+**Open**: 7 (11%)
+**Closed**: 49 (80%)
 **Partial**: 0
 
 ---
@@ -131,6 +131,8 @@
   - Priority: MEDIUM | Completed: 2025-12-22
 - **[ISSUE-058](ISSUE-058-openposition-data-source-migration.md)** - OpenPosition Data Source Migration & Footer Calculations
   - Priority: HIGH | Completed: 2025-12-26
+- **[ISSUE-059](ISSUE-059-test-api-conditional-execution.md)** - Add API Availability Conditional Test Execution
+  - Priority: MEDIUM
 
 ---
 
@@ -189,6 +191,9 @@
 
 **Infrastructure | Developer Experience** (1):
   - ISSUE-036 ✅
+
+**Testing / Quality Assurance** (1):
+  - ISSUE-059 ✅
 
 **UI Enhancement / Code Quality** (1):
   - ISSUE-055 ✅

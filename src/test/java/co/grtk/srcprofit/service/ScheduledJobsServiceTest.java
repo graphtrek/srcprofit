@@ -1,5 +1,6 @@
 package co.grtk.srcprofit.service;
 
+import co.grtk.srcprofit.condition.ApiAvailabilityCondition;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -22,8 +23,12 @@ import static org.mockito.Mockito.*;
  * - Job delegates to AlpacaService
  * - Error handling (exceptions logged, not rethrown)
  * - Logging behavior (debug on start, info on success, error on failure)
+ *
+ * Tests are skipped gracefully if required API credentials are not configured:
+ * - ALPACA_API_KEY environment variable
+ * - ALPHA_VINTAGE_API_KEY environment variable
  */
-@ExtendWith(MockitoExtension.class)
+@ExtendWith({MockitoExtension.class, ApiAvailabilityCondition.class})
 class ScheduledJobsServiceTest {
 
     @Mock

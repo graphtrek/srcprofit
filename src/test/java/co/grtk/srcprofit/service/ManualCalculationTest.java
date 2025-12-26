@@ -142,7 +142,7 @@ class ManualCalculationTest {
         PositionDto input = new PositionDto();
         input.setPositionValue(10000.0);
         input.setTradeDate(LocalDate.of(2025, 11, 11));
-        input.setExpirationDate(LocalDate.of(2025, 12, 26));
+        input.setExpirationDate(LocalDate.of(2026, 1, 9));
         input.setTradePrice(100.0);
         input.setMarketValue(10100.0);
         input.setQuantity(1);
@@ -150,11 +150,11 @@ class ManualCalculationTest {
 
         PositionDto result = optionService.calculateSinglePosition(input);
 
-        // 45 days between Nov 11 and Dec 26 (may be 46 due to inclusive calculation)
+        // Days between Nov 11 and Jan 9 (approximately 59 days)
         assertThat(result.getDaysBetween())
                 .as("Days between should be calculated from form dates")
-                .isGreaterThanOrEqualTo(45)
-                .isLessThanOrEqualTo(46);
+                .isGreaterThanOrEqualTo(58)
+                .isLessThanOrEqualTo(60);
 
         // daysLeft should be calculated from now to expiration
         assertThat(result.getDaysLeft())
