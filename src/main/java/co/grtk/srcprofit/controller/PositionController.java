@@ -9,6 +9,7 @@ import co.grtk.srcprofit.mapper.PositionMapper;
 import co.grtk.srcprofit.repository.InstrumentRepository;
 import co.grtk.srcprofit.service.AlpacaService;
 import co.grtk.srcprofit.service.InstrumentService;
+import co.grtk.srcprofit.service.OpenPositionService;
 import co.grtk.srcprofit.service.OptionService;
 import co.grtk.srcprofit.service.VirtualPositionService;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -24,6 +25,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 
 import java.time.LocalDate;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
@@ -42,6 +44,7 @@ public class PositionController {
 
 
     private final OptionService optionService;
+    private final OpenPositionService openPositionService;
     private final InstrumentService instrumentService;
     private final AlpacaService alpacaService;
     private final InstrumentRepository instrumentRepository;
@@ -54,13 +57,15 @@ public class PositionController {
             AlpacaService alpacaService,
             InstrumentRepository instrumentRepository,
             VirtualPositionService virtualPositionService,
-            ObjectMapper objectMapper) {
+            ObjectMapper objectMapper,
+            OpenPositionService openPositionService) {
         this.optionService = optionService;
         this.instrumentService = instrumentService;
         this.alpacaService = alpacaService;
         this.instrumentRepository = instrumentRepository;
         this.virtualPositionService = virtualPositionService;
         this.objectMapper = objectMapper;
+        this.openPositionService = openPositionService;
     }
 
     @GetMapping("/calculatePosition")
@@ -117,7 +122,7 @@ public class PositionController {
         List<PositionDto> optionHistory = optionService.getClosedOptionsByTicker(positionDto.getTicker());
         model.addAttribute(MODEL_ATTRIBUTE_OPTION_HISTORY, optionHistory);
 
-        List<PositionDto> openOptions = optionService.getOpenOptionsByTicker(positionDto.getTicker());
+        List<PositionDto> openOptions = openPositionService.getOpenOptionsByTickerDto(positionDto.getTicker());
         model.addAttribute(MODEL_ATTRIBUTE_OPTION_OPEN, openOptions);
         InstrumentDto instrumentDto = instrumentService.loadInstrumentByTicker(positionDto.getTicker());
         Optional.ofNullable(instrumentDto).ifPresent(instrumentDto1 ->
@@ -140,7 +145,7 @@ public class PositionController {
         List<PositionDto> optionHistory = optionService.getClosedOptionsByTicker(positionDto.getTicker());
         model.addAttribute(MODEL_ATTRIBUTE_OPTION_HISTORY, optionHistory);
 
-        List<PositionDto> openOptions = optionService.getOpenOptionsByTicker(positionDto.getTicker());
+        List<PositionDto> openOptions = openPositionService.getOpenOptionsByTickerDto(positionDto.getTicker());
         model.addAttribute(MODEL_ATTRIBUTE_OPTION_OPEN, openOptions);
 
         InstrumentDto instrumentDto = instrumentService.loadInstrumentByTicker(positionDto.getTicker());
@@ -252,7 +257,14 @@ public class PositionController {
         model.addAttribute(MODEL_ATTRIBUTE_OPTION_HISTORY, optionHistory);
 
         // Get open positions including virtual if it exists (ISSUE-028)
-        List<PositionDto> openOptions = optionService.getOpenOptionsByTickerWithVirtual(positionDto.getTicker());
+        List<PositionDto> openOptions = new ArrayList<>(openPositionService.getOpenOptionsByTickerDto(positionDto.getTicker()));
+        virtualPositionService.getVirtualPosition(positionDto.getTicker()).ifPresent(virtualEntity -> {
+            PositionDto virtualDto = objectMapper.convertValue(virtualEntity, PositionDto.class);
+            virtualDto.setEarningDate(virtualEntity.getInstrument().getEarningDate());
+            virtualDto.setTicker(positionDto.getTicker());
+            virtualDto.setVirtual(true);
+            openOptions.add(virtualDto);
+        });
         model.addAttribute(MODEL_ATTRIBUTE_OPTION_OPEN, openOptions);
 
         InstrumentDto instrumentDto = instrumentService.loadInstrumentByTicker(positionDto.getTicker());

@@ -1,0 +1,707 @@
+WARNING: A restricted method in java.lang.System has been called
+WARNING: java.lang.System::load has been called by org.fusesource.jansi.internal.JansiLoader in an unnamed module (file:/Users/Imre/.m2/wrapper/dists/apache-maven-3.9.9/3477a4f1/lib/jansi-2.4.1.jar)
+WARNING: Use --enable-native-access=ALL-UNNAMED to avoid a warning for callers in this module
+WARNING: Restricted methods will be blocked in a future release unless native access is enabled
+
+WARNING: A terminally deprecated method in sun.misc.Unsafe has been called
+WARNING: sun.misc.Unsafe::objectFieldOffset has been called by com.google.common.util.concurrent.AbstractFuture$UnsafeAtomicHelper (file:/Users/Imre/.m2/wrapper/dists/apache-maven-3.9.9/3477a4f1/lib/guava-33.2.1-jre.jar)
+WARNING: Please consider reporting this to the maintainers of class com.google.common.util.concurrent.AbstractFuture$UnsafeAtomicHelper
+WARNING: sun.misc.Unsafe::objectFieldOffset will be removed in a future release
+[INFO] Scanning for projects...
+[INFO] 
+[INFO] -------------------------< co.grtk:srcprofit >--------------------------
+[INFO] Building srcprofit 0.0.1-SNAPSHOT
+[INFO]   from pom.xml
+[INFO] --------------------------------[ jar ]---------------------------------
+[INFO] 
+[INFO] --- jte:3.2.1:generate (jte-generate) @ srcprofit ---
+[INFO] Generating jte templates found in /Users/Imre/IdeaProjects/other/srcprofit/src/main/jte
+[INFO] Successfully generated 11 jte files in 0s to /Users/Imre/IdeaProjects/other/srcprofit/target/generated-sources/jte
+[INFO] 
+[INFO] --- resources:3.3.1:resources (default-resources) @ srcprofit ---
+[INFO] Copying 2 resources from src/main/resources to target/classes
+[INFO] Copying 13 resources from src/main/resources to target/classes
+[INFO] 
+[INFO] --- compiler:3.14.1:compile (default-compile) @ srcprofit ---
+[INFO] Recompiling the module because of changed source code.
+[INFO] Compiling 90 source files with javac [debug parameters release 24] to target/classes
+[INFO] /Users/Imre/IdeaProjects/other/srcprofit/src/main/java/co/grtk/srcprofit/config/ObjectMapperConfig.java: /Users/Imre/IdeaProjects/other/srcprofit/src/main/java/co/grtk/srcprofit/config/ObjectMapperConfig.java uses or overrides a deprecated API.
+[INFO] /Users/Imre/IdeaProjects/other/srcprofit/src/main/java/co/grtk/srcprofit/config/ObjectMapperConfig.java: Recompile with -Xlint:deprecation for details.
+[INFO] 
+[INFO] --- resources:3.3.1:testResources (default-testResources) @ srcprofit ---
+[INFO] skip non existing resourceDirectory /Users/Imre/IdeaProjects/other/srcprofit/src/test/resources
+[INFO] 
+[INFO] --- compiler:3.14.1:testCompile (default-testCompile) @ srcprofit ---
+[INFO] Recompiling the module because of changed dependency.
+[INFO] Compiling 17 source files with javac [debug parameters release 24] to target/test-classes
+[INFO] /Users/Imre/IdeaProjects/other/srcprofit/src/test/java/co/grtk/srcprofit/service/OpenPositionServiceTest.java: /Users/Imre/IdeaProjects/other/srcprofit/src/test/java/co/grtk/srcprofit/service/OpenPositionServiceTest.java uses unchecked or unsafe operations.
+[INFO] /Users/Imre/IdeaProjects/other/srcprofit/src/test/java/co/grtk/srcprofit/service/OpenPositionServiceTest.java: Recompile with -Xlint:unchecked for details.
+[INFO] 
+[INFO] --- surefire:3.5.4:test (default-test) @ srcprofit ---
+[INFO] Using auto detected provider org.apache.maven.surefire.junitplatform.JUnitPlatformProvider
+[INFO] 
+[INFO] -------------------------------------------------------
+[INFO]  T E S T S
+[INFO] -------------------------------------------------------
+[INFO] Running PositionCalculationHelper Tests
+[INFO] Tests run: 49, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.162 s -- in PositionCalculationHelper Tests
+[INFO] Running co.grtk.srcprofit.controller.TradeHistoryControllerTest
+Mockito is currently self-attaching to enable the inline-mock-maker. This will no longer work in future releases of the JDK. Please add Mockito as an agent to your build as described in Mockito's documentation: https://javadoc.io/doc/org.mockito/mockito-core/latest/org.mockito/org/mockito/Mockito.html#0.3
+OpenJDK 64-Bit Server VM warning: Sharing is only supported for boot loader classes because bootstrap classpath has been appended
+WARNING: A Java agent has been loaded dynamically (/Users/Imre/.m2/repository/net/bytebuddy/byte-buddy-agent/1.17.8/byte-buddy-agent-1.17.8.jar)
+WARNING: If a serviceability tool is in use, please run with -XX:+EnableDynamicAgentLoading to hide this warning
+WARNING: If a serviceability tool is not in use, please run with -Djdk.instrument.traceUsage for more information
+WARNING: Dynamic loading of agents will be disallowed by default in a future release
+16:41:30.919 [main] INFO org.springframework.mock.web.MockServletContext -- Initializing Spring TestDispatcherServlet ''
+16:41:30.920 [main] INFO org.springframework.test.web.servlet.TestDispatcherServlet -- Initializing Servlet ''
+16:41:30.922 [main] INFO org.springframework.test.web.servlet.TestDispatcherServlet -- Completed initialization in 0 ms
+16:41:30.966 [main] INFO co.grtk.srcprofit.controller.TradeHistoryController -- tradehistoryFromDate formData {tradeDate=[2025-06-01]}
+16:41:30.987 [main] INFO org.springframework.mock.web.MockServletContext -- Initializing Spring TestDispatcherServlet ''
+16:41:30.987 [main] INFO org.springframework.test.web.servlet.TestDispatcherServlet -- Initializing Servlet ''
+16:41:30.987 [main] INFO org.springframework.test.web.servlet.TestDispatcherServlet -- Completed initialization in 0 ms
+16:41:30.994 [main] INFO org.springframework.mock.web.MockServletContext -- Initializing Spring TestDispatcherServlet ''
+16:41:30.994 [main] INFO org.springframework.test.web.servlet.TestDispatcherServlet -- Initializing Servlet ''
+16:41:30.994 [main] INFO org.springframework.test.web.servlet.TestDispatcherServlet -- Completed initialization in 0 ms
+16:41:30.995 [main] INFO co.grtk.srcprofit.controller.TradeHistoryController -- tradehistoryFromDate formData {tradeDate=[2025-01-01]}
+16:41:31.004 [main] INFO org.springframework.mock.web.MockServletContext -- Initializing Spring TestDispatcherServlet ''
+16:41:31.004 [main] INFO org.springframework.test.web.servlet.TestDispatcherServlet -- Initializing Servlet ''
+16:41:31.004 [main] INFO org.springframework.test.web.servlet.TestDispatcherServlet -- Completed initialization in 0 ms
+16:41:31.006 [main] INFO co.grtk.srcprofit.controller.TradeHistoryController -- tradehistoryFromDate formData {tradeDate=[invalid-date]}
+16:41:31.011 [main] INFO org.springframework.mock.web.MockServletContext -- Initializing Spring TestDispatcherServlet ''
+16:41:31.011 [main] INFO org.springframework.test.web.servlet.TestDispatcherServlet -- Initializing Servlet ''
+16:41:31.011 [main] INFO org.springframework.test.web.servlet.TestDispatcherServlet -- Completed initialization in 0 ms
+[INFO] Tests run: 5, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.970 s -- in co.grtk.srcprofit.controller.TradeHistoryControllerTest
+[INFO] Running co.grtk.srcprofit.controller.FlexImportHistoryControllerTest
+16:41:31.039 [main] INFO org.springframework.mock.web.MockServletContext -- Initializing Spring TestDispatcherServlet ''
+16:41:31.039 [main] INFO org.springframework.test.web.servlet.TestDispatcherServlet -- Initializing Servlet ''
+16:41:31.039 [main] INFO org.springframework.test.web.servlet.TestDispatcherServlet -- Completed initialization in 0 ms
+16:41:31.045 [main] INFO org.springframework.mock.web.MockServletContext -- Initializing Spring TestDispatcherServlet ''
+16:41:31.045 [main] INFO org.springframework.test.web.servlet.TestDispatcherServlet -- Initializing Servlet ''
+16:41:31.045 [main] INFO org.springframework.test.web.servlet.TestDispatcherServlet -- Completed initialization in 0 ms
+16:41:31.050 [main] INFO org.springframework.mock.web.MockServletContext -- Initializing Spring TestDispatcherServlet ''
+16:41:31.050 [main] INFO org.springframework.test.web.servlet.TestDispatcherServlet -- Initializing Servlet ''
+16:41:31.050 [main] INFO org.springframework.test.web.servlet.TestDispatcherServlet -- Completed initialization in 0 ms
+[INFO] Tests run: 3, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.037 s -- in co.grtk.srcprofit.controller.FlexImportHistoryControllerTest
+[INFO] Running InstrumentRestController Tests
+16:41:31.076 [main] INFO org.springframework.mock.web.MockServletContext -- Initializing Spring TestDispatcherServlet ''
+16:41:31.076 [main] INFO org.springframework.test.web.servlet.TestDispatcherServlet -- Initializing Servlet ''
+16:41:31.077 [main] INFO org.springframework.test.web.servlet.TestDispatcherServlet -- Completed initialization in 1 ms
+16:41:31.129 [main] INFO org.springframework.mock.web.MockServletContext -- Initializing Spring TestDispatcherServlet ''
+16:41:31.129 [main] INFO org.springframework.test.web.servlet.TestDispatcherServlet -- Initializing Servlet ''
+16:41:31.129 [main] INFO org.springframework.test.web.servlet.TestDispatcherServlet -- Completed initialization in 0 ms
+16:41:31.135 [main] INFO org.springframework.mock.web.MockServletContext -- Initializing Spring TestDispatcherServlet ''
+16:41:31.135 [main] INFO org.springframework.test.web.servlet.TestDispatcherServlet -- Initializing Servlet ''
+16:41:31.136 [main] INFO org.springframework.test.web.servlet.TestDispatcherServlet -- Completed initialization in 0 ms
+16:41:31.136 [main] WARN co.grtk.srcprofit.controller.InstrumentRestController -- Instrument not found for ticker: UNKNOWN
+16:41:31.141 [main] INFO org.springframework.mock.web.MockServletContext -- Initializing Spring TestDispatcherServlet ''
+16:41:31.141 [main] INFO org.springframework.test.web.servlet.TestDispatcherServlet -- Initializing Servlet ''
+16:41:31.141 [main] INFO org.springframework.test.web.servlet.TestDispatcherServlet -- Completed initialization in 0 ms
+16:41:31.147 [main] INFO org.springframework.mock.web.MockServletContext -- Initializing Spring TestDispatcherServlet ''
+16:41:31.147 [main] INFO org.springframework.test.web.servlet.TestDispatcherServlet -- Initializing Servlet ''
+16:41:31.147 [main] INFO org.springframework.test.web.servlet.TestDispatcherServlet -- Completed initialization in 0 ms
+[INFO] Tests run: 5, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.097 s -- in InstrumentRestController Tests
+[INFO] Running co.grtk.srcprofit.controller.TradeLogControllerTest
+16:41:31.190 [main] INFO org.springframework.mock.web.MockServletContext -- Initializing Spring TestDispatcherServlet ''
+16:41:31.195 [main] INFO org.springframework.test.web.servlet.TestDispatcherServlet -- Initializing Servlet ''
+16:41:31.195 [main] INFO org.springframework.test.web.servlet.TestDispatcherServlet -- Completed initialization in 0 ms
+16:41:31.206 [main] INFO org.springframework.mock.web.MockServletContext -- Initializing Spring TestDispatcherServlet ''
+16:41:31.206 [main] INFO org.springframework.test.web.servlet.TestDispatcherServlet -- Initializing Servlet ''
+16:41:31.206 [main] INFO org.springframework.test.web.servlet.TestDispatcherServlet -- Completed initialization in 0 ms
+16:41:31.212 [main] INFO org.springframework.mock.web.MockServletContext -- Initializing Spring TestDispatcherServlet ''
+16:41:31.212 [main] INFO org.springframework.test.web.servlet.TestDispatcherServlet -- Initializing Servlet ''
+16:41:31.212 [main] INFO org.springframework.test.web.servlet.TestDispatcherServlet -- Completed initialization in 0 ms
+16:41:31.218 [main] INFO org.springframework.mock.web.MockServletContext -- Initializing Spring TestDispatcherServlet ''
+16:41:31.218 [main] INFO org.springframework.test.web.servlet.TestDispatcherServlet -- Initializing Servlet ''
+16:41:31.218 [main] INFO org.springframework.test.web.servlet.TestDispatcherServlet -- Completed initialization in 0 ms
+16:41:31.219 [main] INFO co.grtk.srcprofit.controller.TradeLogController -- tradelogFromDate formData {fromDate=[2025-01-01]}
+16:41:31.223 [main] INFO org.springframework.mock.web.MockServletContext -- Initializing Spring TestDispatcherServlet ''
+16:41:31.223 [main] INFO org.springframework.test.web.servlet.TestDispatcherServlet -- Initializing Servlet ''
+16:41:31.223 [main] INFO org.springframework.test.web.servlet.TestDispatcherServlet -- Completed initialization in 0 ms
+[INFO] Tests run: 5, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.074 s -- in co.grtk.srcprofit.controller.TradeLogControllerTest
+[INFO] Running co.grtk.srcprofit.controller.OpenPositionsControllerTest
+16:41:31.236 [main] INFO org.springframework.mock.web.MockServletContext -- Initializing Spring TestDispatcherServlet ''
+16:41:31.236 [main] INFO org.springframework.test.web.servlet.TestDispatcherServlet -- Initializing Servlet ''
+16:41:31.236 [main] INFO org.springframework.test.web.servlet.TestDispatcherServlet -- Completed initialization in 0 ms
+16:41:31.241 [main] INFO org.springframework.mock.web.MockServletContext -- Initializing Spring TestDispatcherServlet ''
+16:41:31.242 [main] INFO org.springframework.test.web.servlet.TestDispatcherServlet -- Initializing Servlet ''
+16:41:31.242 [main] INFO org.springframework.test.web.servlet.TestDispatcherServlet -- Completed initialization in 0 ms
+16:41:31.246 [main] INFO org.springframework.mock.web.MockServletContext -- Initializing Spring TestDispatcherServlet ''
+16:41:31.246 [main] INFO org.springframework.test.web.servlet.TestDispatcherServlet -- Initializing Servlet ''
+16:41:31.246 [main] INFO org.springframework.test.web.servlet.TestDispatcherServlet -- Completed initialization in 0 ms
+16:41:31.253 [main] INFO org.springframework.mock.web.MockServletContext -- Initializing Spring TestDispatcherServlet ''
+16:41:31.253 [main] INFO org.springframework.test.web.servlet.TestDispatcherServlet -- Initializing Servlet ''
+16:41:31.253 [main] INFO org.springframework.test.web.servlet.TestDispatcherServlet -- Completed initialization in 0 ms
+16:41:31.258 [main] INFO org.springframework.mock.web.MockServletContext -- Initializing Spring TestDispatcherServlet ''
+16:41:31.258 [main] INFO org.springframework.test.web.servlet.TestDispatcherServlet -- Initializing Servlet ''
+16:41:31.258 [main] INFO org.springframework.test.web.servlet.TestDispatcherServlet -- Completed initialization in 0 ms
+16:41:31.266 [main] INFO org.springframework.mock.web.MockServletContext -- Initializing Spring TestDispatcherServlet ''
+16:41:31.266 [main] INFO org.springframework.test.web.servlet.TestDispatcherServlet -- Initializing Servlet ''
+16:41:31.266 [main] INFO org.springframework.test.web.servlet.TestDispatcherServlet -- Completed initialization in 0 ms
+16:41:31.271 [main] INFO org.springframework.mock.web.MockServletContext -- Initializing Spring TestDispatcherServlet ''
+16:41:31.271 [main] INFO org.springframework.test.web.servlet.TestDispatcherServlet -- Initializing Servlet ''
+16:41:31.272 [main] INFO org.springframework.test.web.servlet.TestDispatcherServlet -- Completed initialization in 1 ms
+[INFO] Tests run: 7, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.047 s -- in co.grtk.srcprofit.controller.OpenPositionsControllerTest
+[INFO] Running VirtualPositionService Tests
+[INFO] Tests run: 13, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.044 s -- in VirtualPositionService Tests
+[INFO] Running co.grtk.srcprofit.service.EarningServiceTest
+[INFO] Running co.grtk.srcprofit.service.EarningServiceTest$RefreshEarningsDataTests
+16:41:31.539 [main] ERROR co.grtk.srcprofit.service.EarningService -- Failed to refresh earnings data: API Error
+java.lang.RuntimeException: API Error
+	at co.grtk.srcprofit.service.AlphaVintageService.getEarningsCalendar(AlphaVintageService.java:29)
+	at co.grtk.srcprofit.service.EarningService.refreshEarningsDataForAllInstruments(EarningService.java:146)
+	at co.grtk.srcprofit.service.EarningServiceTest$RefreshEarningsDataTests.testRefreshEarningsData_whenApiThrows_shouldReturnEmptyList(EarningServiceTest.java:232)
+	at java.base/jdk.internal.reflect.DirectMethodHandleAccessor.invoke(DirectMethodHandleAccessor.java:104)
+	at java.base/java.lang.reflect.Method.invoke(Method.java:565)
+	at org.junit.platform.commons.util.ReflectionUtils.invokeMethod(ReflectionUtils.java:701)
+	at org.junit.platform.commons.support.ReflectionSupport.invokeMethod(ReflectionSupport.java:502)
+	at org.junit.jupiter.engine.support.MethodReflectionUtils.invoke(MethodReflectionUtils.java:45)
+	at org.junit.jupiter.engine.execution.MethodInvocation.proceed(MethodInvocation.java:61)
+	at org.junit.jupiter.engine.execution.InvocationInterceptorChain$ValidatingInvocation.proceed(InvocationInterceptorChain.java:124)
+	at org.junit.jupiter.engine.extension.TimeoutExtension.intercept(TimeoutExtension.java:163)
+	at org.junit.jupiter.engine.extension.TimeoutExtension.interceptTestableMethod(TimeoutExtension.java:148)
+	at org.junit.jupiter.engine.extension.TimeoutExtension.interceptTestMethod(TimeoutExtension.java:86)
+	at org.junit.jupiter.engine.execution.InterceptingExecutableInvoker$ReflectiveInterceptorCall.lambda$ofVoidMethod$0(InterceptingExecutableInvoker.java:123)
+	at org.junit.jupiter.engine.execution.InterceptingExecutableInvoker.lambda$invoke$0(InterceptingExecutableInvoker.java:105)
+	at org.junit.jupiter.engine.execution.InvocationInterceptorChain$InterceptedInvocation.proceed(InvocationInterceptorChain.java:99)
+	at org.junit.jupiter.engine.execution.InvocationInterceptorChain.proceed(InvocationInterceptorChain.java:66)
+	at org.junit.jupiter.engine.execution.InvocationInterceptorChain.chainAndInvoke(InvocationInterceptorChain.java:47)
+	at org.junit.jupiter.engine.execution.InvocationInterceptorChain.invoke(InvocationInterceptorChain.java:39)
+	at org.junit.jupiter.engine.execution.InterceptingExecutableInvoker.invoke(InterceptingExecutableInvoker.java:104)
+	at org.junit.jupiter.engine.execution.InterceptingExecutableInvoker.invoke(InterceptingExecutableInvoker.java:98)
+	at org.junit.jupiter.engine.execution.InterceptingExecutableInvoker.invokeVoid(InterceptingExecutableInvoker.java:71)
+	at org.junit.jupiter.engine.descriptor.TestMethodTestDescriptor.lambda$invokeTestMethod$0(TestMethodTestDescriptor.java:219)
+	at org.junit.platform.engine.support.hierarchical.ThrowableCollector.execute(ThrowableCollector.java:74)
+	at org.junit.jupiter.engine.descriptor.TestMethodTestDescriptor.invokeTestMethod(TestMethodTestDescriptor.java:215)
+	at org.junit.jupiter.engine.descriptor.TestMethodTestDescriptor.execute(TestMethodTestDescriptor.java:157)
+	at org.junit.jupiter.engine.descriptor.TestMethodTestDescriptor.execute(TestMethodTestDescriptor.java:70)
+	at org.junit.platform.engine.support.hierarchical.NodeTestTask.lambda$executeRecursively$2(NodeTestTask.java:176)
+	at org.junit.platform.engine.support.hierarchical.ThrowableCollector.execute(ThrowableCollector.java:74)
+	at org.junit.platform.engine.support.hierarchical.NodeTestTask.lambda$executeRecursively$1(NodeTestTask.java:166)
+	at org.junit.platform.engine.support.hierarchical.Node.around(Node.java:138)
+	at org.junit.platform.engine.support.hierarchical.NodeTestTask.lambda$executeRecursively$0(NodeTestTask.java:164)
+	at org.junit.platform.engine.support.hierarchical.ThrowableCollector.execute(ThrowableCollector.java:74)
+	at org.junit.platform.engine.support.hierarchical.NodeTestTask.executeRecursively(NodeTestTask.java:163)
+	at org.junit.platform.engine.support.hierarchical.NodeTestTask.execute(NodeTestTask.java:116)
+	at java.base/java.util.ArrayList.forEach(ArrayList.java:1604)
+	at org.junit.platform.engine.support.hierarchical.SameThreadHierarchicalTestExecutorService.invokeAll(SameThreadHierarchicalTestExecutorService.java:42)
+	at org.junit.platform.engine.support.hierarchical.NodeTestTask.lambda$executeRecursively$2(NodeTestTask.java:180)
+	at org.junit.platform.engine.support.hierarchical.ThrowableCollector.execute(ThrowableCollector.java:74)
+	at org.junit.platform.engine.support.hierarchical.NodeTestTask.lambda$executeRecursively$1(NodeTestTask.java:166)
+	at org.junit.platform.engine.support.hierarchical.Node.around(Node.java:138)
+	at org.junit.platform.engine.support.hierarchical.NodeTestTask.lambda$executeRecursively$0(NodeTestTask.java:164)
+	at org.junit.platform.engine.support.hierarchical.ThrowableCollector.execute(ThrowableCollector.java:74)
+	at org.junit.platform.engine.support.hierarchical.NodeTestTask.executeRecursively(NodeTestTask.java:163)
+	at org.junit.platform.engine.support.hierarchical.NodeTestTask.execute(NodeTestTask.java:116)
+	at java.base/java.util.ArrayList.forEach(ArrayList.java:1604)
+	at org.junit.platform.engine.support.hierarchical.SameThreadHierarchicalTestExecutorService.invokeAll(SameThreadHierarchicalTestExecutorService.java:42)
+	at org.junit.platform.engine.support.hierarchical.NodeTestTask.lambda$executeRecursively$2(NodeTestTask.java:180)
+	at org.junit.platform.engine.support.hierarchical.ThrowableCollector.execute(ThrowableCollector.java:74)
+	at org.junit.platform.engine.support.hierarchical.NodeTestTask.lambda$executeRecursively$1(NodeTestTask.java:166)
+	at org.junit.platform.engine.support.hierarchical.Node.around(Node.java:138)
+	at org.junit.platform.engine.support.hierarchical.NodeTestTask.lambda$executeRecursively$0(NodeTestTask.java:164)
+	at org.junit.platform.engine.support.hierarchical.ThrowableCollector.execute(ThrowableCollector.java:74)
+	at org.junit.platform.engine.support.hierarchical.NodeTestTask.executeRecursively(NodeTestTask.java:163)
+	at org.junit.platform.engine.support.hierarchical.NodeTestTask.execute(NodeTestTask.java:116)
+	at java.base/java.util.ArrayList.forEach(ArrayList.java:1604)
+	at org.junit.platform.engine.support.hierarchical.SameThreadHierarchicalTestExecutorService.invokeAll(SameThreadHierarchicalTestExecutorService.java:42)
+	at org.junit.platform.engine.support.hierarchical.NodeTestTask.lambda$executeRecursively$2(NodeTestTask.java:180)
+	at org.junit.platform.engine.support.hierarchical.ThrowableCollector.execute(ThrowableCollector.java:74)
+	at org.junit.platform.engine.support.hierarchical.NodeTestTask.lambda$executeRecursively$1(NodeTestTask.java:166)
+	at org.junit.platform.engine.support.hierarchical.Node.around(Node.java:138)
+	at org.junit.platform.engine.support.hierarchical.NodeTestTask.lambda$executeRecursively$0(NodeTestTask.java:164)
+	at org.junit.platform.engine.support.hierarchical.ThrowableCollector.execute(ThrowableCollector.java:74)
+	at org.junit.platform.engine.support.hierarchical.NodeTestTask.executeRecursively(NodeTestTask.java:163)
+	at org.junit.platform.engine.support.hierarchical.NodeTestTask.execute(NodeTestTask.java:116)
+	at org.junit.platform.engine.support.hierarchical.SameThreadHierarchicalTestExecutorService.submit(SameThreadHierarchicalTestExecutorService.java:36)
+	at org.junit.platform.engine.support.hierarchical.HierarchicalTestExecutor.execute(HierarchicalTestExecutor.java:52)
+	at org.junit.platform.engine.support.hierarchical.HierarchicalTestEngine.execute(HierarchicalTestEngine.java:58)
+	at org.junit.platform.launcher.core.EngineExecutionOrchestrator.executeEngine(EngineExecutionOrchestrator.java:246)
+	at org.junit.platform.launcher.core.EngineExecutionOrchestrator.failOrExecuteEngine(EngineExecutionOrchestrator.java:218)
+	at org.junit.platform.launcher.core.EngineExecutionOrchestrator.execute(EngineExecutionOrchestrator.java:179)
+	at org.junit.platform.launcher.core.EngineExecutionOrchestrator.execute(EngineExecutionOrchestrator.java:108)
+	at org.junit.platform.launcher.core.EngineExecutionOrchestrator.lambda$execute$0(EngineExecutionOrchestrator.java:66)
+	at org.junit.platform.launcher.core.EngineExecutionOrchestrator.withInterceptedStreams(EngineExecutionOrchestrator.java:157)
+	at org.junit.platform.launcher.core.EngineExecutionOrchestrator.execute(EngineExecutionOrchestrator.java:65)
+	at org.junit.platform.launcher.core.DefaultLauncher.execute(DefaultLauncher.java:125)
+	at org.junit.platform.launcher.core.DefaultLauncher.execute(DefaultLauncher.java:114)
+	at org.junit.platform.launcher.core.DelegatingLauncher.execute(DelegatingLauncher.java:58)
+	at org.junit.platform.launcher.core.InterceptingLauncher.lambda$execute$2(InterceptingLauncher.java:57)
+	at org.junit.platform.launcher.core.ClasspathAlignmentCheckingLauncherInterceptor.intercept(ClasspathAlignmentCheckingLauncherInterceptor.java:25)
+	at org.junit.platform.launcher.core.InterceptingLauncher.execute(InterceptingLauncher.java:56)
+	at org.junit.platform.launcher.core.DelegatingLauncher.execute(DelegatingLauncher.java:58)
+	at java.base/jdk.internal.reflect.DirectMethodHandleAccessor.invoke(DirectMethodHandleAccessor.java:104)
+	at java.base/java.lang.reflect.Method.invoke(Method.java:565)
+	at org.apache.maven.surefire.api.util.ReflectionUtils.invokeMethodWithArray(ReflectionUtils.java:125)
+	at org.apache.maven.surefire.junitplatform.LauncherAdapter.executeWithCancellationToken(LauncherAdapter.java:68)
+	at org.apache.maven.surefire.junitplatform.LauncherAdapter.execute(LauncherAdapter.java:54)
+	at org.apache.maven.surefire.junitplatform.JUnitPlatformProvider.execute(JUnitPlatformProvider.java:203)
+	at org.apache.maven.surefire.junitplatform.JUnitPlatformProvider.invokeAllTests(JUnitPlatformProvider.java:168)
+	at org.apache.maven.surefire.junitplatform.JUnitPlatformProvider.invoke(JUnitPlatformProvider.java:136)
+	at org.apache.maven.surefire.booter.ForkedBooter.runSuitesInProcess(ForkedBooter.java:385)
+	at org.apache.maven.surefire.booter.ForkedBooter.execute(ForkedBooter.java:162)
+	at org.apache.maven.surefire.booter.ForkedBooter.run(ForkedBooter.java:507)
+	at org.apache.maven.surefire.booter.ForkedBooter.main(ForkedBooter.java:495)
+16:41:31.554 [main] INFO co.grtk.srcprofit.service.EarningService -- rowCount:1 symbol:AAPL reportDate:2026-01-23 estimate:1.50
+16:41:31.554 [main] INFO co.grtk.srcprofit.service.EarningService -- Completed earnings refresh: newRecords=1
+16:41:31.557 [main] INFO co.grtk.srcprofit.service.EarningService -- rowCount:1 symbol:AAPL reportDate:2025-11-24 estimate:1.30
+16:41:31.557 [main] INFO co.grtk.srcprofit.service.EarningService -- Completed earnings refresh: newRecords=1
+16:41:31.559 [main] INFO co.grtk.srcprofit.service.EarningService -- rowCount:1 symbol:AAPL reportDate:2025-01-15 estimate:1.50
+16:41:31.559 [main] INFO co.grtk.srcprofit.service.EarningService -- rowCount:2 symbol:GOOGL reportDate:2025-01-29 estimate:1.75
+16:41:31.559 [main] INFO co.grtk.srcprofit.service.EarningService -- Completed earnings refresh: newRecords=2
+16:41:31.561 [main] WARN co.grtk.srcprofit.service.EarningService -- No earnings data returned from Alpha Vantage API
+16:41:31.562 [main] INFO co.grtk.srcprofit.service.EarningService -- rowCount:1 symbol:AAPL reportDate:2025-01-15 estimate:1.50
+16:41:31.562 [main] INFO co.grtk.srcprofit.service.EarningService -- Completed earnings refresh: newRecords=1
+16:41:31.570 [main] INFO co.grtk.srcprofit.service.EarningService -- rowCount:1 symbol:AAPL reportDate:2026-01-23 estimate:1.50
+16:41:31.570 [main] INFO co.grtk.srcprofit.service.EarningService -- rowCount:2 symbol:AAPL reportDate:2026-02-22 estimate:1.60
+16:41:31.570 [main] INFO co.grtk.srcprofit.service.EarningService -- rowCount:3 symbol:AAPL reportDate:2026-02-07 estimate:1.70
+16:41:31.570 [main] INFO co.grtk.srcprofit.service.EarningService -- Completed earnings refresh: newRecords=3
+16:41:31.572 [main] INFO co.grtk.srcprofit.service.EarningService -- rowCount:0 symbol:AAPL reportDate:2025-01-15 estimate:1.50
+16:41:31.573 [main] INFO co.grtk.srcprofit.service.EarningService -- Completed earnings refresh: newRecords=0
+16:41:31.575 [main] INFO co.grtk.srcprofit.service.EarningService -- rowCount:1 symbol:AAPL reportDate:2025-01-15 estimate:1.50
+16:41:31.575 [main] INFO co.grtk.srcprofit.service.EarningService -- rowCount:2 symbol:AAPL reportDate:2025-04-15 estimate:1.75
+16:41:31.575 [main] INFO co.grtk.srcprofit.service.EarningService -- Completed earnings refresh: newRecords=2
+16:41:31.577 [main] INFO co.grtk.srcprofit.service.EarningService -- rowCount:1 symbol:AAPL reportDate:2025-01-15 estimate:1.50
+16:41:31.577 [main] INFO co.grtk.srcprofit.service.EarningService -- Completed earnings refresh: newRecords=1
+16:41:31.578 [main] INFO co.grtk.srcprofit.service.EarningService -- rowCount:0 symbol:AAPL reportDate:2025-01-15 estimate:1.50
+16:41:31.578 [main] INFO co.grtk.srcprofit.service.EarningService -- Completed earnings refresh: newRecords=0
+16:41:31.580 [main] INFO co.grtk.srcprofit.service.EarningService -- Completed earnings refresh: newRecords=0
+16:41:31.582 [main] INFO co.grtk.srcprofit.service.EarningService -- Completed earnings refresh: newRecords=0
+[INFO] Tests run: 12, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.261 s -- in co.grtk.srcprofit.service.EarningServiceTest$RefreshEarningsDataTests
+[INFO] Tests run: 0, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.262 s -- in co.grtk.srcprofit.service.EarningServiceTest
+[INFO] Running co.grtk.srcprofit.service.OptionSnapshotServiceTest
+16:41:31.652 [main] INFO co.grtk.srcprofit.service.OptionSnapshotService -- Found 2 open option positions
+16:41:31.653 [main] INFO co.grtk.srcprofit.service.OptionSnapshotService -- Processing 1 underlying symbols
+16:41:34.684 [main] INFO co.grtk.srcprofit.service.OptionSnapshotService -- Refreshed 2 snapshots for AAPL
+16:41:34.684 [main] INFO co.grtk.srcprofit.service.OptionSnapshotService -- OptionSnapshotService: Completed refreshOptionSnapshots() - 2 total snapshots saved
+16:41:34.695 [main] INFO co.grtk.srcprofit.service.OptionSnapshotService -- Deleted 5 expired option snapshots (expiration < 2025-12-24)
+16:41:34.702 [main] INFO co.grtk.srcprofit.service.OptionSnapshotService -- Found 1 open option positions
+16:41:34.702 [main] INFO co.grtk.srcprofit.service.OptionSnapshotService -- Processing 1 underlying symbols
+16:41:34.702 [main] WARN co.grtk.srcprofit.service.OptionSnapshotService -- Failed to refresh snapshots for SPY: null
+16:41:34.702 [main] INFO co.grtk.srcprofit.service.OptionSnapshotService -- OptionSnapshotService: Completed refreshOptionSnapshots() - 0 total snapshots saved
+16:41:34.707 [main] INFO co.grtk.srcprofit.service.OptionSnapshotService -- Found 1 open option positions
+16:41:34.707 [main] INFO co.grtk.srcprofit.service.OptionSnapshotService -- Processing 1 underlying symbols
+16:41:37.715 [main] INFO co.grtk.srcprofit.service.OptionSnapshotService -- Refreshed 1 snapshots for AAPL
+16:41:37.715 [main] INFO co.grtk.srcprofit.service.OptionSnapshotService -- OptionSnapshotService: Completed refreshOptionSnapshots() - 1 total snapshots saved
+16:41:37.728 [main] INFO co.grtk.srcprofit.service.OptionSnapshotService -- Found 1 open option positions
+16:41:37.729 [main] INFO co.grtk.srcprofit.service.OptionSnapshotService -- Processing 1 underlying symbols
+16:41:40.738 [main] INFO co.grtk.srcprofit.service.OptionSnapshotService -- Refreshed 1 snapshots for SPY
+16:41:40.738 [main] INFO co.grtk.srcprofit.service.OptionSnapshotService -- OptionSnapshotService: Completed refreshOptionSnapshots() - 1 total snapshots saved
+16:41:40.747 [main] INFO co.grtk.srcprofit.service.OptionSnapshotService -- Found 1 open option positions
+16:41:40.748 [main] INFO co.grtk.srcprofit.service.OptionSnapshotService -- Processing 1 underlying symbols
+16:41:43.787 [main] INFO co.grtk.srcprofit.service.OptionSnapshotService -- Refreshed 1 snapshots for AAPL
+16:41:43.788 [main] INFO co.grtk.srcprofit.service.OptionSnapshotService -- OptionSnapshotService: Completed refreshOptionSnapshots() - 1 total snapshots saved
+16:41:43.816 [main] INFO co.grtk.srcprofit.service.OptionSnapshotService -- Found 1 open option positions
+16:41:43.816 [main] INFO co.grtk.srcprofit.service.OptionSnapshotService -- Processing 1 underlying symbols
+16:41:46.843 [main] INFO co.grtk.srcprofit.service.OptionSnapshotService -- Refreshed 2 snapshots for AAPL
+16:41:46.847 [main] INFO co.grtk.srcprofit.service.OptionSnapshotService -- OptionSnapshotService: Completed refreshOptionSnapshots() - 2 total snapshots saved
+16:41:46.863 [main] INFO co.grtk.srcprofit.service.OptionSnapshotService -- Found 2 open option positions
+16:41:46.863 [main] INFO co.grtk.srcprofit.service.OptionSnapshotService -- Processing 1 underlying symbols
+16:41:49.875 [main] INFO co.grtk.srcprofit.service.OptionSnapshotService -- Refreshed 0 snapshots for AAPL
+16:41:49.876 [main] INFO co.grtk.srcprofit.service.OptionSnapshotService -- OptionSnapshotService: Completed refreshOptionSnapshots() - 0 total snapshots saved
+16:41:49.896 [main] INFO co.grtk.srcprofit.service.OptionSnapshotService -- Found 2 open option positions
+16:41:49.896 [main] INFO co.grtk.srcprofit.service.OptionSnapshotService -- Processing 2 underlying symbols
+16:41:52.914 [main] INFO co.grtk.srcprofit.service.OptionSnapshotService -- Refreshed 2 snapshots for AAPL
+16:41:55.930 [main] ERROR co.grtk.srcprofit.service.OptionSnapshotService -- Error fetching call snapshots from Alpaca for TSLA: API Error
+16:41:55.930 [main] WARN co.grtk.srcprofit.service.OptionSnapshotService -- Failed to refresh snapshots for TSLA: API Error
+16:41:55.930 [main] INFO co.grtk.srcprofit.service.OptionSnapshotService -- OptionSnapshotService: Completed refreshOptionSnapshots() - 2 total snapshots saved
+[INFO] Tests run: 10, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 24.36 s -- in co.grtk.srcprofit.service.OptionSnapshotServiceTest
+[INFO] Running ISSUE-008: Dashboard NaN Fix Tests
+16:41:56.048 [main] INFO co.grtk.srcprofit.service.OptionService -- calculatePosition openPositions:0, closedPositions:0
+[INFO] Tests run: 8, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.098 s -- in ISSUE-008: Dashboard NaN Fix Tests
+[INFO] Running Manual Position Calculation Tests (ISSUE-026)
+16:41:56.054 [main] INFO co.grtk.srcprofit.service.OptionService -- calculateSinglePosition result: PositionDto{id=null, parentId=null, conid=null, code='null', tradeDate=2025-12-24, note='null', color='black', quantity=1, fee=0.0, annualizedRoiPercent=8, probability=52, daysBetween=46, daysLeft=45, assetClass=OPT, type=PUT, status=null, ticker='TEST', tradePrice=100.0, realizedProfitOrLoss=null, unRealizedProfitOrLoss=null, positionValue=10000.0, profitOrLoss=null, collectedPremium=100.0, positionsFromDate=null, expirationDate=2026-02-07, marketValue=10200.0, marketVsPositionsPercentage=0.0, breakEven=9900.0}
+16:41:56.058 [main] INFO co.grtk.srcprofit.service.OptionService -- calculateSinglePosition result: PositionDto{id=null, parentId=null, conid=null, code='null', tradeDate=2025-11-11, note='null', color='black', quantity=1, fee=null, annualizedRoiPercent=8, probability=51, daysBetween=46, daysLeft=2, assetClass=OPT, type=PUT, status=null, ticker='null', tradePrice=100.0, realizedProfitOrLoss=null, unRealizedProfitOrLoss=null, positionValue=10000.0, profitOrLoss=null, collectedPremium=100.0, positionsFromDate=null, expirationDate=2025-12-26, marketValue=10100.0, marketVsPositionsPercentage=0.0, breakEven=9900.0}
+16:41:56.060 [main] INFO co.grtk.srcprofit.service.OptionService -- calculateSinglePosition result: PositionDto{id=null, parentId=null, conid=null, code='null', tradeDate=2025-12-24, note='null', color='black', quantity=1, fee=0.0, annualizedRoiPercent=14, probability=50, daysBetween=31, daysLeft=30, assetClass=OPT, type=PUT, status=null, ticker='TEST', tradePrice=120.0, realizedProfitOrLoss=null, unRealizedProfitOrLoss=null, positionValue=10000.0, profitOrLoss=null, collectedPremium=120.0, positionsFromDate=null, expirationDate=2026-01-23, marketValue=10000.0, marketVsPositionsPercentage=0.0, breakEven=9880.0}
+16:41:56.061 [main] INFO co.grtk.srcprofit.service.OptionService -- calculateSinglePosition result: PositionDto{id=null, parentId=null, conid=null, code='null', tradeDate=2025-12-24, note='null', color='black', quantity=1, fee=0.0, annualizedRoiPercent=12, probability=54, daysBetween=31, daysLeft=30, assetClass=OPT, type=PUT, status=null, ticker='TEST', tradePrice=100.0, realizedProfitOrLoss=null, unRealizedProfitOrLoss=null, positionValue=10000.0, profitOrLoss=null, collectedPremium=100.0, positionsFromDate=null, expirationDate=2026-01-23, marketValue=10300.0, marketVsPositionsPercentage=0.0, breakEven=9900.0}
+16:41:56.063 [main] INFO co.grtk.srcprofit.service.OptionService -- calculateSinglePosition result: PositionDto{id=null, parentId=null, conid=null, code='null', tradeDate=2025-12-24, note='null', color='black', quantity=1, fee=0.0, annualizedRoiPercent=12, probability=50, daysBetween=31, daysLeft=30, assetClass=OPT, type=PUT, status=null, ticker='TEST', tradePrice=100.0, realizedProfitOrLoss=null, unRealizedProfitOrLoss=null, positionValue=10000.0, profitOrLoss=null, collectedPremium=100.0, positionsFromDate=null, expirationDate=2026-01-23, marketValue=10000.0, marketVsPositionsPercentage=0.0, breakEven=9900.0}
+16:41:56.064 [main] INFO co.grtk.srcprofit.service.OptionService -- calculateSinglePosition result: PositionDto{id=null, parentId=null, conid=null, code='null', tradeDate=2025-12-24, note='null', color='black', quantity=1, fee=0.0, annualizedRoiPercent=12, probability=42, daysBetween=31, daysLeft=30, assetClass=OPT, type=PUT, status=null, ticker='TEST', tradePrice=100.0, realizedProfitOrLoss=null, unRealizedProfitOrLoss=-500.0, positionValue=10000.0, profitOrLoss=null, collectedPremium=100.0, positionsFromDate=null, expirationDate=2026-01-23, marketValue=9500.0, marketVsPositionsPercentage=0.0, breakEven=9900.0}
+16:41:56.065 [main] INFO co.grtk.srcprofit.service.OptionService -- calculateSinglePosition result: PositionDto{id=null, parentId=null, conid=null, code='null', tradeDate=2025-12-24, note='null', color='black', quantity=5, fee=0.0, annualizedRoiPercent=12, probability=50, daysBetween=31, daysLeft=30, assetClass=OPT, type=PUT, status=null, ticker='TEST', tradePrice=100.0, realizedProfitOrLoss=null, unRealizedProfitOrLoss=null, positionValue=10000.0, profitOrLoss=null, collectedPremium=500.0, positionsFromDate=null, expirationDate=2026-01-23, marketValue=10000.0, marketVsPositionsPercentage=0.0, breakEven=9900.0}
+16:41:56.066 [main] INFO co.grtk.srcprofit.service.OptionService -- calculateSinglePosition result: PositionDto{id=null, parentId=null, conid=null, code='null', tradeDate=2025-12-24, note='null', color='black', quantity=1, fee=0.0, annualizedRoiPercent=12, probability=50, daysBetween=31, daysLeft=30, assetClass=OPT, type=PUT, status=null, ticker='TEST', tradePrice=100.0, realizedProfitOrLoss=null, unRealizedProfitOrLoss=null, positionValue=10000.0, profitOrLoss=null, collectedPremium=100.0, positionsFromDate=null, expirationDate=2026-01-23, marketValue=10000.0, marketVsPositionsPercentage=0.0, breakEven=9900.0}
+16:41:56.066 [main] INFO co.grtk.srcprofit.service.OptionService -- calculateSinglePosition result: PositionDto{id=null, parentId=null, conid=null, code='null', tradeDate=2025-12-24, note='null', color='black', quantity=1, fee=0.0, annualizedRoiPercent=6, probability=50, daysBetween=61, daysLeft=60, assetClass=OPT, type=PUT, status=null, ticker='TEST', tradePrice=100.0, realizedProfitOrLoss=null, unRealizedProfitOrLoss=null, positionValue=10000.0, profitOrLoss=null, collectedPremium=100.0, positionsFromDate=null, expirationDate=2026-02-22, marketValue=10000.0, marketVsPositionsPercentage=0.0, breakEven=9900.0}
+16:41:56.067 [main] INFO co.grtk.srcprofit.service.OptionService -- calculateSinglePosition result: PositionDto{id=null, parentId=null, conid=null, code='null', tradeDate=2025-12-24, note='null', color='black', quantity=1, fee=0.0, annualizedRoiPercent=8, probability=50, daysBetween=46, daysLeft=45, assetClass=OPT, type=PUT, status=null, ticker='TEST', tradePrice=100.0, realizedProfitOrLoss=null, unRealizedProfitOrLoss=null, positionValue=10000.0, profitOrLoss=null, collectedPremium=100.0, positionsFromDate=null, expirationDate=2026-02-07, marketValue=10000.0, marketVsPositionsPercentage=0.0, breakEven=9900.0}
+16:41:56.068 [main] INFO co.grtk.srcprofit.service.OptionService -- calculateSinglePosition result: PositionDto{id=null, parentId=null, conid=null, code='null', tradeDate=2025-12-24, note='null', color='black', quantity=1, fee=0.0, annualizedRoiPercent=183, probability=50, daysBetween=2, daysLeft=1, assetClass=OPT, type=PUT, status=null, ticker='TEST', tradePrice=100.0, realizedProfitOrLoss=null, unRealizedProfitOrLoss=null, positionValue=10000.0, profitOrLoss=null, collectedPremium=100.0, positionsFromDate=null, expirationDate=2025-12-25, marketValue=10000.0, marketVsPositionsPercentage=0.0, breakEven=9900.0}
+16:41:56.069 [main] INFO co.grtk.srcprofit.service.OptionService -- calculateSinglePosition result: PositionDto{id=null, parentId=null, conid=null, code='null', tradeDate=2025-12-24, note='null', color='black', quantity=1, fee=null, annualizedRoiPercent=12, probability=null, daysBetween=31, daysLeft=30, assetClass=OPT, type=PUT, status=null, ticker='null', tradePrice=100.0, realizedProfitOrLoss=null, unRealizedProfitOrLoss=null, positionValue=10000.0, profitOrLoss=null, collectedPremium=100.0, positionsFromDate=null, expirationDate=2026-01-23, marketValue=null, marketVsPositionsPercentage=0.0, breakEven=9900.0}
+16:41:56.070 [main] INFO co.grtk.srcprofit.service.OptionService -- calculateSinglePosition result: PositionDto{id=null, parentId=null, conid=null, code='null', tradeDate=2025-12-24, note='null', color='black', quantity=1, fee=0.0, annualizedRoiPercent=2, probability=50, daysBetween=181, daysLeft=180, assetClass=OPT, type=PUT, status=null, ticker='TEST', tradePrice=100.0, realizedProfitOrLoss=null, unRealizedProfitOrLoss=null, positionValue=10000.0, profitOrLoss=null, collectedPremium=100.0, positionsFromDate=null, expirationDate=2026-06-22, marketValue=10000.0, marketVsPositionsPercentage=0.0, breakEven=9900.0}
+16:41:56.072 [main] INFO co.grtk.srcprofit.service.OptionService -- calculateSinglePosition result: PositionDto{id=null, parentId=null, conid=null, code='null', tradeDate=2025-12-24, note='null', color='black', quantity=1, fee=0.0, annualizedRoiPercent=6, probability=50, daysBetween=31, daysLeft=30, assetClass=OPT, type=CALL, status=null, ticker='TEST', tradePrice=50.0, realizedProfitOrLoss=null, unRealizedProfitOrLoss=null, positionValue=10000.0, profitOrLoss=null, collectedPremium=50.0, positionsFromDate=null, expirationDate=2026-01-23, marketValue=10000.0, marketVsPositionsPercentage=0.0, breakEven=10050.0}
+16:41:56.073 [main] INFO co.grtk.srcprofit.service.OptionService -- calculateSinglePosition result: PositionDto{id=null, parentId=null, conid=null, code='null', tradeDate=2025-12-24, note='null', color='black', quantity=1, fee=0.0, annualizedRoiPercent=8, probability=52, daysBetween=46, daysLeft=45, assetClass=OPT, type=PUT, status=null, ticker='TEST', tradePrice=100.0, realizedProfitOrLoss=null, unRealizedProfitOrLoss=null, positionValue=10000.0, profitOrLoss=null, collectedPremium=100.0, positionsFromDate=null, expirationDate=2026-02-07, marketValue=10200.0, marketVsPositionsPercentage=0.0, breakEven=9900.0}
+16:41:56.073 [main] INFO co.grtk.srcprofit.service.OptionService -- calculateSinglePosition result: PositionDto{id=null, parentId=null, conid=null, code='null', tradeDate=2025-12-24, note='null', color='black', quantity=1, fee=0.0, annualizedRoiPercent=10, probability=52, daysBetween=46, daysLeft=45, assetClass=OPT, type=PUT, status=null, ticker='TEST', tradePrice=120.0, realizedProfitOrLoss=null, unRealizedProfitOrLoss=null, positionValue=10000.0, profitOrLoss=null, collectedPremium=120.0, positionsFromDate=null, expirationDate=2026-02-07, marketValue=10200.0, marketVsPositionsPercentage=0.0, breakEven=9880.0}
+16:41:56.074 [main] INFO co.grtk.srcprofit.service.OptionService -- calculateSinglePosition result: PositionDto{id=null, parentId=null, conid=null, code='null', tradeDate=2025-12-24, note='null', color='black', quantity=1, fee=0.0, annualizedRoiPercent=12, probability=56, daysBetween=31, daysLeft=30, assetClass=OPT, type=PUT, status=null, ticker='TEST', tradePrice=100.0, realizedProfitOrLoss=null, unRealizedProfitOrLoss=500.0, positionValue=10000.0, profitOrLoss=null, collectedPremium=100.0, positionsFromDate=null, expirationDate=2026-01-23, marketValue=10500.0, marketVsPositionsPercentage=0.0, breakEven=9900.0}
+16:41:56.075 [main] INFO co.grtk.srcprofit.service.OptionService -- calculateSinglePosition result: PositionDto{id=null, parentId=null, conid=null, code='null', tradeDate=2025-12-24, note='null', color='black', quantity=1, fee=null, annualizedRoiPercent=51, probability=null, daysBetween=31, daysLeft=30, assetClass=OPT, type=PUT, status=null, ticker='null', tradePrice=434.0, realizedProfitOrLoss=null, unRealizedProfitOrLoss=null, positionValue=10000.0, profitOrLoss=null, collectedPremium=434.0, positionsFromDate=null, expirationDate=2026-01-23, marketValue=null, marketVsPositionsPercentage=0.0, breakEven=9566.0}
+16:41:56.076 [main] INFO co.grtk.srcprofit.service.OptionService -- calculateSinglePosition result: PositionDto{id=null, parentId=null, conid=null, code='null', tradeDate=2025-12-24, note='null', color='black', quantity=1, fee=0.0, annualizedRoiPercent=12, probability=52, daysBetween=31, daysLeft=30, assetClass=OPT, type=PUT, status=null, ticker='TEST', tradePrice=100.0, realizedProfitOrLoss=null, unRealizedProfitOrLoss=200.0, positionValue=10000.0, profitOrLoss=null, collectedPremium=100.0, positionsFromDate=null, expirationDate=2026-01-23, marketValue=10200.0, marketVsPositionsPercentage=0.0, breakEven=9900.0}
+16:41:56.076 [main] INFO co.grtk.srcprofit.service.OptionService -- calculateSinglePosition result: PositionDto{id=null, parentId=null, conid=null, code='null', tradeDate=2025-12-24, note='null', color='black', quantity=1, fee=0.0, annualizedRoiPercent=12, probability=47, daysBetween=31, daysLeft=30, assetClass=OPT, type=PUT, status=null, ticker='TEST', tradePrice=100.0, realizedProfitOrLoss=null, unRealizedProfitOrLoss=-200.0, positionValue=10000.0, profitOrLoss=null, collectedPremium=100.0, positionsFromDate=null, expirationDate=2026-01-23, marketValue=9800.0, marketVsPositionsPercentage=0.0, breakEven=9900.0}
+16:41:56.078 [main] INFO co.grtk.srcprofit.service.OptionService -- calculateSinglePosition result: PositionDto{id=null, parentId=null, conid=null, code='null', tradeDate=2025-12-24, note='null', color='black', quantity=1, fee=0.0, annualizedRoiPercent=10, probability=47, daysBetween=46, daysLeft=45, assetClass=OPT, type=PUT, status=null, ticker='TEST', tradePrice=120.0, realizedProfitOrLoss=null, unRealizedProfitOrLoss=null, positionValue=10000.0, profitOrLoss=null, collectedPremium=120.0, positionsFromDate=null, expirationDate=2026-02-07, marketValue=9800.0, marketVsPositionsPercentage=0.0, breakEven=9880.0}
+16:41:56.079 [main] INFO co.grtk.srcprofit.service.OptionService -- calculateSinglePosition result: PositionDto{id=null, parentId=null, conid=null, code='null', tradeDate=2025-12-24, note='null', color='black', quantity=1, fee=0.0, annualizedRoiPercent=2, probability=51, daysBetween=366, daysLeft=365, assetClass=OPT, type=PUT, status=null, ticker='TEST', tradePrice=200.0, realizedProfitOrLoss=null, unRealizedProfitOrLoss=null, positionValue=10000.0, profitOrLoss=null, collectedPremium=200.0, positionsFromDate=null, expirationDate=2026-12-24, marketValue=10500.0, marketVsPositionsPercentage=0.0, breakEven=9800.0}
+16:41:56.080 [main] INFO co.grtk.srcprofit.service.OptionService -- calculateSinglePosition result: PositionDto{id=null, parentId=null, conid=null, code='null', tradeDate=2025-12-24, note='null', color='black', quantity=1, fee=0.0, annualizedRoiPercent=14, probability=50, daysBetween=31, daysLeft=30, assetClass=OPT, type=PUT, status=null, ticker='TEST', tradePrice=120.0, realizedProfitOrLoss=null, unRealizedProfitOrLoss=null, positionValue=10000.0, profitOrLoss=null, collectedPremium=120.0, positionsFromDate=null, expirationDate=2026-01-23, marketValue=10000.0, marketVsPositionsPercentage=0.0, breakEven=9880.0}
+[INFO] Tests run: 23, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.027 s -- in Manual Position Calculation Tests (ISSUE-026)
+[INFO] Running Time-Weighted Portfolio Calculation Tests (ISSUE-025)
+[INFO] Tests run: 21, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.021 s -- in Time-Weighted Portfolio Calculation Tests (ISSUE-025)
+[INFO] Running co.grtk.srcprofit.service.AlpacaServiceTest
+16:41:56.137 [main] INFO co.grtk.srcprofit.service.AlpacaService -- Saved Alpaca metadata for AAPL: tradable=true, marginable=true, shortable=true
+16:41:56.141 [main] INFO co.grtk.srcprofit.service.AlpacaService -- Saved Alpaca metadata for AAPL: tradable=true, marginable=true, shortable=true
+16:41:56.141 [main] INFO co.grtk.srcprofit.service.AlpacaService -- Refreshed Alpaca metadata for ticker: AAPL
+16:41:56.141 [main] INFO co.grtk.srcprofit.service.AlpacaService -- Saved Alpaca metadata for MSFT: tradable=true, marginable=false, shortable=false
+16:41:56.141 [main] INFO co.grtk.srcprofit.service.AlpacaService -- Refreshed Alpaca metadata for ticker: MSFT
+16:41:56.143 [main] INFO co.grtk.srcprofit.service.AlpacaService -- Saved Alpaca metadata for AAPL: tradable=true, marginable=true, shortable=true
+16:41:56.143 [main] INFO co.grtk.srcprofit.service.AlpacaService -- Refreshed Alpaca metadata for ticker: AAPL
+16:41:56.143 [main] INFO co.grtk.srcprofit.service.AlpacaService -- Saved Alpaca metadata for MSFT: tradable=true, marginable=false, shortable=false
+16:41:56.143 [main] INFO co.grtk.srcprofit.service.AlpacaService -- Refreshed Alpaca metadata for ticker: MSFT
+16:41:56.143 [main] WARN co.grtk.srcprofit.service.AlpacaService -- Failed to refresh Alpaca metadata for ticker TSLA: API Error
+16:41:56.144 [main] WARN co.grtk.srcprofit.service.AlpacaService -- Failed to refresh Alpaca metadata for ticker NVDA: API Error
+16:41:56.145 [main] INFO co.grtk.srcprofit.service.AlpacaService -- No stale Alpaca assets to refresh
+16:41:56.147 [main] INFO co.grtk.srcprofit.service.AlpacaService -- Saved Alpaca metadata for AAPL: tradable=true, marginable=true, shortable=true
+16:41:56.147 [main] INFO co.grtk.srcprofit.service.AlpacaService -- Refreshed Alpaca metadata for ticker: AAPL
+16:41:56.148 [main] INFO co.grtk.srcprofit.service.AlpacaService -- Saved Alpaca metadata for AAPL: tradable=true, marginable=true, shortable=true
+16:41:56.149 [main] INFO co.grtk.srcprofit.service.AlpacaService -- Refreshed Alpaca metadata for ticker: AAPL
+16:41:56.149 [main] WARN co.grtk.srcprofit.service.AlpacaService -- Failed to refresh Alpaca metadata for ticker MSFT: API Error
+[INFO] Tests run: 6, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.046 s -- in co.grtk.srcprofit.service.AlpacaServiceTest
+[INFO] Running co.grtk.srcprofit.service.OpenPositionServiceTest
+16:41:56.182 [main] INFO co.grtk.srcprofit.service.OpenPositionService -- OpenPositionService.saveCSV() completed: 1 saved, 0 deleted
+16:41:56.185 [main] INFO co.grtk.srcprofit.service.OpenPositionService -- OpenPositionService.saveCSV() completed: 1 saved, 0 deleted
+16:41:56.190 [main] INFO co.grtk.srcprofit.service.OpenPositionService -- OpenPositionService.saveCSV() completed: 1 saved, 0 deleted
+16:41:56.192 [main] INFO co.grtk.srcprofit.service.OpenPositionService -- Deleted 2 closed positions not in CSV from accounts: [DU22222, DU11111]
+16:41:56.192 [main] INFO co.grtk.srcprofit.service.OpenPositionService -- OpenPositionService.saveCSV() completed: 2 saved, 2 deleted
+16:41:56.194 [main] INFO co.grtk.srcprofit.service.OpenPositionService -- OpenPositionService.saveCSV() completed: 1 saved, 0 deleted
+16:41:56.197 [main] INFO co.grtk.srcprofit.service.OpenPositionService -- Deleted 1 closed positions not in CSV from accounts: [DU12345]
+16:41:56.197 [main] INFO co.grtk.srcprofit.service.OpenPositionService -- OpenPositionService.saveCSV() completed: 1 saved, 1 deleted
+16:41:56.199 [main] INFO co.grtk.srcprofit.service.OpenPositionService -- OpenPositionService.saveCSV() completed: 0 saved, 0 deleted
+16:41:56.201 [main] INFO co.grtk.srcprofit.service.OpenPositionService -- Deleted 1 closed positions not in CSV from accounts: [DU12345]
+16:41:56.201 [main] INFO co.grtk.srcprofit.service.OpenPositionService -- OpenPositionService.saveCSV() completed: 2 saved, 1 deleted
+[ERROR] Tests run: 23, Failures: 2, Errors: 1, Skipped: 0, Time elapsed: 0.058 s <<< FAILURE! -- in co.grtk.srcprofit.service.OpenPositionServiceTest
+[ERROR] co.grtk.srcprofit.service.OpenPositionServiceTest.getAllOpenOptionDtos_shouldReturnCalculatedDtos -- Time elapsed: 0.015 s <<< FAILURE!
+org.opentest4j.AssertionFailedError: 
+
+expected: 5.0
+ but was: -500.0
+	at co.grtk.srcprofit.service.OpenPositionServiceTest.getAllOpenOptionDtos_shouldReturnCalculatedDtos(OpenPositionServiceTest.java:100)
+
+[ERROR] co.grtk.srcprofit.service.OpenPositionServiceTest.convertToPositionDto_fieldMappingAccuracy -- Time elapsed: 0.002 s <<< FAILURE!
+org.opentest4j.AssertionFailedError: 
+
+expected: 5.0
+ but was: -500.0
+	at co.grtk.srcprofit.service.OpenPositionServiceTest.convertToPositionDto_fieldMappingAccuracy(OpenPositionServiceTest.java:195)
+
+[ERROR] co.grtk.srcprofit.service.OpenPositionServiceTest.convertToPositionDto_handlesNullFields -- Time elapsed: 0.002 s <<< ERROR!
+java.lang.NullPointerException: Cannot invoke "java.lang.Double.doubleValue()" because the return value of "co.grtk.srcprofit.entity.OpenPositionEntity.getCostBasisPrice()" is null
+	at co.grtk.srcprofit.service.OpenPositionService.convertToPositionDto(OpenPositionService.java:636)
+	at java.base/java.util.stream.ReferencePipeline$3$1.accept(ReferencePipeline.java:215)
+	at java.base/java.util.AbstractList$RandomAccessSpliterator.forEachRemaining(AbstractList.java:722)
+	at java.base/java.util.stream.AbstractPipeline.copyInto(AbstractPipeline.java:570)
+	at java.base/java.util.stream.AbstractPipeline.wrapAndCopyInto(AbstractPipeline.java:560)
+	at java.base/java.util.stream.AbstractPipeline.evaluate(AbstractPipeline.java:636)
+	at java.base/java.util.stream.AbstractPipeline.evaluateToArrayNode(AbstractPipeline.java:291)
+	at java.base/java.util.stream.ReferencePipeline.toArray(ReferencePipeline.java:656)
+	at java.base/java.util.stream.ReferencePipeline.toArray(ReferencePipeline.java:662)
+	at java.base/java.util.stream.ReferencePipeline.toList(ReferencePipeline.java:667)
+	at co.grtk.srcprofit.service.OpenPositionService.convertToPositionDtos(OpenPositionService.java:591)
+	at co.grtk.srcprofit.service.OpenPositionService.getAllOpenOptionDtos(OpenPositionService.java:562)
+	at co.grtk.srcprofit.service.OpenPositionServiceTest.convertToPositionDto_handlesNullFields(OpenPositionServiceTest.java:160)
+
+[INFO] Running FlexReportsService FLEX Import Tracking Tests
+[INFO] Tests run: 6, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 90.30 s -- in FlexReportsService FLEX Import Tracking Tests
+[INFO] Running OptionService Portfolio Calculation Tests
+16:43:26.549 [main] ERROR co.grtk.srcprofit.service.OptionService -- CSV Record #3 - NumberFormatException parsing 'NetCash' (value: 'invalid'): For input string: "invalid"
+16:43:26.551 [main] INFO co.grtk.srcprofit.service.OptionService -- CSV Import Summary: 3 total records
+  ✓ Successful: 1
+  ✗ Failed: 1
+  ⊘ Skipped: 1
+
+Failed Records:
+  - CSV Record #3 - NumberFormatException parsing 'NetCash' (value: 'invalid'): For input string: "invalid"
+
+16:43:26.551 [main] INFO co.grtk.srcprofit.service.OptionService -- CSV file parsed in 0 sec, total records in file: 3
+16:43:26.555 [main] ERROR co.grtk.srcprofit.service.OptionService -- CSV Record #2 - NumberFormatException parsing 'NetCash' (value: 'invalid'): For input string: "invalid"
+16:43:26.556 [main] INFO co.grtk.srcprofit.service.OptionService -- CSV Import Summary: 2 total records
+  ✓ Successful: 1
+  ✗ Failed: 1
+  ⊘ Skipped: 0
+
+Failed Records:
+  - CSV Record #2 - NumberFormatException parsing 'NetCash' (value: 'invalid'): For input string: "invalid"
+
+16:43:26.556 [main] INFO co.grtk.srcprofit.service.OptionService -- CSV file parsed in 0 sec, total records in file: 2
+16:43:26.561 [main] INFO co.grtk.srcprofit.service.OptionService -- calculatePosition openPositions:3, closedPositions:0
+16:43:26.568 [main] INFO co.grtk.srcprofit.service.OptionService -- calculatePosition openPositions:2, closedPositions:0
+16:43:26.572 [main] INFO co.grtk.srcprofit.service.OptionService -- calculatePosition openPositions:2, closedPositions:0
+16:43:26.579 [main] INFO co.grtk.srcprofit.service.OptionService -- calculatePosition openPositions:2, closedPositions:0
+16:43:26.581 [main] ERROR co.grtk.srcprofit.service.OptionService -- CSV Record #1 - DateTimeParseException parsing 'TradeDate' (value: '2025/11/01'): Text '2025/11/01' could not be parsed at index 4
+16:43:26.581 [main] INFO co.grtk.srcprofit.service.OptionService -- CSV Import Summary: 2 total records
+  ✓ Successful: 1
+  ✗ Failed: 1
+  ⊘ Skipped: 0
+
+Failed Records:
+  - CSV Record #1 - DateTimeParseException parsing 'TradeDate' (value: '2025/11/01'): Text '2025/11/01' could not be parsed at index 4
+
+16:43:26.581 [main] INFO co.grtk.srcprofit.service.OptionService -- CSV file parsed in 0 sec, total records in file: 2
+16:43:26.583 [main] ERROR co.grtk.srcprofit.service.OptionService -- CSV Record #1 - NumberFormatException parsing 'Conid' (value: 'bad1'): For input string: "bad1"
+16:43:26.583 [main] ERROR co.grtk.srcprofit.service.OptionService -- CSV Record #2 - NumberFormatException parsing 'Conid' (value: 'bad2'): For input string: "bad2"
+16:43:26.584 [main] INFO co.grtk.srcprofit.service.OptionService -- CSV Import Summary: 2 total records
+  ✓ Successful: 0
+  ✗ Failed: 2
+  ⊘ Skipped: 0
+
+Failed Records:
+  - CSV Record #1 - NumberFormatException parsing 'Conid' (value: 'bad1'): For input string: "bad1"
+  - CSV Record #2 - NumberFormatException parsing 'Conid' (value: 'bad2'): For input string: "bad2"
+
+16:43:26.584 [main] INFO co.grtk.srcprofit.service.OptionService -- CSV file parsed in 0 sec, total records in file: 2
+16:43:26.585 [main] INFO co.grtk.srcprofit.service.OptionService -- calculatePosition openPositions:0, closedPositions:0
+16:43:26.587 [main] ERROR co.grtk.srcprofit.service.OptionService -- CSV Record #1 - NumberFormatException parsing 'Conid' (value: 'invalid-conid'): For input string: "invalid-conid"
+16:43:26.587 [main] INFO co.grtk.srcprofit.service.OptionService -- CSV Import Summary: 2 total records
+  ✓ Successful: 1
+  ✗ Failed: 1
+  ⊘ Skipped: 0
+
+Failed Records:
+  - CSV Record #1 - NumberFormatException parsing 'Conid' (value: 'invalid-conid'): For input string: "invalid-conid"
+
+16:43:26.588 [main] INFO co.grtk.srcprofit.service.OptionService -- CSV file parsed in 0 sec, total records in file: 2
+16:43:26.590 [main] INFO co.grtk.srcprofit.service.OptionService -- calculatePosition openPositions:2, closedPositions:0
+16:43:26.592 [main] ERROR co.grtk.srcprofit.service.OptionService -- CSV Record #1 - NumberFormatException parsing 'NetCash' (value: 'not-a-number'): For input string: "not-a-number"
+16:43:26.592 [main] INFO co.grtk.srcprofit.service.OptionService -- CSV Import Summary: 2 total records
+  ✓ Successful: 1
+  ✗ Failed: 1
+  ⊘ Skipped: 0
+
+Failed Records:
+  - CSV Record #1 - NumberFormatException parsing 'NetCash' (value: 'not-a-number'): For input string: "not-a-number"
+
+16:43:26.592 [main] INFO co.grtk.srcprofit.service.OptionService -- CSV file parsed in 0 sec, total records in file: 2
+16:43:26.593 [main] INFO co.grtk.srcprofit.service.OptionService -- calculatePosition openPositions:1, closedPositions:0
+16:43:26.596 [main] INFO co.grtk.srcprofit.service.OptionService -- calculatePosition openPositions:1, closedPositions:1
+16:43:26.597 [main] INFO co.grtk.srcprofit.service.OptionService -- calculatePosition openPositions:2, closedPositions:0
+16:43:26.598 [main] INFO co.grtk.srcprofit.service.OptionService -- calculatePosition openPositions:3, closedPositions:0
+16:43:26.605 [main] INFO co.grtk.srcprofit.service.OptionService -- calculatePosition openPositions:1, closedPositions:0
+[ERROR] Tests run: 20, Failures: 1, Errors: 0, Skipped: 0, Time elapsed: 0.083 s <<< FAILURE! -- in OptionService Portfolio Calculation Tests
+[ERROR] co.grtk.srcprofit.service.OptionServiceTest.testWeightedCalculations_EqualPositions -- Time elapsed: 0.006 s <<< FAILURE!
+org.opentest4j.AssertionFailedError: 
+[With equal positions, portfolio ROI should equal position ROI] 
+expected: 100
+ but was: 0
+	at co.grtk.srcprofit.service.OptionServiceTest.testWeightedCalculations_EqualPositions(OptionServiceTest.java:151)
+
+[INFO] Running co.grtk.srcprofit.service.ScheduledJobsServiceTest
+16:43:26.690 [main] INFO co.grtk.srcprofit.service.ScheduledJobsService -- ScheduledJobsService: Completed refreshEarningsData() in 0ms with result: 0/0/0
+16:43:26.691 [main] ERROR co.grtk.srcprofit.service.ScheduledJobsService -- ScheduledJobsService: refreshEarningsData() failed after 0ms - Alpha Vantage API unavailable
+java.lang.RuntimeException: Alpha Vantage API unavailable
+	at co.grtk.srcprofit.service.EarningService.refreshEarningsDataForAllInstruments(EarningService.java:142)
+	at co.grtk.srcprofit.service.ScheduledJobsService.refreshEarningsData(ScheduledJobsService.java:238)
+	at co.grtk.srcprofit.service.ScheduledJobsServiceTest.lambda$testEarningsRefreshJobContinuesWhenEarningServiceThrows$0(ScheduledJobsServiceTest.java:129)
+	at org.junit.jupiter.api.AssertDoesNotThrow.assertDoesNotThrow(AssertDoesNotThrow.java:52)
+	at org.junit.jupiter.api.AssertDoesNotThrow.assertDoesNotThrow(AssertDoesNotThrow.java:43)
+	at org.junit.jupiter.api.Assertions.assertDoesNotThrow(Assertions.java:3314)
+	at co.grtk.srcprofit.service.ScheduledJobsServiceTest.testEarningsRefreshJobContinuesWhenEarningServiceThrows(ScheduledJobsServiceTest.java:129)
+	at java.base/jdk.internal.reflect.DirectMethodHandleAccessor.invoke(DirectMethodHandleAccessor.java:104)
+	at java.base/java.lang.reflect.Method.invoke(Method.java:565)
+	at org.junit.platform.commons.util.ReflectionUtils.invokeMethod(ReflectionUtils.java:701)
+	at org.junit.platform.commons.support.ReflectionSupport.invokeMethod(ReflectionSupport.java:502)
+	at org.junit.jupiter.engine.support.MethodReflectionUtils.invoke(MethodReflectionUtils.java:45)
+	at org.junit.jupiter.engine.execution.MethodInvocation.proceed(MethodInvocation.java:61)
+	at org.junit.jupiter.engine.execution.InvocationInterceptorChain$ValidatingInvocation.proceed(InvocationInterceptorChain.java:124)
+	at org.junit.jupiter.engine.extension.TimeoutExtension.intercept(TimeoutExtension.java:163)
+	at org.junit.jupiter.engine.extension.TimeoutExtension.interceptTestableMethod(TimeoutExtension.java:148)
+	at org.junit.jupiter.engine.extension.TimeoutExtension.interceptTestMethod(TimeoutExtension.java:86)
+	at org.junit.jupiter.engine.execution.InterceptingExecutableInvoker$ReflectiveInterceptorCall.lambda$ofVoidMethod$0(InterceptingExecutableInvoker.java:123)
+	at org.junit.jupiter.engine.execution.InterceptingExecutableInvoker.lambda$invoke$0(InterceptingExecutableInvoker.java:105)
+	at org.junit.jupiter.engine.execution.InvocationInterceptorChain$InterceptedInvocation.proceed(InvocationInterceptorChain.java:99)
+	at org.junit.jupiter.engine.execution.InvocationInterceptorChain.proceed(InvocationInterceptorChain.java:66)
+	at org.junit.jupiter.engine.execution.InvocationInterceptorChain.chainAndInvoke(InvocationInterceptorChain.java:47)
+	at org.junit.jupiter.engine.execution.InvocationInterceptorChain.invoke(InvocationInterceptorChain.java:39)
+	at org.junit.jupiter.engine.execution.InterceptingExecutableInvoker.invoke(InterceptingExecutableInvoker.java:104)
+	at org.junit.jupiter.engine.execution.InterceptingExecutableInvoker.invoke(InterceptingExecutableInvoker.java:98)
+	at org.junit.jupiter.engine.execution.InterceptingExecutableInvoker.invokeVoid(InterceptingExecutableInvoker.java:71)
+	at org.junit.jupiter.engine.descriptor.TestMethodTestDescriptor.lambda$invokeTestMethod$0(TestMethodTestDescriptor.java:219)
+	at org.junit.platform.engine.support.hierarchical.ThrowableCollector.execute(ThrowableCollector.java:74)
+	at org.junit.jupiter.engine.descriptor.TestMethodTestDescriptor.invokeTestMethod(TestMethodTestDescriptor.java:215)
+	at org.junit.jupiter.engine.descriptor.TestMethodTestDescriptor.execute(TestMethodTestDescriptor.java:157)
+	at org.junit.jupiter.engine.descriptor.TestMethodTestDescriptor.execute(TestMethodTestDescriptor.java:70)
+	at org.junit.platform.engine.support.hierarchical.NodeTestTask.lambda$executeRecursively$2(NodeTestTask.java:176)
+	at org.junit.platform.engine.support.hierarchical.ThrowableCollector.execute(ThrowableCollector.java:74)
+	at org.junit.platform.engine.support.hierarchical.NodeTestTask.lambda$executeRecursively$1(NodeTestTask.java:166)
+	at org.junit.platform.engine.support.hierarchical.Node.around(Node.java:138)
+	at org.junit.platform.engine.support.hierarchical.NodeTestTask.lambda$executeRecursively$0(NodeTestTask.java:164)
+	at org.junit.platform.engine.support.hierarchical.ThrowableCollector.execute(ThrowableCollector.java:74)
+	at org.junit.platform.engine.support.hierarchical.NodeTestTask.executeRecursively(NodeTestTask.java:163)
+	at org.junit.platform.engine.support.hierarchical.NodeTestTask.execute(NodeTestTask.java:116)
+	at java.base/java.util.ArrayList.forEach(ArrayList.java:1604)
+	at org.junit.platform.engine.support.hierarchical.SameThreadHierarchicalTestExecutorService.invokeAll(SameThreadHierarchicalTestExecutorService.java:42)
+	at org.junit.platform.engine.support.hierarchical.NodeTestTask.lambda$executeRecursively$2(NodeTestTask.java:180)
+	at org.junit.platform.engine.support.hierarchical.ThrowableCollector.execute(ThrowableCollector.java:74)
+	at org.junit.platform.engine.support.hierarchical.NodeTestTask.lambda$executeRecursively$1(NodeTestTask.java:166)
+	at org.junit.platform.engine.support.hierarchical.Node.around(Node.java:138)
+	at org.junit.platform.engine.support.hierarchical.NodeTestTask.lambda$executeRecursively$0(NodeTestTask.java:164)
+	at org.junit.platform.engine.support.hierarchical.ThrowableCollector.execute(ThrowableCollector.java:74)
+	at org.junit.platform.engine.support.hierarchical.NodeTestTask.executeRecursively(NodeTestTask.java:163)
+	at org.junit.platform.engine.support.hierarchical.NodeTestTask.execute(NodeTestTask.java:116)
+	at java.base/java.util.ArrayList.forEach(ArrayList.java:1604)
+	at org.junit.platform.engine.support.hierarchical.SameThreadHierarchicalTestExecutorService.invokeAll(SameThreadHierarchicalTestExecutorService.java:42)
+	at org.junit.platform.engine.support.hierarchical.NodeTestTask.lambda$executeRecursively$2(NodeTestTask.java:180)
+	at org.junit.platform.engine.support.hierarchical.ThrowableCollector.execute(ThrowableCollector.java:74)
+	at org.junit.platform.engine.support.hierarchical.NodeTestTask.lambda$executeRecursively$1(NodeTestTask.java:166)
+	at org.junit.platform.engine.support.hierarchical.Node.around(Node.java:138)
+	at org.junit.platform.engine.support.hierarchical.NodeTestTask.lambda$executeRecursively$0(NodeTestTask.java:164)
+	at org.junit.platform.engine.support.hierarchical.ThrowableCollector.execute(ThrowableCollector.java:74)
+	at org.junit.platform.engine.support.hierarchical.NodeTestTask.executeRecursively(NodeTestTask.java:163)
+	at org.junit.platform.engine.support.hierarchical.NodeTestTask.execute(NodeTestTask.java:116)
+	at org.junit.platform.engine.support.hierarchical.SameThreadHierarchicalTestExecutorService.submit(SameThreadHierarchicalTestExecutorService.java:36)
+	at org.junit.platform.engine.support.hierarchical.HierarchicalTestExecutor.execute(HierarchicalTestExecutor.java:52)
+	at org.junit.platform.engine.support.hierarchical.HierarchicalTestEngine.execute(HierarchicalTestEngine.java:58)
+	at org.junit.platform.launcher.core.EngineExecutionOrchestrator.executeEngine(EngineExecutionOrchestrator.java:246)
+	at org.junit.platform.launcher.core.EngineExecutionOrchestrator.failOrExecuteEngine(EngineExecutionOrchestrator.java:218)
+	at org.junit.platform.launcher.core.EngineExecutionOrchestrator.execute(EngineExecutionOrchestrator.java:179)
+	at org.junit.platform.launcher.core.EngineExecutionOrchestrator.execute(EngineExecutionOrchestrator.java:108)
+	at org.junit.platform.launcher.core.EngineExecutionOrchestrator.lambda$execute$0(EngineExecutionOrchestrator.java:66)
+	at org.junit.platform.launcher.core.EngineExecutionOrchestrator.withInterceptedStreams(EngineExecutionOrchestrator.java:157)
+	at org.junit.platform.launcher.core.EngineExecutionOrchestrator.execute(EngineExecutionOrchestrator.java:65)
+	at org.junit.platform.launcher.core.DefaultLauncher.execute(DefaultLauncher.java:125)
+	at org.junit.platform.launcher.core.DefaultLauncher.execute(DefaultLauncher.java:114)
+	at org.junit.platform.launcher.core.DelegatingLauncher.execute(DelegatingLauncher.java:58)
+	at org.junit.platform.launcher.core.InterceptingLauncher.lambda$execute$2(InterceptingLauncher.java:57)
+	at org.junit.platform.launcher.core.ClasspathAlignmentCheckingLauncherInterceptor.intercept(ClasspathAlignmentCheckingLauncherInterceptor.java:25)
+	at org.junit.platform.launcher.core.InterceptingLauncher.execute(InterceptingLauncher.java:56)
+	at org.junit.platform.launcher.core.DelegatingLauncher.execute(DelegatingLauncher.java:58)
+	at java.base/jdk.internal.reflect.DirectMethodHandleAccessor.invoke(DirectMethodHandleAccessor.java:104)
+	at java.base/java.lang.reflect.Method.invoke(Method.java:565)
+	at org.apache.maven.surefire.api.util.ReflectionUtils.invokeMethodWithArray(ReflectionUtils.java:125)
+	at org.apache.maven.surefire.junitplatform.LauncherAdapter.executeWithCancellationToken(LauncherAdapter.java:68)
+	at org.apache.maven.surefire.junitplatform.LauncherAdapter.execute(LauncherAdapter.java:54)
+	at org.apache.maven.surefire.junitplatform.JUnitPlatformProvider.execute(JUnitPlatformProvider.java:203)
+	at org.apache.maven.surefire.junitplatform.JUnitPlatformProvider.invokeAllTests(JUnitPlatformProvider.java:168)
+	at org.apache.maven.surefire.junitplatform.JUnitPlatformProvider.invoke(JUnitPlatformProvider.java:136)
+	at org.apache.maven.surefire.booter.ForkedBooter.runSuitesInProcess(ForkedBooter.java:385)
+	at org.apache.maven.surefire.booter.ForkedBooter.execute(ForkedBooter.java:162)
+	at org.apache.maven.surefire.booter.ForkedBooter.run(ForkedBooter.java:507)
+	at org.apache.maven.surefire.booter.ForkedBooter.main(ForkedBooter.java:495)
+16:43:26.693 [main] INFO co.grtk.srcprofit.service.ScheduledJobsService -- ScheduledJobsService: Completed refreshAlpacaAssets() in 0ms, refreshed 42 instruments
+16:43:26.695 [main] ERROR co.grtk.srcprofit.service.ScheduledJobsService -- ScheduledJobsService: refreshAlpacaAssets() failed after 0ms - Alpaca API unavailable
+java.lang.RuntimeException: Alpaca API unavailable
+	at co.grtk.srcprofit.service.AlpacaService.refreshStaleAssetMetadata(AlpacaService.java:164)
+	at co.grtk.srcprofit.service.ScheduledJobsService.refreshAlpacaAssets(ScheduledJobsService.java:203)
+	at co.grtk.srcprofit.service.ScheduledJobsServiceTest.lambda$testJobContinuesWhenAlpacaServiceThrows$0(ScheduledJobsServiceTest.java:77)
+	at org.junit.jupiter.api.AssertDoesNotThrow.assertDoesNotThrow(AssertDoesNotThrow.java:52)
+	at org.junit.jupiter.api.AssertDoesNotThrow.assertDoesNotThrow(AssertDoesNotThrow.java:43)
+	at org.junit.jupiter.api.Assertions.assertDoesNotThrow(Assertions.java:3314)
+	at co.grtk.srcprofit.service.ScheduledJobsServiceTest.testJobContinuesWhenAlpacaServiceThrows(ScheduledJobsServiceTest.java:77)
+	at java.base/jdk.internal.reflect.DirectMethodHandleAccessor.invoke(DirectMethodHandleAccessor.java:104)
+	at java.base/java.lang.reflect.Method.invoke(Method.java:565)
+	at org.junit.platform.commons.util.ReflectionUtils.invokeMethod(ReflectionUtils.java:701)
+	at org.junit.platform.commons.support.ReflectionSupport.invokeMethod(ReflectionSupport.java:502)
+	at org.junit.jupiter.engine.support.MethodReflectionUtils.invoke(MethodReflectionUtils.java:45)
+	at org.junit.jupiter.engine.execution.MethodInvocation.proceed(MethodInvocation.java:61)
+	at org.junit.jupiter.engine.execution.InvocationInterceptorChain$ValidatingInvocation.proceed(InvocationInterceptorChain.java:124)
+	at org.junit.jupiter.engine.extension.TimeoutExtension.intercept(TimeoutExtension.java:163)
+	at org.junit.jupiter.engine.extension.TimeoutExtension.interceptTestableMethod(TimeoutExtension.java:148)
+	at org.junit.jupiter.engine.extension.TimeoutExtension.interceptTestMethod(TimeoutExtension.java:86)
+	at org.junit.jupiter.engine.execution.InterceptingExecutableInvoker$ReflectiveInterceptorCall.lambda$ofVoidMethod$0(InterceptingExecutableInvoker.java:123)
+	at org.junit.jupiter.engine.execution.InterceptingExecutableInvoker.lambda$invoke$0(InterceptingExecutableInvoker.java:105)
+	at org.junit.jupiter.engine.execution.InvocationInterceptorChain$InterceptedInvocation.proceed(InvocationInterceptorChain.java:99)
+	at org.junit.jupiter.engine.execution.InvocationInterceptorChain.proceed(InvocationInterceptorChain.java:66)
+	at org.junit.jupiter.engine.execution.InvocationInterceptorChain.chainAndInvoke(InvocationInterceptorChain.java:47)
+	at org.junit.jupiter.engine.execution.InvocationInterceptorChain.invoke(InvocationInterceptorChain.java:39)
+	at org.junit.jupiter.engine.execution.InterceptingExecutableInvoker.invoke(InterceptingExecutableInvoker.java:104)
+	at org.junit.jupiter.engine.execution.InterceptingExecutableInvoker.invoke(InterceptingExecutableInvoker.java:98)
+	at org.junit.jupiter.engine.execution.InterceptingExecutableInvoker.invokeVoid(InterceptingExecutableInvoker.java:71)
+	at org.junit.jupiter.engine.descriptor.TestMethodTestDescriptor.lambda$invokeTestMethod$0(TestMethodTestDescriptor.java:219)
+	at org.junit.platform.engine.support.hierarchical.ThrowableCollector.execute(ThrowableCollector.java:74)
+	at org.junit.jupiter.engine.descriptor.TestMethodTestDescriptor.invokeTestMethod(TestMethodTestDescriptor.java:215)
+	at org.junit.jupiter.engine.descriptor.TestMethodTestDescriptor.execute(TestMethodTestDescriptor.java:157)
+	at org.junit.jupiter.engine.descriptor.TestMethodTestDescriptor.execute(TestMethodTestDescriptor.java:70)
+	at org.junit.platform.engine.support.hierarchical.NodeTestTask.lambda$executeRecursively$2(NodeTestTask.java:176)
+	at org.junit.platform.engine.support.hierarchical.ThrowableCollector.execute(ThrowableCollector.java:74)
+	at org.junit.platform.engine.support.hierarchical.NodeTestTask.lambda$executeRecursively$1(NodeTestTask.java:166)
+	at org.junit.platform.engine.support.hierarchical.Node.around(Node.java:138)
+	at org.junit.platform.engine.support.hierarchical.NodeTestTask.lambda$executeRecursively$0(NodeTestTask.java:164)
+	at org.junit.platform.engine.support.hierarchical.ThrowableCollector.execute(ThrowableCollector.java:74)
+	at org.junit.platform.engine.support.hierarchical.NodeTestTask.executeRecursively(NodeTestTask.java:163)
+	at org.junit.platform.engine.support.hierarchical.NodeTestTask.execute(NodeTestTask.java:116)
+	at java.base/java.util.ArrayList.forEach(ArrayList.java:1604)
+	at org.junit.platform.engine.support.hierarchical.SameThreadHierarchicalTestExecutorService.invokeAll(SameThreadHierarchicalTestExecutorService.java:42)
+	at org.junit.platform.engine.support.hierarchical.NodeTestTask.lambda$executeRecursively$2(NodeTestTask.java:180)
+	at org.junit.platform.engine.support.hierarchical.ThrowableCollector.execute(ThrowableCollector.java:74)
+	at org.junit.platform.engine.support.hierarchical.NodeTestTask.lambda$executeRecursively$1(NodeTestTask.java:166)
+	at org.junit.platform.engine.support.hierarchical.Node.around(Node.java:138)
+	at org.junit.platform.engine.support.hierarchical.NodeTestTask.lambda$executeRecursively$0(NodeTestTask.java:164)
+	at org.junit.platform.engine.support.hierarchical.ThrowableCollector.execute(ThrowableCollector.java:74)
+	at org.junit.platform.engine.support.hierarchical.NodeTestTask.executeRecursively(NodeTestTask.java:163)
+	at org.junit.platform.engine.support.hierarchical.NodeTestTask.execute(NodeTestTask.java:116)
+	at java.base/java.util.ArrayList.forEach(ArrayList.java:1604)
+	at org.junit.platform.engine.support.hierarchical.SameThreadHierarchicalTestExecutorService.invokeAll(SameThreadHierarchicalTestExecutorService.java:42)
+	at org.junit.platform.engine.support.hierarchical.NodeTestTask.lambda$executeRecursively$2(NodeTestTask.java:180)
+	at org.junit.platform.engine.support.hierarchical.ThrowableCollector.execute(ThrowableCollector.java:74)
+	at org.junit.platform.engine.support.hierarchical.NodeTestTask.lambda$executeRecursively$1(NodeTestTask.java:166)
+	at org.junit.platform.engine.support.hierarchical.Node.around(Node.java:138)
+	at org.junit.platform.engine.support.hierarchical.NodeTestTask.lambda$executeRecursively$0(NodeTestTask.java:164)
+	at org.junit.platform.engine.support.hierarchical.ThrowableCollector.execute(ThrowableCollector.java:74)
+	at org.junit.platform.engine.support.hierarchical.NodeTestTask.executeRecursively(NodeTestTask.java:163)
+	at org.junit.platform.engine.support.hierarchical.NodeTestTask.execute(NodeTestTask.java:116)
+	at org.junit.platform.engine.support.hierarchical.SameThreadHierarchicalTestExecutorService.submit(SameThreadHierarchicalTestExecutorService.java:36)
+	at org.junit.platform.engine.support.hierarchical.HierarchicalTestExecutor.execute(HierarchicalTestExecutor.java:52)
+	at org.junit.platform.engine.support.hierarchical.HierarchicalTestEngine.execute(HierarchicalTestEngine.java:58)
+	at org.junit.platform.launcher.core.EngineExecutionOrchestrator.executeEngine(EngineExecutionOrchestrator.java:246)
+	at org.junit.platform.launcher.core.EngineExecutionOrchestrator.failOrExecuteEngine(EngineExecutionOrchestrator.java:218)
+	at org.junit.platform.launcher.core.EngineExecutionOrchestrator.execute(EngineExecutionOrchestrator.java:179)
+	at org.junit.platform.launcher.core.EngineExecutionOrchestrator.execute(EngineExecutionOrchestrator.java:108)
+	at org.junit.platform.launcher.core.EngineExecutionOrchestrator.lambda$execute$0(EngineExecutionOrchestrator.java:66)
+	at org.junit.platform.launcher.core.EngineExecutionOrchestrator.withInterceptedStreams(EngineExecutionOrchestrator.java:157)
+	at org.junit.platform.launcher.core.EngineExecutionOrchestrator.execute(EngineExecutionOrchestrator.java:65)
+	at org.junit.platform.launcher.core.DefaultLauncher.execute(DefaultLauncher.java:125)
+	at org.junit.platform.launcher.core.DefaultLauncher.execute(DefaultLauncher.java:114)
+	at org.junit.platform.launcher.core.DelegatingLauncher.execute(DelegatingLauncher.java:58)
+	at org.junit.platform.launcher.core.InterceptingLauncher.lambda$execute$2(InterceptingLauncher.java:57)
+	at org.junit.platform.launcher.core.ClasspathAlignmentCheckingLauncherInterceptor.intercept(ClasspathAlignmentCheckingLauncherInterceptor.java:25)
+	at org.junit.platform.launcher.core.InterceptingLauncher.execute(InterceptingLauncher.java:56)
+	at org.junit.platform.launcher.core.DelegatingLauncher.execute(DelegatingLauncher.java:58)
+	at java.base/jdk.internal.reflect.DirectMethodHandleAccessor.invoke(DirectMethodHandleAccessor.java:104)
+	at java.base/java.lang.reflect.Method.invoke(Method.java:565)
+	at org.apache.maven.surefire.api.util.ReflectionUtils.invokeMethodWithArray(ReflectionUtils.java:125)
+	at org.apache.maven.surefire.junitplatform.LauncherAdapter.executeWithCancellationToken(LauncherAdapter.java:68)
+	at org.apache.maven.surefire.junitplatform.LauncherAdapter.execute(LauncherAdapter.java:54)
+	at org.apache.maven.surefire.junitplatform.JUnitPlatformProvider.execute(JUnitPlatformProvider.java:203)
+	at org.apache.maven.surefire.junitplatform.JUnitPlatformProvider.invokeAllTests(JUnitPlatformProvider.java:168)
+	at org.apache.maven.surefire.junitplatform.JUnitPlatformProvider.invoke(JUnitPlatformProvider.java:136)
+	at org.apache.maven.surefire.booter.ForkedBooter.runSuitesInProcess(ForkedBooter.java:385)
+	at org.apache.maven.surefire.booter.ForkedBooter.execute(ForkedBooter.java:162)
+	at org.apache.maven.surefire.booter.ForkedBooter.run(ForkedBooter.java:507)
+	at org.apache.maven.surefire.booter.ForkedBooter.main(ForkedBooter.java:495)
+16:43:26.697 [main] INFO co.grtk.srcprofit.service.ScheduledJobsService -- ScheduledJobsService: Completed refreshAlpacaAssets() in 0ms, refreshed 25 instruments
+16:43:26.697 [main] INFO co.grtk.srcprofit.service.ScheduledJobsService -- ScheduledJobsService: Completed refreshEarningsData() in 0ms with result: 500/1250/0
+16:43:26.698 [main] INFO co.grtk.srcprofit.service.ScheduledJobsService -- ScheduledJobsService: Completed refreshAlpacaAssets() in 0ms, refreshed 0 instruments
+16:43:26.700 [main] INFO co.grtk.srcprofit.service.ScheduledJobsService -- ScheduledJobsService: Completed refreshEarningsData() in 0ms with result: 0/0/500
+16:43:26.701 [main] INFO co.grtk.srcprofit.service.ScheduledJobsService -- ScheduledJobsService: Completed refreshEarningsData() in 0ms with result: 15/42/0
+[INFO] Tests run: 8, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.091 s -- in co.grtk.srcprofit.service.ScheduledJobsServiceTest
+[INFO] 
+[INFO] Results:
+[INFO] 
+[ERROR] Failures: 
+[ERROR]   OpenPositionServiceTest.convertToPositionDto_fieldMappingAccuracy:195 
+expected: 5.0
+ but was: -500.0
+[ERROR]   OpenPositionServiceTest.getAllOpenOptionDtos_shouldReturnCalculatedDtos:100 
+expected: 5.0
+ but was: -500.0
+[ERROR]   OptionServiceTest.testWeightedCalculations_EqualPositions:151 [With equal positions, portfolio ROI should equal position ROI] 
+expected: 100
+ but was: 0
+[ERROR] Errors: 
+[ERROR]   OpenPositionServiceTest.convertToPositionDto_handlesNullFields:160 » NullPointer Cannot invoke "java.lang.Double.doubleValue()" because the return value of "co.grtk.srcprofit.entity.OpenPositionEntity.getCostBasisPrice()" is null
+[INFO] 
+[ERROR] Tests run: 224, Failures: 3, Errors: 1, Skipped: 0
+[INFO] 
+[INFO] ------------------------------------------------------------------------
+[INFO] BUILD FAILURE
+[INFO] ------------------------------------------------------------------------
+[INFO] Total time:  02:03 min
+[INFO] Finished at: 2025-12-24T16:43:26+01:00
+[INFO] ------------------------------------------------------------------------
+[ERROR] Failed to execute goal org.apache.maven.plugins:maven-surefire-plugin:3.5.4:test (default-test) on project srcprofit: There are test failures.
+[ERROR] 
+[ERROR] See /Users/Imre/IdeaProjects/other/srcprofit/target/surefire-reports for the individual test results.
+[ERROR] See dump files (if any exist) [date].dump, [date]-jvmRun[N].dump and [date].dumpstream.
+[ERROR] -> [Help 1]
+[ERROR] 
+[ERROR] To see the full stack trace of the errors, re-run Maven with the -e switch.
+[ERROR] Re-run Maven using the -X switch to enable full debug logging.
+[ERROR] 
+[ERROR] For more information about the errors and possible solutions, please read the following articles:
+[ERROR] [Help 1] http://cwiki.apache.org/confluence/display/MAVEN/MojoFailureException

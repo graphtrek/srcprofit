@@ -405,25 +405,22 @@
                             return floatVal(a) + floatVal(b);
                         }, 0);
 
-                    // Average Strike (column 5) - only visible rows
-                    var strikeData = api.column(5, {page: 'current', search: 'applied'}).data();
+                    // Sum Strike × Qty (column 5 × column 4) - only visible rows
+                    var rows = api.rows({page: 'current', search: 'applied'}).data();
                     var strikeSum = 0;
-                    var strikeCount = 0;
-                    strikeData.each(function(value) {
-                        strikeSum += floatVal(value);
-                        strikeCount++;
+                    rows.each(function(row) {
+                        var qty = floatVal(row[4]);
+                        var strike = floatVal(row[5]);
+                        strikeSum += qty * strike;
                     });
-                    var strikeAvg = strikeCount > 0 ? strikeSum / strikeCount : 0;
 
-                    // Average Price (column 6) - only visible rows
-                    var priceData = api.column(6, {page: 'current', search: 'applied'}).data();
+                    // Sum Price × Qty (column 6 × column 4) - only visible rows
                     var priceSum = 0;
-                    var priceCount = 0;
-                    priceData.each(function(value) {
-                        priceSum += floatVal(value);
-                        priceCount++;
+                    rows.each(function(row) {
+                        var qty = floatVal(row[4]);
+                        var price = floatVal(row[6]);
+                        priceSum += qty * price;
                     });
-                    var priceAvg = priceCount > 0 ? priceSum / priceCount : 0;
 
                     // Sum CostBase (column 8) - only visible rows
                     var costBaseTotal = api.column(8, {page: 'current', search: 'applied'})

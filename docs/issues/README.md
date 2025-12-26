@@ -2,9 +2,9 @@
 
 **Auto-generated** - Run `python scripts/update_issue_index.py` to update
 
-**Total**: 59 issues
+**Total**: 60 issues
 **Open**: 7 (12%)
-**Closed**: 47 (80%)
+**Closed**: 48 (80%)
 **Partial**: 0
 
 ---
@@ -129,6 +129,8 @@
   - Priority: MEDIUM | Completed: 2025-12-21
 - **[ISSUE-055](ISSUE-055-tradelog-obligation-card-alignment.md)** - Trade Log Obligation Card Layout Alignment
   - Priority: MEDIUM | Completed: 2025-12-22
+- **[ISSUE-058](ISSUE-058-openposition-data-source-migration.md)** - OpenPosition Data Source Migration & Footer Calculations
+  - Priority: HIGH | Completed: 2025-12-26
 
 ---
 
@@ -143,8 +145,8 @@
 **Bug Fix / UX Enhancement** (1):
   - ISSUE-029 ✅
 
-**Code Quality / Technical Debt** (9):
-  - ISSUE-004 ✅, ISSUE-007 ✅, ISSUE-008 ✅, ISSUE-015 ✅, ISSUE-023 ✅, ISSUE-024 ✅, ISSUE-031 ✅, ISSUE-045 🔴, ISSUE-046 🔴
+**Code Quality / Technical Debt** (10):
+  - ISSUE-004 ✅, ISSUE-007 ✅, ISSUE-008 ✅, ISSUE-015 ✅, ISSUE-023 ✅, ISSUE-024 ✅, ISSUE-031 ✅, ISSUE-045 🔴, ISSUE-046 🔴, ISSUE-058 ✅
 
 **Developer Experience** (1):
   - ISSUE-034 ✅
@@ -199,6 +201,6 @@
 
 ---
 
-**Last updated**: 2025-12-23
+**Last updated**: 2025-12-26
 
 **How to update**: Run `python scripts/update_issue_index.py`
